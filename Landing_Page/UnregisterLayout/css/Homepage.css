@@ -1,0 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+
+/* ==========RESET========== */
+*,
+* ::before,
+* ::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+li {
+    list-style-type: none;
+}
+
+
+
+/*========== VARIABLE========== */
+:root {
+    /* FONTS */
+    /* font family */
+    --FF-HEADINGS: "Roboto", serif;
+    --FF-BODY: "Poppins", serif;
+    /* font size - assist font from shrinking and growing*/
+    /* (min, default, max) */
+    --FS: clamp(1em, 2.2vh, 1.5em);
+
+
+    /* COLORS */
+    --COLOR-LIGHT1: #ffffff;
+    --COLOR-LIGHT2: #d5d5d5;
+    --COLOR-LIGHT3: #a7a7a7;
+    --COLOR-DARK1: #626262;
+    --COLOR-DARK2: #333333;
+    --COLOR-DARK3: #171717;
+    --COLOR-BLUE1: #03045E;
+    --COLOR-BLUE2: #0077B6;
+    --COLOR-BLUE3: #90E0EF;
+    --COLOR-BLUE4: #CAF0F8;
+
+
+    /* Accent Colors for Features */
+    --ACCENT-GREEN: #10b981;
+    /* Success, completion */
+    --ACCENT-YELLOW: #f59e0b;
+    /* Warnings, pending */
+    --ACCENT-RED: #ef4444;
+    /* Errors, high priority */
+
+    /* LINK */
+    --LINK-HOVER: ;
+    --LINK-ACTIVE: ;
+    --LINK: ;
+
+    /* BORDERS */
+    --BORDER-COLOR: #333;
+    --BORDER-RD-CONTACT: 15px;
+
+    /*FLAT BLACK*/
+    --BORDER: 2px solid var(--COLOR-DARK3);
+
+    /* STANDARD PADDING */
+    /* em = relative to font size */
+    --PADDING-TB: clamp(0.5em, 2vh, 1.2em);
+    --PADDING-LR: clamp(1em, 3vw, 2em);
+
+    /* STANDARD MARGIN */
+    /* MIN - use 1em if lesser if 2.5vh is lesser than 1em */
+    /* MAX - use 1.5em if 2.5vh is greater than 1.5em */
+    --MARGIN: clamp(1em, 2.5vh, 1.5em);
+
+    /* SHADOW */
+    --SHADOW-WHITEBG: 8px 8px 15px hsla(0, 0%, 0%, 0.3);
+}
+
+
+/* ==========UTILITY========== */
+
+.FRONT {
+    z-index: 100000;
+}
+
+.CENTER {
+    text-align: center;
+}
+
+.CLICKABLE {
+    transition: transform 0.1s ease;
+
+    user-select: none;
+}
+
+.CLICKABLE:hover {
+    cursor: pointer;
+}
+
+.CLICKABLE:active {
+    transform: scale(1.2);
+}
+
+.KEYWORD {
+    font-size: 2rem;
+    color: var(--COLOR-BLUE1);
+}
+
+.CTA {
+    background-color: var(--COLOR-BLUE2) !important;
+}
+
+/* ==========OVERALL LAYOUT/DESIGN========== */
+
+
+/* ========HEADER======== */
+header {
+    position: sticky;
+    top: 0px;
+    z-index: 100000;
+
+    width: 100%;
+    height: 80px;
+
+    color: var(--COLOR-DARK3);
+    background-color: var(--COLOR-LIGHT2);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-family: var(--FF-HEADINGS);
+}
+
+.HEADER__RIGHT,
+.HEADER__LEFT,
+.HEADER__SEARCH {
+    display: flex;
+    align-items: center;
+
+    margin: 0 var(--MARGIN);
+}
+
+
+/* LEFT SIDE OF HEADER */
+.HEADER__LEFT {
+    display: flex;
+    gap: 5rem;
+}
+
+.HEADER__ICON {
+    position: relative;
+    top: 2px;
+
+    margin-right: 2px;
+}
+
+.HEADER__TITLE {
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+.HEADER__LEFT nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    height: 100%;
+}
+
+.HEADER__LIST {
+    display: flex;
+    gap: 3rem;
+
+    height: 100%;
+}
+
+.HEADER__DROPDOWN_MENU {
+    display: flex;
+    align-items: center;
+
+    height: 100%;
+}
+
+
+.HEADER__DROPDOWN {
+    position: absolute;
+    left: 0;
+    top: calc(100%);
+
+    background-color: var(--COLOR-LIGHT1);
+    box-shadow: var(--SHADOW-WHITEBG);
+
+    padding: 1.5rem;
+    width: 100%;
+
+    pointer-events: none;
+
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.HEADER__DROPDOWN_SHOW {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.HEADER__DROPDOWN_HOVER {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+
+
+
+/* RIGHT SIDE OF HEADER */
+.HEADER__SIGNUP {
+    display: flex;
+    align-items: center;
+
+    margin: 0 var(--MARGIN);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+
+    background: var(--COLOR-BLUE1);
+    color: var(--COLOR-LIGHT1);
+
+    font-weight: 800;
+}
+
+@keyframes CallToAction {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+.SIGNUP__ANIMATE {
+    animation: CallToAction 2s ease-in-out infinite alternate;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ========MAIN======== */
+main {
+    font-family: var(--FF-BODY);
+}
+
+
+/* ===============WELCOME SECTION================ */
+.WELCOME {
+    background-color: var(--COLOR-LIGHT3);
+}
+
+/* use gradient and different shape */
+.WELCOME__CONTAINER {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+
+    margin: 0 var(--MARGIN);
+    padding: calc(70px + 1rem);
+}
+
+.WELCOME__CONTAINER h3 {
+    font-weight: 400;
+}
+
+.WELCOME__IMAGE {
+    user-select: none;
+    width: 80%;
+}
+
+.WELCOME__CTA {
+    margin: var(--MARGIN);
+    display: flex;
+    justify-content: center;
+}
+
+/* =============FEATURES SECTION=========== */
+.FEATURES {
+    margin: var(--MARGIN);
+}
+
+.FEATURES h3 {
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+}
+
+.FEATURES__CONTAINER__CONTENT:nth-child(odd) {
+    background-color: var(--COLOR-BLUE3);
+}
+
+.FEATURES__CONTAINER__CONTENT:nth-child(even) {
+    background-color: var(--COLOR-BLUE4);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* RESPONSIVE */
+/* BREAKPOINT!!! AT width 900px */
