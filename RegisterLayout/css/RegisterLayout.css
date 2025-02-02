@@ -124,7 +124,7 @@ header {
 
 .HEADER__TITLE {
     letter-spacing: 2px;
-
+    cursor: pointer;
     white-space: nowrap;
 }
 
@@ -203,6 +203,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .HEADING__CS_ICON,
@@ -216,7 +217,7 @@ header {
 .HEADING__PROFILE {
     border-radius: 100%;
     font-size: 50px;
-
+    cursor: pointer;
     margin-left: 10px;
 }
 
@@ -253,6 +254,11 @@ header {
     align-items: center;
     position: relative;
     margin-right: 10px;
+    cursor: pointer;
+}
+
+.HEADER__MENU_BUTTON:hover {
+    transform: scale(1.1);
 }
 
 .HEADER__MENU_ICON,
@@ -355,6 +361,7 @@ header {
     border-bottom: 2px solid var(--BGCOLOR-DARK1);
 
     justify-content: center;
+    cursor: pointer;
 }
 
 .SIDEBAR__NAV ul {
