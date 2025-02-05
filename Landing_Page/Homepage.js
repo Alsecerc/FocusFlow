@@ -137,6 +137,7 @@ BUTTON_LEFT.addEventListener('click', function () {
     INDEX = (INDEX + 1) % PROFILE_LIST.length;
     UpdateCard();
 });
+
 BUTTON_RIGHT.addEventListener('click', function () {
     CONTAINER.innerHTML = "";
     if (INDEX <= 0) {

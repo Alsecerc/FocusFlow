@@ -31,10 +31,10 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="FEATURES">
-                        <a class="DROPDOWN__ITEM" href="">Pomodoro Timer</a>
-                        <a class="DROPDOWN__ITEM" href="">Task Management</a>
-                        <a class="DROPDOWN__ITEM" href="">Team Features</a>
-                        <a class="DROPDOWN__ITEM" href="">Analytics</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#pomodoro">Pomodoro Timer</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#task">Task Management</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#collaboration">Team Features</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
                     </div>
 
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN">Plans & Pricing
@@ -65,8 +65,9 @@
             SIGN UP
         </div>
     </header>
+
     <main>
-        <article class="WELCOME" id="welcome">
+        <article class="WELCOME DISPLAY" id="welcome">
             <section class="WELCOME__CONTAINER">
                 <div class="WELCOME__TITLE">
                     <h1>Boost Your <span class="KEYWORD">Productivity</span> Today!</h1>
@@ -77,12 +78,10 @@
                     </div>
                 </div>
                 <img src="img\TITLE_IMAGE.png" alt="Productive Person" class="WELCOME__IMAGE">
-
-
             </section>
         </article>
 
-        <article class="FEATURES" id="features">
+        <article class="FEATURES DISPLAY" id="features">
             <h2 class="CENTER ARTICLE_TITLE">Service and Benefits</h2>
             <div class="FEATURES__CONTAINER">
 
@@ -145,7 +144,7 @@
             </div>
         </article>
 
-        <article class="REVIEW">
+        <article class="REVIEW DISPLAY">
             <!-- put profile pic -->
             <!-- able to click left or right to view / default is animate auto browse -->
             <h2 class="CENTER ARTICLE_TITLE">User Review</h2>
@@ -165,7 +164,7 @@
             </section>
         </article>
 
-        <article class="SURVEY">
+        <article class="SURVEY DISPLAY">
             <!-- survey  -->
             <h3 class="CENTER ARTICLE_TITLE">Website Feedback Survey</h3>
             <form action="Homepage.php" method="POST">
@@ -261,7 +260,7 @@
             </ul>
         </div>
 
-        <div class="">
+        <div>
             <h4 class="FOOTER__LINK__TITLE">About Us</h4>
             <ul>
                 <li>
