@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# Internally allow requests without .php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+# Redirect users from .php URLs to clean URLs while keeping subdirectories
+RewriteCond %{THE_REQUEST} "\s/([^?\s]+)\.php"
+RewriteRule ^(.+)\.php$ /%1 [R=301,L]
