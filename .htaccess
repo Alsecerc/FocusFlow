@@ -1,10 +1,16 @@
 RewriteEngine On
 
-# Internally allow requests without .php
+# Set base directory (if your project is inside 'Main System/FocusFlow')
+RewriteBase /RWD_ASSIGNMENT/FocusFlow/
+
+# 🚫 Block access to Landing_Page/Features
+RewriteRule ^Landing_Page/Features$ - [F,L]
+
+# ✅ Allow requests without .php (your other rules remain unchanged)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.+)$ $1.php [L]
 
-# Redirect users from .php URLs to clean URLs while keeping subdirectories
+# 🔄 Redirect users from .php URLs to clean URLs while keeping subdirectories
 RewriteCond %{THE_REQUEST} "\s/([^?\s]+)\.php"
 RewriteRule ^(.+)\.php$ /%1 [R=301,L]
