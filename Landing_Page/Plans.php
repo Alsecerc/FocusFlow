@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
-    <link rel="stylesheet" href="Features.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
@@ -31,10 +31,10 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="FEATURES">
-                        <a class="DROPDOWN__ITEM" href="#pomodoro">Pomodoro Timer</a>
-                        <a class="DROPDOWN__ITEM" href="#task">Task Management</a>
-                        <a class="DROPDOWN__ITEM" href="#collaboration">Team Features</a>
-                        <a class="DROPDOWN__ITEM" href="#analytic">Analytics</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#pomodoro">Pomodoro Timer</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#task">Task Management</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#collaboration">Team Features</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
                     </div>
 
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN">Plans & Pricing
@@ -43,9 +43,7 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="PLAN">
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
+                        <a class="DROPDOWN__ITEM" href="Plans.php">View Plan</a>
                     </div>
 
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT">Contact Us
@@ -67,50 +65,94 @@
     </header>
 
     <main>
-        <h1 class="ARTICLE_TITLE CENTER">Explore Our Features</h1>
-        <h3 class="SUBTITLE CENTER">Your Productivity, <span style="color: #0077B6; font-size:1.5rem;">Upgraded</span></h3>
-
-        <article class="FEATURE__CONTAINER DISPLAY" id="pomodoro">
-            <div>
-                <img src="img/POMODORO_TIMER.png" alt="Pomodoro Timer" class="FEATURE__IMAGE">
-
-                <h1 class="FEATURE_TITLE">POMODORO TIMER</h1>
-                <p class="FEATURE_TEXT">Boost your focus and productivity with the Pomodoro Technique! Work in 25-minute sessions, followed by short breaks to stay fresh and efficient. Perfect for tackling tasks without burnout! <a href="https://www.pomodorotechnique.com/" class="POMODORO__LINK" target="_blank">Find Out More</a></p>
-
+        <div class="PAGE__TITLE">
+            <h1 class=" ARTICLE_TITLE">Choose Your Focus Plan</h1>
+            <h3>Invest in Your Focus, One Plan at a Time</h3>
+            <button class="TYPE">
+                <div class="TYPE__MONTH">M</div>
+                <!-- annually or monthly -->
+            </button>
+        </div>
+        <article class="PLANS">
+            <div class="PLANS__SIDEBAR">
+                <div class="PLANS_PRICING">
+                    <h2 class="PLANS__TITLE CENTER">Features</h2>
+                </div>
+                <ul class="SIDEBAR__LIST">
+                    <li class="SIDEBAR__ITEM">Task Management</li>
+                    <li class="SIDEBAR__ITEM">Focus Mode</li>
+                    <li class="SIDEBAR__ITEM">Pomodoro Timer</li>
+                    <li class="SIDEBAR__ITEM">Team Collaboration</li>
+                    <li class="SIDEBAR__ITEM">File Storage</li>
+                    <li class="SIDEBAR__ITEM">Admin Controls & User Roles</li>
+                    <li class="SIDEBAR__ITEM">Calendar & Habit Tracking</li>
+                    <li class="SIDEBAR__ITEM">Productivity Analytics</li>
+                </ul>
             </div>
-        </article>
-
-        <article class="FEATURE__CONTAINER DISPLAY" id="task">
-            <div>
-                <h1 class="FEATURE_TITLE">Task Management</h1>
-                <p class="FEATURE_TEXT">Stay organized and on top of your to-dos! Easily create, prioritize, and track tasks to boost efficiency and stay focused on what matters most. </p>
+            <div class="PLANS__CONTAINER">
+                <div class="PLANS_PRICING">
+                    <h3 class="PLANS__TITLE">FREE</h3>
+                    <h5 id="PLANS__PRICE">RM0/month</h5>
+                </div>
+                <ul class="PLANS__LIST">
+                    <!-- use js to fill in -->
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                </ul>
+                <button class="PLANS__BUTTON CLICKABLE">Choose Free</button>
             </div>
-            <img src="img\TASK_MANAGEMENT.png" alt="Task Management"
-                class="FEATURE__IMAGE">
-        </article>
 
-        <article class="FEATURE__CONTAINER DISPLAY" id="collaboration">
-            <img src="img\TEAM_FEATURES.png" alt="Task Management"
-                class="FEATURE__IMAGE">
-            <div>
-                <h1 class="FEATURE_TITLE">Team Collaboration</h1>
-                <p class="FEATURE_TEXT">Streamline teamwork by sharing tasks, tracking progress, and staying connected in real-time. Collaborate effectively and achieve your goals faster!</p>
+            <div class="PLANS__CONTAINER">
+                <div class="PLANS_PRICING">
+                    <span class="PLANS__TITLE__SELECTED">(Most Selected)</span>
+                    <h3 class="PLANS__TITLE">PREMIUM</h3>
+                    <h5 id="PLANS__PRICE">RM49/month</h5>
+                </div>
+                <ul class="PLANS__LIST">
+                    <!-- use js to fill in -->
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                </ul>
+                <button class="PLANS__BUTTON CLICKABLE">Choose Premium</button>
             </div>
-        </article>
 
-        <article class="FEATURE__CONTAINER DISPLAY" id="analytic">
-            <div>
-                <h1 class="FEATURE_TITLE">Analytics</h1>
-                <p class="FEATURE_TEXT">The Analytics function analyzes work history to identify patterns and suggest tasks, helping users prioritize efficiently and optimize productivity.</p>
+            <div class="PLANS__CONTAINER">
+                <div class="PLANS_PRICING">
+                    <h3 class="PLANS__TITLE">ENTERPRISE</h3>
+                    <h5 id="PLANS__PRICE">RM100/month</h5>
+                </div>
+                <ul class="PLANS__LIST">
+                    <!-- use js to fill in -->
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                    <li class="PLANS_ITEM"></li>
+                </ul>
+                <button class="PLANS__BUTTON CLICKABLE">Choose Enterprise</button>
             </div>
-            <img src="img\ANALYTICS.png" alt="Analytics"
-                class="FEATURE__IMAGE">
-        </article>
 
+        </article>
 
     </main>
 
     <footer class="FOOTER">
+
         <div class="FOOTER__COMPANY">
             <h3>F<span class="material-symbols-outlined FOOTER__TITLE_ICON">schedule</span>cusFlow</h3>
         </div>
@@ -118,12 +160,12 @@
         <div class="FOOTER__LINK">
             <h4 class="FOOTER__LINK__TITLE">Contact</h4>
             <ul>
-                <li><a href="#features">Our Service</a></li>
+                <li><a href="Homepage.php#benefit">Our Service</a></li>
                 <li><a href="">Get Help</a></li>
             </ul>
         </div>
 
-        <div class="">
+        <div>
             <h4 class="FOOTER__LINK__TITLE">About Us</h4>
             <ul>
                 <li>
@@ -141,8 +183,8 @@
             </span>
         </a>
     </div>
-    
-    <script src="Features.js"></script>
+
+    <script src="index.js"></script>
 </body>
 
 </html>

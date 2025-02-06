@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
-    <link rel="stylesheet" href="Homepage.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
@@ -43,9 +43,7 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="PLAN">
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
+                        <a class="DROPDOWN__ITEM" href="Plans.php">View Plan</a>
                     </div>
 
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT">Contact Us
@@ -74,67 +72,67 @@
                     <h3>Manage your time effectively with our smart task management and calendar system.</h3>
                     <div class="WELCOME__CTA">
                         <button class="HEADER__SIGNUP CLICKABLE CTA">GET STARTED</button>
-                        <button class="HEADER__SIGNUP CLICKABLE">VIEW PLAN</button>
+                        <a class="HEADER__SIGNUP CLICKABLE" href="Plans.php">VIEW PLAN</a>
                     </div>
                 </div>
                 <img src="img\TITLE_IMAGE.png" alt="Productive Person" class="WELCOME__IMAGE">
             </section>
         </article>
 
-        <article class="FEATURES DISPLAY" id="features">
+        <article class="BENEFIT DISPLAY" id="benefit">
             <h2 class="CENTER ARTICLE_TITLE">Service and Benefits</h2>
-            <div class="FEATURES__CONTAINER">
+            <div class="BENEFIT__CONTAINER">
 
-                <div class="FEATURES__CONTAINER__CARD">
-                    <div class="FEATURES__FRONT">
-                        <img src="img/STATS.png" alt="Managing Task" class="FEATURES__IMAGE">
+                <div class="BENEFIT__CONTAINER__CARD">
+                    <div class="BENEFIT__FRONT">
+                        <img src="img/STATS.png" alt="Managing Task" class="BENEFIT__IMAGE">
                         <div>
-                            <h5 class="FEATURES__TITLE">Task Scheduling & Management </h5>
+                            <h5 class="BENEFIT__TITLE">Task Scheduling & Management </h5>
                         </div>
                     </div>
-                    <div class="FEATURES__BACK">
+                    <div class="BENEFIT__BACK">
                         <div>
                             Stay organized and on track by <strong>scheduling</strong>, <strong>prioritizing</strong>, and <strong>managing tasks</strong> with ease. Boost productivity with timely <strong>reminders</strong> and <strong>progress tracking</strong>.
                         </div>
                     </div>
                 </div>
 
-                <div class="FEATURES__CONTAINER__CARD">
-                    <div class="FEATURES__FRONT">
-                        <img src="img/CHAT.png" alt="Community Chat" class="FEATURES__IMAGE">
+                <div class="BENEFIT__CONTAINER__CARD">
+                    <div class="BENEFIT__FRONT">
+                        <img src="img/CHAT.png" alt="Community Chat" class="BENEFIT__IMAGE">
                         <div>
-                            <h5 class="FEATURES__TITLE">Community & Collaboration</h5>
+                            <h5 class="BENEFIT__TITLE">Community & Collaboration</h5>
                         </div>
                     </div>
-                    <div class="FEATURES__BACK">
+                    <div class="BENEFIT__BACK">
                         <div>
                             Enhance teamwork with <strong>Community & Collaboration</strong>. Create <strong>workspaces</strong> for <strong>team communication</strong>, <strong>project management</strong>, and <strong>real-time collaboration</strong>. Set up <strong>channels</strong> for <strong>discussions</strong> and use <strong>DMs</strong> for <strong>private conversations</strong> to keep your team <strong>connected</strong>.
                         </div>
                     </div>
                 </div>
 
-                <div class="FEATURES__CONTAINER__CARD">
-                    <div class="FEATURES__FRONT">
-                        <img src="img/NOTI.png" alt="Receive Notifications" class="FEATURES__IMAGE">
+                <div class="BENEFIT__CONTAINER__CARD">
+                    <div class="BENEFIT__FRONT">
+                        <img src="img/NOTI.png" alt="Receive Notifications" class="BENEFIT__IMAGE">
                         <div>
-                            <h5 class="FEATURES__TITLE">Smart Notifications & Reminders</h5>
+                            <h5 class="BENEFIT__TITLE">Smart Notifications & Reminders</h5>
                         </div>
                     </div>
-                    <div class="FEATURES__BACK">
+                    <div class="BENEFIT__BACK">
                         <div>
                             Stay on top of your tasks with <strong>Smart Notifications & Reminders</strong>. Get <strong>real-time updates</strong> on <strong>assignments</strong>, <strong>deadlines</strong>, and <strong>team activities</strong>, ensuring you never miss an important update. Customize <strong>reminders</strong> for upcoming tasks and receive <strong>alerts</strong> tailored to your workflow—keeping you <strong>productive</strong> and <strong>focused</strong> at all times!
                         </div>
                     </div>
                 </div>
 
-                <div class="FEATURES__CONTAINER__CARD">
-                    <div class="FEATURES__FRONT">
-                        <img src="img/CALENDAR.png" alt="View Calendar" class="FEATURES__IMAGE">
+                <div class="BENEFIT__CONTAINER__CARD">
+                    <div class="BENEFIT__FRONT">
+                        <img src="img/CALENDAR.png" alt="View Calendar" class="BENEFIT__IMAGE">
                         <div>
-                            <h5 class="FEATURES__TITLE">Multi-view Calendar (Day, Week, Month)</h5>
+                            <h5 class="BENEFIT__TITLE">Multi-view Calendar (Day, Week, Month)</h5>
                         </div>
                     </div>
-                    <div class="FEATURES__BACK">
+                    <div class="BENEFIT__BACK">
                         <div>
                             Visualize your tasks effortlessly with the <strong>Multi-View Calendar</strong>. Switch between <strong>Day</strong>, <strong>Week</strong>, and <strong>Month</strong> views to see upcoming <strong>deadlines</strong> and <strong>assignments</strong> at a glance. Each task appears with a brief description, showing its <strong>duration</strong> and <strong>due date</strong>—helping you stay <strong>organized</strong> and manage your time effectively.
                         </div>
@@ -164,8 +162,7 @@
             </section>
         </article>
 
-        <article class="SURVEY DISPLAY">
-            <!-- survey  -->
+        <!-- <article class="SURVEY DISPLAY">
             <h3 class="CENTER ARTICLE_TITLE">Website Feedback Survey</h3>
             <form action="Homepage.php" method="POST">
                 <fieldset class="SURVEY__FORM">
@@ -188,7 +185,7 @@
 
                     </div>
                     <div class="SURVEY__FORM_GROUP">
-                        <!-- Ease of usage -->
+                
                         <label for="ease-of-use">How easy was it to navigate the website?</label>
                         <select id="ease-of-use" name="ease-of-use" class="SELECT_CONTAINER" required>
                             <option value="" disabled selected>Select</option>
@@ -201,7 +198,7 @@
                     </div>
 
                     <div class="SURVEY__FORM_GROUP">
-                        <!-- Features -->
+               
                         <label for="most-used-feature">Which feature(s) do you use the most?</label>
                         <select name="most-used-feature" id="most-used-feature" class="SELECT_CONTAINER" required>
                             <option value="" disabled selected>Select</option>
@@ -214,7 +211,7 @@
                     </div>
 
                     <div class="SURVEY__FORM_GROUP">
-                        <!-- Impact on Productivity -->
+                     
                         <label for="impact">Has the website helped you become more productive?</label>
                         <select name="impact" id="impact" class="SELECT_CONTAINER" required>
                             <option value="" disabled selected>Select</option>
@@ -231,21 +228,13 @@
                             you?</label>
                         <textarea class="SURVEY__SUGGESTIONS" name="suggestions" rows="4" cols="50" placeholder="Enter your feedback..."></textarea>
                     </div>
-                    <!-- Submit -->
+                 
                     <button type="submit" class="CLICKABLE SURVEY__SUBMIT">Submit</button>
                 </fieldset>
-
-                <!-- create survey  -->
-                <!-- 1️⃣ Heading & Short Description – Explain why users should fill it out.
-2️⃣ User Experience Rating (1-5 stars or emoji scale) – Ask how their experience was.
-3️⃣ Feature Feedback (Multiple Choice or Checkboxes) – Ask which features they liked.
-4️⃣ Open-Ended Question (Text Input) – Let users share thoughts.
-5️⃣ Would They Recommend? (Yes/No or Likert Scale)
-6️⃣ Email (Optional) – To follow up for more feedback.
-7️⃣ Submit Button – Send responses to your database or email. -->
             </form>
-        </article>
+        </article> -->
     </main>
+
     <footer class="FOOTER">
 
         <div class="FOOTER__COMPANY">
@@ -255,7 +244,7 @@
         <div class="FOOTER__LINK">
             <h4 class="FOOTER__LINK__TITLE">Contact</h4>
             <ul>
-                <li><a href="#features">Our Service</a></li>
+                <li><a href="Homepage.php#benefit">Our Service</a></li>
                 <li><a href="">Get Help</a></li>
             </ul>
         </div>
@@ -279,7 +268,8 @@
         </a>
     </div>
 
-    <script src="Homepage.js"></script>
+    <script src="index.js"></script>
+
 </body>
 
 </html>

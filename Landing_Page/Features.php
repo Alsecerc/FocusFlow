@@ -6,12 +6,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Our Features</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
-    <link rel="stylesheet" href="Features.css">
 </head>
 
 <body>
@@ -31,10 +33,10 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="FEATURES">
-                        <a class="DROPDOWN__ITEM" href="#pomodoro">Pomodoro Timer</a>
-                        <a class="DROPDOWN__ITEM" href="#task">Task Management</a>
-                        <a class="DROPDOWN__ITEM" href="#collaboration">Team Features</a>
-                        <a class="DROPDOWN__ITEM" href="#analytic">Analytics</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#pomodoro">Pomodoro Timer</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#task">Task Management</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#collaboration">Team Features</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
                     </div>
 
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN">Plans & Pricing
@@ -43,9 +45,7 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="PLAN">
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
-                        <a class="DROPDOWN__ITEM" href="">Poop</a>
+                        <a class="DROPDOWN__ITEM" href="Plans.php">View Plan</a>
                     </div>
 
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT">Contact Us
@@ -71,12 +71,10 @@
         <h3 class="SUBTITLE CENTER">Your Productivity, <span style="color: #0077B6; font-size:1.5rem;">Upgraded</span></h3>
 
         <article class="FEATURE__CONTAINER DISPLAY" id="pomodoro">
+            <img src="img/TIMER.png" alt="Pomodoro Timer" class="FEATURE__IMAGE">
             <div>
-                <img src="img/POMODORO_TIMER.png" alt="Pomodoro Timer" class="FEATURE__IMAGE">
-
                 <h1 class="FEATURE_TITLE">POMODORO TIMER</h1>
                 <p class="FEATURE_TEXT">Boost your focus and productivity with the Pomodoro Technique! Work in 25-minute sessions, followed by short breaks to stay fresh and efficient. Perfect for tackling tasks without burnout! <a href="https://www.pomodorotechnique.com/" class="POMODORO__LINK" target="_blank">Find Out More</a></p>
-
             </div>
         </article>
 
@@ -111,6 +109,7 @@
     </main>
 
     <footer class="FOOTER">
+
         <div class="FOOTER__COMPANY">
             <h3>F<span class="material-symbols-outlined FOOTER__TITLE_ICON">schedule</span>cusFlow</h3>
         </div>
@@ -118,12 +117,12 @@
         <div class="FOOTER__LINK">
             <h4 class="FOOTER__LINK__TITLE">Contact</h4>
             <ul>
-                <li><a href="#features">Our Service</a></li>
+                <li><a href="Homepage.php#benefit">Our Service</a></li>
                 <li><a href="">Get Help</a></li>
             </ul>
         </div>
 
-        <div class="">
+        <div>
             <h4 class="FOOTER__LINK__TITLE">About Us</h4>
             <ul>
                 <li>
@@ -141,8 +140,8 @@
             </span>
         </a>
     </div>
-    
-    <script src="Features.js"></script>
+
+    <script src="index.js"></script>
 </body>
 
 </html>
