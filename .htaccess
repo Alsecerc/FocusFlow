@@ -1,6 +1,6 @@
 RewriteEngine On
 
-# Set base directory (if your project is inside 'Main System/FocusFlow')
+# Set base directory (if your project is inside 'RWD_ASSIGNMENT/FocusFlow')
 RewriteBase /RWD_ASSIGNMENT/FocusFlow/
 
 # 🚫 Block access to Landing_Page/Features
