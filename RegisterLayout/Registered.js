@@ -20,5 +20,3 @@ MENU_BUTTON.addEventListener('click', function() {
     }
     SIDEBAR.classList.toggle("SIDEBAR_SHOW");
 });
-
-

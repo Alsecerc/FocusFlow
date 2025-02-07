@@ -4,7 +4,7 @@ RewriteEngine On
 RewriteBase /RWD_ASSIGNMENT/FocusFlow/
 
 # 🚫 Block access to Landing_Page/Features
-RewriteRule ^Landing_Page/Features$ - [F,L]
+# RewriteRule ^Landing_Page/Features$ - [F,L]
 
 # ✅ Allow requests without .php (your other rules remain unchanged)
 RewriteCond %{REQUEST_FILENAME} !-d
