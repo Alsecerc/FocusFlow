@@ -136,13 +136,13 @@
                 </div>
             </section>
             <section class="TODO__CONTAINER">
-                <div class="TODO__CARD">
+                <div class="TODO__CARD" draggable="true">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK" draggable="true">Get grocery</p>
+                    <p class="TODO__TASK">Get grocery</p>
                 </div>
-                <div class="TODO__CARD">
+                <div class="TODO__CARD" draggable="true">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK" draggable="true">Get grocery</p>
+                    <p class="TODO__TASK">Get grocery</p>
                 </div>
             </section>
         </article>

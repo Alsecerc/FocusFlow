@@ -1,3 +1,5 @@
+
+
 function getID(element) {
     return document.getElementById(element);
 }
@@ -39,7 +41,8 @@ const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Ta
 
 // console.log(groupButton)
 groupButton.addEventListener('click', () => {
-    let boxes = document.getElementsByClassName("TODO__GROUP__ADD");
+    let classname = "TODO__GROUP__ADD"
+    let boxes = document.getElementsByClassName(classname);
     // Check if any elements were found
     if (boxes.length > 0) {
         // Access the first element in the collection
