@@ -16,4 +16,4 @@ RewriteCond %{THE_REQUEST} "\s/([^?\s]+)\.php"
 RewriteRule ^(.+)\.php$ /%1 [R=301,L] 
 
 # if enter wrong path user will be redirect to the 404 page
-ErrorDocument 404 /RWD_ASSIGNMENT/FocusFlow/Landing_Page/404.php
+ErrorDocument 404 http://localhost/RWD_assignment/FocusFlow/Landing_Page/404
