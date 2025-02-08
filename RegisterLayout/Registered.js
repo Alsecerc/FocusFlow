@@ -37,10 +37,11 @@ const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("G
 // Find the button that has "Task" as its text content
 const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
 
+// console.log(groupButton)
 groupButton.addEventListener('click', () => {
     alert("User pressed group button");
 })
 
 taskButton.addEventListener('click', () => {
-    alert("User pressed group button");
+    alert("User pressed task button");
 })
