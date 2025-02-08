@@ -1116,6 +1116,24 @@ header {
 }
 
 
+/* TODO management */
+/* GET HELP */
+.FAQ__LIST {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 2rem;
+
+    margin: 0 10rem;
+}
+
+.FAQ__LIST__ITEM {
+    border-left: 2px solid var(--BORDER-COLOR);
+
+    padding: 0.3rem var(--PADDING-LR);
+}
+
+
 
 /* RESPONSIVE */
 /* BREAKPOINT!!! AT width 900px */

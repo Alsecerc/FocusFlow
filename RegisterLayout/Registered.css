@@ -42,6 +42,7 @@ a:is(:hover, :focus, :active) {
 
 html {
     position: relative;
+    height: 100%;
 }
 
 body {
@@ -584,8 +585,77 @@ header {
 
 
 /* TODO: Todo Management */
+.TODO {
+    height: 100%;
+}
+
+/* TODO HEADING */
 .TODO__HEADER {
     padding: var(--PADDING-TB) var(--PADDING-LR);
-
     border-bottom: 1px solid var(--BORDER-COLOR);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
+.TODO__BUTTON {
+    min-width: 10%;
+
+    display: flex;
+    gap: 1rem;
+}
+
+.TODO__ADD {
+    font-family: var(--FF-HEADINGS);
+    font-weight: 800;
+
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    padding: 1rem;
+
+    border-radius: var(--BORDER-RD-CONTACT);
+    background-color: var(--COLOR-DARK1);
+    color: var(--COLOR-LIGHT1);
+
+    transition: all 0.5s ease;
+}
+
+.TODO__ADD:hover {
+    background-color: var(--COLOR-LIGHT3);
+    color: var(--COLOR-DARK2);
+}
+
+/* TODO CONTENT */
+.TODO__CONTAINER {
+    background-color: var(--COLOR-DARK1);
+
+    border-radius: var(--BORDER-RD-CONTACT);
+    margin: var(--MARGIN);
+
+    height: 70vh;
+    padding: var(--PADDING-TB);
+
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.TODO__CARD {
+    background-color: var(--COLOR-BLUE3);
+    color: var(--COLOR-DARK3);
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+}
+
+.TODO__CARD_HEADER {
+    border-bottom: 2px solid var(--COLOR-BLUE1);
+
+    margin-bottom: 1rem;
+}
+
+
+
