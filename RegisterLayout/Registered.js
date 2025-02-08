@@ -6,6 +6,8 @@ function getClass(element) {
     return document.getElementsByClassName(element);
 }
 
+
+// HOMEPAGE
 var SIDEBAR = getClass("SIDEBAR")[0];
 var MENU_BUTTON = getClass("HEADER__MENU_BUTTON")[0];
 var MENU_ICON = getClass("HEADER__MENU_ICON")[0];

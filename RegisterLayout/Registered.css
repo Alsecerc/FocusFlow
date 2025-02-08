@@ -57,6 +57,15 @@ main {
     font-family: var(--FF-BODY);
 }
 
+button {
+    background-color: transparent;
+    border: none;
+}
+
+.material-icons {
+    color: white;
+}
+
 
 
 /*========== VARIABLE========== */
@@ -301,7 +310,8 @@ header {
     justify-content: space-between;
 }
 
-.HEADER__SEARCH_INPUT,.HEADER__SEARCH_BUTTON {
+.HEADER__SEARCH_INPUT,
+.HEADER__SEARCH_BUTTON {
     color: var(--COLOR-DARK2);
     border: none;
     background-color: transparent;
@@ -324,7 +334,7 @@ header {
 
     display: flex;
     align-items: center;
-    
+
     padding-right: 20px;
 }
 
@@ -413,7 +423,7 @@ header {
     width: 40px;
     height: 5px;
     border-radius: 5px;
-    position: absolute; 
+    position: absolute;
 }
 
 .HEADER__MENU_ICON::after,
@@ -426,6 +436,7 @@ header {
 .HEADER__MENU_ICON::after {
     transform: translate(-20px, -12px);
 }
+
 .HEADER__MENU_ICON::before {
     transform: translate(-20px, 12px);
 }
@@ -450,6 +461,25 @@ header {
     }
 }
 
+@keyframes RevExpansionDown {
+    100% {
+        transform: translateX(-20px) rotate(0deg) translateY(12px);
+    }
+}
+
+@keyframes RevExpansionUp {
+    100% {
+        transform: translateX(-20px) rotate(0deg) translateY(-12px);
+    }
+}
+
+@keyframes RevExpansionLeft {
+    100% {
+        background-color: var(--COLOR-LIGHT1);
+        transform: rotate(360deg);
+    }
+}
+
 /* When ACTIVE class is added (click 1st time) */
 .HEADER__MENU_ICON.ACTIVE::before {
     animation: ExpansionUp 0.5s ease forwards;
@@ -465,17 +495,16 @@ header {
 
 
 .HEADER__MENU_ICON.NOT_ACTIVE::before {
-    animation: ExpansionUp 0.5s ease reverse;
+    animation: RevExpansionUp 0.5s ease forwards;
 }
 
 .HEADER__MENU_ICON.NOT_ACTIVE::after {
-    animation: ExpansionDown 0.5s ease reverse;
+    animation: RevExpansionDown 0.5s ease forwards;
 }
 
 .HEADER__MENU_ICON.NOT_ACTIVE {
-    animation: ExpansionLeft 0.5s ease reverse;
+    animation: RevExpansionLeft 0.5s ease forwards;
 }
-
 
 
 
@@ -487,9 +516,13 @@ header {
     width: 250px;
     height: 100vh;
 
-    background-color: var(--COLOR-LIGHT1);
+    background-color: var(--COLOR-DARK2);
 
     border-right: 3px solid var(--BORDER-COLOR);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     position: fixed;
     /* Initially hidden */
@@ -504,47 +537,55 @@ header {
 }
 
 .SIDEBAR__NAV {
-    width: 100%;
+    width: 80%;
+    padding: 0.5rem;
 
-    display: flex;
+    color: var(--COLOR-LIGHT1);
+
     border-bottom: 2px solid var(--COLOR-DARK1);
-
-    justify-content: center;
 }
 
-.SIDEBAR__NAV ul {
-    width: 100%;
+.SIDEBAR__NAV > ul{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.SIDEBAR__NAV li {
+.SIDEBAR__ITEM_IMAGE {
+    display: inline;
+}
+
+.SIDEBAR__ITEM {
     display: flex;
     justify-content: start;
     align-items: center;
+    gap: 1rem;
 
-    height: 50px;
-    width: 100%;
-    padding: 10px;
+    padding: 1rem;
+    transition: all 0.5s ease-in-out;
 
-    list-style-type: none;
+    border-radius: var(--BORDER-RD-CONTACT);
 }
 
-.SIDEBAR__NAV li:hover {
-    transform: scale(1.1);
-    background-color: var(--COLOR-LIGHT1);
-    box-shadow: 5px 5px 5px 1px var(--COLOR-LIGHT3);
+.SIDEBAR__ITEM:hover {
+    background-color: var(--COLOR-DARK1);
 }
 
-.SIDEBAR > :last-child {
-    background-color: red;
-    
-    position: absolute;
-    bottom: 0;
+.NAV_TITLE {
+    padding: var(--PADDING-TB) 0;
 }
 
-.SIDEBAR__IMAGE {
-    width: auto;
-    height: 1%;
-    margin: 10px;
-
+.COMMUNITY__ITEM {
+    justify-content: space-between;
 }
 
+
+
+
+
+/* TODO: Todo Management */
+.TODO__HEADER {
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+
+    border-bottom: 1px solid var(--BORDER-COLOR);
+}
