@@ -122,6 +122,13 @@
                             add_circle
                         </span>
                     </button>
+                    <div class="TODO__GROUP__ADD" style="display: none;">
+                            <h2>Add a New Group</h2>
+                            <form id="groupForm">
+                            <input type="text" id="groupName" placeholder="Enter group name" required>
+                            <button type="submit">Add Group</button>
+                        </form>
+                    </div>
                     <button class="TODO__ADD">Task<span class="material-icons">
                             add_circle
                         </span>

@@ -619,7 +619,7 @@ header {
     border-radius: var(--BORDER-RD-CONTACT);
     background-color: var(--COLOR-DARK1);
     color: var(--COLOR-LIGHT1);
-
+    cursor: pointer;
     transition: all 0.5s ease;
 }
 
@@ -657,5 +657,41 @@ header {
     margin-bottom: 1rem;
 }
 
+.TODO__GROUP__ADD {
+    display: none;
+    position: fixed; /* Fixed positioning relative to the viewport */
+    top: 50%; /* Position 50% from the top */
+    left: 50%; /* Position 50% from the left */
+    transform: translate(-50%, -50%); /* Offset by 50% of the element's own width/height */
+    background-color: white; /* Optional background color for the form */
+    padding: 20px; /* Add some padding around the form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional box-shadow */
+    border-radius: 8px; /* Optional rounded corners */
+}
 
+.TODO__GROUP__ADD h2 {
+    margin-bottom: 20px; /* Add space below the title */
+}
 
+#groupForm {
+    display: flex;
+    flex-direction: column; /* Stack form elements vertically */
+}
+
+#groupForm input,
+#groupForm button {
+    margin-bottom: 10px; /* Add space between form elements */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#groupForm button {
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+#groupForm button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}

@@ -39,7 +39,23 @@ const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Ta
 
 // console.log(groupButton)
 groupButton.addEventListener('click', () => {
-    alert("User pressed group button");
+    let boxes = document.getElementsByClassName("TODO__GROUP__ADD");
+    // Check if any elements were found
+    if (boxes.length > 0) {
+        // Access the first element in the collection
+        let box = boxes[0];
+
+        // Toggle the display property
+        if (box.style.display === 'none') {
+            box.style.display = 'block';
+            console.log("Box is now visible");
+        } else {
+            box.style.display = 'none';
+            console.log("Box is now hidden");
+        }
+    } else {
+        console.log("No elements found with the class 'TODO__GROUP__ADD'");
+    }
 })
 
 taskButton.addEventListener('click', () => {
