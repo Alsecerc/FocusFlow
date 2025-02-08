@@ -22,3 +22,25 @@ MENU_BUTTON.addEventListener('click', function() {
     }
     SIDEBAR.classList.toggle("SIDEBAR_SHOW");
 });
+
+// Todo
+
+// Get all buttons with the class "TODO__ADD"
+const buttons = document.querySelectorAll(".TODO__ADD");
+
+// Convert NodeList to an array for easier handling (optional)
+const buttonArray = Array.from(buttons);
+
+// Find the button that has "Group" as its text content
+const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Group"));
+
+// Find the button that has "Task" as its text content
+const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
+
+groupButton.addEventListener('click', () => {
+    alert("User pressed group button");
+})
+
+taskButton.addEventListener('click', () => {
+    alert("User pressed group button");
+})
