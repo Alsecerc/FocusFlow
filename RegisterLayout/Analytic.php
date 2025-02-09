@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow</title>
+    <title>Analytics</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,14 +15,17 @@
 </head>
 
 <body>
-    <header>
+<header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
             </button>
-            <h1 class="HEADER__TITLE">F<span class="material-symbols-outlined HEADER__ICON">
-                    schedule
-                </span>cusFlow</h1>
+            <a href="Homepage.php">
+                <h1 class="HEADER__TITLE">F<span class="material-symbols-outlined HEADER__ICON">
+                        schedule
+                    </span>cusFlow
+                </h1>
+            </a>
         </div>
         <div class="HEADER__SEARCH">
             <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
@@ -33,29 +36,41 @@
             </button>
         </div>
         <div class="HEADER__RIGHT">
-            <!-- TODO: ADD customer service/ noti/ profile icon -->
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <span class="material-symbols-outlined HEADING__CS_ICON">
-                            support_agent
-                        </span>
-
+                        <a href="CusService.php" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                support_agent
+                            </span>
+                        </a>
                     </li>
                     <li>
-                        <span class="material-symbols-outlined HEADING__NOTIF">
-                            notifications
-                        </span>
+                        <div class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                notifications
+                            </span>
+                        </div>
                     </li>
                     <li>
-                        <span class="material-symbols-outlined HEADING__PROFILE">
-                            account_circle
-                        </span>
+                        <a href="Setting.php" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                settings
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                    <a href="Account.php" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                account_circle
+                            </span>
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
     </header>
+    
     <main>
         <!-- temp SIDEBAR_SHOW -->
         <div class="SIDEBAR">

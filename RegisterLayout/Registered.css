@@ -127,6 +127,9 @@ button {
 
     /* SHADOW */
     --SHADOW-WHITEBG: 8px 8px 15px hsla(0, 0%, 0%, 0.3);
+
+    /* TRANSITION */
+    --TRANS: all 1s ease;
 }
 
 
@@ -332,7 +335,7 @@ header {
     background: none;
     cursor: pointer;
 
-    transition: transform 0.2s ease-in-out;
+    transition: var(--TRANS);
 
     display: flex;
     align-items: center;
@@ -347,14 +350,13 @@ header {
 
 
 
-
-
 /* RIGHT SIDE OF HEADER */
 
 .HEADER__UL {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    gap: 1rem;  
 
     min-width: 160px;
 }
@@ -362,13 +364,27 @@ header {
 .HEADER__UL li {
     display: flex;
     align-items: center;
-    gap: 1rem;
 }
-
 
 .HEADER__UL__ICON {
     transform: scale(1.2);
 }
+
+.HEADER__UL__ICON > .material-icons {
+    padding: 0.5rem;
+    border-radius: var(--BORDER-RD-CONTACT);
+    transition: var(--TRANS);
+}
+
+.HEADER__UL__ICON:hover > .material-icons {
+    color: var(--COLOR-BLUE3);
+    background-color: var(--COLOR-DARK1);
+}
+
+/* add hover and click effect for icons
+link to page/ create a page */
+
+
 
 
 /* MENU ICON STYLE */
@@ -403,7 +419,7 @@ header {
 .HEADER__MENU_ICON::before {
     content: "";
     transform: translate(-20px);
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: var(--TRANS);
 }
 
 .HEADER__MENU_ICON::after {
@@ -535,7 +551,7 @@ header {
     gap: 1rem;
 
     padding: 1rem;
-    transition: all 0.5s ease-in-out;
+    transition: var(--TRANS);
 
     border-radius: var(--BORDER-RD-CONTACT);
 }
@@ -592,7 +608,7 @@ header {
     background-color: var(--COLOR-DARK1);
     color: var(--COLOR-LIGHT1);
     cursor: pointer;
-    transition: all 0.5s ease;
+    transition: var(--TRANS);
 }
 
 .TODO__ADD:hover {

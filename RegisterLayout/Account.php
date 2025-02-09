@@ -1,12 +1,10 @@
-<!-- change to .php -->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Management</title>
+    <title>FocusFlow</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,7 +13,7 @@
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -70,98 +68,76 @@
             </nav>
         </div>
     </header>
-    
     <main>
         <!-- temp SIDEBAR_SHOW -->
-        <article class="SIDEBAR">
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            home
-                        </span>Dashboard
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                home
+                            </span>Dashboard
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            timer
-                        </span>Focus Timer
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                timer
+                            </span>Focus Timer
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            task_alt
-                        </span>To Do List
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                task_alt
+                            </span>To Do List
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            event
-                        </span>Calendar
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                event
+                            </span>Calendar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                analytics
+                            </span>Analytics
+                        </a>
                     </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                        Channel 1
-                        <button class="material-icons">
-                            more_horiz
-                        </button>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                            Channel 1
+                            <button class="material-icons">
+                                more_horiz
+                            </button>
+                        </a>
                     </li>
                 </ul>
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
-                    <li class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                        Person 1
-                        <button class="material-icons">
-                            more_horiz
-                        </button>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                            Person 1
+                            <button class="material-icons">
+                                more_horiz
+                            </button>
+                        </a>
                     </li>
                 </ul>
             </nav>
-            <nav class="SIDEBAR__NAV">
-                <ul>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            settings
-                        </span>Settings
-                    </li>
-                </ul>
-            </nav>
-        </article>
 
-        <!-- TODO LIST CONTENT -->
-        <article class="TODO">
-            <section class="TODO__HEADER">
-                <h1>Task Management</h1>
-                <div class="TODO__BUTTON">
-                    <button class="TODO__ADD">Group<span class="material-icons">
-                            add_circle
-                        </span>
-                    </button>
-                    <div class="TODO__GROUP__ADD" style="display: none;">
-                            <h2>Add a New Group</h2>
-                            <form id="groupForm">
-                            <input type="text" id="groupName" placeholder="Enter group name" required>
-                            <button type="submit">Add Group</button>
-                        </form>
-                    </div>
-                    <button class="TODO__ADD">Task<span class="material-icons">
-                            add_circle
-                        </span>
-                    </button>
-                </div>
-            </section>
-            <section class="TODO__CONTAINER">
-                <div class="TODO__CARD" draggable="true">
-                    <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK">Get grocery</p>
-                </div>
-                <div class="TODO__CARD" draggable="true">
-                    <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK">Get grocery</p>
-                </div>
-            </section>
-        </article>
+
+
+        </div>
 
     </main>
     <script src="Registered.js"></script>
