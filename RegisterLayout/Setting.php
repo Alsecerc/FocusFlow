@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow</title>
+    <title>Settings</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <header>
+<header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -60,7 +60,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Account.php" class="HEADER__UL__ICON">
+                    <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -71,8 +71,7 @@
         </div>
     </header>
     <main>
-        <!-- temp SIDEBAR_SHOW -->
-        <div class="SIDEBAR">
+    <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>

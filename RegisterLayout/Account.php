@@ -1,5 +1,3 @@
-<!-- change to .php -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -60,7 +58,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Account.php" class="HEADER__UL__ICON">
+                    <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -71,8 +69,7 @@
         </div>
     </header>
     <main>
-        <!-- temp SIDEBAR_SHOW -->
-        <div class="SIDEBAR">
+    <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
