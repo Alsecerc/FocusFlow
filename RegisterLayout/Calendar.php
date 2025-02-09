@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -60,7 +60,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -70,64 +70,93 @@
             </nav>
         </div>
     </header>
-    
+
     <main>
-        <!-- temp SIDEBAR_SHOW -->
         <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            home
-                        </span>Dashboard
+                    <li>
+                        <a href="Homepage.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                home
+                            </span>Dashboard
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            timer
-                        </span>Focus Timer
+                    <li>
+                        <a href="Timer.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                timer
+                            </span>Focus Timer
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            task_alt
-                        </span>To Do List
+                    <li>
+                        <a href="Todo.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                task_alt
+                            </span>To Do
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            event
-                        </span>Calendar
+                    <li>
+                        <a href="Calendar.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                event
+                            </span>Calendar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Analytic.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                analytics
+                            </span>Analytics
+                        </a>
                     </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                        Channel 1
-                        <button class="material-icons">
-                            more_horiz
-                        </button>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                            Channel 1
+                            <button class="material-icons">
+                                more_horiz
+                            </button>
+                        </a>
                     </li>
                 </ul>
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
-                    <li class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                        Person 1
-                        <button class="material-icons">
-                            more_horiz
-                        </button>
-                    </li>
-                </ul>
-            </nav>
-            <nav class="SIDEBAR__NAV">
-                <ul>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            settings
-                        </span>Settings
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                            Person 1
+                            <button class="material-icons">
+                                more_horiz
+                            </button>
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
+
+        <!-- Calendar Content -->
+        <article class="CONTAINER">
+            <h1 class="ARTICLE_TITLE">Calendar</h1>
+            <section class="CALENDAR">
+                <div class="CALENDAR__HEADER">
+                    <h1 class="CALENDAR__TITLE" id="calendar__title">Title</h1>
+                    <div class="BUTTON__CONTAINER">
+                        <button onclick="togglePeriod('week')" id="weekButton" class="CALENDAR__HEADER__BUTTON">W</button>
+                        <button onclick="togglePeriod('month')" id="monthButton" class="CALENDAR__HEADER__BUTTON">M</button>
+                        <button onclick="togglePeriod('year')" id="yearButton" class="CALENDAR__HEADER__BUTTON">Y</button>
+                    </div>
+                </div>
+                <div class="CALENDAR__CONTENT">
+                    <div class="CALENDAR__CONTENT__ITEM" id="weekContent">Week</div>
+                    <div class="CALENDAR__CONTENT__ITEM" id="monthContent">Month</div>
+                    <div class="CALENDAR__CONTENT__ITEM" id="yearContent">Year</div>
+                </div>
+            </section>
+        </article>
 
     </main>
     <script src="Registered.js"></script>

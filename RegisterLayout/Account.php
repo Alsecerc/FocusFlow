@@ -69,40 +69,39 @@
         </div>
     </header>
     <main>
-        <!-- temp SIDEBAR_SHOW -->
-        <div class="SIDEBAR">
+    <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM">
+                        <a href="Homepage.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 home
                             </span>Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM">
+                        <a href="Timer.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 timer
                             </span>Focus Timer
                         </a>
                     </li>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM">
+                        <a href="Todo.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 task_alt
-                            </span>To Do List
+                            </span>To Do
                         </a>
                     </li>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM">
+                        <a href="Calendar.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 event
                             </span>Calendar
                         </a>
                     </li>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM">
+                        <a href="Analytic.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 analytics
                             </span>Analytics
@@ -134,9 +133,6 @@
                     </li>
                 </ul>
             </nav>
-
-
-
         </div>
 
     </main>

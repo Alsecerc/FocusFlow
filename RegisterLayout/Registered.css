@@ -47,6 +47,11 @@ html {
 
 body {
     overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100vh;
 }
 
 header,
@@ -56,6 +61,8 @@ footer {
 
 main {
     font-family: var(--FF-BODY);
+    /* let the main container takes up the rest of space */
+    flex-grow: 1;
 }
 
 button {
@@ -255,7 +262,6 @@ header {
 
     display: flex;
     justify-content: space-between;
-    flex-grow: 1;
     flex-wrap: nowrap;
 
     font-family: var(--FF-HEADINGS);
@@ -356,7 +362,7 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    gap: 1rem;  
+    gap: 1rem;
 
     min-width: 160px;
 }
@@ -370,13 +376,13 @@ header {
     transform: scale(1.2);
 }
 
-.HEADER__UL__ICON > .material-icons {
+.HEADER__UL__ICON>.material-icons {
     padding: 0.5rem;
     border-radius: var(--BORDER-RD-CONTACT);
     transition: var(--TRANS);
 }
 
-.HEADER__UL__ICON:hover > .material-icons {
+.HEADER__UL__ICON:hover>.material-icons {
     color: var(--COLOR-BLUE3);
     background-color: var(--COLOR-DARK1);
 }
@@ -534,7 +540,7 @@ link to page/ create a page */
     border-bottom: 2px solid var(--COLOR-DARK1);
 }
 
-.SIDEBAR__NAV > ul{
+.SIDEBAR__NAV>ul {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -647,39 +653,134 @@ link to page/ create a page */
 
 .TODO__GROUP__ADD {
     display: none;
-    position: fixed; /* Fixed positioning relative to the viewport */
-    top: 50%; /* Position 50% from the top */
-    left: 50%; /* Position 50% from the left */
-    transform: translate(-50%, -50%); /* Offset by 50% of the element's own width/height */
-    background-color: white; /* Optional background color for the form */
-    padding: 20px; /* Add some padding around the form */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional box-shadow */
-    border-radius: 8px; /* Optional rounded corners */
+    position: fixed;
+    /* Fixed positioning relative to the viewport */
+    top: 50%;
+    /* Position 50% from the top */
+    left: 50%;
+    /* Position 50% from the left */
+    transform: translate(-50%, -50%);
+    /* Offset by 50% of the element's own width/height */
+    background-color: white;
+    /* Optional background color for the form */
+    padding: 20px;
+    /* Add some padding around the form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Optional box-shadow */
+    border-radius: 8px;
+    /* Optional rounded corners */
 }
 
 .TODO__GROUP__ADD h2 {
-    margin-bottom: 20px; /* Add space below the title */
+    margin-bottom: 20px;
+    /* Add space below the title */
 }
 
 #groupForm {
     display: flex;
-    flex-direction: column; /* Stack form elements vertically */
+    flex-direction: column;
+    /* Stack form elements vertically */
 }
 
 #groupForm input,
 #groupForm button {
-    margin-bottom: 10px; /* Add space between form elements */
+    margin-bottom: 10px;
+    /* Add space between form elements */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
 #groupForm button {
-    background-color: #4CAF50; /* Green background color */
-    color: white; /* White text */
-    cursor: pointer; /* Pointer cursor on hover */
+    background-color: #4CAF50;
+    /* Green background color */
+    color: white;
+    /* White text */
+    cursor: pointer;
+    /* Pointer cursor on hover */
 }
 
 #groupForm button:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #45a049;
+    /* Darker green on hover */
+}
+
+
+
+
+
+/* TODO: Calendar Page */
+
+/* Header */
+.CONTAINER {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.CALENDAR {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.CALENDAR__HEADER {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 var(--MARGIN-CONTAINER-LR);
+}
+
+.BUTTON__CONTAINER {
+    /* background-color: var(--COLOR-BLUE3); */
+    border: 1px solid var(--COLOR-DARK1);
+    border-radius: 99px;
+
+    display: flex;
+}
+
+.CALENDAR__HEADER__BUTTON {
+    padding: calc(var(--PADDING-TB) - 0.5rem) calc(var(--PADDING-LR) - 0.5rem);
+
+    transition: var(--TRANS);
+}
+
+.CALENDAR__HEADER__BUTTON:first-of-type {
+    border-top-left-radius: var(--BORDER-RD-CONTACT);
+    border-bottom-left-radius: var(--BORDER-RD-CONTACT);
+}
+
+.CALENDAR__HEADER__BUTTON:last-of-type {
+    border-top-right-radius: var(--BORDER-RD-CONTACT);
+    border-bottom-right-radius: var(--BORDER-RD-CONTACT);
+}
+
+.SELECTED_BUTTON {
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+}
+
+
+/* Content */
+.CALENDAR__CONTENT {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.CALENDAR__CONTENT__ITEM {
+    margin: var(--MARGIN);
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+
+    border-top: 1px solid var(--COLOR-DARK1);
+
+    display: none;
+
+    flex-grow: 1;
+}
+
+.CALENDAR__CONTENT_SHOW {
+    display: block;
 }
