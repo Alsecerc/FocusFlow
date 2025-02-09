@@ -62,24 +62,7 @@ const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Ta
 
 // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'To Do', 'p', 'TODO__TASK', 'Get grocery');
 // console.log(groupButton)
-groupButton.addEventListener('click', () => {
-    let classname = "TODO__GROUP__ADD"
-    let boxes = document.getElementsByClassName(classname);
-    // Check if any elements were found
-    if (boxes.length > 0) {
-        // Access the first element in the collection
-        let box = boxes[0];
-        // Toggle the display property
-        if (box.style.display === 'none') {
-            box.style.display = 'block';
-            console.log("Box is now visible");
-            
 
-            // <section class="TODO__CONTAINER">
-            // <div class="TODO__CARD" draggable="true">
-            //     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-            //     <p class="TODO__TASK">Get grocery</p>
-            // </div>
 if (groupButton) {
     groupButton.addEventListener('click', () => {
         let classname = "TODO__GROUP__ADD"
@@ -108,9 +91,6 @@ if (taskButton) {
         alert("User pressed task button");
     });
 }
-
-
-
 // TODO: Calendar Page
 // Calendar
 // Toggle function as webpage load
@@ -145,8 +125,3 @@ function togglePeriod(Options) {
     let Title = getClass("CALENDAR__TITLE")[0];
     Title.innerHTML = Options.toUpperCase();
 };
-
-
-
-
-
