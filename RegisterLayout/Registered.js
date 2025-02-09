@@ -62,7 +62,6 @@ const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Ta
 
 // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'To Do', 'p', 'TODO__TASK', 'Get grocery');
 // console.log(groupButton)
-<<<<<<< HEAD
 groupButton.addEventListener('click', () => {
     let classname = "TODO__GROUP__ADD"
     let boxes = document.getElementsByClassName(classname);
@@ -81,7 +80,6 @@ groupButton.addEventListener('click', () => {
             //     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
             //     <p class="TODO__TASK">Get grocery</p>
             // </div>
-=======
 if (groupButton) {
     groupButton.addEventListener('click', () => {
         let classname = "TODO__GROUP__ADD"
@@ -99,7 +97,6 @@ if (groupButton) {
                 box.style.display = 'none';
                 console.log("Box is now hidden");
             }
->>>>>>> a93016d00296a338745b31a1f2627da1499de2db
         } else {
             console.log("No elements found with the class 'TODO__GROUP__ADD'");
         }
