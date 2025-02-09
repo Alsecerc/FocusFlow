@@ -252,6 +252,7 @@ header {
 
     display: flex;
     justify-content: space-between;
+    flex-grow: 1;
     flex-wrap: nowrap;
 
     font-family: var(--FF-HEADINGS);
@@ -301,7 +302,7 @@ header {
 
     margin: 20px 0;
     min-width: 200px;
-    width: 1000px;
+    width: 750px;
 
     box-shadow: 0 4px 10px 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
@@ -361,41 +362,12 @@ header {
 .HEADER__UL li {
     display: flex;
     align-items: center;
+    gap: 1rem;
 }
 
-.HEADER__SIGNUP,
-.HEADING__CS_ICON,
-.HEADING__NOTIF {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
 
-.HEADING__CS_ICON,
-.HEADING__NOTIF {
-    width: 30px;
-    height: 30px;
-    padding: 10px;
-
-}
-
-.HEADING__PROFILE {
-    border-radius: 100%;
-    font-size: 50px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.HEADING__CS_ICON:hover,
-.HEADING__NOTIF:hover,
-.HEADING__PROFILE:hover {
-    transform: scale(1.1);
-}
-
-.HEADING__CS_ICON:hover,
-.HEADING__NOTIF:hover {
-    border-bottom: 5px solid var(--COLOR-LIGHT3);
+.HEADER__UL__ICON {
+    transform: scale(1.2);
 }
 
 

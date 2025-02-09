@@ -37,20 +37,32 @@
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <span class="material-symbols-outlined HEADING__CS_ICON">
-                            support_agent
-                        </span>
-
+                        <a href="" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                support_agent
+                            </span>
+                        </a>
                     </li>
                     <li>
-                        <span class="material-symbols-outlined HEADING__NOTIF">
+                        <a href="" class="HEADER__UL__ICON">
+                        <span class="material-icons">
                             notifications
                         </span>
+                        </a>
                     </li>
                     <li>
-                        <span class="material-symbols-outlined HEADING__PROFILE">
-                            account_circle
-                        </span>
+                        <a href="" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                settings
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                account_circle
+                            </span>
+                        </a>
                     </li>
                 </ul>
             </nav>
@@ -61,57 +73,70 @@
         <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            home
-                        </span>Dashboard
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                home
+                            </span>Dashboard
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            timer
-                        </span>Focus Timer
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                timer
+                            </span>Focus Timer
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            task_alt
-                        </span>To Do List
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                task_alt
+                            </span>To Do List
+                        </a>
                     </li>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            event
-                        </span>Calendar
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                event
+                            </span>Calendar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                analytics
+                            </span>Analytics
+                        </a>
                     </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                        Channel 1
-                        <button class="material-icons">
-                            more_horiz
-                        </button>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                            Channel 1
+                            <button class="material-icons">
+                                more_horiz
+                            </button>
+                        </a>
                     </li>
                 </ul>
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
-                    <li class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                        Person 1
-                        <button class="material-icons">
-                            more_horiz
-                        </button>
+                    <li>
+                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                            Person 1
+                            <button class="material-icons">
+                                more_horiz
+                            </button>
+                        </a>
                     </li>
                 </ul>
             </nav>
-            <nav class="SIDEBAR__NAV">
-                <ul>
-                    <li class="SIDEBAR__ITEM">
-                        <span class="material-icons">
-                            settings
-                        </span>Settings
-                    </li>
-                </ul>
-            </nav>
+
+
+
         </div>
 
     </main>
