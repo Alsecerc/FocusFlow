@@ -27,6 +27,25 @@ MENU_BUTTON.addEventListener('click', function() {
 
 // Todo
 
+function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent){
+    let container = document.querySelector(`.${NameOfContainer}`);
+    const newGroupCard = document.createElement('div');
+    newGroupCard.className = ClassName;
+
+    const header = document.createElement(headerTag);
+    header.className = headerClassName;
+    header.textContent = Content;
+
+    const paragraph = document.createElement(paragraphTag)
+    paragraph.ClassName = paragraphClassName;
+    paragraph.textContent = paragraphContent;
+
+    newGroupCard.appendChild(header);
+    newGroupCard.appendChild(paragraph);
+
+    container.appendChild(newGroupCard);
+}
+
 // Get all buttons with the class "TODO__ADD"
 const buttons = document.querySelectorAll(".TODO__ADD");
 
@@ -39,6 +58,8 @@ const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("G
 // Find the button that has "Task" as its text content
 const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
 
+
+// createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'To Do', 'p', 'TODO__TASK', 'Get grocery');
 // console.log(groupButton)
 groupButton.addEventListener('click', () => {
     let classname = "TODO__GROUP__ADD"
@@ -47,11 +68,17 @@ groupButton.addEventListener('click', () => {
     if (boxes.length > 0) {
         // Access the first element in the collection
         let box = boxes[0];
-
         // Toggle the display property
         if (box.style.display === 'none') {
             box.style.display = 'block';
             console.log("Box is now visible");
+            
+
+            // <section class="TODO__CONTAINER">
+            // <div class="TODO__CARD" draggable="true">
+            //     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
+            //     <p class="TODO__TASK">Get grocery</p>
+            // </div>
         } else {
             box.style.display = 'none';
             console.log("Box is now hidden");
