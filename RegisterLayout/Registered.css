@@ -624,7 +624,6 @@ link to page/ create a page */
 /* TODO CONTENT */
 .TODO__CONTAINER {
     background-color: var(--COLOR-DARK1);
-
     border-radius: var(--BORDER-RD-CONTACT);
     margin: var(--MARGIN);
 
@@ -632,8 +631,11 @@ link to page/ create a page */
     padding: var(--PADDING-TB);
 
     display: flex;
-    justify-content: start;
-    align-items: flex-start;
+    flex-wrap: nowrap;  /* Prevent wrapping */
+    overflow-x: auto;   /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical stretching */
+    white-space: nowrap;
+    align-items: flex-start; /* Keep items aligned at the top */
     gap: 1rem;
 }
 
@@ -642,7 +644,16 @@ link to page/ create a page */
     color: var(--COLOR-DARK3);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
+    
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;  /* Prevent cards from growing */
+    min-width: 200px; /* Ensure a reasonable size */
+    max-width: 250px; /* Prevent excessive stretching */
+    margin-right: 1rem;
 }
+
+
 
 .TODO__CARD_HEADER {
     border-bottom: 2px solid var(--COLOR-BLUE1);

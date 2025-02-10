@@ -162,16 +162,12 @@
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
                     <p class="TODO__TASK">Get grocery</p>
                 </div>
-                <div class="TODO__CARD" draggable="true">
-                    <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK">Get grocery</p>
-                </div>
             </section>
         </article>
 
     </main>
 
-    <script src="Registered.js"></script>
+    <script src="Registered.js" defer></script>
 
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>

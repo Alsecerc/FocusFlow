@@ -32,6 +32,7 @@ function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName,
     let container = document.querySelector(`.${NameOfContainer}`);
     const newGroupCard = document.createElement('div');
     newGroupCard.className = ClassName;
+    newGroupCard.draggable = 'true';
 
     const header = document.createElement(headerTag);
     header.className = headerClassName;
@@ -41,13 +42,8 @@ function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName,
     paragraph.className = paragraphClassName;
     paragraph.textContent = paragraphContent;
 
-    const draggables = document.createElement('draggable');
-    draggables.className = headerClassName;
-    draggables.draggable = 'true';
-
     newGroupCard.appendChild(header);
     newGroupCard.appendChild(paragraph);
-    newGroupCard.appendChild(draggables);
 
     container.appendChild(newGroupCard);
 }
@@ -112,13 +108,12 @@ if (groupButton) {
     })
 }
 
-
-
 if (taskButton) {
     taskButton.addEventListener('click', () => {
         alert("User pressed task button");
     });
 }
+
 // TODO: Calendar Page
 // Calendar
 // Toggle function as webpage load
