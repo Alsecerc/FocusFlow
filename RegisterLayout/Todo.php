@@ -15,7 +15,9 @@
 </head>
 
 <body>
-<header>
+    <div class="Hiddenlayer" style="display: none;">
+    </div>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -60,7 +62,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -70,9 +72,9 @@
             </nav>
         </div>
     </header>
-    
+
     <main>
-    <div class="SIDEBAR">
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -147,19 +149,14 @@
                             add_circle
                         </span>
                     </button>
-                    <div class="TODO__GROUP__ADD" style="display: none;">
-                            <h2>Add a New Group</h2>
-                            <form id="groupForm">
-                            <input type="text" id="groupName" placeholder="Enter group name" required>
-                            <button type="submit">Add Group</button>
-                        </form>
-                    </div>
+
                     <button class="TODO__ADD">Task<span class="material-icons">
                             add_circle
                         </span>
                     </button>
                 </div>
             </section>
+
             <section class="TODO__CONTAINER">
                 <div class="TODO__CARD" draggable="true">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
@@ -173,7 +170,16 @@
         </article>
 
     </main>
+
     <script src="Registered.js"></script>
+
+    <div class="TODO__GROUP__ADD" style="display: none;">
+        <h2>Add a New Group</h2>
+        <form id="groupForm">
+            <input type="text" id="groupName" placeholder="Enter group name" required>
+            <button type="submit">Add Group</button>
+        </form>
+    </div>
 </body>
 
 </html>

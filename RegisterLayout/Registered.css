@@ -609,7 +609,6 @@ link to page/ create a page */
     gap: 1rem;
 
     padding: 1rem;
-
     border-radius: var(--BORDER-RD-CONTACT);
     background-color: var(--COLOR-DARK1);
     color: var(--COLOR-LIGHT1);
@@ -676,7 +675,21 @@ link to page/ create a page */
     /* Add space below the title */
 }
 
+
+.Hiddenlayer {
+    background-color: var(--COLOR-DARK2);
+    opacity: 0.8;
+
+    height: 100vh;
+    width: 100vw;
+
+    position: absolute;
+    pointer-events: block;
+}
+
 #groupForm {
+    z-index: 1;
+
     display: flex;
     flex-direction: column;
     /* Stack form elements vertically */
@@ -687,7 +700,7 @@ link to page/ create a page */
     margin-bottom: 10px;
     /* Add space between form elements */
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--COLOR-DARK3);
     border-radius: 4px;
 }
 
@@ -704,9 +717,6 @@ link to page/ create a page */
     background-color: #45a049;
     /* Darker green on hover */
 }
-
-
-
 
 
 /* TODO: Calendar Page */

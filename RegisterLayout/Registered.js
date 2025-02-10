@@ -38,13 +38,23 @@ function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName,
     header.textContent = Content;
 
     const paragraph = document.createElement(paragraphTag)
-    paragraph.ClassName = paragraphClassName;
+    paragraph.className = paragraphClassName;
     paragraph.textContent = paragraphContent;
+
+    const draggables = document.createElement('draggable');
+    draggables.className = headerClassName;
+    draggables.draggable = 'true';
 
     newGroupCard.appendChild(header);
     newGroupCard.appendChild(paragraph);
+    newGroupCard.appendChild(draggables);
 
     container.appendChild(newGroupCard);
+}
+
+function GetGroupName (){
+    const groupNameInput = document.getElementById("groupName");
+    return groupNameInput.value;
 }
 
 // Get all buttons with the class "TODO__ADD"
@@ -65,19 +75,35 @@ const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Ta
 
 if (groupButton) {
     groupButton.addEventListener('click', () => {
-        let classname = "TODO__GROUP__ADD"
+        let classname = 'TODO__GROUP__ADD';
         let boxes = document.getElementsByClassName(classname);
         // Check if any elements were found
         if (boxes.length > 0) {
             // Access the first element in the collection
-            let box = boxes[0];
-
+            const box = boxes[0];
+            const overlay = document.querySelector('.Hiddenlayer');
+            const groupFrom = document.getElementById("groupForm");
             // Toggle the display property
             if (box.style.display === 'none') {
                 box.style.display = 'block';
+                overlay.style.display = 'block';
+                groupFrom.addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent the default form submission behavior
+                    
+                    // Call the function to retrieve the input value
+                    const groupName = GetGroupName();
+                    console.log("Group Name:", groupName);
+                    box.style.display = 'none';
+                    if (groupFrom){
+                        createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName, 'p', 'TODO__TASK', 'Get grocery');
+                        overlay.style.display = 'none';
+                    }
+                });
                 console.log("Box is now visible");
+                
             } else {
                 box.style.display = 'none';
+                overlay.style.display = 'none';
                 console.log("Box is now hidden");
             }
         } else {
@@ -85,6 +111,8 @@ if (groupButton) {
         }
     })
 }
+
+
 
 if (taskButton) {
     taskButton.addEventListener('click', () => {
