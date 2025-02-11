@@ -15,7 +15,9 @@
 </head>
 
 <body>
-<header>
+    <div class="Hiddenlayer" style="display: none;">
+    </div>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -60,7 +62,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -70,9 +72,9 @@
             </nav>
         </div>
     </header>
-    
+
     <main>
-    <div class="SIDEBAR">
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -147,24 +149,15 @@
                             add_circle
                         </span>
                     </button>
-                    <div class="TODO__GROUP__ADD" style="display: none;">
-                            <h2>Add a New Group</h2>
-                            <form id="groupForm">
-                            <input type="text" id="groupName" placeholder="Enter group name" required>
-                            <button type="submit">Add Group</button>
-                        </form>
-                    </div>
+
                     <button class="TODO__ADD">Task<span class="material-icons">
                             add_circle
                         </span>
                     </button>
                 </div>
             </section>
+
             <section class="TODO__CONTAINER">
-                <div class="TODO__CARD" draggable="true">
-                    <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK">Get grocery</p>
-                </div>
                 <div class="TODO__CARD" draggable="true">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
                     <p class="TODO__TASK">Get grocery</p>
@@ -173,7 +166,27 @@
         </article>
 
     </main>
-    <script src="Registered.js"></script>
+
+    <script src="Registered.js" defer></script>
+
+    <div class="TODO__GROUP__ADD" style="display: none;">
+        <h2>Add a New Group</h2>
+        <form id="groupForm">
+            <input type="text" id="groupName" placeholder="Enter group name" required>
+            <button type="submit">Add Group</button>
+        </form>
+    </div>
+    <!-- <div class="TODO__TASK__ADD" style="display: none;">
+        <h2>Add New Task</h2>
+        <form id="taskForm">
+            <label for="Group">Choose your group:</label>
+            <select id="GROUP__NAME__TASK" multiple required>
+                <option value="To Do 1">To Do 1</option>
+            </select>
+            <input type="text" id="taskContent" placeholder="Enter the task" required>
+            <button type="submit">Add task</button>
+        </form>
+    </div> -->
 </body>
 
 </html>

@@ -150,7 +150,7 @@
         </div>
     </main>
 
-    <script src="Registered.js"></script>
+    <script src="Registered.js" defer></script>
 </body>
 
 </html>

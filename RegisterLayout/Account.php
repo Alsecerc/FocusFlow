@@ -136,7 +136,8 @@
         </div>
 
     </main>
-    <script src="Registered.js"></script>
+    <h1>ZHELLO</h1>
+    <script src="Registered.js" defer></script>
 </body>
 
 </html>

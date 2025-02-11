@@ -610,7 +610,6 @@ link to page/ create a page */
     gap: 1rem;
 
     padding: 1rem;
-
     border-radius: var(--BORDER-RD-CONTACT);
     background-color: var(--COLOR-DARK1);
     color: var(--COLOR-LIGHT1);
@@ -626,7 +625,6 @@ link to page/ create a page */
 /* TODO CONTENT */
 .TODO__CONTAINER {
     background-color: var(--COLOR-DARK1);
-
     border-radius: var(--BORDER-RD-CONTACT);
     margin: var(--MARGIN);
 
@@ -634,9 +632,13 @@ link to page/ create a page */
     padding: var(--PADDING-TB);
 
     display: flex;
-    justify-content: start;
-    align-items: flex-start;
+    flex-wrap: nowrap;  /* Prevent wrapping */
+    overflow-x: auto;   /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical stretching */
+    white-space: nowrap;
+    align-items: flex-start; /* Keep items aligned at the top */
     gap: 1rem;
+    pointer-events: auto;
 }
 
 .TODO__CARD {
@@ -644,15 +646,35 @@ link to page/ create a page */
     color: var(--COLOR-DARK3);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
+    
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;  /* Prevent cards from growing */
+    min-width: 200px; /* Ensure a reasonable size */
+    max-width: 250px; /* Prevent excessive stretching */
+    margin-right: 1rem;
+    cursor: move;
 }
 
 .TODO__CARD_HEADER {
     border-bottom: 2px solid var(--COLOR-BLUE1);
-
+    cursor: pointer;
     margin-bottom: 1rem;
 }
 
-.TODO__GROUP__ADD {
+.TODO__TASK {
+    background: white;
+    color: black;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+  
+    padding: 12px;
+    border-radius: 4px;
+  
+    font-size: 16px;
+    cursor: move;
+}
+
+.TODO__GROUP__ADD, .TODO__TASK__ADD{
     display: none;
     position: fixed;
     /* Fixed positioning relative to the viewport */
@@ -677,22 +699,35 @@ link to page/ create a page */
     /* Add space below the title */
 }
 
-#groupForm {
+.Hiddenlayer {
+    background-color: var(--COLOR-DARK2);
+    opacity: 0.8;
+
+    height: 100vh;
+    width: 100vw;
+
+    position: absolute;
+    pointer-events: block;
+}
+
+#groupForm{
+    z-index: 1;
+
     display: flex;
     flex-direction: column;
     /* Stack form elements vertically */
 }
 
 #groupForm input,
-#groupForm button {
+#groupForm button{
     margin-bottom: 10px;
     /* Add space between form elements */
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--COLOR-DARK3);
     border-radius: 4px;
 }
 
-#groupForm button {
+#groupForm button{
     background-color: #4CAF50;
     /* Green background color */
     color: white;
@@ -701,12 +736,64 @@ link to page/ create a page */
     /* Pointer cursor on hover */
 }
 
-#groupForm button:hover {
+#groupForm button:hover{
     background-color: #45a049;
     /* Darker green on hover */
 }
 
+.TODO__TASK__ADD {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+}
 
+.TODO__TASK__ADD h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #333;
+}
+
+.TODO__TASK__ADD label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.TODO__TASK__ADD select,
+.TODO__TASK__ADD input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.TODO__TASK__ADD button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.TODO__TASK__ADD button:hover {
+    background-color: #0056b3;
+}
 
 
 
