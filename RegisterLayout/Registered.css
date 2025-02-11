@@ -637,6 +637,7 @@ link to page/ create a page */
     white-space: nowrap;
     align-items: flex-start; /* Keep items aligned at the top */
     gap: 1rem;
+    pointer-events: auto;
 }
 
 .TODO__CARD {
@@ -651,17 +652,28 @@ link to page/ create a page */
     min-width: 200px; /* Ensure a reasonable size */
     max-width: 250px; /* Prevent excessive stretching */
     margin-right: 1rem;
+    cursor: move;
 }
-
-
 
 .TODO__CARD_HEADER {
     border-bottom: 2px solid var(--COLOR-BLUE1);
-
+    cursor: pointer;
     margin-bottom: 1rem;
 }
 
-.TODO__GROUP__ADD {
+.TODO__TASK {
+    background: white;
+    color: black;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+  
+    padding: 12px;
+    border-radius: 4px;
+  
+    font-size: 16px;
+    cursor: move;
+}
+
+.TODO__GROUP__ADD{
     display: none;
     position: fixed;
     /* Fixed positioning relative to the viewport */
@@ -687,6 +699,7 @@ link to page/ create a page */
 }
 
 
+
 .Hiddenlayer {
     background-color: var(--COLOR-DARK2);
     opacity: 0.8;
@@ -698,7 +711,7 @@ link to page/ create a page */
     pointer-events: block;
 }
 
-#groupForm {
+#groupForm , #taskForm{
     z-index: 1;
 
     display: flex;
@@ -707,7 +720,8 @@ link to page/ create a page */
 }
 
 #groupForm input,
-#groupForm button {
+#groupForm button,
+#taskForm button {
     margin-bottom: 10px;
     /* Add space between form elements */
     padding: 10px;
@@ -715,7 +729,8 @@ link to page/ create a page */
     border-radius: 4px;
 }
 
-#groupForm button {
+#groupForm button,
+#taskForm button {
     background-color: #4CAF50;
     /* Green background color */
     color: white;
@@ -724,7 +739,7 @@ link to page/ create a page */
     /* Pointer cursor on hover */
 }
 
-#groupForm button:hover {
+#groupForm button:hover,#taskForm:hover {
     background-color: #45a049;
     /* Darker green on hover */
 }

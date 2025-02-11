@@ -176,6 +176,17 @@
             <button type="submit">Add Group</button>
         </form>
     </div>
+    <div class="TODO__TASK__ADD" style="display: none;">
+        <h2>Add New Task</h2>
+        <form id="taskForm">
+        <label for="Group">Choose your group:</label>
+        <select id="groupName" name="groupName" multiple>
+            <option value="apple">food</option>
+        </select>
+        <input type="text" id="taskName" placeholder="Enter task name" required>
+            <button type="submit">Add task</button>
+        </form>
+    </div>
 </body>
 
 </html>

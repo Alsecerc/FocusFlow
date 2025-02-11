@@ -65,7 +65,6 @@ const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("G
 // Find the button that has "Task" as its text content
 const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
 
-
 // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'To Do', 'p', 'TODO__TASK', 'Get grocery');
 // console.log(groupButton)
 
@@ -110,7 +109,22 @@ if (groupButton) {
 
 if (taskButton) {
     taskButton.addEventListener('click', () => {
-        alert("User pressed task button");
+        const AddTask = document.querySelector('.TODO__TASK__ADD');
+        const overlay = document.querySelector('.Hiddenlayer');
+        const taskForm = document.querySelector('.taskForm');
+        const groupChoice = document.querySelector('groupName');
+        if(AddTask.style.display == 'none'){
+            AddTask.style.display = 'block'; // make the form visisble
+            overlay.style.display = 'block';
+            // taskForm.addEventListener('submit', () =>{
+
+            // })
+
+        }else {
+            AddTask.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
     });
 }
 
