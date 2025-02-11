@@ -143,18 +143,88 @@
             <h1 class="ARTICLE_TITLE">Calendar</h1>
             <section class="CALENDAR">
                 <div class="CALENDAR__HEADER">
-                    <h1 class="CALENDAR__TITLE" id="calendar__title">Title</h1>
+                    <h1 class="CALENDAR__TITLE" id="calendar__title1"></h1>
                     <div class="BUTTON__CONTAINER">
+                        <button onclick="toggleViewPrevious()" class="SelectView" id="left"><span class="material-icons" >arrow_left</span></button>
+                        <span style="margin: 0 1rem;">Week</span>
+                        <button onclick="toggleViewNext()" class="SelectView" id="right"><span class="material-icons">arrow_right</span></button>
+                    </div>
+                    <!-- <div class="BUTTON__CONTAINER">
                         <button onclick="togglePeriod('week')" id="weekButton" class="CALENDAR__HEADER__BUTTON">W</button>
                         <button onclick="togglePeriod('month')" id="monthButton" class="CALENDAR__HEADER__BUTTON">M</button>
                         <button onclick="togglePeriod('year')" id="yearButton" class="CALENDAR__HEADER__BUTTON">Y</button>
-                    </div>
+                    </div> -->
                 </div>
+
                 <div class="CALENDAR__CONTENT">
-                    <div class="CALENDAR__CONTENT__ITEM" id="weekContent">Week</div>
-                    <div class="CALENDAR__CONTENT__ITEM" id="monthContent">Month</div>
-                    <div class="CALENDAR__CONTENT__ITEM" id="yearContent">Year</div>
+                    <div class="CALENDAR__CONTENT__CONTAINER" id="weekContent">
+                        <div class="HEADER">
+                            <ul class="DAY_NAME">
+                                <li>Sunday</li>
+                                <li>Monday</li>
+                                <li>Tuesday</li>
+                                <li>Wednesday</li>
+                                <li>Thursday</li>
+                                <li>Friday</li>
+                                <li>Saturday</li>
+                            </ul>
+
+                            <ul class="DAY_NUM">
+                                <li>11</li>
+                                <li>12</li>
+                                <li>13</li>
+                                <li>14</li>
+                                <li>15</li>
+                                <li>16</li>
+                                <li>17</li>
+                            </ul>
+                        </div>
+
+                        <div class="TIMESLOT__CONTAINER">
+                            <ul class="TIMESLOT">
+                                <li>0:00</li>
+                                <li>1:00</li>
+                                <li>2:00</li>
+                                <li>3:00</li>
+                                <li>4:00</li>
+                                <li>5:00</li>
+                                <li>6:00</li>
+                                <li>7:00</li>
+                                <li>8:00</li>
+                                <li>9:00</li>
+                                <li>10:00</li>
+                                <li>11:00</li>
+                                <li>12:00</li>
+                                <li>13:00</li>
+                                <li>14:00</li>
+                                <li>15:00</li>
+                                <li>16:00</li>
+                                <li>17:00</li>
+                                <li>18:00</li>
+                                <li>19:00</li>
+                                <li>20:00</li>
+                                <li>21:00</li>
+                                <li>22:00</li>
+                                <li>23:00</li>
+                                <li>24:00</li>
+                            </ul>
+
+                        </div>
+
+                        <div class="EVENT__CONTAINER">
+                            <!-- how long / which day / what time -->
+                            <div class="EVENT EVENT1">
+                                <div class="EVENT__STATUS"></div>
+                                <span class="EVENT__NAME">Event 1</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- <div class="CALENDAR__CONTENT__CONTAINER" id="monthContent">Month</div> -->
+                    <!-- <div class="CALENDAR__CONTENT__CONTAINER" id="yearContent">Year</div> -->
                 </div>
+
             </section>
         </article>
 
