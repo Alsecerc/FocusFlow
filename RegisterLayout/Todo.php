@@ -176,17 +176,17 @@
             <button type="submit">Add Group</button>
         </form>
     </div>
-    <div class="TODO__TASK__ADD" style="display: none;">
+    <!-- <div class="TODO__TASK__ADD" style="display: none;">
         <h2>Add New Task</h2>
         <form id="taskForm">
-        <label for="Group">Choose your group:</label>
-        <select id="groupName" name="groupName" multiple>
-            <option value="apple">food</option>
-        </select>
-        <input type="text" id="taskName" placeholder="Enter task name" required>
+            <label for="Group">Choose your group:</label>
+            <select id="GROUP__NAME__TASK" multiple required>
+                <option value="To Do 1">To Do 1</option>
+            </select>
+            <input type="text" id="taskContent" placeholder="Enter the task" required>
             <button type="submit">Add task</button>
         </form>
-    </div>
+    </div> -->
 </body>
 
 </html>
