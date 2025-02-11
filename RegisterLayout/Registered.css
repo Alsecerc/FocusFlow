@@ -250,6 +250,7 @@ button {
 /* ========HEADER======== */
 header {
     position: sticky;
+    z-index: 100;
     top: 0px;
 
     width: 100%;
@@ -522,7 +523,7 @@ link to page/ create a page */
     position: fixed;
     /* Initially hidden */
     left: -250px;
-    z-index: 1;
+    z-index: 50;
     transition: left 1s ease;
     /* Smooth transition for left property */
 }
@@ -738,11 +739,35 @@ link to page/ create a page */
     border-radius: 99px;
 
     display: flex;
+    align-items: center;
+
+    overflow: hidden;
 }
 
+.SelectView {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.SelectView span {
+    width: 100%;
+    padding: 0.5rem;
+    color: var(--COLOR-DARK2);
+
+    transition: all 0.3s ease;
+}
+
+.SelectView:active span {
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+}
+
+/* 
 .CALENDAR__HEADER__BUTTON {
     padding: calc(var(--PADDING-TB) - 0.5rem) calc(var(--PADDING-LR) - 0.5rem);
-
     transition: var(--TRANS);
 }
 
@@ -754,7 +779,7 @@ link to page/ create a page */
 .CALENDAR__HEADER__BUTTON:last-of-type {
     border-top-right-radius: var(--BORDER-RD-CONTACT);
     border-bottom-right-radius: var(--BORDER-RD-CONTACT);
-}
+} */
 
 .SELECTED_BUTTON {
     background-color: var(--COLOR-DARK2);
@@ -770,17 +795,104 @@ link to page/ create a page */
     flex-direction: column;
 }
 
-.CALENDAR__CONTENT__ITEM {
+/* Set container to gridss */
+.CALENDAR__CONTENT__CONTAINER {
     margin: var(--MARGIN);
-    padding: var(--PADDING-TB) var(--PADDING-LR);
 
     border-top: 1px solid var(--COLOR-DARK1);
+    background-color: var(--COLOR-LIGHT2);
 
-    display: none;
+    display: grid;
+    /* auto means columns size will be determine by content */
+    grid-template-columns: 50px auto;
+    grid-template-rows: auto;
+    gap: 1px 1px;
+    grid-template-areas:
+        ". HEADER"
+        "SIDEBAR MAIN";
 
-    flex-grow: 1;
+    position: relative;
 }
 
-.CALENDAR__CONTENT_SHOW {
-    display: block;
+.DAY_NUM,
+.DAY_NAME {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.DAY_NUM {
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+}
+
+.HEADER {
+    grid-area: HEADER;
+    background-color: var(--COLOR-DARK3);
+    color: var(--COLOR-LIGHT1);
+}
+
+
+.TIMESLOT__CONTAINER {
+    grid-area: SIDEBAR;
+    justify-content: left;
+}
+
+.TIMESLOT {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+}
+
+.TIMESLOT li {
+    /* 1px for 1 mins */
+    min-height: 60px;
+    width: 100%;
+
+    text-align: center;
+}
+
+.TIMESLOT li::after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    z-index: 1;
+
+    background-color: var(--BORDER-COLOR);
+    width: calc(100% - 50px);
+    height: 1px;
+}
+
+.EVENT__CONTAINER {
+    grid-area: MAIN;
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 24 hours * 4 interval (1interval = 15mins) = 96 rows */
+    grid-template-rows: repeat(96, 1fr);
+    position: relative;
+}
+
+.EVENT {
+    position: absolute;
+    z-index: 2;
+
+    background-color: var(--COLOR-BLUE1);
+    color: var(--COLOR-LIGHT1);
+
+    border-radius: var(--BORDER-RD-CONTACT);
+}
+
+.EVENT1 {
+    /* height = how long is event */
+    height: 60px;
+
+    /* 
+    starts at 10 
+    abs(9-10) = 1 * 60 = 60px offset
+    60/15 (interval) = 4 + 1 (for offset) = 5
+    */
+    grid-row: 5;
 }
