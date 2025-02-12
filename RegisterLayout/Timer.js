@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let intervalId;
 
         function ShowDefaultTimer(){
-            const pomodoro_minutes = 10;
+            const pomodoro_minutes = 25;
             const pomodoro_seconds = 0;
             pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_seconds).padStart(2,'0')}`
             pomodoro.style.display = 'block';
@@ -52,7 +52,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     console.log('Minutes cannot be more than 60');
                 }else{
                     minutes++;
-                }                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                }                
+                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
             })
         }
 
@@ -93,8 +94,37 @@ document.addEventListener("DOMContentLoaded", function(event) {
             return timer.id;
         }
 
-        function timerTypeSelection (){
+        function display_none_other (BUTTON_TIMER_TYPE_ID){
+            const BUTTON__CONTAINER = document.querySelectorAll('.button-container .button');
 
+            //testing
+            // const BUTTON__TYPE__ARRAY = Array.from(BUTTON__CONTAINER).map(button => button.id);
+            // let BUTTON__CHANGE = BUTTON__TYPE__ARRAY === BUTTON_TIMER_TYPE_ID.id ? BUTTON__TYPE__ARRAY.style.display = 'block': BUTTON__TYPE__ARRAY.style.display = 'none';
+
+            // console.log(BUTTON__TYPE__ARRAY);
+            //testing
+            BUTTON__CONTAINER.forEach(button => {
+                if (button.id === BUTTON_TIMER_TYPE_ID.id){
+                    console.log(`${button.id}:${BUTTON_TIMER_TYPE_ID.id}`);
+                    console.log(`${button.id}:style change to block`);
+                    button.style.display = 'block';
+                }else{
+                    button.style.display = 'none';
+                    console.log(`${button.id}:style change to none`);
+                }
+            });
+        }
+
+        function timerTypeSelection (){
+            document.querySelector('.button-container').addEventListener('click', function(event){
+                if(event.target.id === session.id){
+                    console.log(`timer selection is ${event.target.id}`);
+                }else if(event.target.id === shortBreak.id){
+                    console.log(`timer selection is ${event.target.id}`);
+                }else if(event.target.id === longBreak.id){
+                    console.log(`timer selection is ${event.target.id}`);
+                }
+            })
         }
         
         /**
@@ -186,6 +216,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         TimeUpdate();
         StartButton();
         StopButton();
+        timerTypeSelection();
+        display_none_other(session);
         //testing
     }
 });

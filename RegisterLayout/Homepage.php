@@ -140,6 +140,7 @@
 
     </main>
     <script src="Registered.js" defer></script>
+    <script src="Homepage.js" defer></script>
 </body>
 
 </html>
