@@ -62,7 +62,7 @@ function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, 
     console.log("Created group");
 }
 
-function CreateNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent){
+function CreateNewTask(NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent) {
 
 }
 
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
     if (window.location.pathname.toLowerCase().includes('todo')) {
         console.log("Todo page activated");
 
-        
+
         // Get all buttons with the class "TODO__ADD"
         const buttons = document.querySelectorAll(".TODO__ADD");
 
@@ -241,8 +241,8 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 
 // TODO: Calendar Page
 // Calendar
-document.addEventListener('DOMContentLoaded', function(){
-    if (window.location.pathname.toLowerCase().includes('Calender')){
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.pathname.toLowerCase().includes('Calender')) {
         // Toggle function as webpage load
         // window.onload = function () {
         //     togglePeriod('week');
@@ -298,48 +298,48 @@ document.addEventListener('DOMContentLoaded', function(){
         let MonthOffset = month;
         let YearOffset = year;
 
-window.onload = function () {
-    switch (dayName) {
-        case 0:
-            DayOffset
-            break;
-        case 1:
-            DayOffset -= 1
-            break;
-        case 2:
-            DayOffset -= 2
-            break;
-        case 3:
-            DayOffset -= 3
-            break;
-        case 4:
-            DayOffset -= 4
-            break;
-        case 5:
-            DayOffset -= 5
-            break;
-        case 6:
-            DayOffset -= 6
-            break;
-    }
-    DAYNUM_LIST.forEach((Item) => {
-        // find out date of month
-        let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
-        if (DayOffset < totalDaysInMonth) {
-            Item.innerHTML = `${DayOffset}`
-            DayOffset += 1;
-        } else {
-            // reset the date num with new month
-            MonthOffset += 1;
-            DayOffset = 1;
-            Item.innerHTML = `${DayOffset}`
+        window.onload = function () {
+            switch (dayName) {
+                case 0:
+                    DayOffset
+                    break;
+                case 1:
+                    DayOffset -= 1
+                    break;
+                case 2:
+                    DayOffset -= 2
+                    break;
+                case 3:
+                    DayOffset -= 3
+                    break;
+                case 4:
+                    DayOffset -= 4
+                    break;
+                case 5:
+                    DayOffset -= 5
+                    break;
+                case 6:
+                    DayOffset -= 6
+                    break;
+            }
+            DAYNUM_LIST.forEach((Item) => {
+                // find out date of month
+                let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
+                if (DayOffset < totalDaysInMonth) {
+                    Item.innerHTML = `${DayOffset}`
+                    DayOffset += 1;
+                } else {
+                    // reset the date num with new month
+                    MonthOffset += 1;
+                    DayOffset = 1;
+                    Item.innerHTML = `${DayOffset}`
+                }
+            });
+
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
-    });
-
-    HightLightToday();
-
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
-}
 
 
         function toggleViewPrevious() {
@@ -358,26 +358,26 @@ window.onload = function () {
             }
 
 
-    DAYNUM_LIST.forEach((Item) => {
-        let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-        if (DayOffset > totalDaysInMonth) {
-            // Move to next month
-            MonthOffset += 1;
-            if (MonthOffset > 11) {
-                MonthOffset = 0; // Wrap to January
-                YearOffset += 1; // Move to next year
-            }
-            DayOffset = 1; // Reset day count
+            DAYNUM_LIST.forEach((Item) => {
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                if (DayOffset > totalDaysInMonth) {
+                    // Move to next month
+                    MonthOffset += 1;
+                    if (MonthOffset > 11) {
+                        MonthOffset = 0; // Wrap to January
+                        YearOffset += 1; // Move to next year
+                    }
+                    DayOffset = 1; // Reset day count
+                }
+
+                Item.innerHTML = `${DayOffset}`;
+                DayOffset++;
+            });
+
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
-
-        Item.innerHTML = `${DayOffset}`;
-        DayOffset++;
-    });
-
-    HightLightToday();
-
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
-}
 
         function toggleViewNext() {
             let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
@@ -392,212 +392,201 @@ window.onload = function () {
                 DayOffset = Math.abs(totalDaysInMonth - DayOffset - 1);
             }
 
-    DAYNUM_LIST.forEach((Item) => {
-        if (DayOffset > totalDaysInMonth) {
-            // Move to next month
-            MonthOffset += 1;
-            if (MonthOffset > 11) {
-                MonthOffset = 0; // Wrap to January
-                YearOffset += 1; // Move to next year
+            DAYNUM_LIST.forEach((Item) => {
+                if (DayOffset > totalDaysInMonth) {
+                    // Move to next month
+                    MonthOffset += 1;
+                    if (MonthOffset > 11) {
+                        MonthOffset = 0; // Wrap to January
+                        YearOffset += 1; // Move to next year
+                    }
+                    DayOffset = 1; // Reset day count
+                }
+
+                Item.innerHTML = `${DayOffset}`
+                DayOffset += 1;
+            });
+
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
+        }
+
+        function goToToday() {
+            DAYNUM_LIST.forEach((Item) => {
+                if (Item.innerHTML == day) {
+                    return;
+                }
+            });
+
+            let DayOffset = day;
+            let MonthOffset = month;
+            let YearOffset = year;
+
+            switch (dayName) {
+                case 0:
+                    DayOffset
+                    break;
+                case 1:
+                    DayOffset -= 1
+                    break;
+                case 2:
+                    DayOffset -= 2
+                    break;
+                case 3:
+                    DayOffset -= 3
+                    break;
+                case 4:
+                    DayOffset -= 4
+                    break;
+                case 5:
+                    DayOffset -= 5
+                    break;
+                case 6:
+                    DayOffset -= 6
+                    break;
             }
-            DayOffset = 1; // Reset day count
+            DAYNUM_LIST.forEach((Item) => {
+                // find out date of month
+                let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
+                if (DayOffset < totalDaysInMonth) {
+                    Item.innerHTML = `${DayOffset}`
+                    DayOffset += 1;
+                } else {
+                    // reset the date num with new month
+                    MonthOffset += 1;
+                    DayOffset = 1;
+                    Item.innerHTML = `${DayOffset}`
+                }
+
+            });
+
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
 
-        Item.innerHTML = `${DayOffset}`
-        DayOffset += 1;
-    });
-
-    HightLightToday();
-
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
-}
-
-function goToToday() {
-
-
-    DAYNUM_LIST.forEach((Item) => {
-        if (Item.innerHTML == day) {
-            return;
-        }
-    });
-
-    let DayOffset = day;
-    let MonthOffset = month;
-    let YearOffset = year;
-
-    switch (dayName) {
-        case 0:
-            DayOffset
-            break;
-        case 1:
-            DayOffset -= 1
-            break;
-        case 2:
-            DayOffset -= 2
-            break;
-        case 3:
-            DayOffset -= 3
-            break;
-        case 4:
-            DayOffset -= 4
-            break;
-        case 5:
-            DayOffset -= 5
-            break;
-        case 6:
-            DayOffset -= 6
-            break;
-    }
-    DAYNUM_LIST.forEach((Item) => {
-        // find out date of month
-        let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
-        if (DayOffset < totalDaysInMonth) {
-            Item.innerHTML = `${DayOffset}`
-            DayOffset += 1;
-        } else {
-            // reset the date num with new month
-            MonthOffset += 1;
-            DayOffset = 1;
-            Item.innerHTML = `${DayOffset}`
+        function HightLightToday() {
+            let HeaderColor = getQueryAll(".HEADER li");
+            let SubHeaderColor = getQueryAll(".DAY_NUM li");
+            SubHeaderColor.forEach((Item, Index) => {
+                if (Item.innerHTML == day && MonthOffset == month) {
+                    HeaderColor[Index].classList.add("HEADER-HIGHLIGHT");
+                    SubHeaderColor[Index].classList.add("DAY_NUM-HIGHLIGHT");
+                } else {
+                    HeaderColor[Index].classList.remove("HEADER-HIGHLIGHT");
+                    SubHeaderColor[Index].classList.remove("DAY_NUM-HIGHLIGHT");
+                }
+            });
         }
 
-    });
+        // pop up function
+        let PopUp = getQuery(".POP_UP");
+        let Overlay = getQuery(".OVERLAY");
+        let CloseBTN = getQuery(".CONTROLS__CLOSE");
 
-    HightLightToday();
-
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
-}
-
-function HightLightToday() {
-    let HeaderColor = getQueryAll(".HEADER li");
-    let SubHeaderColor = getQueryAll(".DAY_NUM li");
-    SubHeaderColor.forEach((Item, Index) => {
-        if (Item.innerHTML == day && MonthOffset == month) {
-            HeaderColor[Index].classList.add("HEADER-HIGHLIGHT");
-            SubHeaderColor[Index].classList.add("DAY_NUM-HIGHLIGHT");
-        } else {
-            HeaderColor[Index].classList.remove("HEADER-HIGHLIGHT");
-            SubHeaderColor[Index].classList.remove("DAY_NUM-HIGHLIGHT");
+        function OpenPopUp() {
+            PopUp.classList.add("ACTIVE");
         }
-    });
-}
 
-// pop up function
-let PopUp = getQuery(".POP_UP");
-let Overlay = getQuery(".OVERLAY");
-let CloseBTN = getQuery(".CONTROLS__CLOSE");
+        function ClosePopUp() {
+            PopUp.classList.remove("ACTIVE");
+            ResetInput;
+        }
 
-function OpenPopUp() {
-    PopUp.classList.add("ACTIVE");
-}
+        function CreatePopUp() {
+            Overlay.addEventListener('click', ClosePopUp);
+            CloseBTN.addEventListener('click', ClosePopUp);
 
-function ClosePopUp() {
-    PopUp.classList.remove("ACTIVE");
-    ResetInput;
-}
+            return OpenPopUp;
+        }
 
-function CreatePopUp() {
-    Overlay.addEventListener('click', ClosePopUp);
-    CloseBTN.addEventListener('click', ClosePopUp);
+        function ResetInput() {
+            let INPUTS = getQueryAll('.INPUT__BOX');
 
-    return OpenPopUp;
-}
-
-function ResetInput() {
-    let INPUTS = getQueryAll('.INPUT__BOX');
-
-    INPUTS.forEach((element) => {
-        let INPUT = element.querySelector(".INPUT__INPUT");
-        let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
-        INPUT.classList.remove("INVALID_BORDER");
-        PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
-        INPUT.classList.remove("VALID_BORDER");
-        PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
-    });
-}
-
-
-document.querySelector(".OPEN_POP_UP").addEventListener("click", CreatePopUp());
-
-
-
-// Pop up survey validation
-let INPUTS = getQueryAll('.INPUT__BOX');
-
-INPUTS.forEach((element) => {
-    let INPUT = element.querySelector(".INPUT__INPUT");
-    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
-
-    let INPUTID = INPUT.id;
-
-    if (INPUTID == "start_date") {
-        let StartDate = INPUT.value;
-    }
-    else if (INPUTID == "due_date") {
-        let DueDate = INPUT.value;
-    }
-
-
-
-    INPUT.addEventListener('input', function () {
-        // If the input is invalid, add the INVALID class
-        if (INPUT.value.trim() == '') {
-            InvalidInput(INPUT, PLACEHOLDER);
-        } else if (!INPUT.checkValidity()) {
-            InvalidInput(INPUT, PLACEHOLDER);
-        } else {
-            // If the input is valid, remove the INVALID class
-            ValidInput(INPUT, PLACEHOLDER);
+            INPUTS.forEach((element) => {
+                let INPUT = element.querySelector(".INPUT__INPUT");
+                let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+                INPUT.classList.remove("INVALID_BORDER");
+                PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+                INPUT.classList.remove("VALID_BORDER");
+                PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+            });
         }
 
 
+        document.querySelector(".OPEN_POP_UP").addEventListener("click", CreatePopUp());
 
-        if (StartDate && DueDate) {
-            console.log(StartDate, DueDate)
-            if (StartDate > DueDate) {
-                alert("Due date must be later than start date");
-                InvalidInput(INPUT, PLACEHOLDER);
-            } else {
-                ValidInput(INPUT, PLACEHOLDER);
+
+
+        // Pop up survey validation
+        let INPUTS = getQueryAll('.INPUT__BOX');
+
+        INPUTS.forEach((element) => {
+            let INPUT = element.querySelector(".INPUT__INPUT");
+            let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+
+            let INPUTID = INPUT.id;
+
+            if (INPUTID == "start_date") {
+                let StartDate = INPUT.value;
             }
-        }
-    });
+            else if (INPUTID == "due_date") {
+                let DueDate = INPUT.value;
+            }
 
-    // Optional: Check the validity on form submit or on blur
-    INPUT.addEventListener('blur', function () {
-        if (INPUT.value.trim() == '') {
-            InvalidInput(INPUT, PLACEHOLDER);
-        } else if (!INPUT.checkValidity()) {
-            InvalidInput(INPUT, PLACEHOLDER);
-        } else {
-            // If the input is valid, remove the INVALID class
-            ValidInput(INPUT, PLACEHOLDER);
 
+
+            INPUT.addEventListener('input', function () {
+                // If the input is invalid, add the INVALID class
+                if (INPUT.value.trim() == '') {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else if (!INPUT.checkValidity()) {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else {
+                    // If the input is valid, remove the INVALID class
+                    ValidInput(INPUT, PLACEHOLDER);
+                }
+
+
+
+                if (StartDate && DueDate) {
+                    console.log(StartDate, DueDate)
+                    if (StartDate > DueDate) {
+                        alert("Due date must be later than start date");
+                        InvalidInput(INPUT, PLACEHOLDER);
+                    } else {
+                        ValidInput(INPUT, PLACEHOLDER);
+                    }
+                }
+            });
+
+            // Optional: Check the validity on form submit or on blur
+            INPUT.addEventListener('blur', function () {
+                if (INPUT.value.trim() == '') {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else if (!INPUT.checkValidity()) {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else {
+                    // If the input is valid, remove the INVALID class
+                    ValidInput(INPUT, PLACEHOLDER);
+
+                }
+            });
+        });
+
+        function ValidInput(INPUT, PLACEHOLDER) {
+            INPUT.classList.remove("INVALID_BORDER");
+            PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+            INPUT.classList.add("VALID_BORDER");
+            PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
         }
-    });
+
+        function InvalidInput(INPUT, PLACEHOLDER) {
+            INPUT.classList.add("INVALID_BORDER");
+            PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+            INPUT.classList.remove("VALID_BORDER");
+            PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+        }
+    }
 });
-
-function ValidInput(INPUT, PLACEHOLDER) {
-    INPUT.classList.remove("INVALID_BORDER");
-    PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
-    INPUT.classList.add("VALID_BORDER");
-    PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
-}
-
-function InvalidInput(INPUT, PLACEHOLDER) {
-    INPUT.classList.add("INVALID_BORDER");
-    PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
-    INPUT.classList.remove("VALID_BORDER");
-    PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
-}
-
-
-
-
-
-
-
-
-
-
-
