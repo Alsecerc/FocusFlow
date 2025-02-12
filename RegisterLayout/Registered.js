@@ -415,8 +415,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         function ShowDefaultTimer(){
             const pomodoro_minutes = 10;
-            const pomodoro_second = 0;
-            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_second).padStart(2,'0')}`
+            const pomodoro_seconds = 0;
+            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_seconds).padStart(2,'0')}`
             pomodoro.style.display = 'block';
 
             const short_break_minutes = 5;
@@ -484,7 +484,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         function timerTypeSelection (){
 
         }
-
+        
         /**
          * Start button 
          * 

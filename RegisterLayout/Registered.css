@@ -1025,7 +1025,7 @@ link to page/ create a page */
     box-sizing: border-box;
 }
 
-main {
+.MAIN__TIMER {
     width: 20rem;
     height: 20rem;
     border-radius: 50%;

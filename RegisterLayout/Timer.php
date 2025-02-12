@@ -116,7 +116,7 @@
                     <button class="button" id="long-break">Long Break</button>
                 </div>
 
-                <main>
+                <main class="MAIN__TIMER">
                     <div class="timer-wrapper">
                         <!-- Plus and Minus Buttons (Stacked) -->
                         <div class="adjust-buttons">
