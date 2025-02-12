@@ -95,7 +95,7 @@ button {
     --COLOR-DARK2: #333333;
     --COLOR-DARK3: #171717;
     --COLOR-BLUE1: #03045E;
-    --COLOR-BLUE2: #0077B6;
+    --COLOR-BLUE2: #1d1f79;
     --COLOR-BLUE3: #90E0EF;
     --COLOR-BLUE4: #CAF0F8;
 
@@ -820,10 +820,24 @@ link to page/ create a page */
     margin: 0 var(--MARGIN-CONTAINER-LR);
 }
 
-.BUTTON__CONTAINER {
+.TITLE__CONTAINER {
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+}
+
+.Header__Container {
+    display: flex;
+    align-items: center;
+}
+
+.Header__Button {
     /* background-color: var(--COLOR-BLUE3); */
     border: 1px solid var(--COLOR-DARK1);
     border-radius: 99px;
+
+    height: 100%;
 
     display: flex;
     align-items: center;
@@ -831,26 +845,21 @@ link to page/ create a page */
     overflow: hidden;
 }
 
-.SelectView {
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.SelectView span {
+.Header__Wording {
     width: 100%;
     padding: 0.5rem;
     color: var(--COLOR-DARK2);
-
+    
     transition: all 0.3s ease;
+
+    user-select: none;
 }
 
-.SelectView:active span {
+.Header__Button:hover .Header__Wording {
     background-color: var(--COLOR-DARK2);
     color: var(--COLOR-LIGHT1);
 }
+
 
 /* 
 .CALENDAR__HEADER__BUTTON {
@@ -916,6 +925,14 @@ link to page/ create a page */
     grid-area: HEADER;
     background-color: var(--COLOR-DARK3);
     color: var(--COLOR-LIGHT1);
+}
+
+.HEADER-HIGHLIGHT {
+    background-color: var(--COLOR-BLUE1);
+}
+
+.DAY_NUM-HIGHLIGHT {
+    background-color: var(--COLOR-BLUE2);
 }
 
 

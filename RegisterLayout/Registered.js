@@ -36,10 +36,10 @@ MENU_BUTTON.addEventListener('click', function () {
 
 // TODO: Todo
 
-function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent){
+function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent) {
     console.log("Creating group");
     let container = document.querySelector(`.${NameOfContainer}`);
-    if(!container){
+    if (!container) {
         console.error(`Container with ${NameOfContainer} not found`);
         return;
     }
@@ -62,11 +62,11 @@ function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName,
     console.log("Created group");
 }
 
-function createNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent){
+function createNewTask(NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent) {
 
 }
 
-function CreateTaskForm (){
+function CreateTaskForm() {
 
     console.log("Creating Task Form......");
 
@@ -92,12 +92,12 @@ function CreateTaskForm (){
 
     const observer = new MutationObserver(UpdateSelection);
 
-    function UpdateSelection(){
+    function UpdateSelection() {
         observer.disconnect();
         selection.innerHTML = '';
-        document.querySelectorAll('.TODO__CARD_HEADER').forEach(header =>{
+        document.querySelectorAll('.TODO__CARD_HEADER').forEach(header => {
             const text = header.textContent.trim();
-            if (text){
+            if (text) {
                 const option = document.createElement('option');
                 option.value = text;
                 option.textContent = text;
@@ -114,11 +114,11 @@ function CreateTaskForm (){
     userinput.placeholder = 'Enter the task';
     userinput.required = 'true';
     userinput.id = 'taskContent';
-    
+
     const submission_Button = document.createElement('button');
     submission_Button.type = 'submit';
     submission_Button.textContent = 'Add task';
-    
+
     const cancelButton = document.createElement('button');
     cancelButton.textContent = "Cancel";
     cancelButton.type = 'button';
@@ -134,7 +134,7 @@ function CreateTaskForm (){
 
     main.appendChild(header);
     main.appendChild(form);
-    
+
     document.body.appendChild(main);
     console.log("created Task Form");
     observer.observe(document.body, { childList: true, subtree: true });
@@ -142,7 +142,7 @@ function CreateTaskForm (){
     console.log("MutationObserver started: Watching for changes...");
 }
 
-function GetGroupName (){
+function GetGroupName() {
     const groupNameInput = document.getElementById("groupName");
     return groupNameInput.value;
 }
@@ -164,7 +164,7 @@ const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Ta
 
 if (groupButton) {
     groupButton.addEventListener('click', () => {
-        
+
         let classname = 'TODO__GROUP__ADD';
         let boxes = document.getElementsByClassName(classname);
         // Check if any elements were found
@@ -177,20 +177,20 @@ if (groupButton) {
             if (box.style.display === 'none') {
                 box.style.display = 'block';
                 overlay.style.display = 'block';
-                groupFrom.addEventListener("submit", function(event) {
+                groupFrom.addEventListener("submit", function (event) {
                     event.preventDefault(); // Prevent the default form submission behavior
-                    
+
                     // Call the function to retrieve the input value
                     const groupName = GetGroupName();
                     console.log("Group Name:", groupName);
                     box.style.display = 'none';
-                    if (groupFrom){
+                    if (groupFrom) {
                         createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName, 'p', 'TODO__TASK', 'Get grocery');
                         overlay.style.display = 'none';
                     }
-                },{ once: true });
+                }, { once: true });
                 console.log("Box is now visible");
-                
+
             } else {
                 box.style.display = 'none';
                 overlay.style.display = 'none';
@@ -210,24 +210,24 @@ if (taskButton) {
         const taskForm = document.getElementById('taskForm');
         const groupChoice = document.getElementById('GROUP__NAME__TASK');
         const taskContent = document.getElementById('taskContent');
-        if (AddTask){
-            if(AddTask.style.display === 'none'){
+        if (AddTask) {
+            if (AddTask.style.display === 'none') {
                 AddTask.style.display = 'block'; // make the form visisble
                 overlay.style.display = 'block';
-                taskForm.addEventListener('submit', function(event){
+                taskForm.addEventListener('submit', function (event) {
                     event.preventDefault();
-                    if(taskForm){
+                    if (taskForm) {
                         console.log(groupChoice.value);
                         console.log(taskContent.value);
                         AddTask.style.display = 'none';
                         overlay.style.display = 'none';
                     }
                 });
-            }else {
+            } else {
                 AddTask.style.display = 'none';
                 overlay.style.display = 'none';
             }
-        }else {
+        } else {
             console.log("not enough length")
         }
     });
@@ -280,12 +280,13 @@ const monthList = [
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const year = TimeNow.getFullYear();
 const month = TimeNow.getMonth();    // 1-12 (add 1 because months are 0-based)
-const day = TimeNow.getDate();
-const dayName = TimeNow.getDay();
+const day = TimeNow.getDate(); // 25 (25th of month)
+const dayName = TimeNow.getDay(); // 3 (3 day of 7 days)
 
 let CALENDAR__TITLE1 = getQuery("#calendar__title1");
 let DAYNUM_LIST = Array.from(getQueryAll('.DAY_NUM li'));
 // as page load the function will be run
+
 let DayOffset = day;
 let MonthOffset = month;
 let YearOffset = year;
@@ -326,12 +327,19 @@ window.onload = function () {
             DayOffset = 1;
             Item.innerHTML = `${DayOffset}`
         }
+
+        let HeaderColor = getQueryAll(".HEADER li");
+        let SubHeaderColor = getQueryAll(".DAY_NUM li");
+        SubHeaderColor.forEach((Item, Index) => {
+            if (Index = dayName && Item.innerHTML == HeaderColor) {
+
+            }
+        });
+
     });
 
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
+    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
-
-
 
 
 function toggleViewPrevious() {
@@ -351,11 +359,23 @@ function toggleViewPrevious() {
 
 
     DAYNUM_LIST.forEach((Item) => {
-        Item.innerHTML = `${DayOffset}`
-        DayOffset += 1;
+        let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+        if (DayOffset > totalDaysInMonth) {
+            // Move to next month
+            MonthOffset += 1;
+            if (MonthOffset > 11) {
+                MonthOffset = 0; // Wrap to January
+                YearOffset += 1; // Move to next year
+            }
+            DayOffset = 1; // Reset day count
+        }
+
+        Item.innerHTML = `${DayOffset}`;
+        DayOffset++;
     });
 
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
+
+    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
 
 function toggleViewNext() {
@@ -363,7 +383,7 @@ function toggleViewNext() {
     while (DayOffset >= totalDaysInMonth) {
         MonthOffset += 1
         if (MonthOffset > 11) {
-            // go back previous year December
+            // go next year December
             MonthOffset = 1;
             YearOffset += 1;
         }
@@ -372,15 +392,84 @@ function toggleViewNext() {
     }
 
     DAYNUM_LIST.forEach((Item) => {
+        if (DayOffset > totalDaysInMonth) {
+            // Move to next month
+            MonthOffset += 1;
+            if (MonthOffset > 11) {
+                MonthOffset = 0; // Wrap to January
+                YearOffset += 1; // Move to next year
+            }
+            DayOffset = 1; // Reset day count
+        }
+
         Item.innerHTML = `${DayOffset}`
         DayOffset += 1;
     });
 
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
+    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
 
+function goToToday() {
 
 
+    DAYNUM_LIST.forEach((Item) => {
+        if (Item.innerHTML == day) {
+            return;
+        }
+    });
+
+    let DayOffset = day;
+    let MonthOffset = month;
+    let YearOffset = year;
+
+    switch (dayName) {
+        case 0:
+            DayOffset
+            break;
+        case 1:
+            DayOffset -= 1
+            break;
+        case 2:
+            DayOffset -= 2
+            break;
+        case 3:
+            DayOffset -= 3
+            break;
+        case 4:
+            DayOffset -= 4
+            break;
+        case 5:
+            DayOffset -= 5
+            break;
+        case 6:
+            DayOffset -= 6
+            break;
+    }
+    DAYNUM_LIST.forEach((Item) => {
+        // find out date of month
+        let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
+        if (DayOffset < totalDaysInMonth) {
+            Item.innerHTML = `${DayOffset}`
+            DayOffset += 1;
+        } else {
+            // reset the date num with new month
+            MonthOffset += 1;
+            DayOffset = 1;
+            Item.innerHTML = `${DayOffset}`
+        }
+
+        let HeaderColor = getQueryAll(".HEADER li");
+        let SubHeaderColor = getQueryAll(".DAY_NUM li");
+        SubHeaderColor.forEach((Item, Index) => {
+            if (Index = dayName && Item.innerHTML == HeaderColor) {
+
+            }
+        });
+
+    });
+
+    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
+}
 
 
 
