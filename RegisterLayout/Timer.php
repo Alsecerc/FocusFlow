@@ -142,5 +142,6 @@
     </div>
 
     <script src="Registered.js" defer></script>
+    <script src="Timer.js" defer></script>
 </body>
 </html>

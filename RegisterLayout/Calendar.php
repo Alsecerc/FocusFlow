@@ -288,6 +288,7 @@
 
     </main>
     <script src="Registered.js" defer></script>
+    <script src="Calendar.js" defer></script>
 </body>
 
 </html>
