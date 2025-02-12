@@ -1,5 +1,3 @@
-<!-- change to .php -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -140,6 +138,63 @@
 
         <!-- Calendar Content -->
         <article class="CONTAINER">
+            <div class="POP_UP">
+                <div class="OVERLAY"></div>
+                <div class="POP_UP__CONTENT">
+                    <h2>Create Task</h2>
+                    <form action="Calendar.php" method="POST" id="popUpForm">
+
+                        <label class="INPUT__BOX">
+                            <input type="text" name="task_title" id="task_title" class="INPUT__INPUT" required>
+                            <span class="INPUT__PLACEHOLDER">Task Name : </span>
+                        </label>
+
+                        <label class="INPUT__BOX">
+                            <input type="text" name="task_desc" id="task_desc" class="INPUT__INPUT" required>
+                            <span class="INPUT__PLACEHOLDER">Task Description : </span>
+                        </label>
+
+                        <label class="INPUT__BOX">
+                            <input type="date" name="start_date" id="start_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Date : </span>
+                        </label>
+
+                        <label class="INPUT__BOX">
+                            <input type="date" name="due_date" id="due_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Due Date : </span>
+                        </label>
+
+                        <label class="INPUT__BOX">
+                            <input type="time" name="time" id="time" class="INPUT__INPUT" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Time : </span>
+                        </label>
+
+                        <label class="INPUT__BOX">
+                            <input type="number" name="duration" id="duration" class="INPUT__INPUT" min="0" required>
+                            <span class="INPUT__PLACEHOLDER">Duration (hours) : </span>
+                        </label>
+                        <div class="POP_UP__CONTROLS">
+                            <button type="button" class="CONTROLS__CLOSE">Close</button>
+                            <button type="reset" class="CONTROLS__RESET" onclick="ResetInput()">Reset</button>
+                            <button type="submit" class="CONTROLS__SUBMIT">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <?php
+            $taskTitle = $_POST['task_title'] ?? null;
+            $taskDesc = $_POST['task_desc'] ?? null;
+            $startDate = $_POST['start_date'] ?? null;
+            $dueDate = $_POST['due_date'] ?? null;
+            $startTime = $_POST['time'] ?? null;
+            $duration = $_POST['duration'] ?? null;
+
+            
+
+            
+
+            ?>
+
             <h1 class="ARTICLE_TITLE">Calendar</h1>
             <section class="CALENDAR">
                 <div class="CALENDAR__HEADER">
@@ -149,7 +204,7 @@
                             <button class="Header__Button" onclick="goToToday()"><span class=" Header__Wording">Today</span></button>
                         </div>
                         <div class="Header__Container">
-                            <button class="Header__Button"><span class="material-icons Header__Wording">add</span></button>
+                            <button class="Header__Button OPEN_POP_UP"><span class="material-icons Header__Wording">add</span></button>
                         </div>
                         <div class="Header__Container">
                             <button onclick="toggleViewPrevious()" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>

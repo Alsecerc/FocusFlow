@@ -36,7 +36,7 @@ MENU_BUTTON.addEventListener('click', function () {
 
 // TODO: Todo
 
-function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent){
+function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent) {
     console.log("Creating group");
     let container = document.querySelector(`.${NameOfContainer}`);
     if (!container) {
@@ -147,28 +147,28 @@ function GetGroupName() {
     return groupNameInput.value;
 }
 
-document.addEventListener('DOMContentLoaded', function(){ // only active the code when it is on the specific file
-    if(window.location.pathname.toLowerCase().includes('todo')){
+document.addEventListener('DOMContentLoaded', function () { // only active the code when it is on the specific file
+    if (window.location.pathname.toLowerCase().includes('todo')) {
         console.log("Todo page activated");
 
-        
+
         // Get all buttons with the class "TODO__ADD"
         const buttons = document.querySelectorAll(".TODO__ADD");
-        
+
         // Convert NodeList to an array for easier handling (optional)
         const buttonArray = Array.from(buttons);
-        
+
         // Find the button that has "Group" as its text content
         const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Group"));
-        
+
         // Find the button that has "Task" as its text content
         const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
-        
+
         // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'To Do', 'p', 'TODO__TASK', 'Get grocery');
-        
+
         if (groupButton) {
             groupButton.addEventListener('click', () => {
-                
+
                 let classname = 'TODO__GROUP__ADD';
                 let boxes = document.getElementsByClassName(classname);
                 // Check if any elements were found
@@ -181,20 +181,20 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
                     if (box.style.display === 'none') {
                         box.style.display = 'block';
                         overlay.style.display = 'block';
-                        groupFrom.addEventListener("submit", function(event) {
+                        groupFrom.addEventListener("submit", function (event) {
                             event.preventDefault(); // Prevent the default form submission behavior
-                            
+
                             // Call the function to retrieve the input value
                             const groupName = GetGroupName();
                             console.log("Group Name:", groupName);
                             box.style.display = 'none';
-                            if (groupFrom){
+                            if (groupFrom) {
                                 createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName, 'p', 'TODO__TASK', 'Get grocery');
                                 overlay.style.display = 'none';
                             }
-                        },{ once: true });
+                        }, { once: true });
                         console.log("Box is now visible");
-                        
+
                     } else {
                         box.style.display = 'none';
                         overlay.style.display = 'none';
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
                 }
             })
         }
-        
+
         CreateTaskForm();
         if (taskButton) {
             taskButton.addEventListener('click', () => {
@@ -214,29 +214,28 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
                 const taskForm = document.getElementById('taskForm');
                 const groupChoice = document.getElementById('GROUP__NAME__TASK');
                 const taskContent = document.getElementById('taskContent');
-                if (AddTask){
-                    if(AddTask.style.display === 'none'){
+                if (AddTask) {
+                    if (AddTask.style.display === 'none') {
                         AddTask.style.display = 'block'; // make the form visisble
                         overlay.style.display = 'block';
-                        taskForm.addEventListener('submit', function(event){
+                        taskForm.addEventListener('submit', function (event) {
                             event.preventDefault();
-                            if(taskForm){
+                            if (taskForm) {
                                 console.log(groupChoice.value);
                                 console.log(taskContent.value);
                                 AddTask.style.display = 'none';
                                 overlay.style.display = 'none';
                             }
                         });
-                    }else {
+                    } else {
                         AddTask.style.display = 'none';
                         overlay.style.display = 'none';
                     }
-                }else {
+                } else {
                     console.log("not enough length")
                 }
             });
         }
-        
     }
 })
 
@@ -334,16 +333,9 @@ window.onload = function () {
             DayOffset = 1;
             Item.innerHTML = `${DayOffset}`
         }
-
-        let HeaderColor = getQueryAll(".HEADER li");
-        let SubHeaderColor = getQueryAll(".DAY_NUM li");
-        SubHeaderColor.forEach((Item, Index) => {
-            if (Index = dayName && Item.innerHTML == HeaderColor) {
-
-            }
-        });
-
     });
+
+    HightLightToday();
 
     CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
@@ -381,6 +373,7 @@ function toggleViewPrevious() {
         DayOffset++;
     });
 
+    HightLightToday();
 
     CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
@@ -412,6 +405,8 @@ function toggleViewNext() {
         Item.innerHTML = `${DayOffset}`
         DayOffset += 1;
     });
+
+    HightLightToday();
 
     CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
@@ -465,18 +460,142 @@ function goToToday() {
             Item.innerHTML = `${DayOffset}`
         }
 
-        let HeaderColor = getQueryAll(".HEADER li");
-        let SubHeaderColor = getQueryAll(".DAY_NUM li");
-        SubHeaderColor.forEach((Item, Index) => {
-            if (Index = dayName && Item.innerHTML == HeaderColor) {
-
-            }
-        });
-
     });
+
+    HightLightToday();
 
     CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
+
+function HightLightToday() {
+    let HeaderColor = getQueryAll(".HEADER li");
+    let SubHeaderColor = getQueryAll(".DAY_NUM li");
+    SubHeaderColor.forEach((Item, Index) => {
+        if (Item.innerHTML == day && MonthOffset == month) {
+            HeaderColor[Index].classList.add("HEADER-HIGHLIGHT");
+            SubHeaderColor[Index].classList.add("DAY_NUM-HIGHLIGHT");
+        } else {
+            HeaderColor[Index].classList.remove("HEADER-HIGHLIGHT");
+            SubHeaderColor[Index].classList.remove("DAY_NUM-HIGHLIGHT");
+        }
+    });
+}
+
+// pop up function
+let PopUp = getQuery(".POP_UP");
+let Overlay = getQuery(".OVERLAY");
+let CloseBTN = getQuery(".CONTROLS__CLOSE");
+
+function OpenPopUp() {
+    PopUp.classList.add("ACTIVE");
+}
+
+function ClosePopUp() {
+    PopUp.classList.remove("ACTIVE");
+    ResetInput;
+}
+
+function CreatePopUp() {
+    Overlay.addEventListener('click', ClosePopUp);
+    CloseBTN.addEventListener('click', ClosePopUp);
+
+    return OpenPopUp;
+}
+
+function ResetInput() {
+    let INPUTS = getQueryAll('.INPUT__BOX');
+
+    INPUTS.forEach((element) => {
+        let INPUT = element.querySelector(".INPUT__INPUT");
+        let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+        INPUT.classList.remove("INVALID_BORDER");
+        PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+        INPUT.classList.remove("VALID_BORDER");
+        PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+    });
+}
+
+
+document.querySelector(".OPEN_POP_UP").addEventListener("click", CreatePopUp());
+
+
+
+// Pop up survey validation
+let INPUTS = getQueryAll('.INPUT__BOX');
+
+INPUTS.forEach((element) => {
+    let INPUT = element.querySelector(".INPUT__INPUT");
+    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+
+    let INPUTID = INPUT.id;
+
+    if (INPUTID == "start_date") {
+        let StartDate = INPUT.value;
+    }
+    else if (INPUTID == "due_date") {
+        let DueDate = INPUT.value;
+    }
+
+
+
+    INPUT.addEventListener('input', function () {
+        // If the input is invalid, add the INVALID class
+        if (INPUT.value.trim() == '') {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else if (!INPUT.checkValidity()) {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else {
+            // If the input is valid, remove the INVALID class
+            ValidInput(INPUT, PLACEHOLDER);
+        }
+
+
+
+        if (StartDate && DueDate) {
+            console.log(StartDate, DueDate)
+            if (StartDate > DueDate) {
+                alert("Due date must be later than start date");
+                InvalidInput(INPUT, PLACEHOLDER);
+            } else {
+                ValidInput(INPUT, PLACEHOLDER);
+            }
+        }
+    });
+
+    // Optional: Check the validity on form submit or on blur
+    INPUT.addEventListener('blur', function () {
+        if (INPUT.value.trim() == '') {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else if (!INPUT.checkValidity()) {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else {
+            // If the input is valid, remove the INVALID class
+            ValidInput(INPUT, PLACEHOLDER);
+
+        }
+    });
+});
+
+function ValidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.remove("INVALID_BORDER");
+    PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+    INPUT.classList.add("VALID_BORDER");
+    PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+}
+
+function InvalidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.add("INVALID_BORDER");
+    PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+    INPUT.classList.remove("VALID_BORDER");
+    PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+}
+
+
+
+
+
+
+
 
 
 

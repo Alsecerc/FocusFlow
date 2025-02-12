@@ -12,8 +12,11 @@ RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.+)$ $1.php [L]
 
 # 🔄 Redirect users from .php URLs to clean URLs while keeping subdirectories
+# allow POST
+RewriteCond %{REQUEST_METHOD} !POST
 RewriteCond %{THE_REQUEST} "\s/([^?\s]+)\.php"
-RewriteRule ^(.+)\.php$ /%1 [R=301,L] 
+RewriteRule ^(.+)\.php$ /%1 [R=301,L]
+
 
 # if enter wrong path user will be redirect to the 404 page
 ErrorDocument 404 http://localhost/RWD_assignment/FocusFlow/Landing_Page/404

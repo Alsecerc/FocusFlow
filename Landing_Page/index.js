@@ -215,8 +215,6 @@ INPUTS.forEach((element) => {
             PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
         }
     });
-
-
 });
 
 
