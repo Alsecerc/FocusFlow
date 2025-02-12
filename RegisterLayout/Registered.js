@@ -18,9 +18,9 @@ function getQueryAll(element) {
 
 
 // TODO: HOMEPAGE
-var SIDEBAR = getClass("SIDEBAR")[0];
-var MENU_BUTTON = getClass("HEADER__MENU_BUTTON")[0];
-var MENU_ICON = getClass("HEADER__MENU_ICON")[0];
+let SIDEBAR = getClass("SIDEBAR")[0];
+let MENU_BUTTON = getClass("HEADER__MENU_BUTTON")[0];
+let MENU_ICON = getClass("HEADER__MENU_ICON")[0];
 
 MENU_BUTTON.addEventListener('click', function () {
     if (MENU_ICON.classList.contains("ACTIVE")) {
@@ -62,7 +62,7 @@ function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, 
     console.log("Created group");
 }
 
-function createNewTask(NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent) {
+function CreateNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent){
 
 }
 
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
     if (window.location.pathname.toLowerCase().includes('todo')) {
         console.log("Todo page activated");
 
-
+        
         // Get all buttons with the class "TODO__ADD"
         const buttons = document.querySelectorAll(".TODO__ADD");
 
@@ -241,61 +241,62 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 
 // TODO: Calendar Page
 // Calendar
-// Toggle function as webpage load
-// window.onload = function () {
-//     togglePeriod('week');
-// };
+document.addEventListener('DOMContentLoaded', function(){
+    if (window.location.pathname.toLowerCase().includes('Calender')){
+        // Toggle function as webpage load
+        // window.onload = function () {
+        //     togglePeriod('week');
+        // };
 
-// function togglePeriod(Options) {
-//     // Button Effect
-//     let ButtonList = Array.from(getClass("CALENDAR__HEADER__BUTTON"));
-//     ButtonList.forEach((buts) => {
-//         // remove select effect from all button
-//         buts.classList.remove("SELECTED_BUTTON");
-//     });
+        // function togglePeriod(Options) {
+        //     // Button Effect
+        //     let ButtonList = Array.from(getClass("CALENDAR__HEADER__BUTTON"));
+        //     ButtonList.forEach((buts) => {
+        //         // remove select effect from all button
+        //         buts.classList.remove("SELECTED_BUTTON");
+        //     });
 
-//     let Button = getID(Options + "Button");
-//     Button.classList.add("SELECTED_BUTTON");
-
-
-//     // Content Display
-//     let ContentList = Array.from(getClass("CALENDAR__CONTENT__ITEM"));
-//     ContentList.forEach((conts) => {
-//         conts.classList.remove("CALENDAR__CONTENT_SHOW");
-//     });
-
-//     // Show the selected content div
-//     let Content = getID(Options + "Content");
-//     Content.classList.add("CALENDAR__CONTENT_SHOW");
+        //     let Button = getID(Options + "Button");
+        //     Button.classList.add("SELECTED_BUTTON");
 
 
-//     // Change title
-//     let Title = getClass("CALENDAR__TITLE")[0];
-//     Title.innerHTML = Options.toUpperCase();
-// };
+        //     // Content Display
+        //     let ContentList = Array.from(getClass("CALENDAR__CONTENT__ITEM"));
+        //     ContentList.forEach((conts) => {
+        //         conts.classList.remove("CALENDAR__CONTENT_SHOW");
+        //     });
+
+        //     // Show the selected content div
+        //     let Content = getID(Options + "Content");
+        //     Content.classList.add("CALENDAR__CONTENT_SHOW");
+
+
+        //     // Change title
+        //     let Title = getClass("CALENDAR__TITLE")[0];
+        //     Title.innerHTML = Options.toUpperCase();
+        // };
 
 
 
 
-// get date time
-const TimeNow = new Date();
-const monthList = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-];
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const year = TimeNow.getFullYear();
-const month = TimeNow.getMonth();    // 1-12 (add 1 because months are 0-based)
-const day = TimeNow.getDate(); // 25 (25th of month)
-const dayName = TimeNow.getDay(); // 3 (3 day of 7 days)
+        // get date time
+        const TimeNow = new Date();
+        const monthList = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const year = TimeNow.getFullYear();
+        const month = TimeNow.getMonth();    // 1-12 (add 1 because months are 0-based)
+        const day = TimeNow.getDate();
+        const dayName = TimeNow.getDay();
 
-let CALENDAR__TITLE1 = getQuery("#calendar__title1");
-let DAYNUM_LIST = Array.from(getQueryAll('.DAY_NUM li'));
-// as page load the function will be run
-
-let DayOffset = day;
-let MonthOffset = month;
-let YearOffset = year;
+        let CALENDAR__TITLE1 = getQuery("#calendar__title1");
+        let DAYNUM_LIST = Array.from(getQueryAll('.DAY_NUM li'));
+        // as page load the function will be run
+        let DayOffset = day;
+        let MonthOffset = month;
+        let YearOffset = year;
 
 window.onload = function () {
     switch (dayName) {
@@ -341,20 +342,20 @@ window.onload = function () {
 }
 
 
-function toggleViewPrevious() {
-    DayOffset -= 14;
+        function toggleViewPrevious() {
+            DayOffset -= 14;
 
-    while (DayOffset <= 0) {
-        // go back 1 month
-        MonthOffset -= 1
-        if (MonthOffset < 0) {
-            // go back previous year December
-            MonthOffset = 11;
-            YearOffset -= 1;
-        }
-        let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-        DayOffset += totalDaysInMonth;
-    }
+            while (DayOffset <= 0) {
+                // go back 1 month
+                MonthOffset -= 1
+                if (MonthOffset < 0) {
+                    // go back previous year December
+                    MonthOffset = 11;
+                    YearOffset -= 1;
+                }
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                DayOffset += totalDaysInMonth;
+            }
 
 
     DAYNUM_LIST.forEach((Item) => {
@@ -378,18 +379,18 @@ function toggleViewPrevious() {
     CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
 }
 
-function toggleViewNext() {
-    let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-    while (DayOffset >= totalDaysInMonth) {
-        MonthOffset += 1
-        if (MonthOffset > 11) {
-            // go next year December
-            MonthOffset = 1;
-            YearOffset += 1;
-        }
-        let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-        DayOffset = Math.abs(totalDaysInMonth - DayOffset - 1);
-    }
+        function toggleViewNext() {
+            let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+            while (DayOffset >= totalDaysInMonth) {
+                MonthOffset += 1
+                if (MonthOffset > 11) {
+                    // go back previous year December
+                    MonthOffset = 1;
+                    YearOffset += 1;
+                }
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                DayOffset = Math.abs(totalDaysInMonth - DayOffset - 1);
+            }
 
     DAYNUM_LIST.forEach((Item) => {
         if (DayOffset > totalDaysInMonth) {
