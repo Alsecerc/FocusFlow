@@ -36,7 +36,7 @@ MENU_BUTTON.addEventListener('click', function () {
 
 // TODO: Todo
 
-function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent){
+function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent) {
     console.log("Creating group");
     let container = document.querySelector(`.${NameOfContainer}`);
     if (!container) {
@@ -62,7 +62,7 @@ function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName,
     console.log("Created group");
 }
 
-function CreateNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent){
+function CreateNewTask(NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent) {
 
 }
 
@@ -147,27 +147,28 @@ function GetGroupName() {
     return groupNameInput.value;
 }
 
-document.addEventListener('DOMContentLoaded', function(){ // only active the code when it is on the specific file
-    if(window.location.pathname.toLowerCase().includes('todo')){
+document.addEventListener('DOMContentLoaded', function () { // only active the code when it is on the specific file
+    if (window.location.pathname.toLowerCase().includes('todo')) {
         console.log("Todo page activated");
-        
+
+
         // Get all buttons with the class "TODO__ADD"
         const buttons = document.querySelectorAll(".TODO__ADD");
-        
+
         // Convert NodeList to an array for easier handling (optional)
         const buttonArray = Array.from(buttons);
-        
+
         // Find the button that has "Group" as its text content
         const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Group"));
-        
+
         // Find the button that has "Task" as its text content
         const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
-        
+
         // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'To Do', 'p', 'TODO__TASK', 'Get grocery');
-        
+
         if (groupButton) {
             groupButton.addEventListener('click', () => {
-                
+
                 let classname = 'TODO__GROUP__ADD';
                 let boxes = document.getElementsByClassName(classname);
                 // Check if any elements were found
@@ -180,20 +181,20 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
                     if (box.style.display === 'none') {
                         box.style.display = 'block';
                         overlay.style.display = 'block';
-                        groupFrom.addEventListener("submit", function(event) {
+                        groupFrom.addEventListener("submit", function (event) {
                             event.preventDefault(); // Prevent the default form submission behavior
-                            
+
                             // Call the function to retrieve the input value
                             const groupName = GetGroupName();
                             console.log("Group Name:", groupName);
                             box.style.display = 'none';
-                            if (groupFrom){
+                            if (groupFrom) {
                                 createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName, 'p', 'TODO__TASK', 'Get grocery');
                                 overlay.style.display = 'none';
                             }
-                        },{ once: true });
+                        }, { once: true });
                         console.log("Box is now visible");
-                        
+
                     } else {
                         box.style.display = 'none';
                         overlay.style.display = 'none';
@@ -204,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
                 }
             })
         }
-        
+
         CreateTaskForm();
         if (taskButton) {
             taskButton.addEventListener('click', () => {
@@ -213,36 +214,35 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
                 const taskForm = document.getElementById('taskForm');
                 const groupChoice = document.getElementById('GROUP__NAME__TASK');
                 const taskContent = document.getElementById('taskContent');
-                if (AddTask){
-                    if(AddTask.style.display === 'none'){
+                if (AddTask) {
+                    if (AddTask.style.display === 'none') {
                         AddTask.style.display = 'block'; // make the form visisble
                         overlay.style.display = 'block';
-                        taskForm.addEventListener('submit', function(event){
+                        taskForm.addEventListener('submit', function (event) {
                             event.preventDefault();
-                            if(taskForm){
+                            if (taskForm) {
                                 console.log(groupChoice.value);
                                 console.log(taskContent.value);
                                 AddTask.style.display = 'none';
                                 overlay.style.display = 'none';
                             }
                         });
-                    }else {
+                    } else {
                         AddTask.style.display = 'none';
                         overlay.style.display = 'none';
                     }
-                }else {
+                } else {
                     console.log("not enough length")
                 }
             });
         }
-        
     }
 })
 
 // TODO: Calendar Page
 // Calendar
-document.addEventListener('DOMContentLoaded', function(){
-    if (window.location.pathname.toLowerCase().includes('Calender')){
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.pathname.toLowerCase().includes('Calender')) {
         // Toggle function as webpage load
         // window.onload = function () {
         //     togglePeriod('week');
@@ -336,8 +336,11 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             });
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
+
 
         function toggleViewPrevious() {
             DayOffset -= 14;
@@ -356,11 +359,24 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
             DAYNUM_LIST.forEach((Item) => {
-                Item.innerHTML = `${DayOffset}`
-                DayOffset += 1;
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                if (DayOffset > totalDaysInMonth) {
+                    // Move to next month
+                    MonthOffset += 1;
+                    if (MonthOffset > 11) {
+                        MonthOffset = 0; // Wrap to January
+                        YearOffset += 1; // Move to next year
+                    }
+                    DayOffset = 1; // Reset day count
+                }
+
+                Item.innerHTML = `${DayOffset}`;
+                DayOffset++;
             });
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
 
         function toggleViewNext() {
@@ -377,203 +393,200 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
             DAYNUM_LIST.forEach((Item) => {
+                if (DayOffset > totalDaysInMonth) {
+                    // Move to next month
+                    MonthOffset += 1;
+                    if (MonthOffset > 11) {
+                        MonthOffset = 0; // Wrap to January
+                        YearOffset += 1; // Move to next year
+                    }
+                    DayOffset = 1; // Reset day count
+                }
+
                 Item.innerHTML = `${DayOffset}`
                 DayOffset += 1;
             });
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
-        }
-    }
-})
-// TODO: Timer Page
-document.addEventListener("DOMContentLoaded", function(event) {
-    if (window.location.pathname.toLowerCase().includes('timer')){
-        console.log("Running js code on Timer page...");
-        let pomodoro = document.getElementById("pomodoro-timer");
-        let short = document.getElementById("short-timer");
-        let long = document.getElementById("long-timer");
+            HightLightToday();
 
-        // let timers = document.querySelectorAll(".timer-display");
-        let session = document.getElementById("pomodoro-session");
-        let shortBreak = document.getElementById("short-break");
-        let longBreak = document.getElementById("long-break");
-
-        let startBtn = document.getElementById("start");
-        let stopBtn = document.getElementById("stop");
-
-        let timerMsg = document.getElementById("timer-message");
-        let button = document.querySelector(".button");
-
-        let addButton = document.getElementById('plus-btn');
-        let minusButton = document.getElementById('minus-btn');
-
-        let currentTimer = null;
-        let myInterval = null;
-        let SetTimer = null;
-        let isFirstUpdate = true;
-        let intervalId;
-
-        function ShowDefaultTimer(){
-            const pomodoro_minutes = 10;
-            const pomodoro_seconds = 0;
-            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_seconds).padStart(2,'0')}`
-            pomodoro.style.display = 'block';
-
-            const short_break_minutes = 5;
-            const short_break_seconds = 0;
-
-            short.innerHTML = `${String(short_break_minutes).padStart(2,'0')}:${String(short_break_seconds).padStart(2,'0')}`;
-            short.style.display = 'none';
-
-            const long_break_minutes = 10;
-            const long_break_seconds = 0;
-
-            long.innerHTML = `${String(long_break_minutes).padStart(2,'0')}:${String(long_break_seconds).padStart(2,'0')}`;
-            long.style.display = 'none';
-        }
-        
-        function addTime(ID__TIMER){
-            addButton.addEventListener('click', () => {
-                let Time = ID__TIMER.textContent;
-                let [minutes, seconds] = Time.split(':').map(Number);
-                if (minutes >= 60){
-                    console.log('Minutes cannot be more than 60');
-                }else{
-                    minutes++;
-                }                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-            })
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
 
-        function minusTime(ID__TIMER){
-            minusButton.addEventListener('click', () => {
-                console.log('start minus');
-                let currentTime = ID__TIMER.textContent;
-                let [minutes, seconds] = currentTime.split(':').map(Number);
-                
-                if (minutes <= 0){
-                    console.log('Time cannot be negative');
-                }else{
-                    minutes--;
+        function goToToday() {
+            DAYNUM_LIST.forEach((Item) => {
+                if (Item.innerHTML == day) {
+                    return;
                 }
-                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-                console.log('minus complete');
-            })
-        }
+            });
 
-        /**
-         * Returns the current type of time.
-         * 
-         * @returns {Time_type} The current type of time displaying.
-         * 
-         */
-        function CurrentTimer (){
-            let TIMERS = document.querySelectorAll('.timer-display .time span');
-            let CURRENT__TIMER = null;
-            console.log('looking for current timer');
-            if (TIMERS.length === 0) {
-                console.log("No timers found.");
-                return; // Exit the function if no timers are found
+            let DayOffset = day;
+            let MonthOffset = month;
+            let YearOffset = year;
+
+            switch (dayName) {
+                case 0:
+                    DayOffset
+                    break;
+                case 1:
+                    DayOffset -= 1
+                    break;
+                case 2:
+                    DayOffset -= 2
+                    break;
+                case 3:
+                    DayOffset -= 3
+                    break;
+                case 4:
+                    DayOffset -= 4
+                    break;
+                case 5:
+                    DayOffset -= 5
+                    break;
+                case 6:
+                    DayOffset -= 6
+                    break;
             }
-
-            let timer = Array.from(TIMERS).find(timer => timer.style.display = 'block');
-
-            console.log(`The return id is ${timer.id}`);
-            return timer.id;
-        }
-
-        function timerTypeSelection (){
-
-        }
-        
-        /**
-         * Start button 
-         * 
-         * When user press start button it will start counting the time
-         * 
-         */
-        function TimeUpdate(){
-
-            if(isFirstUpdate){
-                console.log('Ignore first update');
-                isFirstUpdate = false;
-                return;
-            }
-            const TypeTimer = CurrentTimer();
-            const timer = document.getElementById(TypeTimer);
-
-            let currentTime = timer.textContent;
-            let [minutes, seconds] = currentTime.split(':').map(Number);
-
-            console.log('Started count');
-            if (seconds > 0){
-                seconds--;
-            }else if (seconds == 0){
-                if (minutes > 0){
-                    minutes--;
-                    seconds = 59;
-                }else{
-                    console.log('Time up');
-                    clearInterval(intervalId);
+            DAYNUM_LIST.forEach((Item) => {
+                // find out date of month
+                let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
+                if (DayOffset < totalDaysInMonth) {
+                    Item.innerHTML = `${DayOffset}`
+                    DayOffset += 1;
+                } else {
+                    // reset the date num with new month
+                    MonthOffset += 1;
+                    DayOffset = 1;
+                    Item.innerHTML = `${DayOffset}`
                 }
-            }
-            timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            });
+
+            HightLightToday();
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
 
-        function StartButton (){
-            startBtn.addEventListener('click', ()=> {
-                if(intervalId){
-                    clearInterval(intervalId);
+        function HightLightToday() {
+            let HeaderColor = getQueryAll(".HEADER li");
+            let SubHeaderColor = getQueryAll(".DAY_NUM li");
+            SubHeaderColor.forEach((Item, Index) => {
+                if (Item.innerHTML == day && MonthOffset == month) {
+                    HeaderColor[Index].classList.add("HEADER-HIGHLIGHT");
+                    SubHeaderColor[Index].classList.add("DAY_NUM-HIGHLIGHT");
+                } else {
+                    HeaderColor[Index].classList.remove("HEADER-HIGHLIGHT");
+                    SubHeaderColor[Index].classList.remove("DAY_NUM-HIGHLIGHT");
                 }
-                console.log('Pressed Start button');
-                intervalId = setInterval(TimeUpdate, 1000);
-            })
-        }
-
-        function StopButton (){
-            stopBtn.addEventListener('click', ()=> {
-                console.log("Stopped");
-                clearInterval(intervalId);
-            })
-        }
-
-        function test() {
-            let timers = document.querySelectorAll('.timer-display .time span');
-            
-            let observer = new MutationObserver((mutationList) =>{
-                mutationList.forEach(mutation =>{
-                    if(mutation.type === 'childList'){
-                        console.log(`Timer updated: ${mutation.target.id} → ${mutation.target.textContent}`);
-                    }
-                })
-            })
-            // Ensure that timers is not empty
-            if (timers.length === 0) {
-                console.log("No timers found.");
-                return; // Exit the function if no timers are found
-            }
-            let config = { childList: true};
-            timers.forEach((timer) => { // Loop through each element in the NodeList
-                // let style = window.getComputedStyle(timer); // Get the computed style for each element
-                if (timer.style.display === 'block') {
-                    console.log(`${timer.id}, ${timer.textContent} is displaying`); // Log the id of the timer that is visible
-                }else{
-                    console.log(`${timer.id} is not displaying`);
-                }
-                // console.log(`${timer.id}, ${timer.textContent}, ${timer.style.display} is displaying`);
-                observer.observe(timer, config);
             });
         }
-        const timer_id = CurrentTimer();
-        const CURRENT__TYPE__TIMER = document.getElementById(`${timer_id}`);
-        ShowDefaultTimer();
-        //testing
-        // console.log(CURRENT__TYPE__TIMER);
-        addTime(CURRENT__TYPE__TIMER);
-        minusTime(CURRENT__TYPE__TIMER);
-        test();
-        TimeUpdate();
-        StartButton();
-        StopButton();
-        //testing
+
+        // pop up function
+        let PopUp = getQuery(".POP_UP");
+        let Overlay = getQuery(".OVERLAY");
+        let CloseBTN = getQuery(".CONTROLS__CLOSE");
+
+        function OpenPopUp() {
+            PopUp.classList.add("ACTIVE");
+        }
+
+        function ClosePopUp() {
+            PopUp.classList.remove("ACTIVE");
+            ResetInput;
+        }
+
+        function CreatePopUp() {
+            Overlay.addEventListener('click', ClosePopUp);
+            CloseBTN.addEventListener('click', ClosePopUp);
+
+            return OpenPopUp;
+        }
+
+        function ResetInput() {
+            let INPUTS = getQueryAll('.INPUT__BOX');
+
+            INPUTS.forEach((element) => {
+                let INPUT = element.querySelector(".INPUT__INPUT");
+                let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+                INPUT.classList.remove("INVALID_BORDER");
+                PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+                INPUT.classList.remove("VALID_BORDER");
+                PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+            });
+        }
+
+
+        document.querySelector(".OPEN_POP_UP").addEventListener("click", CreatePopUp());
+
+
+
+        // Pop up survey validation
+        let INPUTS = getQueryAll('.INPUT__BOX');
+
+        INPUTS.forEach((element) => {
+            let INPUT = element.querySelector(".INPUT__INPUT");
+            let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+
+            let INPUTID = INPUT.id;
+
+            if (INPUTID == "start_date") {
+                let StartDate = INPUT.value;
+            }
+            else if (INPUTID == "due_date") {
+                let DueDate = INPUT.value;
+            }
+
+
+
+            INPUT.addEventListener('input', function () {
+                // If the input is invalid, add the INVALID class
+                if (INPUT.value.trim() == '') {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else if (!INPUT.checkValidity()) {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else {
+                    // If the input is valid, remove the INVALID class
+                    ValidInput(INPUT, PLACEHOLDER);
+                }
+
+
+
+                if (StartDate && DueDate) {
+                    console.log(StartDate, DueDate)
+                    if (StartDate > DueDate) {
+                        alert("Due date must be later than start date");
+                        InvalidInput(INPUT, PLACEHOLDER);
+                    } else {
+                        ValidInput(INPUT, PLACEHOLDER);
+                    }
+                }
+            });
+
+            // Optional: Check the validity on form submit or on blur
+            INPUT.addEventListener('blur', function () {
+                if (INPUT.value.trim() == '') {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else if (!INPUT.checkValidity()) {
+                    InvalidInput(INPUT, PLACEHOLDER);
+                } else {
+                    // If the input is valid, remove the INVALID class
+                    ValidInput(INPUT, PLACEHOLDER);
+
+                }
+            });
+        });
+
+        function ValidInput(INPUT, PLACEHOLDER) {
+            INPUT.classList.remove("INVALID_BORDER");
+            PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+            INPUT.classList.add("VALID_BORDER");
+            PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+        }
+
+        function InvalidInput(INPUT, PLACEHOLDER) {
+            INPUT.classList.add("INVALID_BORDER");
+            PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+            INPUT.classList.remove("VALID_BORDER");
+            PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+        }
     }
 });

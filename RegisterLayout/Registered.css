@@ -247,6 +247,12 @@ button {
     transition: all 0.3s ease;
 }
 
+
+/* TODO: Sign In */
+
+/* TODO: Sign Up */
+
+
 /* ========HEADER======== */
 header {
     position: sticky;
@@ -998,10 +1004,176 @@ link to page/ create a page */
     abs(9-10) = 1 * 60 = 60px offset
     60/15 (interval) = 4 + 1 (for offset) = 5
     */
-    grid-row: 5;
+    grid-row: 4;
 }
 
-/* Promodo Timer */
+/* pop up */
+.POP_UP {
+    position: fixed;
+    top: 10000px;
+    left: 0;
+    z-index: 100;
+
+    width: 100%;
+    height: 100%;
+
+    /* .3s delay before transition */
+    transition: top 0s ease-in-out .3s;
+}
+
+.OVERLAY {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.POP_UP__CONTENT {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0;
+    min-width: 10%;
+    background: var(--COLOR-LIGHT1);
+    border-radius: var(--BORDER-RD-CONTACT);
+    box-shadow: 0 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all .3s ease-in-out;
+}
+
+.POP_UP__CONTENT h2 {
+    text-align: center;
+    margin: var(--MARGIN) 0;
+}
+
+/* survey design */
+.POP_UP__CONTENT form {
+    margin: 0 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.INPUT__BOX {
+    position: relative;
+}
+
+.INPUT__INPUT {
+    min-width: 150px;
+    padding: 15px 30px;
+
+    background-color: #f2f2f2;
+
+    border: none;
+    border-radius: var(--BORDER-RD-CONTACT);
+}
+
+
+
+
+/* INPUT BOX DESIGN */
+.INPUT__INPUT:focus {
+    outline: none;
+    box-shadow: var(--SHADOW-WHITEBG);
+}
+
+.INPUT__PLACEHOLDER {
+    position: absolute;
+    top: 25%;
+    left: 1rem;
+
+    color: hsla(0, 0%, 0%, 0.5);
+    font-family: var(--FF-BODY);
+
+    transition: all 0.5s ease;
+
+    user-select: none;
+}
+
+/* + to find sibling selector */
+.INPUT__INPUT:focus+.INPUT__PLACEHOLDER,
+.AUTOFOCUS {
+    color: var(--COLOR-DARK3);
+
+    transform: scale(0.75);
+    top: -40%;
+    left: 0;
+}
+
+.INVALID_PLACEHOLDER {
+    transform: scale(0.75);
+    top: -40%;
+    left: 0;
+
+    color: var(--ACCENT-RED);
+}
+
+.INVALID_BORDER {
+    border: 2px solid var(--ACCENT-RED);
+}
+
+.VALID_BORDER {
+    border: 2px solid var(--ACCENT-GREEN);
+}
+
+.VALID_PLACEHOLDER {
+    transform: scale(0.75);
+    top: -40%;
+    left: 0;
+
+    color: var(--ACCENT-GREEN);
+}
+
+.POP_UP__CONTROLS {
+    display: flex;
+    justify-content: space-around;
+
+    margin: var(--MARGIN);
+}
+
+.POP_UP__CONTROLS button {
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+    outline: none;
+    border: none;
+    border-radius: var(--BORDER-RD-CONTACT);
+    cursor: pointer;
+}
+
+.CONTROLS__CLOSE {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.575);
+}
+
+.CONTROLS__SUBMIT {
+    background-color: var(--ACCENT-GREEN);
+    color: white;
+}
+
+.POP_UP.ACTIVE {
+    top: 0;
+    transition: top 0s ease-in-out;
+}
+
+.POP_UP.ACTIVE .OVERLAY {
+    opacity: 1;
+    transition: all .3s ease-in-out;
+}
+
+.POP_UP.ACTIVE .POP_UP__CONTENT {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+
+
+/* TODO: Promodo Timer Page */
 
 .TIMER__BODY {
     background-color: #1e213f;
