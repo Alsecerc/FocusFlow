@@ -94,8 +94,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
             return timer.id;
         }
 
-        function display_none_other (BUTTON_TIMER_TYPE_ID){
-            const BUTTON__CONTAINER = document.querySelectorAll('.button-container .button');
+        function display_none_other (BUTTON_TIMER_TYPE_ID = null){
+            const BUTTON__CONTAINER = document.querySelectorAll('.timer-display .time span');
+            if(BUTTON_TIMER_TYPE_ID === null){
+                console.log('Please put iD');
+                return;
+            }
 
             //testing
             // const BUTTON__TYPE__ARRAY = Array.from(BUTTON__CONTAINER).map(button => button.id);
@@ -103,9 +107,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             // console.log(BUTTON__TYPE__ARRAY);
             //testing
+
+            // let buttonsArray = Array.from(BUTTON__CONTAINER);
+
             BUTTON__CONTAINER.forEach(button => {
                 if (button.id === BUTTON_TIMER_TYPE_ID.id){
-                    console.log(`${button.id}:${BUTTON_TIMER_TYPE_ID.id}`);
+                    // console.log(`${button.id}:${BUTTON_TIMER_TYPE_ID.id}`); //debug
                     console.log(`${button.id}:style change to block`);
                     button.style.display = 'block';
                 }else{
@@ -217,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         StartButton();
         StopButton();
         timerTypeSelection();
-        display_none_other(session);
+        display_none_other();
         //testing
     }
 });
