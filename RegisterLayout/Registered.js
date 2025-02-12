@@ -35,10 +35,11 @@ MENU_BUTTON.addEventListener('click', function () {
 
 
 // TODO: Todo
+
 function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName, Content, paragraphTag, paragraphClassName, paragraphContent){
     console.log("Creating group");
     let container = document.querySelector(`.${NameOfContainer}`);
-    if(!container){
+    if (!container) {
         console.error(`Container with ${NameOfContainer} not found`);
         return;
     }
@@ -65,7 +66,7 @@ function CreateNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClass
 
 }
 
-function CreateTaskForm (){
+function CreateTaskForm() {
 
     console.log("Creating Task Form......");
 
@@ -91,12 +92,12 @@ function CreateTaskForm (){
 
     const observer = new MutationObserver(UpdateSelection);
 
-    function UpdateSelection(){
+    function UpdateSelection() {
         observer.disconnect();
         selection.innerHTML = '';
-        document.querySelectorAll('.TODO__CARD_HEADER').forEach(header =>{
+        document.querySelectorAll('.TODO__CARD_HEADER').forEach(header => {
             const text = header.textContent.trim();
-            if (text){
+            if (text) {
                 const option = document.createElement('option');
                 option.value = text;
                 option.textContent = text;
@@ -113,11 +114,11 @@ function CreateTaskForm (){
     userinput.placeholder = 'Enter the task';
     userinput.required = 'true';
     userinput.id = 'taskContent';
-    
+
     const submission_Button = document.createElement('button');
     submission_Button.type = 'submit';
     submission_Button.textContent = 'Add task';
-    
+
     const cancelButton = document.createElement('button');
     cancelButton.textContent = "Cancel";
     cancelButton.type = 'button';
@@ -133,7 +134,7 @@ function CreateTaskForm (){
 
     main.appendChild(header);
     main.appendChild(form);
-    
+
     document.body.appendChild(main);
     console.log("created Task Form");
     observer.observe(document.body, { childList: true, subtree: true });
@@ -141,7 +142,7 @@ function CreateTaskForm (){
     console.log("MutationObserver started: Watching for changes...");
 }
 
-function GetGroupName (){
+function GetGroupName() {
     const groupNameInput = document.getElementById("groupName");
     return groupNameInput.value;
 }

@@ -144,16 +144,24 @@
             <section class="CALENDAR">
                 <div class="CALENDAR__HEADER">
                     <h1 class="CALENDAR__TITLE" id="calendar__title1"></h1>
-                    <div class="BUTTON__CONTAINER">
-                        <button onclick="toggleViewPrevious()" class="SelectView" id="left"><span class="material-icons" >arrow_left</span></button>
-                        <span style="margin: 0 1rem;">Week</span>
-                        <button onclick="toggleViewNext()" class="SelectView" id="right"><span class="material-icons">arrow_right</span></button>
-                    </div>
-                    <!-- <div class="BUTTON__CONTAINER">
+                    <div class="TITLE__CONTAINER">
+                        <div class="Header__Container">
+                            <button class="Header__Button" onclick="goToToday()"><span class=" Header__Wording">Today</span></button>
+                        </div>
+                        <div class="Header__Container">
+                            <button class="Header__Button"><span class="material-icons Header__Wording">add</span></button>
+                        </div>
+                        <div class="Header__Container">
+                            <button onclick="toggleViewPrevious()" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
+                            <span style="margin: 0 1rem;">Week</span>
+                            <button onclick="toggleViewNext()" class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
+                        </div>
+                        <!-- <div class="BUTTON__CONTAINER">
                         <button onclick="togglePeriod('week')" id="weekButton" class="CALENDAR__HEADER__BUTTON">W</button>
                         <button onclick="togglePeriod('month')" id="monthButton" class="CALENDAR__HEADER__BUTTON">M</button>
                         <button onclick="togglePeriod('year')" id="yearButton" class="CALENDAR__HEADER__BUTTON">Y</button>
                     </div> -->
+                    </div>
                 </div>
 
                 <div class="CALENDAR__CONTENT">
@@ -170,13 +178,13 @@
                             </ul>
 
                             <ul class="DAY_NUM">
-                                <li>11</li>
-                                <li>12</li>
-                                <li>13</li>
-                                <li>14</li>
-                                <li>15</li>
-                                <li>16</li>
-                                <li>17</li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
                             </ul>
                         </div>
 
