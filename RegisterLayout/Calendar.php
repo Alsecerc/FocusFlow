@@ -188,11 +188,6 @@
             $dueDate = $_POST['due_date'] ?? null;
             $startTime = $_POST['time'] ?? null;
             $duration = $_POST['duration'] ?? null;
-
-            
-
-            
-
             ?>
 
             <h1 class="ARTICLE_TITLE">Calendar</h1>
