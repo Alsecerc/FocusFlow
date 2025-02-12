@@ -18,9 +18,9 @@ function getQueryAll(element) {
 
 
 // TODO: HOMEPAGE
-var SIDEBAR = getClass("SIDEBAR")[0];
-var MENU_BUTTON = getClass("HEADER__MENU_BUTTON")[0];
-var MENU_ICON = getClass("HEADER__MENU_ICON")[0];
+let SIDEBAR = getClass("SIDEBAR")[0];
+let MENU_BUTTON = getClass("HEADER__MENU_BUTTON")[0];
+let MENU_ICON = getClass("HEADER__MENU_ICON")[0];
 
 MENU_BUTTON.addEventListener('click', function () {
     if (MENU_ICON.classList.contains("ACTIVE")) {
@@ -61,7 +61,7 @@ function createNewGroup (NameOfContainer, ClassName, headerTag, headerClassName,
     console.log("Created group");
 }
 
-function createNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent){
+function CreateNewTask (NameOfContainer, ClassName, paragraphTag, paragraphClassName, paragraphContent){
 
 }
 
@@ -149,7 +149,6 @@ function GetGroupName (){
 document.addEventListener('DOMContentLoaded', function(){ // only active the code when it is on the specific file
     if(window.location.pathname.toLowerCase().includes('todo')){
         console.log("Todo page activated");
-
         
         // Get all buttons with the class "TODO__ADD"
         const buttons = document.querySelectorAll(".TODO__ADD");
@@ -241,153 +240,339 @@ document.addEventListener('DOMContentLoaded', function(){ // only active the cod
 
 // TODO: Calendar Page
 // Calendar
-// Toggle function as webpage load
-// window.onload = function () {
-//     togglePeriod('week');
-// };
+document.addEventListener('DOMContentLoaded', function(){
+    if (window.location.pathname.toLowerCase().includes('Calender')){
+        // Toggle function as webpage load
+        // window.onload = function () {
+        //     togglePeriod('week');
+        // };
 
-// function togglePeriod(Options) {
-//     // Button Effect
-//     let ButtonList = Array.from(getClass("CALENDAR__HEADER__BUTTON"));
-//     ButtonList.forEach((buts) => {
-//         // remove select effect from all button
-//         buts.classList.remove("SELECTED_BUTTON");
-//     });
+        // function togglePeriod(Options) {
+        //     // Button Effect
+        //     let ButtonList = Array.from(getClass("CALENDAR__HEADER__BUTTON"));
+        //     ButtonList.forEach((buts) => {
+        //         // remove select effect from all button
+        //         buts.classList.remove("SELECTED_BUTTON");
+        //     });
 
-//     let Button = getID(Options + "Button");
-//     Button.classList.add("SELECTED_BUTTON");
-
-
-//     // Content Display
-//     let ContentList = Array.from(getClass("CALENDAR__CONTENT__ITEM"));
-//     ContentList.forEach((conts) => {
-//         conts.classList.remove("CALENDAR__CONTENT_SHOW");
-//     });
-
-//     // Show the selected content div
-//     let Content = getID(Options + "Content");
-//     Content.classList.add("CALENDAR__CONTENT_SHOW");
+        //     let Button = getID(Options + "Button");
+        //     Button.classList.add("SELECTED_BUTTON");
 
 
-//     // Change title
-//     let Title = getClass("CALENDAR__TITLE")[0];
-//     Title.innerHTML = Options.toUpperCase();
-// };
+        //     // Content Display
+        //     let ContentList = Array.from(getClass("CALENDAR__CONTENT__ITEM"));
+        //     ContentList.forEach((conts) => {
+        //         conts.classList.remove("CALENDAR__CONTENT_SHOW");
+        //     });
+
+        //     // Show the selected content div
+        //     let Content = getID(Options + "Content");
+        //     Content.classList.add("CALENDAR__CONTENT_SHOW");
+
+
+        //     // Change title
+        //     let Title = getClass("CALENDAR__TITLE")[0];
+        //     Title.innerHTML = Options.toUpperCase();
+        // };
 
 
 
 
-// get date time
-const TimeNow = new Date();
-const monthList = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-];
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const year = TimeNow.getFullYear();
-const month = TimeNow.getMonth();    // 1-12 (add 1 because months are 0-based)
-const day = TimeNow.getDate();
-const dayName = TimeNow.getDay();
+        // get date time
+        const TimeNow = new Date();
+        const monthList = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const year = TimeNow.getFullYear();
+        const month = TimeNow.getMonth();    // 1-12 (add 1 because months are 0-based)
+        const day = TimeNow.getDate();
+        const dayName = TimeNow.getDay();
 
-let CALENDAR__TITLE1 = getQuery("#calendar__title1");
-let DAYNUM_LIST = Array.from(getQueryAll('.DAY_NUM li'));
-// as page load the function will be run
-let DayOffset = day;
-let MonthOffset = month;
-let YearOffset = year;
+        let CALENDAR__TITLE1 = getQuery("#calendar__title1");
+        let DAYNUM_LIST = Array.from(getQueryAll('.DAY_NUM li'));
+        // as page load the function will be run
+        let DayOffset = day;
+        let MonthOffset = month;
+        let YearOffset = year;
 
-window.onload = function () {
-    switch (dayName) {
-        case 0:
-            DayOffset
-            break;
-        case 1:
-            DayOffset -= 1
-            break;
-        case 2:
-            DayOffset -= 2
-            break;
-        case 3:
-            DayOffset -= 3
-            break;
-        case 4:
-            DayOffset -= 4
-            break;
-        case 5:
-            DayOffset -= 5
-            break;
-        case 6:
-            DayOffset -= 6
-            break;
-    }
-    DAYNUM_LIST.forEach((Item) => {
-        // find out date of month
-        let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
-        if (DayOffset < totalDaysInMonth) {
-            Item.innerHTML = `${DayOffset}`
-            DayOffset += 1;
-        } else {
-            // reset the date num with new month
-            MonthOffset += 1;
-            DayOffset = 1;
-            Item.innerHTML = `${DayOffset}`
+        window.onload = function () {
+            switch (dayName) {
+                case 0:
+                    DayOffset
+                    break;
+                case 1:
+                    DayOffset -= 1
+                    break;
+                case 2:
+                    DayOffset -= 2
+                    break;
+                case 3:
+                    DayOffset -= 3
+                    break;
+                case 4:
+                    DayOffset -= 4
+                    break;
+                case 5:
+                    DayOffset -= 5
+                    break;
+                case 6:
+                    DayOffset -= 6
+                    break;
+            }
+            DAYNUM_LIST.forEach((Item) => {
+                // find out date of month
+                let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
+                if (DayOffset < totalDaysInMonth) {
+                    Item.innerHTML = `${DayOffset}`
+                    DayOffset += 1;
+                } else {
+                    // reset the date num with new month
+                    MonthOffset += 1;
+                    DayOffset = 1;
+                    Item.innerHTML = `${DayOffset}`
+                }
+            });
+
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
         }
-    });
 
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
-}
+        function toggleViewPrevious() {
+            DayOffset -= 14;
+
+            while (DayOffset <= 0) {
+                // go back 1 month
+                MonthOffset -= 1
+                if (MonthOffset < 0) {
+                    // go back previous year December
+                    MonthOffset = 11;
+                    YearOffset -= 1;
+                }
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                DayOffset += totalDaysInMonth;
+            }
 
 
+            DAYNUM_LIST.forEach((Item) => {
+                Item.innerHTML = `${DayOffset}`
+                DayOffset += 1;
+            });
 
-
-function toggleViewPrevious() {
-    DayOffset -= 14;
-
-    while (DayOffset <= 0) {
-        // go back 1 month
-        MonthOffset -= 1
-        if (MonthOffset < 0) {
-            // go back previous year December
-            MonthOffset = 11;
-            YearOffset -= 1;
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
         }
-        let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-        DayOffset += totalDaysInMonth;
-    }
 
+        function toggleViewNext() {
+            let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+            while (DayOffset >= totalDaysInMonth) {
+                MonthOffset += 1
+                if (MonthOffset > 11) {
+                    // go back previous year December
+                    MonthOffset = 1;
+                    YearOffset += 1;
+                }
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                DayOffset = Math.abs(totalDaysInMonth - DayOffset - 1);
+            }
 
-    DAYNUM_LIST.forEach((Item) => {
-        Item.innerHTML = `${DayOffset}`
-        DayOffset += 1;
-    });
+            DAYNUM_LIST.forEach((Item) => {
+                Item.innerHTML = `${DayOffset}`
+                DayOffset += 1;
+            });
 
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
-}
-
-function toggleViewNext() {
-    let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-    while (DayOffset >= totalDaysInMonth) {
-        MonthOffset += 1
-        if (MonthOffset > 11) {
-            // go back previous year December
-            MonthOffset = 1;
-            YearOffset += 1;
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
         }
-        let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-        DayOffset = Math.abs(totalDaysInMonth - DayOffset - 1);
     }
+})
+// TODO: Timer Page
+document.addEventListener("DOMContentLoaded", function(event) {
+    if (window.location.pathname.toLowerCase().includes('timer')){
+        console.log("Running js code on Timer page...");
+        let pomodoro = document.getElementById("pomodoro-timer");
+        let short = document.getElementById("short-timer");
+        let long = document.getElementById("long-timer");
 
-    DAYNUM_LIST.forEach((Item) => {
-        Item.innerHTML = `${DayOffset}`
-        DayOffset += 1;
-    });
+        // let timers = document.querySelectorAll(".timer-display");
+        let session = document.getElementById("pomodoro-session");
+        let shortBreak = document.getElementById("short-break");
+        let longBreak = document.getElementById("long-break");
 
-    CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]}`
-}
+        let startBtn = document.getElementById("start");
+        let stopBtn = document.getElementById("stop");
 
+        let timerMsg = document.getElementById("timer-message");
+        let button = document.querySelector(".button");
 
+        let addButton = document.getElementById('plus-btn');
+        let minusButton = document.getElementById('minus-btn');
 
+        let currentTimer = null;
+        let myInterval = null;
+        let SetTimer = null;
+        let isFirstUpdate = true;
+        let intervalId;
 
+        function ShowDefaultTimer(){
+            const pomodoro_minutes = 10;
+            const pomodoro_second = 0;
+            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_second).padStart(2,'0')}`
+            pomodoro.style.display = 'block';
 
+            const short_break_minutes = 5;
+            const short_break_seconds = 0;
 
+            short.innerHTML = `${String(short_break_minutes).padStart(2,'0')}:${String(short_break_seconds).padStart(2,'0')}`;
+            short.style.display = 'none';
 
+            const long_break_minutes = 10;
+            const long_break_seconds = 0;
+
+            long.innerHTML = `${String(long_break_minutes).padStart(2,'0')}:${String(long_break_seconds).padStart(2,'0')}`;
+            long.style.display = 'none';
+        }
+        
+        function addTime(ID__TIMER){
+            addButton.addEventListener('click', () => {
+                let Time = ID__TIMER.textContent;
+                let [minutes, seconds] = Time.split(':').map(Number);
+                if (minutes >= 60){
+                    console.log('Minutes cannot be more than 60');
+                }else{
+                    minutes++;
+                }                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+            })
+        }
+
+        function minusTime(ID__TIMER){
+            minusButton.addEventListener('click', () => {
+                console.log('start minus');
+                let currentTime = ID__TIMER.textContent;
+                let [minutes, seconds] = currentTime.split(':').map(Number);
+                
+                if (minutes <= 0){
+                    console.log('Time cannot be negative');
+                }else{
+                    minutes--;
+                }
+                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                console.log('minus complete');
+            })
+        }
+
+        /**
+         * Returns the current type of time.
+         * 
+         * @returns {Time_type} The current type of time displaying.
+         * 
+         */
+        function CurrentTimer (){
+            let TIMERS = document.querySelectorAll('.timer-display .time span');
+            let CURRENT__TIMER = null;
+            console.log('looking for current timer');
+            if (TIMERS.length === 0) {
+                console.log("No timers found.");
+                return; // Exit the function if no timers are found
+            }
+
+            let timer = Array.from(TIMERS).find(timer => timer.style.display = 'block');
+
+            console.log(`The return id is ${timer.id}`);
+            return timer.id;
+        }
+
+        function timerTypeSelection (){
+
+        }
+
+        /**
+         * Start button 
+         * 
+         * When user press start button it will start counting the time
+         * 
+         */
+        function TimeUpdate(){
+
+            if(isFirstUpdate){
+                console.log('Ignore first update');
+                isFirstUpdate = false;
+                return;
+            }
+            const TypeTimer = CurrentTimer();
+            const timer = document.getElementById(TypeTimer);
+
+            let currentTime = timer.textContent;
+            let [minutes, seconds] = currentTime.split(':').map(Number);
+
+            console.log('Started count');
+            if (seconds > 0){
+                seconds--;
+            }else if (seconds == 0){
+                if (minutes > 0){
+                    minutes--;
+                    seconds = 59;
+                }else{
+                    console.log('Time up');
+                    clearInterval(intervalId);
+                }
+            }
+            timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function StartButton (){
+            startBtn.addEventListener('click', ()=> {
+                if(intervalId){
+                    clearInterval(intervalId);
+                }
+                console.log('Pressed Start button');
+                intervalId = setInterval(TimeUpdate, 1000);
+            })
+        }
+
+        function StopButton (){
+            stopBtn.addEventListener('click', ()=> {
+                console.log("Stopped");
+                clearInterval(intervalId);
+            })
+        }
+
+        function test() {
+            let timers = document.querySelectorAll('.timer-display .time span');
+            
+            let observer = new MutationObserver((mutationList) =>{
+                mutationList.forEach(mutation =>{
+                    if(mutation.type === 'childList'){
+                        console.log(`Timer updated: ${mutation.target.id} → ${mutation.target.textContent}`);
+                    }
+                })
+            })
+            // Ensure that timers is not empty
+            if (timers.length === 0) {
+                console.log("No timers found.");
+                return; // Exit the function if no timers are found
+            }
+            let config = { childList: true};
+            timers.forEach((timer) => { // Loop through each element in the NodeList
+                // let style = window.getComputedStyle(timer); // Get the computed style for each element
+                if (timer.style.display === 'block') {
+                    console.log(`${timer.id}, ${timer.textContent} is displaying`); // Log the id of the timer that is visible
+                }else{
+                    console.log(`${timer.id} is not displaying`);
+                }
+                // console.log(`${timer.id}, ${timer.textContent}, ${timer.style.display} is displaying`);
+                observer.observe(timer, config);
+            });
+        }
+        const timer_id = CurrentTimer();
+        const CURRENT__TYPE__TIMER = document.getElementById(`${timer_id}`);
+        ShowDefaultTimer();
+        //testing
+        // console.log(CURRENT__TYPE__TIMER);
+        addTime(CURRENT__TYPE__TIMER);
+        minusTime(CURRENT__TYPE__TIMER);
+        test();
+        TimeUpdate();
+        StartButton();
+        StopButton();
+        //testing
+    }
+});
