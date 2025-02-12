@@ -1000,3 +1000,61 @@ link to page/ create a page */
     */
     grid-row: 5;
 }
+
+/* Promodo Timer */
+
+.POMODORO__CONTAINER {
+    text-align: center;
+    padding: 20px;
+}
+
+.POMODORO__DISPLAY {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 20px auto;
+}
+
+#timer-display {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Timer Progress Circle */
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 1s linear;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 0;
+}
+
+/* Buttons */
+.PROMODO__TIMER__BUTTON {
+    background: #ff6347;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.PROMODO__TIMER__BUTTON:hover {
+    background: #d9534f;
+}
+
+.PROMODO__TIMER__BUTTON:disabled {
+    background: gray;
+    cursor: not-allowed;
+}

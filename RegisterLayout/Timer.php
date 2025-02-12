@@ -1,4 +1,6 @@
-<!-- change to .php -->
+<?php
+session_start(); // Start session if needed
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +12,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
+    <link rel="icon" href="img/SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
 </head>
 
@@ -72,85 +74,23 @@
     </header>
 
     <main>
-    <div class="SIDEBAR">
-            <nav class="SIDEBAR__NAV">
-                <ul>
-                    <li>
-                        <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                home
-                            </span>Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                timer
-                            </span>Focus Timer
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                task_alt
-                            </span>To Do
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                event
-                            </span>Calendar
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                analytics
-                            </span>Analytics
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <nav class="SIDEBAR__NAV COMMUNITY">
-                <h4 class="NAV_TITLE">Community</h4>
-                <ul>
-                    <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Channel 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-                <h4 class="NAV_TITLE">DM</h4>
-                <ul>
-                    <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Person 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Pomodoro Timer Section -->
-        <div id="pomodoro-container" style="text-align: center; padding: 20px;">
+        <div class="POMODORO__CONTAINER">
             <h2>Pomodoro Timer</h2>
-            <div id="timer-display" style="font-size: 48px; margin: 20px;">25:00</div>
-            <div id="timer-controls">
-                <button id="start-button">Start</button>
-                <button id="pause-button">Pause</button>
-                <button id="reset-button">Reset</button>
+            <div class="POMODORO__DISPLAY">
+                <svg class="progress-ring" width="120" height="120">
+                    <circle class="progress-ring__circle" stroke="red" stroke-width="10" fill="transparent"
+                            r="50" cx="60" cy="60"/>
+                </svg>
+                <div id="timer-display">25:00</div>
+            </div>
+            <div class="POMODORO__CONTROLS">
+                <button id="start-button" class="PROMODO__TIMER__BUTTON">Start</button>
+                <button id="pause-button" class="PROMODO__TIMER__BUTTON">Pause</button>
+                <button id="reset-button" class="PROMODO__TIMER__BUTTON">Reset</button>
             </div>
         </div>
     </main>
 
     <script src="Registered.js" defer></script>
 </body>
-
 </html>
