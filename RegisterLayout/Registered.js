@@ -241,8 +241,8 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 
 // TODO: Calendar Page
 // Calendar
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.location.pathname.toLowerCase().includes('Calender')) {
+document.addEventListener('DOMContentLoaded', function (event) {
+    if (window.location.pathname.toLowerCase().includes('Calendar')) {
         // Toggle function as webpage load
         // window.onload = function () {
         //     togglePeriod('week');
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // };
 
 
-
+        console.log("hel")
 
         // get date time
         const TimeNow = new Date();
@@ -591,8 +591,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    if (window.location.pathname.toLowerCase().includes('timer')){
+document.addEventListener("DOMContentLoaded", function (event) {
+    if (window.location.pathname.toLowerCase().includes('timer')) {
         console.log("Running js code on Timer page...");
         let pomodoro = document.getElementById("pomodoro-timer");
         let short = document.getElementById("short-timer");
@@ -618,49 +618,49 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let isFirstUpdate = true;
         let intervalId;
 
-        function ShowDefaultTimer(){
+        function ShowDefaultTimer() {
             const pomodoro_minutes = 10;
             const pomodoro_seconds = 0;
-            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_seconds).padStart(2,'0')}`
+            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2, '0')}:${String(pomodoro_seconds).padStart(2, '0')}`
             pomodoro.style.display = 'block';
 
             const short_break_minutes = 5;
             const short_break_seconds = 0;
 
-            short.innerHTML = `${String(short_break_minutes).padStart(2,'0')}:${String(short_break_seconds).padStart(2,'0')}`;
+            short.innerHTML = `${String(short_break_minutes).padStart(2, '0')}:${String(short_break_seconds).padStart(2, '0')}`;
             short.style.display = 'none';
 
             const long_break_minutes = 10;
             const long_break_seconds = 0;
 
-            long.innerHTML = `${String(long_break_minutes).padStart(2,'0')}:${String(long_break_seconds).padStart(2,'0')}`;
+            long.innerHTML = `${String(long_break_minutes).padStart(2, '0')}:${String(long_break_seconds).padStart(2, '0')}`;
             long.style.display = 'none';
         }
-        
-        function addTime(ID__TIMER){
+
+        function addTime(ID__TIMER) {
             addButton.addEventListener('click', () => {
                 let Time = ID__TIMER.textContent;
                 let [minutes, seconds] = Time.split(':').map(Number);
-                if (minutes >= 60){
+                if (minutes >= 60) {
                     console.log('Minutes cannot be more than 60');
-                }else{
+                } else {
                     minutes++;
-                }                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                } ID__TIMER.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             })
         }
 
-        function minusTime(ID__TIMER){
+        function minusTime(ID__TIMER) {
             minusButton.addEventListener('click', () => {
                 console.log('start minus');
                 let currentTime = ID__TIMER.textContent;
                 let [minutes, seconds] = currentTime.split(':').map(Number);
-                
-                if (minutes <= 0){
+
+                if (minutes <= 0) {
                     console.log('Time cannot be negative');
-                }else{
+                } else {
                     minutes--;
                 }
-                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                ID__TIMER.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 console.log('minus complete');
             })
         }
@@ -671,7 +671,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
          * @returns {Time_type} The current type of time displaying.
          * 
          */
-        function CurrentTimer (){
+        function CurrentTimer() {
             let TIMERS = document.querySelectorAll('.timer-display .time span');
             let CURRENT__TIMER = null;
             console.log('looking for current timer');
@@ -686,19 +686,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
             return timer.id;
         }
 
-        function timerTypeSelection (){
+        function timerTypeSelection() {
 
         }
-        
+
         /**
          * Start button 
          * 
          * When user press start button it will start counting the time
          * 
          */
-        function TimeUpdate(){
+        function TimeUpdate() {
 
-            if(isFirstUpdate){
+            if (isFirstUpdate) {
                 console.log('Ignore first update');
                 isFirstUpdate = false;
                 return;
@@ -710,13 +710,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
             let [minutes, seconds] = currentTime.split(':').map(Number);
 
             console.log('Started count');
-            if (seconds > 0){
+            if (seconds > 0) {
                 seconds--;
-            }else if (seconds == 0){
-                if (minutes > 0){
+            } else if (seconds == 0) {
+                if (minutes > 0) {
                     minutes--;
                     seconds = 59;
-                }else{
+                } else {
                     console.log('Time up');
                     clearInterval(intervalId);
                 }
@@ -724,9 +724,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        function StartButton (){
-            startBtn.addEventListener('click', ()=> {
-                if(intervalId){
+        function StartButton() {
+            startBtn.addEventListener('click', () => {
+                if (intervalId) {
                     clearInterval(intervalId);
                 }
                 console.log('Pressed Start button');
@@ -734,8 +734,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
             })
         }
 
-        function StopButton (){
-            stopBtn.addEventListener('click', ()=> {
+        function StopButton() {
+            stopBtn.addEventListener('click', () => {
                 console.log("Stopped");
                 clearInterval(intervalId);
             })
@@ -743,10 +743,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         function test() {
             let timers = document.querySelectorAll('.timer-display .time span');
-            
-            let observer = new MutationObserver((mutationList) =>{
-                mutationList.forEach(mutation =>{
-                    if(mutation.type === 'childList'){
+
+            let observer = new MutationObserver((mutationList) => {
+                mutationList.forEach(mutation => {
+                    if (mutation.type === 'childList') {
                         console.log(`Timer updated: ${mutation.target.id} → ${mutation.target.textContent}`);
                     }
                 })
@@ -756,12 +756,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 console.log("No timers found.");
                 return; // Exit the function if no timers are found
             }
-            let config = { childList: true};
+            let config = { childList: true };
             timers.forEach((timer) => { // Loop through each element in the NodeList
                 // let style = window.getComputedStyle(timer); // Get the computed style for each element
                 if (timer.style.display === 'block') {
                     console.log(`${timer.id}, ${timer.textContent} is displaying`); // Log the id of the timer that is visible
-                }else{
+                } else {
                     console.log(`${timer.id} is not displaying`);
                 }
                 // console.log(`${timer.id}, ${timer.textContent}, ${timer.style.display} is displaying`);
