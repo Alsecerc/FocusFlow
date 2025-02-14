@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let short = document.getElementById("short-timer");
         let long = document.getElementById("long-timer");
 
-        // let timers = document.querySelectorAll(".timer-display");
+        let TIMER__DISPLAY = document.querySelector(".timer-display");
         let session = document.getElementById("pomodoro-session");
         let shortBreak = document.getElementById("short-break");
         let longBreak = document.getElementById("long-break");
@@ -23,7 +23,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let myInterval = null;
         let SetTimer = null;
         let isFirstUpdate = true;
-        let intervalId;
+        let intervalId;   
+
+        const CurrentTimerType = (mutationList, observer) => {
+            for (const mutation of mutationList) {
+                if (mutation.type === "characterData") {
+                  console.log(`${mutation.type} data was modified`);
+                } else if (mutation.type === "subtree") {
+                  console.log(`The ${mutation.subtree} subtree was modified.`);
+                }
+            }
+        }
 
         function ShowDefaultTimer(){
             const pomodoro_minutes = 25;
@@ -44,31 +54,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
             long.style.display = 'none';
         }
         
-        function addTime(ID__TIMER){
+        function addTime(){
             addButton.addEventListener('click', () => {
-                let Time = ID__TIMER.textContent;
+                const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(`Current add time in ${TIMER__ID.id}`);
+                let Time = TIMER__ID.textContent;
                 let [minutes, seconds] = Time.split(':').map(Number);
                 if (minutes >= 60){
                     console.log('Minutes cannot be more than 60');
                 }else{
                     minutes++;
-                }                
-                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                }
+                TIMER__ID.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
             })
         }
 
-        function minusTime(ID__TIMER){
+        function minusTime(){
             minusButton.addEventListener('click', () => {
-                console.log('start minus');
-                let currentTime = ID__TIMER.textContent;
+                const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(`Current minus time in ${TIMER__ID.id}`);
+                let currentTime = TIMER__ID.textContent;
                 let [minutes, seconds] = currentTime.split(':').map(Number);
-                
                 if (minutes <= 0){
                     console.log('Time cannot be negative');
                 }else{
                     minutes--;
                 }
-                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                TIMER__ID.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
                 console.log('minus complete');
             })
         }
@@ -79,20 +91,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
          * @returns {Time_type} The current type of time displaying.
          * 
          */
-        function CurrentTimer (){
-            let TIMERS = document.querySelectorAll('.timer-display .time span');
-            let CURRENT__TIMER = null;
-            console.log('looking for current timer');
-            if (TIMERS.length === 0) {
-                console.log("No timers found.");
-                return; // Exit the function if no timers are found
+        function CurrentTimer() {
+            // Select the timer display container
+            const ALL__TIMER__DISPLAY = document.querySelectorAll('.timer-display .time span');
+            if (!ALL__TIMER__DISPLAY) {
+                console.error('Element with class "timer-display" not found.');
+                return;
             }
-
-            let timer = Array.from(TIMERS).find(timer => timer.style.display = 'block');
-
-            console.log(`The return id is ${timer.id}`);
-            return timer.id;
+    
+            // Find the timer with display: block
+            const activeTimer = Array.from(ALL__TIMER__DISPLAY).find(timer => timer.style.display === 'block'); 
+            if (activeTimer) {
+                console.log(`Active timer: ${activeTimer.id}`);
+                return activeTimer.id;
+            } else {
+                console.log('No active timer found.');
+                return null;
+            }           
         }
+    
 
         function display_none_other (BUTTON_TIMER_TYPE_ID = null){
             const BUTTON__CONTAINER = document.querySelectorAll('.timer-display .time span');
@@ -100,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 console.log('Please put iD');
                 return;
             }
+            console.log(BUTTON_TIMER_TYPE_ID.id);
 
             //testing
             // const BUTTON__TYPE__ARRAY = Array.from(BUTTON__CONTAINER).map(button => button.id);
@@ -126,11 +144,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
             document.querySelector('.button-container').addEventListener('click', function(event){
                 if(event.target.id === session.id){
                     console.log(`timer selection is ${event.target.id}`);
+                    display_none_other(pomodoro);
+                    
                 }else if(event.target.id === shortBreak.id){
                     console.log(`timer selection is ${event.target.id}`);
+                    display_none_other(short);
+                    
+
                 }else if(event.target.id === longBreak.id){
                     console.log(`timer selection is ${event.target.id}`);
+                    display_none_other(long);
+                    // console.log(`current target is ${event.target}`);
                 }
+                clearInterval(intervalId);// stop the timer
             })
         }
         
@@ -141,7 +167,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
          * 
          */
         function TimeUpdate(){
-
             if(isFirstUpdate){
                 console.log('Ignore first update');
                 isFirstUpdate = false;
@@ -153,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             let currentTime = timer.textContent;
             let [minutes, seconds] = currentTime.split(':').map(Number);
 
-            console.log('Started count');
+            console.log(`Started count at ${TypeTimer}`);
             if (seconds > 0){
                 seconds--;
             }else if (seconds == 0){
@@ -170,6 +195,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         function StartButton (){
             startBtn.addEventListener('click', ()=> {
+                const TIMER__ID = document.getElementById(CurrentTimer());
                 if(intervalId){
                     clearInterval(intervalId);
                 }
@@ -200,7 +226,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 console.log("No timers found.");
                 return; // Exit the function if no timers are found
             }
-            let config = { childList: true};
+            let config = {  characterData: true, subtree: true};
             timers.forEach((timer) => { // Loop through each element in the NodeList
                 // let style = window.getComputedStyle(timer); // Get the computed style for each element
                 if (timer.style.display === 'block') {
@@ -212,19 +238,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 observer.observe(timer, config);
             });
         }
-        const timer_id = CurrentTimer();
-        const CURRENT__TYPE__TIMER = document.getElementById(`${timer_id}`);
+
+        // Put function here
         ShowDefaultTimer();
         //testing
-        // console.log(CURRENT__TYPE__TIMER);
-        addTime(CURRENT__TYPE__TIMER);
-        minusTime(CURRENT__TYPE__TIMER);
-        test();
+        addTime();
+        minusTime();
         TimeUpdate();
         StartButton();
         StopButton();
         timerTypeSelection();
-        display_none_other();
+        // display_none_other();
         //testing
     }
 });
