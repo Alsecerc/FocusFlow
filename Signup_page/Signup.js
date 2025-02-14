@@ -1,3 +1,60 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const formSteps = document.querySelectorAll('.form-step');
+    const nextButtons = document.querySelectorAll('.next-btn');
+    const progressSteps = document.querySelectorAll('.step');
+    let currentStep = 0;
+
+    // Function to update form steps
+    function updateFormSteps() {
+        formSteps.forEach((step, index) => {
+            step.classList.remove('active');
+            if (index === currentStep) {
+                step.classList.add('active');
+            }
+        });
+
+        // Update progress bar steps
+        progressSteps.forEach((step, index) => {
+            step.classList.remove('active');
+            if (index <= currentStep) {
+                step.classList.add('active');
+            }
+        });
+    }
+
+    // Handle next button clicks
+    nextButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Validate current step inputs
+            const currentFormStep = formSteps[currentStep];
+            const inputs = currentFormStep.querySelectorAll('input, select');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isValid = false;
+                    input.style.borderBottom = '1px solid red';
+                } else {
+                    input.style.borderBottom = '1px solid #ccc';
+                }
+            });
+
+            if (isValid && currentStep < formSteps.length - 1) {
+                currentStep++;
+                updateFormSteps();
+            }
+        });
+    });
+
+    // Form submission
+    const form = document.getElementById('signupForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Add your form submission logic here
+        console.log('Form submitted');
+    });
+});
+
 class ProgressBar {
     constructor() {
         this.currentStep = 1;
