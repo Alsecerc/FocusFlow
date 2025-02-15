@@ -148,7 +148,7 @@ function GetGroupName() {
 }
 
 document.addEventListener('DOMContentLoaded', function () { // only active the code when it is on the specific file
-    if (window.location.pathname.toLowerCase().includes('todo')) {
+    if (window.location.pathname.includes('todo')) {
         console.log("Todo page activated");
 
 
@@ -242,8 +242,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 // TODO: Calendar Page
 // Calendar
 document.addEventListener('DOMContentLoaded', function (event) {
-    if (window.location.pathname.toLowerCase().includes('Calendar')) {
-        // Toggle function as webpage load
+    if (window.location.pathname.includes('Calendar')) {
+        // {
+            // Toggle function as webpage load
         // window.onload = function () {
         //     togglePeriod('week');
         // };
@@ -277,9 +278,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
         // };
 
 
-        console.log("hel")
-
+         //}
         // get date time
+        
         const TimeNow = new Date();
         const monthList = [
             "January", "February", "March", "April", "May", "June",

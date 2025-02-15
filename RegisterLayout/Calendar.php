@@ -202,7 +202,7 @@
                             <button class="Header__Button OPEN_POP_UP"><span class="material-icons Header__Wording">add</span></button>
                         </div>
                         <div class="Header__Container">
-                            <button onclick="toggleViewPrevious()" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
+                            <button type="button" onclick="toggleViewPrevious()" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
                             <span style="margin: 0 1rem;">Week</span>
                             <button onclick="toggleViewNext()" class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
                         </div>
