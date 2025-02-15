@@ -1197,6 +1197,15 @@ link to page/ create a page */
     box-sizing: border-box;
 }
 
+.MAIN__TIMER {
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+    text-align: center;
+    margin: 0 auto;
+    position: relative; /* To help with positioning */
+}
+
 .pomodoro {
     display: flex;
     flex-direction: column;

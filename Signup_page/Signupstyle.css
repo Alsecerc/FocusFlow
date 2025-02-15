@@ -125,6 +125,30 @@ h3 {
     font-size: 16px;
 }
 
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.form-step select,
+.form-step label {
+    width: 100%;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.form-step select {
+    padding: 12px 4px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    background: white;
+}
+
 button {
     width: 100%;
     padding: 16px;

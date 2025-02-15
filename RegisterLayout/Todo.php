@@ -167,7 +167,7 @@
 
     </main>
 
-    <script src="Registered.js" defer></script>
+    
 
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>
@@ -187,6 +187,8 @@
             <button type="submit">Add task</button>
         </form>
     </div> -->
+    <script src="Registered.js" defer></script>
+    <script src="Todo.js" defer></script>
 </body>
 
 </html>
