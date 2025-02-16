@@ -243,44 +243,8 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 // Calendar
 document.addEventListener('DOMContentLoaded', function (event) {
     if (window.location.pathname.includes('Calendar')) {
-        // {
-            // Toggle function as webpage load
-        // window.onload = function () {
-        //     togglePeriod('week');
-        // };
-
-        // function togglePeriod(Options) {
-        //     // Button Effect
-        //     let ButtonList = Array.from(getClass("CALENDAR__HEADER__BUTTON"));
-        //     ButtonList.forEach((buts) => {
-        //         // remove select effect from all button
-        //         buts.classList.remove("SELECTED_BUTTON");
-        //     });
-
-        //     let Button = getID(Options + "Button");
-        //     Button.classList.add("SELECTED_BUTTON");
-
-
-        //     // Content Display
-        //     let ContentList = Array.from(getClass("CALENDAR__CONTENT__ITEM"));
-        //     ContentList.forEach((conts) => {
-        //         conts.classList.remove("CALENDAR__CONTENT_SHOW");
-        //     });
-
-        //     // Show the selected content div
-        //     let Content = getID(Options + "Content");
-        //     Content.classList.add("CALENDAR__CONTENT_SHOW");
-
-
-        //     // Change title
-        //     let Title = getClass("CALENDAR__TITLE")[0];
-        //     Title.innerHTML = Options.toUpperCase();
-        // };
-
-
-         //}
         // get date time
-        
+
         const TimeNow = new Date();
         const monthList = [
             "January", "February", "March", "April", "May", "June",
@@ -343,6 +307,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
 
 
+        document.getElementById("left").addEventListener("click", toggleViewPrevious)
         function toggleViewPrevious() {
             DayOffset -= 14;
 
@@ -380,6 +345,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
             CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
 
+        document.getElementById("right").addEventListener("click", toggleViewNext);
         function toggleViewNext() {
             let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
             while (DayOffset >= totalDaysInMonth) {
@@ -413,59 +379,52 @@ document.addEventListener('DOMContentLoaded', function (event) {
             CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
         }
 
+        document.getElementById("today").addEventListener("click", goToToday)
         function goToToday() {
-            DAYNUM_LIST.forEach((Item) => {
-                if (Item.innerHTML == day) {
-                    return;
+            // Reset global offsets to today
+            DayOffset = day;
+            MonthOffset = month;
+            YearOffset = year;
+
+            // Adjust DayOffset based on the start of the week (so the first cell is aligned)
+            DayOffset -= dayName;
+
+            if (DayOffset <= 0) {
+                // If DayOffset is negative, move to the previous month
+                MonthOffset -= 1;
+                if (MonthOffset < 0) {
+                    MonthOffset = 11; // Wrap to December
+                    YearOffset -= 1;
                 }
-            });
-
-            let DayOffset = day;
-            let MonthOffset = month;
-            let YearOffset = year;
-
-            switch (dayName) {
-                case 0:
-                    DayOffset
-                    break;
-                case 1:
-                    DayOffset -= 1
-                    break;
-                case 2:
-                    DayOffset -= 2
-                    break;
-                case 3:
-                    DayOffset -= 3
-                    break;
-                case 4:
-                    DayOffset -= 4
-                    break;
-                case 5:
-                    DayOffset -= 5
-                    break;
-                case 6:
-                    DayOffset -= 6
-                    break;
+                let prevMonthDays = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+                DayOffset += prevMonthDays;
             }
+
+            // Update the calendar days
             DAYNUM_LIST.forEach((Item) => {
-                // find out date of month
-                let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
-                if (DayOffset < totalDaysInMonth) {
-                    Item.innerHTML = `${DayOffset}`
-                    DayOffset += 1;
-                } else {
-                    // reset the date num with new month
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+
+                if (DayOffset > totalDaysInMonth) {
+                    // Move to next month
                     MonthOffset += 1;
+                    if (MonthOffset > 11) {
+                        MonthOffset = 0;
+                        YearOffset += 1;
+                    }
                     DayOffset = 1;
-                    Item.innerHTML = `${DayOffset}`
                 }
 
+                Item.innerHTML = `${DayOffset}`;
+                DayOffset++;
             });
 
+            // Highlight today
             HightLightToday();
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
+            // Update calendar title
+            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`;
         }
+
 
         function HightLightToday() {
             let HeaderColor = getQueryAll(".HEADER li");
@@ -502,6 +461,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
             return OpenPopUp;
         }
 
+        document.getElementById("resetButton").addEventListener("click", ResetInput);
         function ResetInput() {
             let INPUTS = getQueryAll('.INPUT__BOX');
 
@@ -518,25 +478,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
         document.querySelector(".OPEN_POP_UP").addEventListener("click", CreatePopUp());
 
-
-
         // Pop up survey validation
         let INPUTS = getQueryAll('.INPUT__BOX');
+        // initiate for checking if duedate if after
+        let StartDate = null;
+        let DueDate = null;
 
         INPUTS.forEach((element) => {
             let INPUT = element.querySelector(".INPUT__INPUT");
             let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
-
-            let INPUTID = INPUT.id;
-
-            if (INPUTID == "start_date") {
-                let StartDate = INPUT.value;
-            }
-            else if (INPUTID == "due_date") {
-                let DueDate = INPUT.value;
-            }
-
-
 
             INPUT.addEventListener('input', function () {
                 // If the input is invalid, add the INVALID class
@@ -549,32 +499,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     ValidInput(INPUT, PLACEHOLDER);
                 }
 
-
-
-                if (StartDate && DueDate) {
-                    console.log(StartDate, DueDate)
-                    if (StartDate > DueDate) {
-                        alert("Due date must be later than start date");
-                        InvalidInput(INPUT, PLACEHOLDER);
-                    } else {
-                        ValidInput(INPUT, PLACEHOLDER);
-                    }
-                }
-            });
-
-            // Optional: Check the validity on form submit or on blur
-            INPUT.addEventListener('blur', function () {
-                if (INPUT.value.trim() == '') {
-                    InvalidInput(INPUT, PLACEHOLDER);
-                } else if (!INPUT.checkValidity()) {
-                    InvalidInput(INPUT, PLACEHOLDER);
-                } else {
-                    // If the input is valid, remove the INVALID class
-                    ValidInput(INPUT, PLACEHOLDER);
-
-                }
+                
             });
         });
+
+        let form = document.getElementById("popUpForm");
+
+        form.addEventListener("submit", function (event) {
+            // Convert to Date objects for proper comparison
+            let start = new Date(StartDate);
+            let due = new Date(DueDate);
+
+            if (start > due) {
+                alert("Due Date must be later than Start Date.");
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+
+
 
         function ValidInput(INPUT, PLACEHOLDER) {
             INPUT.classList.remove("INVALID_BORDER");
@@ -590,6 +532,30 @@ document.addEventListener('DOMContentLoaded', function (event) {
             PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
         }
     }
+
+    // add card into calendar
+    let phpData = document.getElementById("phpData");
+
+    let startDate = phpData.getAttribute("data-start-date");
+    let endDate = phpData.getAttribute("data-end-date");
+    let duration = phpData.getAttribute("data-duration");
+    let startTime = phpData.getAttribute("data-start-time");
+
+    CalcDate()
+    function CalcDate() {
+        let year, month, date = startDate.split('-');
+        let endTimePeriod = endDate.split('-');
+        console.log(year, month, date);
+    }
+
+    function CalcHeight(duration) {
+
+    }
+
+    function CalcStart(startDate) {
+
+    }
+
 });
 
 document.addEventListener("DOMContentLoaded", function (event) {

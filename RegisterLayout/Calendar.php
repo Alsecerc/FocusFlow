@@ -156,39 +156,51 @@
 
                         <label class="INPUT__BOX">
                             <input type="date" name="start_date" id="start_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Date : </span>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="start_date_ph">Starting Date : </span>
                         </label>
 
                         <label class="INPUT__BOX">
-                            <input type="date" name="due_date" id="due_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Due Date : </span>
-                        </label>
-
-                        <label class="INPUT__BOX">
-                            <input type="time" name="time" id="time" class="INPUT__INPUT" required>
+                            <input type="time" name="start_time" id="start_time" class="INPUT__INPUT" required>
                             <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Time : </span>
                         </label>
 
                         <label class="INPUT__BOX">
-                            <input type="number" name="duration" id="duration" class="INPUT__INPUT" min="0" required>
-                            <span class="INPUT__PLACEHOLDER">Duration (hours) : </span>
+                            <input type="time" name="end_time" id="end_time" class="INPUT__INPUT" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Ending Time : </span>
                         </label>
+
                         <div class="POP_UP__CONTROLS">
                             <button type="button" class="CONTROLS__CLOSE">Close</button>
-                            <button type="reset" class="CONTROLS__RESET" onclick="ResetInput()">Reset</button>
+                            <button type="reset" class="CONTROLS__RESET" id="resetButton">Reset</button>
                             <button type="submit" class="CONTROLS__SUBMIT">Submit</button>
                         </div>
                     </form>
                 </div>
             </div>
             <?php
-            $taskTitle = $_POST['task_title'] ?? null;
-            $taskDesc = $_POST['task_desc'] ?? null;
-            $startDate = $_POST['start_date'] ?? null;
-            $dueDate = $_POST['due_date'] ?? null;
-            $startTime = $_POST['time'] ?? null;
-            $duration = $_POST['duration'] ?? null;
+            // $taskTitle = $_POST['task_title'] ?? "";
+            // $taskDesc = $_POST['task_desc'] ?? "";
+            // $startDate = $_POST['start_date'] ?? "";
+            // $startTime = $_POST['start_time'] ?? "";
+            // $endTime = $_POST['end_time'] ?? "";
+
+            $taskTitle = "Send email to boss";
+            $taskDesc = "Draft and send the project update email.";
+            $startDate = "2025-02-15";
+            $startTime = "2025-02-15";
+            $endTime = "2";
+
             ?>
+            <!-- send data to .js file -->
+            <!-- set attribute name data-start-date -->
+            <!-- htmlspecialchars can prevent html code injection  -->
+            <!-- ENT_QUOTES escape " and ' so from /' => ' -->
+            <div id="phpData"
+                data-start-date="<?php echo htmlspecialchars($startDate, ENT_QUOTES, 'UTF-8'); ?>"
+                data-end-date="<?php echo htmlspecialchars($dueDate, ENT_QUOTES, 'UTF-8'); ?>"
+                data-duration="<?php echo htmlspecialchars($duration, ENT_QUOTES, 'UTF-8'); ?>"
+                data-start-time="<?php echo htmlspecialchars($startTime, ENT_QUOTES, 'UTF-8'); ?>">
+            </div>
 
             <h1 class="ARTICLE_TITLE">Calendar</h1>
             <section class="CALENDAR">
@@ -196,15 +208,15 @@
                     <h1 class="CALENDAR__TITLE" id="calendar__title1"></h1>
                     <div class="TITLE__CONTAINER">
                         <div class="Header__Container">
-                            <button class="Header__Button" onclick="goToToday()"><span class=" Header__Wording">Today</span></button>
+                            <button class="Header__Button" id="today"><span class=" Header__Wording">Today</span></button>
                         </div>
                         <div class="Header__Container">
                             <button class="Header__Button OPEN_POP_UP"><span class="material-icons Header__Wording">add</span></button>
                         </div>
                         <div class="Header__Container">
-                            <button type="button" onclick="toggleViewPrevious()" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
+                            <button type="button" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
                             <span style="margin: 0 1rem;">Week</span>
-                            <button onclick="toggleViewNext()" class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
+                            <button class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
                         </div>
                         <!-- <div class="BUTTON__CONTAINER">
                         <button onclick="togglePeriod('week')" id="weekButton" class="CALENDAR__HEADER__BUTTON">W</button>
