@@ -161,12 +161,12 @@
 
                         <label class="INPUT__BOX">
                             <input type="time" name="start_time" id="start_time" class="INPUT__INPUT" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Time : </span>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="start_time_ph">Starting Time : </span>
                         </label>
 
                         <label class="INPUT__BOX">
                             <input type="time" name="end_time" id="end_time" class="INPUT__INPUT" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Ending Time : </span>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="end_time_ph">Ending Time : </span>
                         </label>
 
                         <div class="POP_UP__CONTROLS">
@@ -178,34 +178,67 @@
                 </div>
             </div>
             <?php
-            // $taskTitle = $_POST['task_title'] ?? "";
-            // $taskDesc = $_POST['task_desc'] ?? "";
-            // $startDate = $_POST['start_date'] ?? "";
-            // $startTime = $_POST['start_time'] ?? "";
-            // $endTime = $_POST['end_time'] ?? "";
+            include 'conn.php';
 
-            $taskTitle = "Send email to boss";
-            $taskDesc = "Draft and send the project update email.";
-            $startDate = "2025-02-15";
-            $startTime = "2025-02-15";
-            $endTime = "2";
+            if (!$_conn) {
+                die("Connection failed: " . mysqli_connect_error());
+            }
 
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $taskTitle = $_POST['task_title'] ?? "";
+                $taskDesc = $_POST['task_desc'] ?? "";
+                $startDate = $_POST['start_date'] ?? "";
+                $startTime = $_POST['start_time'] ?? "";
+                $endTime = $_POST['end_time'] ?? "";
+
+                $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
+            VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),1)";
+
+                if (mysqli_query($_conn, $sql)) {
+                    echo "<script><alert>New record created successfully</alert></script>";
+                } else {
+                    echo "Error: " . $sql . "<br>" . mysqli_error($_conn);
+                }
+            }
+
+            $user_id = 1;
+
+            $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
+            $result = mysqli_query($_conn, $sql);
+
+            // Check if there are results
+            if (mysqli_num_rows($result) > 0) {
+                // Initialize an array to store the data
+                $taskList = array();
+
+                // Fetch each row as an associative array
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $TaskList[] = array(
+                        'task_title' => $row['task_title'],
+                        'task_desc' => $row['task_desc'],
+                        'start_date' => $row['start_date'],
+                        'start_time' => $row['start_time'],
+                        'end_time' => $row['end_time'],
+                        'created_at' => $row['created_at'],
+                        'user_id' => $row['user_id']
+                    );
+                }
+
+                // Send the task list to the frontend in JSON format
+                echo "<script>";
+                echo "var TaskList = " . json_encode($TaskList) . ";";
+                echo "</script>";
+            } else {
+                echo "0 results";
+            }
+
+            mysqli_close($_conn);
             ?>
-            <!-- send data to .js file -->
-            <!-- set attribute name data-start-date -->
-            <!-- htmlspecialchars can prevent html code injection  -->
-            <!-- ENT_QUOTES escape " and ' so from /' => ' -->
-            <div id="phpData"
-                data-start-date="<?php echo htmlspecialchars($startDate, ENT_QUOTES, 'UTF-8'); ?>"
-                data-end-date="<?php echo htmlspecialchars($dueDate, ENT_QUOTES, 'UTF-8'); ?>"
-                data-duration="<?php echo htmlspecialchars($duration, ENT_QUOTES, 'UTF-8'); ?>"
-                data-start-time="<?php echo htmlspecialchars($startTime, ENT_QUOTES, 'UTF-8'); ?>">
-            </div>
 
             <h1 class="ARTICLE_TITLE">Calendar</h1>
             <section class="CALENDAR">
                 <div class="CALENDAR__HEADER">
-                    <h1 class="CALENDAR__TITLE" id="calendar__title1"></h1>
+                    <h1 class="CALENDAR__TITLE" id="calendar__title1"><span id="MONTH"></span> <span id="YEAR"></span></h1>
                     <div class="TITLE__CONTAINER">
                         <div class="Header__Container">
                             <button class="Header__Button" id="today"><span class=" Header__Wording">Today</span></button>
@@ -282,11 +315,6 @@
                         </div>
 
                         <div class="EVENT__CONTAINER">
-                            <!-- how long / which day / what time -->
-                            <div class="EVENT EVENT1">
-                                <div class="EVENT__STATUS"></div>
-                                <span class="EVENT__NAME">Event 1</span>
-                            </div>
                         </div>
 
                     </div>

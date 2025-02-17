@@ -981,7 +981,7 @@ link to page/ create a page */
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     /* 24 hours * 4 interval (1interval = 15mins) = 96 rows */
-    grid-template-rows: repeat(96, 1fr);
+    grid-template-rows: repeat(100, 15px);
     position: relative;
 }
 
@@ -993,18 +993,12 @@ link to page/ create a page */
     color: var(--COLOR-LIGHT1);
 
     border-radius: var(--BORDER-RD-CONTACT);
-}
 
-.EVENT1 {
-    /* height = how long is event */
-    height: 60px;
+    padding: 1rem;
 
-    /* 
-    starts at 10 
-    abs(9-10) = 1 * 60 = 60px offset
-    60/15 (interval) = 4 + 1 (for offset) = 5
-    */
-    grid-row: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* pop up */

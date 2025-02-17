@@ -256,7 +256,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
         const day = TimeNow.getDate();
         const dayName = TimeNow.getDay();
 
-        let CALENDAR__TITLE1 = getQuery("#calendar__title1");
+        let TITLE_MONTH = getQuery("#calendar__title1 #MONTH");
+        let TITLE_YEAR = getQuery("#calendar__title1 #YEAR");
         let DAYNUM_LIST = Array.from(getQueryAll('.DAY_NUM li'));
         // as page load the function will be run
         let DayOffset = day;
@@ -291,19 +292,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 // find out date of month
                 let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
                 if (DayOffset < totalDaysInMonth) {
+
                     Item.innerHTML = `${DayOffset}`
                     DayOffset += 1;
                 } else {
                     // reset the date num with new month
                     MonthOffset += 1;
                     DayOffset = 1;
+
                     Item.innerHTML = `${DayOffset}`
                 }
             });
 
             HightLightToday();
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
+            TITLE_MONTH.innerHTML = `${monthList[MonthOffset]}`
+            TITLE_YEAR.innerHTML = `${YearOffset}`
         }
 
 
@@ -311,6 +315,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
         function toggleViewPrevious() {
             DayOffset -= 14;
 
+            // if date number is less than or 0 
             while (DayOffset <= 0) {
                 // go back 1 month
                 MonthOffset -= 1
@@ -325,16 +330,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 
             DAYNUM_LIST.forEach((Item) => {
-                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-                if (DayOffset > totalDaysInMonth) {
-                    // Move to next month
-                    MonthOffset += 1;
-                    if (MonthOffset > 11) {
-                        MonthOffset = 0; // Wrap to January
-                        YearOffset += 1; // Move to next year
-                    }
-                    DayOffset = 1; // Reset day count
-                }
 
                 Item.innerHTML = `${DayOffset}`;
                 DayOffset++;
@@ -342,8 +337,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
             HightLightToday();
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
+            TITLE_MONTH.innerHTML = `${monthList[MonthOffset]}`
+            TITLE_YEAR.innerHTML = `${YearOffset}`
+
+            RenderTask();
         }
+
 
         document.getElementById("right").addEventListener("click", toggleViewNext);
         function toggleViewNext() {
@@ -371,12 +370,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 }
 
                 Item.innerHTML = `${DayOffset}`
+
                 DayOffset += 1;
             });
 
             HightLightToday();
 
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`
+            TITLE_MONTH.innerHTML = `${monthList[MonthOffset]}`
+            TITLE_YEAR.innerHTML = `${YearOffset}`
+
+            RenderTask();
         }
 
         document.getElementById("today").addEventListener("click", goToToday)
@@ -414,6 +417,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     DayOffset = 1;
                 }
 
+
                 Item.innerHTML = `${DayOffset}`;
                 DayOffset++;
             });
@@ -422,9 +426,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
             HightLightToday();
 
             // Update calendar title
-            CALENDAR__TITLE1.innerHTML = `${monthList[MonthOffset]} ${YearOffset}`;
-        }
+            TITLE_MONTH.innerHTML = `${monthList[MonthOffset]}`
+            TITLE_YEAR.innerHTML = `${YearOffset}`;
 
+            RenderTask();
+        }
+        // document.getElementById("today").addEventListener("click", goToToday);
+        // function goToToday() {
+        //     let now = new Date();
+        //     DayOffset = now.getDate();
+        //     MonthOffset = now.getMonth();
+        //     YearOffset = now.getFullYear();
+        //     adjustCalendar();
+        // }
 
         function HightLightToday() {
             let HeaderColor = getQueryAll(".HEADER li");
@@ -439,6 +453,76 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 }
             });
         }
+
+
+
+        // add card into calendar
+        console.log(TaskList)
+
+        // let taskList = [TaskObject];
+
+        function CalcDuration(startTime, endTime) {
+            let [sHour, sMin, sSec] = startTime.split(":");
+            let [eHour, eMin, eSec] = endTime.split(":");
+            // 15 is to offset
+            let timeDifferencePX = ((((eHour - sHour) * 60) + (eMin - sMin)))
+            return timeDifferencePX;
+        }
+
+        function CalcStart(startTime) {
+            let [sHour, sMin, sSec] = startTime.split(":");
+            let RoundedRow = Math.round(((sHour * 60) + parseInt(sMin)) / 15);
+            return RoundedRow + 1;
+        }
+
+        function RenderTask() {
+            let taskContainer = document.querySelector(".EVENT__CONTAINER");
+            taskContainer.innerHTML = "";
+
+
+            // time out to allow the document to be fully loaded
+            setTimeout(() => {
+
+                const monthIndex = new Date(`${TITLE_MONTH.innerHTML} 1, ${TITLE_YEAR.innerHTML}`).getMonth();
+                let FirstDayofWeek = new Date(TITLE_YEAR.innerHTML, monthIndex, DAYNUM_LIST[0].innerHTML);
+
+                let CurrentWeek = [];
+                for (let i = 0; i < 7; i++) {
+                    let tempDay = new Date(FirstDayofWeek);
+                    tempDay.setDate(FirstDayofWeek.getDate() + i);
+
+                    let paddedDate = String(tempDay.getDate() + 1).padStart(2, '0');
+                    let paddedMonth = String(tempDay.getMonth() + 1).padStart(2, '0');
+                    CurrentWeek.push(`${tempDay.getFullYear()}-${paddedMonth}-${paddedDate}`);
+                }
+
+                CurrentWeek.forEach(ThisDay => {
+                    TaskList.forEach(task => {
+                        if (task['start_date'] === ThisDay) { // Only display tasks for the selected date
+                            let StartDate = new Date(task['start_date']);
+                            let Length = CalcDuration(task['start_time'], task['end_time']);
+                            let StartRow = CalcStart(task['start_time']);
+                            let StartColumn = StartDate.getDay();
+
+                            let taskElement = document.createElement("div");
+                            taskElement.classList.add("EVENT");
+                            taskElement.style.gridColumn = `${StartColumn + 1} / ${StartColumn + 2}`;
+                            taskElement.style.gridRow = `${StartRow}`;
+                            taskElement.style.height = `${Length}px`;
+                            taskElement.innerHTML = `<span class="EVENT__NAME" style="text-align: center;">${task['task_title']}</span>`;
+
+                            taskContainer.appendChild(taskElement);
+                        }
+                    });
+                });
+
+            }, 100)
+        }
+
+        RenderTask();
+
+
+
 
         // pop up function
         let PopUp = getQuery(".POP_UP");
@@ -482,7 +566,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
         let INPUTS = getQueryAll('.INPUT__BOX');
         // initiate for checking if duedate if after
         let StartDate = null;
-        let DueDate = null;
+        let StartTime = null;
+        let EndTime = null;
 
         INPUTS.forEach((element) => {
             let INPUT = element.querySelector(".INPUT__INPUT");
@@ -499,24 +584,48 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     ValidInput(INPUT, PLACEHOLDER);
                 }
 
-                
+                let inputElement = element.querySelector(".INPUT__INPUT");
+                let inputValue = inputElement.value;
+
+                if (inputElement.id == "start_time" && inputValue) {
+                    // Assign null if no value is entered
+                    StartTime = inputValue || null;
+                } else if (inputElement.id == "end_time" && inputValue) {
+                    EndTime = inputValue || null;
+                }
+
+                if ((StartTime >= EndTime) && StartTime && EndTime) {
+                    InvalidInput(getQuery("#end_time"), getQuery("#end_time_ph"));
+                    InvalidInput(getQuery("#start_time"), getQuery("#start_time_ph"));
+                } else {
+                    if (StartTime) {
+                        ValidInput(getQuery("#start_time"), getQuery("#start_time_ph"));
+                    }
+                    if (EndTime) {
+                        ValidInput(getQuery("#end_time"), getQuery("#end_time_ph"));
+                    }
+                }
+
             });
         });
 
         let form = document.getElementById("popUpForm");
 
         form.addEventListener("submit", function (event) {
-            // Convert to Date objects for proper comparison
-            let start = new Date(StartDate);
-            let due = new Date(DueDate);
+            console.log("Form submission triggered");
 
-            if (start > due) {
-                alert("Due Date must be later than Start Date.");
-                event.preventDefault(); // Prevent form submission
+            let startTime = document.getElementById("start_time").value;
+            let endTime = document.getElementById("end_time").value;
+
+
+            if ((startTime >= endTime) && startTime && endTime) {
+                console.log("Validation failed: End Time must be later than Start Time.");
+                alert("End Time must be later than Start Time.");
+                event.preventDefault();
+                return;
             }
+
         });
-
-
 
         function ValidInput(INPUT, PLACEHOLDER) {
             INPUT.classList.remove("INVALID_BORDER");
@@ -532,30 +641,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
             PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
         }
     }
-
-    // add card into calendar
-    let phpData = document.getElementById("phpData");
-
-    let startDate = phpData.getAttribute("data-start-date");
-    let endDate = phpData.getAttribute("data-end-date");
-    let duration = phpData.getAttribute("data-duration");
-    let startTime = phpData.getAttribute("data-start-time");
-
-    CalcDate()
-    function CalcDate() {
-        let year, month, date = startDate.split('-');
-        let endTimePeriod = endDate.split('-');
-        console.log(year, month, date);
-    }
-
-    function CalcHeight(duration) {
-
-    }
-
-    function CalcStart(startDate) {
-
-    }
-
 });
 
 document.addEventListener("DOMContentLoaded", function (event) {
