@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     const form = document.getElementById('signupForm');
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        // e.preventDefault();
         // Add your form submission logic here
         console.log('Form submitted');
     });
@@ -70,7 +70,7 @@ class ProgressBar {
         // Add click listeners to next buttons
         this.nextButtons.forEach((button, index) => {
             button.addEventListener('click', (e) => {
-                e.preventDefault();
+                // e.preventDefault();
                 if (this.validateStep(index)) {
                     this.goToNextStep();
                 }

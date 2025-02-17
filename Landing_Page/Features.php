@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <header>
+<header>
         <div class="HEADER__LEFT">
             <a href="Homepage.php">
                 <h1 class="HEADER__TITLE CLICKABLE">F<span class="material-symbols-outlined HEADER__ICON">
@@ -62,7 +62,7 @@
             </nav>
         </div>
         <div class="HEADER__SIGNUP CTA">
-            SIGN UP
+            <a href="../RegisterLayout/Signup.php">SIGN UP</a> 
         </div>
     </header>
 

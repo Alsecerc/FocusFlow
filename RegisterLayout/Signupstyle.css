@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     font-family: "Poppins", sans-serif;
@@ -86,7 +87,36 @@ h3 {
     margin: 0 0 32px 0;
 }
 
-.form input {
+.progress-bar {
+    display: flex;
+    align-items: center;
+    margin: 0 0 2rem 0;
+    gap: 8px;
+}
+
+.step {
+    width: 32px;
+    height: 32px;
+    background: #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #fff;
+}
+
+.step.active {
+    background: #333;
+}
+
+.progress-bar-line {
+    flex: 1;
+    height: 2px;
+    background: #ccc;
+}
+
+.form-step input {
     width: 100%;
     padding: 12px 4px;
     margin-bottom: 24px;
@@ -94,6 +124,34 @@ h3 {
     border-bottom: 1px solid #ccc;
     outline: none;
     font-size: 16px;
+}
+
+.form-step input:last-of-type {
+    margin: 0;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.form-step select,
+.form-step label {
+    width: 100%;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.form-step select {
+    padding: 12px 4px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    background: white;
 }
 
 button {
@@ -105,9 +163,12 @@ button {
     border-radius: 999px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 32px;
 }
 
 button:hover {
     background: #444;
+}
+
+.submit-btn {
+    background-color: red;
 }

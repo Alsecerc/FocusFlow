@@ -59,7 +59,7 @@
             </nav>
         </div>
         <div class="HEADER__SIGNUP CTA">
-            SIGN UP
+            <a href="../RegisterLayout/Signup.php">SIGN UP</a>
         </div>
     </header>
 
@@ -70,7 +70,7 @@
                     <h1>Boost Your <span class="KEYWORD">Productivity</span> Today!</h1>
                     <h3>Manage your time effectively with our smart task management and calendar system.</h3>
                     <div class="WELCOME__CTA">
-                        <button class="HEADER__SIGNUP CLICKABLE CTA">GET STARTED</button>
+                        <a class="HEADER__SIGNUP CLICKABLE CTA" href="../RegisterLayout/Signup.php">GET STARTED</a>
                         <a class="HEADER__SIGNUP CLICKABLE" href="Plans.php">VIEW PLAN</a>
                     </div>
                 </div>
