@@ -1,0 +1,60 @@
+/* Phone */
+@media (max-width: 468px) {
+    html {
+        background-color: rgb(228, 135, 135);
+    }
+
+    header {
+        min-width: 722px;
+        font-size: 1.5rem;
+    }
+
+    .HEADER__ICON {
+        font-size: 1.5rem;
+    }
+
+    .HEADER__UL__ICON > span {
+        font-size: 2rem;
+    }
+
+    .HEADER__SEARCH {
+        display: none;
+    }
+
+    .SIDEBAR {
+        min-height: 100%;
+        min-width: 100%;
+        
+        left: -800px;
+
+        font-size: 2rem;
+    }
+
+    .SIDEBAR_SHOW {
+        left: 0;
+    }
+
+    .SIDEBAR__ITEM {
+        
+    }
+
+
+}
+
+/* Tablet */
+@media (min-width: 468px) and (max-width: 1024px) {
+    html {
+        background-color: lightseagreen;
+    }
+
+    header {
+        min-width: 722px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    html {
+        background-color: lightcoral;
+    }
+}

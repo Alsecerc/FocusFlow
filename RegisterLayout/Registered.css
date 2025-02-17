@@ -259,6 +259,7 @@ header {
     z-index: 100;
     top: 0px;
 
+    min-width: 100%;
     width: 100%;
     height: 80px;
 
@@ -318,14 +319,14 @@ header {
 
     margin: 20px 0;
     min-width: 200px;
-    width: 750px;
+    width: 100%;
 
     box-shadow: 0 4px 10px 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
 }
 
 .HEADER__SEARCH_INPUT,
@@ -336,10 +337,9 @@ header {
 }
 
 .HEADER__SEARCH_INPUT {
-    flex: 1;
+    /* flex: 1; */
     border: none;
     outline: none;
-    padding-left: 20px;
     font-size: 16px;
 }
 
@@ -352,8 +352,7 @@ header {
 
     display: flex;
     align-items: center;
-
-    padding-right: 20px;
+    padding-left: 20px;
 }
 
 .HEADER__SEARCH_BUTTON:hover {
@@ -516,7 +515,7 @@ link to page/ create a page */
 /* SIDEBAR */
 .SIDEBAR {
     width: 250px;
-    height: 100vh;
+    min-height: 100vh;
 
     background-color: var(--COLOR-DARK2);
 
