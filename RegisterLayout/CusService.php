@@ -142,18 +142,80 @@
         <article class="CS__Content">
             <section class="CS__FAQ">
                 <h1 class="ARTICLE_TITLE">FAQ</h1>
+                <div class="dropdown">
+                    <h2>General</h2>
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>What is this website about?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">Our website is a productivity platform designed to help users manage tasks, track time, set goals, and boost efficiency. Whether you're a student, professional, or entrepreneur, our tools can help you stay organized.</li>
+                        </ul>
+                    </div>
 
-                <div class="dropdown-container">
-                    <button class="dropdown-button">Select an option</button>
-                    <ul class="dropdown-list">
-                        <li class="dropdown-item">Option 1</li>
-                        <li class="dropdown-item">Option 2</li>
-                        <li class="dropdown-item">Option 3</li>
-                    </ul>
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>Is this website free to use?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">We offer a free plan with essential features. For advanced tools like team collaboration, analytics, and integrations, we have premium plans.</li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>Do I need to create an account to use the website?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">Yes, creating an account allows you to save your tasks, track progress, and sync across devices.</li>
+                        </ul>
+                    </div>
                 </div>
 
+                <div class="dropdown">
+                    <h2>Task & Time Management</h2>
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>How can I create a new task?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">Simply click the "Add Task" button, enter the task details, set a deadline, and save it. You can also categorize tasks by priority or project.</li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>Does the website have a Pomodoro Timer?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">Yes! Our built-in Pomodoro Timer helps you work in focused intervals (e.g., 25 minutes of work, 5 minutes of break) to boost productivity.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <h2>Support & Troubleshooting</h2>
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>I found a bug. How do I report it?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">Please visit our Support Page and submit a bug report. You can also email us at focusflow@gmail.com.</li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <button class="dropdown-button">
+                            <h3>Does the website have a Pomodoro Timer?</h3>
+                        </button>
+                        <ul class="dropdown-list">
+                            <li class="dropdown-item">Yes! Our built-in Pomodoro Timer helps you work in focused intervals (e.g., 25 minutes of work, 5 minutes of break) to boost productivity.</li>
+                        </ul>
+                    </div>
+                </div>
+
+
             </section>
-            <section></section>
         </article>
 
 

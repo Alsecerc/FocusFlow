@@ -168,7 +168,7 @@ main {
 }
 
 .CTA {
-    background-color: var(--COLOR-BLUE2) !important;
+    background-color: var(--COLOR-BLUE2);
 }
 
 .BOLD {
@@ -335,7 +335,8 @@ header {
 }
 
 /* RIGHT SIDE OF HEADER */
-.HEADER__SIGNUP {
+.HEADER__SIGNUP,
+.HEADER__LOGIN {
     display: flex;
     align-items: center;
 
@@ -344,10 +345,18 @@ header {
     border-radius: 20px;
     border: none;
 
-    background: var(--COLOR-BLUE1);
+    background: var(--BORDER-COLOR);
     color: var(--COLOR-LIGHT1);
 
     font-weight: 800;
+}
+
+.CTA__GROUP {
+    display: flex;
+}
+
+.HEADER__SIGNUP {
+background-color: var(--COLOR-BLUE2);
 }
 
 
@@ -622,183 +631,6 @@ header {
 
 
 
-/* =================SURVEY================== */
-.SURVEY {
-    margin: calc(var(--MARGIN-CONTAINER-TB) + var(--MARGIN-CONTAINER-TB)) 0;
-}
-
-.SURVEY__HEADING {
-    margin: var(--MARGIN);
-}
-
-.SURVEY__FORM {
-    /* COLOR BLUE2 */
-    /* background: linear-gradient(hsla(201, 95%, 77%, 0.7), hsla(201, 100%, 60%, 0.7)); */
-    backdrop-filter: blur(10px);
-    border: none;
-
-    min-width: 700px;
-
-    padding: var(--PADDING-TB) var(--PADDING-LR);
-    margin: var(--MARGIN) 10rem;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-
-    border-radius: var(--BORDER-RD-CONTACT);
-}
-
-.SURVEY__FORM_GROUP {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-
-    margin: var(--MARGIN) 0;
-}
-
-.SURVEY__FORM_GROUP textarea {
-    display: block;
-}
-
-/* INPUT DESIGN */
-.INPUT__BOX {
-    position: relative;
-}
-
-.INPUT__INPUT {
-    min-width: 150px;
-    padding: 15px 30px;
-
-    background-color: #f2f2f2;
-
-    border: none;
-    border-radius: var(--BORDER-RD-CONTACT);
-}
-
-/* INPUT BOX DESIGN */
-.INPUT__INPUT:focus {
-    outline: none;
-    box-shadow: var(--SHADOW-WHITEBG);
-}
-
-.INPUT__PLACEHOLDER {
-    position: absolute;
-    top: 25%;
-    left: 40px;
-
-    color: hsla(0, 0%, 0%, 0.5);
-    font-family: var(--FF-BODY);
-
-    transition: all 0.5s ease;
-
-    user-select: none;
-}
-
-/* + to find sibling selector */
-.INPUT__INPUT:focus+.INPUT__PLACEHOLDER {
-    color: var(--COLOR-DARK3);
-
-    transform: scale(0.75);
-    top: -40%;
-    left: 30px;
-}
-
-.INVALID_PLACEHOLDER {
-    transform: scale(0.75);
-    top: -40%;
-    left: 30px;
-
-    color: var(--ACCENT-RED);
-}
-
-.INVALID_BORDER {
-    border: 2px solid var(--ACCENT-RED);
-}
-
-.VALID_BORDER {
-    border: 2px solid var(--ACCENT-GREEN);
-}
-
-.VALID_PLACEHOLDER {
-    transform: scale(0.75);
-    top: -40%;
-    left: 30px;
-
-    color: var(--ACCENT-GREEN);
-}
-
-
-/* SELECT */
-/* add animation */
-.SELECT_CONTAINER:focus {
-    outline: none;
-}
-
-.SELECT_CONTAINER:focus {
-    outline: none;
-    box-shadow: var(--SHADOW-WHITEBG);
-
-    background-color: var(--COLOR-DARK2);
-    color: var(--COLOR-BLUE3);
-}
-
-.SELECT_CONTAINER {
-    border: none;
-    border-radius: 15px;
-
-    background-color: var(--COLOR-BLUE3);
-    color: var(--COLOR-DARK2);
-
-    padding: 0.5rem;
-}
-
-.SELECT_CONTAINER option {
-    background-color: var(--COLOR-BLUE3);
-    color: var(--COLOR-DARK3);
-}
-
-.SELECT_CONTAINER option:disabled {
-    background-color: var(--COLOR-DARK2);
-    color: var(--COLOR-BLUE3);
-}
-
-/* SUGGESTION */
-.SURVEY__SUGGESTIONS {
-    font-family: var(--FF-BODY);
-
-    color: hsla(0, 0%, 20%, 0.5);
-}
-
-/* BUTTON */
-.SURVEY__SUBMIT {
-    font-family: var(--FF-BODY);
-
-    border: none;
-    border-radius: var(--BORDER-RD-CONTACT);
-
-    background-color: var(--COLOR-BLUE1);
-    color: var(--COLOR-LIGHT1);
-
-    padding: 0.3rem 1rem;
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* TODO: Features.php */
 
 .TITLE {
@@ -948,7 +780,7 @@ header {
     padding: 0.5rem;
 }
 
-.TYPE__MONTH, 
+.TYPE__MONTH,
 .TYPE__ANNUAL {
     display: flex;
     align-items: center;
@@ -987,7 +819,7 @@ header {
 
 .PLANS_PRICING {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     padding: var(--PADDING-TB) var(--PADDING-LR);
 
@@ -1004,7 +836,7 @@ header {
 
 .PLANS__SIDEBAR {
     color: var(--COLOR-LIGHT1);
-    
+
     overflow: hidden;
 
     background-color: #03045E;
@@ -1134,8 +966,208 @@ header {
 }
 
 
+/* Page: Get help page*/
 
+/* PAGE: customer support */
+.CS__FAQ h1 {
+    font-size: 2rem;
+}
 
+.CS__FAQ h2 {
+    margin-left: var(--MARGIN);
+}
+
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    margin: var(--MARGIN-CONTAINER-TB) calc(var(--MARGIN-CONTAINER-LR) * 2);
+}
+
+.dropdown-container {
+    display: inline-block;
+    position: relative;
+
+    margin: 1rem 0;
+}
+
+.dropdown-button {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    border-bottom: 3px solid var(--BORDER-COLOR);
+
+    background-color: transparent;
+
+    width: 100%;
+}
+
+.dropdown-button>h3 {
+    text-align: left;
+}
+
+/* Dropdown animation */
+.dropdown-list {
+    padding: 0;
+    margin: 0;
+
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 10;
+    border-left: 2px solid var(--BORDER-COLOR);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--COLOR-LIGHT1);
+
+    /* Animation properties */
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Show dropdown */
+.dropdown-container.open .dropdown-list {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.CONTACT__CONTAINER {
+    margin: var(--MARGIN-CONTAINER-TB) calc(var(--MARGIN-CONTAINER-LR) * 2);
+}
+
+/*SURVEY */
+.SURVEY form {
+    margin: var(--MARGIN-CONTAINER-TB) calc(var(--MARGIN-CONTAINER-LR) * 2);
+}
+
+.SURVEY__FORM {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.SURVEY__FORM_GROUP:first-of-type {
+    justify-content: left;
+    gap: 1rem;
+}
+
+.SURVEY__FORM_GROUP {
+    display: flex;
+    justify-content: space-between;
+}
+
+.INPUT__BOX {
+    position: relative;
+}
+
+.INPUT__INPUT {
+    min-width: 150px;
+    padding: 15px 30px;
+
+    background-color: #f2f2f2;
+
+    border: none;
+    border-radius: var(--BORDER-RD-CONTACT);
+}
+
+/* INPUT BOX DESIGN */
+.INPUT__INPUT:focus {
+    outline: none;
+    box-shadow: var(--SHADOW-WHITEBG);
+}
+
+.INPUT__PLACEHOLDER {
+    position: absolute;
+    top: 25%;
+    left: 1rem;
+
+    color: hsla(0, 0%, 0%, 0.5);
+    font-family: var(--FF-BODY);
+
+    transition: all 0.5s ease;
+
+    user-select: none;
+}
+
+/* + to find sibling selector */
+.INPUT__INPUT:focus+.INPUT__PLACEHOLDER,
+.AUTOFOCUS {
+    color: var(--COLOR-DARK3);
+
+    transform: scale(0.75);
+    top: -40%;
+    left: 0;
+}
+
+.INVALID_PLACEHOLDER {
+    transform: scale(0.75);
+    top: -40%;
+    left: 0;
+
+    color: var(--ACCENT-RED);
+}
+
+.INVALID_BORDER {
+    border: 2px solid var(--ACCENT-RED);
+}
+
+.VALID_BORDER {
+    border: 2px solid var(--ACCENT-GREEN);
+}
+
+.VALID_PLACEHOLDER {
+    transform: scale(0.75);
+    top: -40%;
+    left: 0;
+
+    color: var(--ACCENT-GREEN);
+}
+
+.SELECT_CONTAINER {
+    border-radius: var(--BORDER-RD-CONTACT);
+    border: none;
+
+    cursor: pointer;
+
+    padding: 0.6rem;
+}
+
+.SELECT_CONTAINER,
+.SELECT_CONTAINER option {
+    background-color: var(--COLOR-DARK1);
+    color: var(--COLOR-LIGHT1);
+}
+
+.SELECT_CONTAINER option{
+    width: 100%;
+}
+
+.SURVEY__SUGGESTIONS {
+    resize: none;
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+}
+
+.SURVEY__SUBMIT {
+    max-width: fit-content;
+    padding: 0.5rem 1rem;
+
+    background-color: var(--ACCENT-GREEN);
+    color: var(--COLOR-LIGHT1);
+
+    border: none;
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    display: block;
+    margin: 0 auto;
+}
 
 /* RESPONSIVE */
 /* BREAKPOINT!!! AT width 900px */

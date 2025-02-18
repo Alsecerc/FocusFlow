@@ -936,6 +936,7 @@ link to page/ create a page */
     background-color: var(--COLOR-DARK2);
     color: var(--COLOR-LIGHT1);
 }
+
 .DAY_NAME li,
 .DAY_NUM li {
     text-align: center;
@@ -1399,50 +1400,3 @@ link to page/ create a page */
 
 
 
-
-/* PAGE: customer support */
-.CS__FAQ h1 {
-    font-size: 2rem;
-}
-
-.dropdown-container {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-button {
-    cursor: pointer;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    background-color: white;
-}
-
-/* Dropdown animation */
-.dropdown-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    width: 100%;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    
-    /* Animation properties */
-    opacity: 0;
-    transform: translateY(-10px);
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-}
-
-.dropdown-item {
-    padding: 10px;
-    cursor: pointer;
-}
-
-/* Show dropdown */
-.dropdown-container.open .dropdown-list {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-}
