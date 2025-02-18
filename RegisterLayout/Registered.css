@@ -652,14 +652,13 @@ link to page/ create a page */
     color: var(--COLOR-DARK3);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
-    
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;  /* Prevent cards from growing */
     min-width: 200px; /* Ensure a reasonable size */
     max-width: 250px; /* Prevent excessive stretching */
     margin-right: 1rem;
-    cursor: move;
+    cursor: grab;
 }
 
 .TODO__CARD_HEADER {
@@ -672,12 +671,12 @@ link to page/ create a page */
     background: white;
     color: black;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
-  
+    margin-bottom: 20px;
     padding: 12px;
     border-radius: 4px;
   
     font-size: 16px;
-    cursor: move;
+    cursor: grab;
 }
 
 .TODO__GROUP__ADD, .TODO__TASK__ADD{
@@ -801,7 +800,12 @@ link to page/ create a page */
     background-color: #0056b3;
 }
 
-
+.is-dragging {
+    scale: 1.05;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
+    background: rgb(50, 50, 50);
+    color: white;
+}
 
 /* TODO: Calendar Page */
 

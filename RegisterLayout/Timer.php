@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img/SMALL_CLOCK_ICON.ico">
-    <link rel="stylesheet" href="Registered.css?v=2">
+    <link rel="stylesheet" href="Registered.css?">
 </head>
 
 <body>
