@@ -584,7 +584,7 @@ link to page/ create a page */
 
 
 
-/* TODO: Todo Management */
+/* PAGE: Todo Management */
 .TODO {
     height: 100%;
 }
@@ -637,11 +637,15 @@ link to page/ create a page */
     padding: var(--PADDING-TB);
 
     display: flex;
-    flex-wrap: nowrap;  /* Prevent wrapping */
-    overflow-x: auto;   /* Enable horizontal scrolling */
-    overflow-y: hidden; /* Prevent vertical stretching */
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    overflow-y: hidden;
+    /* Prevent vertical stretching */
     white-space: nowrap;
-    align-items: flex-start; /* Keep items aligned at the top */
+    align-items: flex-start;
+    /* Keep items aligned at the top */
     gap: 1rem;
     pointer-events: auto;
 }
@@ -651,12 +655,15 @@ link to page/ create a page */
     color: var(--COLOR-DARK3);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
-    
+
     display: flex;
     flex-direction: column;
-    flex: 0 0 auto;  /* Prevent cards from growing */
-    min-width: 200px; /* Ensure a reasonable size */
-    max-width: 250px; /* Prevent excessive stretching */
+    flex: 0 0 auto;
+    /* Prevent cards from growing */
+    min-width: 200px;
+    /* Ensure a reasonable size */
+    max-width: 250px;
+    /* Prevent excessive stretching */
     margin-right: 1rem;
     cursor: move;
 }
@@ -671,15 +678,16 @@ link to page/ create a page */
     background: white;
     color: black;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
-  
+
     padding: 12px;
     border-radius: 4px;
-  
+
     font-size: 16px;
     cursor: move;
 }
 
-.TODO__GROUP__ADD, .TODO__TASK__ADD{
+.TODO__GROUP__ADD,
+.TODO__TASK__ADD {
     display: none;
     position: fixed;
     /* Fixed positioning relative to the viewport */
@@ -715,7 +723,7 @@ link to page/ create a page */
     pointer-events: block;
 }
 
-#groupForm{
+#groupForm {
     z-index: 1;
 
     display: flex;
@@ -724,7 +732,7 @@ link to page/ create a page */
 }
 
 #groupForm input,
-#groupForm button{
+#groupForm button {
     margin-bottom: 10px;
     /* Add space between form elements */
     padding: 10px;
@@ -732,7 +740,7 @@ link to page/ create a page */
     border-radius: 4px;
 }
 
-#groupForm button{
+#groupForm button {
     background-color: #4CAF50;
     /* Green background color */
     color: white;
@@ -741,7 +749,7 @@ link to page/ create a page */
     /* Pointer cursor on hover */
 }
 
-#groupForm button:hover{
+#groupForm button:hover {
     background-color: #45a049;
     /* Darker green on hover */
 }
@@ -802,7 +810,7 @@ link to page/ create a page */
 
 
 
-/* TODO: Calendar Page */
+/* PAGE: Calendar Page */
 
 /* Header */
 .CONTAINER {
@@ -854,7 +862,7 @@ link to page/ create a page */
     width: 100%;
     padding: 0.5rem;
     color: var(--COLOR-DARK2);
-    
+
     transition: all 0.3s ease;
 
     user-select: none;
@@ -913,6 +921,9 @@ link to page/ create a page */
         "SIDEBAR MAIN";
 
     position: relative;
+
+    border-radius: var(--BORDER-RD-CONTACT);
+    overflow: hidden;
 }
 
 .DAY_NUM,
@@ -924,6 +935,11 @@ link to page/ create a page */
 .DAY_NUM {
     background-color: var(--COLOR-DARK2);
     color: var(--COLOR-LIGHT1);
+}
+.DAY_NAME li,
+.DAY_NUM li {
+    text-align: center;
+    font-weight: bold;
 }
 
 .HEADER {
@@ -944,6 +960,7 @@ link to page/ create a page */
 .TIMESLOT__CONTAINER {
     grid-area: SIDEBAR;
     justify-content: left;
+    font-weight: bold;
 }
 
 .TIMESLOT {
@@ -1166,12 +1183,13 @@ link to page/ create a page */
 
 
 
-/* TODO: Promodo Timer Page */
+/* PAGE: Promodo Timer Page */
 
 .TIMER__BODY {
     background-color: #1e213f;
     color: #d7e0ff;
-    min-height: 100vh; /* Fixes the white space issue */
+    min-height: 100vh;
+    /* Fixes the white space issue */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1196,7 +1214,8 @@ link to page/ create a page */
     border-radius: 50%;
     text-align: center;
     margin: 0 auto;
-    position: relative; /* To help with positioning */
+    position: relative;
+    /* To help with positioning */
 }
 
 .pomodoro {
@@ -1211,7 +1230,8 @@ link to page/ create a page */
     border-radius: 50%;
     background: #151932;
     box-shadow: 20px 20px 42px #0e1021, -20px -20px 42px #1c2244;
-    overflow: hidden; /* Prevents overlap */
+    overflow: hidden;
+    /* Prevents overlap */
 }
 
 .pomodoro::before {
@@ -1224,7 +1244,8 @@ link to page/ create a page */
 }
 
 .time {
-    font-size: 4rem !important; /* Adjusts timer size */
+    font-size: 4rem !important;
+    /* Adjusts timer size */
     margin: 20px auto;
 }
 
@@ -1327,7 +1348,8 @@ link to page/ create a page */
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px; /* Space between buttons and timer */
+    gap: 20px;
+    /* Space between buttons and timer */
 }
 
 /* Adjust Buttons (Stacked) */
@@ -1373,4 +1395,54 @@ link to page/ create a page */
 /* Start & Stop Buttons */
 .buttons {
     margin-top: 20px;
+}
+
+
+
+
+/* PAGE: customer support */
+.CS__FAQ h1 {
+    font-size: 2rem;
+}
+
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-button {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+}
+
+/* Dropdown animation */
+.dropdown-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Animation properties */
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Show dropdown */
+.dropdown-container.open .dropdown-list {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
 }

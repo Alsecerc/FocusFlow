@@ -12,10 +12,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -28,12 +29,12 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
@@ -60,7 +61,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -70,9 +71,9 @@
             </nav>
         </div>
     </header>
-    
+
     <main>
-    <div class="SIDEBAR">
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -137,6 +138,24 @@
                 </ul>
             </nav>
         </div>
+
+        <article class="CS__Content">
+            <section class="CS__FAQ">
+                <h1 class="ARTICLE_TITLE">FAQ</h1>
+
+                <div class="dropdown-container">
+                    <button class="dropdown-button">Select an option</button>
+                    <ul class="dropdown-list">
+                        <li class="dropdown-item">Option 1</li>
+                        <li class="dropdown-item">Option 2</li>
+                        <li class="dropdown-item">Option 3</li>
+                    </ul>
+                </div>
+
+            </section>
+            <section></section>
+        </article>
+
 
     </main>
     <script src="Registered.js" defer></script>

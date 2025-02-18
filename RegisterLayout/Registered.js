@@ -834,3 +834,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
         //testing
     }
 });
+
+
+// PAGE: Customer Service
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdownContainer = document.querySelector(".dropdown-container");
+    const dropdownButton = document.querySelector(".dropdown-button");
+
+    dropdownButton.addEventListener("click", function () {
+        dropdownContainer.classList.toggle("open");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!dropdownContainer.contains(event.target)) {
+            dropdownContainer.classList.remove("open");
+        }
+    });
+});
+

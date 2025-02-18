@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow</title>
+    <title>Account</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
@@ -26,12 +27,12 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
@@ -68,6 +69,7 @@
             </nav>
         </div>
     </header>
+    
     <main>
     <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
@@ -113,7 +115,7 @@
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -124,7 +126,7 @@
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Person 1
                             <button class="material-icons">
                                 more_horiz
@@ -135,8 +137,12 @@
             </nav>
         </div>
 
+    
+    
+    
+    <h1>This is acocnt</h1>
     </main>
-    <h1>ZHELLO</h1>
+    
     <script src="Registered.js" defer></script>
 </body>
 

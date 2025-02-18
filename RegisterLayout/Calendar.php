@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
@@ -26,12 +27,12 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
@@ -263,13 +264,14 @@
                     <div class="CALENDAR__CONTENT__CONTAINER" id="weekContent">
                         <div class="HEADER">
                             <ul class="DAY_NAME">
-                                <li>Sunday</li>
-                                <li>Monday</li>
-                                <li>Tuesday</li>
-                                <li>Wednesday</li>
-                                <li>Thursday</li>
-                                <li>Friday</li>
-                                <li>Saturday</li>
+                                <!-- store data in li -->
+                                <li data-mobile="S" data-tablet="Sun"><span>Sunday</span></li>
+                                <li data-mobile="M" data-tablet="Mon"><span>Monday</span></li>
+                                <li data-mobile="T" data-tablet="Tue"><span>Tuesday</span></li>
+                                <li data-mobile="W" data-tablet="Wed"><span>Wednesday</span></li>
+                                <li data-mobile="T" data-tablet="Thu"><span>Thursday</span></li>
+                                <li data-mobile="F" data-tablet="Fri"><span>Friday</span></li>
+                                <li data-mobile="S" data-tablet="Sat"><span>Saturday</span></li>
                             </ul>
 
                             <ul class="DAY_NUM">

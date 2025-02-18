@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img/SMALL_CLOCK_ICON.ico">
-    <link rel="stylesheet" href="Registered.css?v=2">
+    <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
@@ -23,10 +24,10 @@
                 </a>
             </div>
             <div class="HEADER__SEARCH">
-                <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
                 <button class="HEADER__SEARCH_BUTTON">
                     <span class="material-symbols-outlined">search</span>
                 </button>
+                <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             </div>
             <div class="HEADER__RIGHT">
                 <nav>

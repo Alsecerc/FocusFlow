@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Management</title>
+    <title>Community</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -16,8 +16,6 @@
 </head>
 
 <body>
-    <div class="Hiddenlayer" style="display: none;">
-    </div>
     <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
@@ -73,8 +71,8 @@
             </nav>
         </div>
     </header>
-
     <main>
+        <!-- temp SIDEBAR_SHOW -->
         <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
@@ -119,7 +117,7 @@
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -130,7 +128,7 @@
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Person 1
                             <button class="material-icons">
                                 more_horiz
@@ -141,55 +139,8 @@
             </nav>
         </div>
 
-        <!-- TODO LIST CONTENT -->
-        <article class="TODO">
-            <section class="TODO__HEADER">
-                <h1>Task Management</h1>
-                <div class="TODO__BUTTON">
-                    <button class="TODO__ADD">Group<span class="material-icons">
-                            add_circle
-                        </span>
-                    </button>
-
-                    <button class="TODO__ADD">Task<span class="material-icons">
-                            add_circle
-                        </span>
-                    </button>
-                </div>
-            </section>
-
-            <section class="TODO__CONTAINER">
-                <div class="TODO__CARD" draggable="true">
-                    <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK">Get grocery</p>
-                </div>
-            </section>
-        </article>
-
     </main>
-
-
-
-    <div class="TODO__GROUP__ADD" style="display: none;">
-        <h2>Add a New Group</h2>
-        <form id="groupForm">
-            <input type="text" id="groupName" placeholder="Enter group name" required>
-            <button type="submit">Add Group</button>
-        </form>
-    </div>
-    <!-- <div class="TODO__TASK__ADD" style="display: none;">
-        <h2>Add New Task</h2>
-        <form id="taskForm">
-            <label for="Group">Choose your group:</label>
-            <select id="GROUP__NAME__TASK" multiple required>
-                <option value="To Do 1">To Do 1</option>
-            </select>
-            <input type="text" id="taskContent" placeholder="Enter the task" required>
-            <button type="submit">Add task</button>
-        </form>
-    </div> -->
     <script src="Registered.js" defer></script>
-    <script src="Todo.js" defer></script>
 </body>
 
 </html>
