@@ -2,9 +2,6 @@
 session_start();
 
 include 'conn.php';
-// $testName = "John Doe";
-// $testEmail = "johndoe@example.com";
-// $testPass = "P@ssw0rd123";
 
 $username1 = $_POST['username'] ?? "";
 $password1 = $_POST['password'] ?? "";
@@ -30,16 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $resultPass = mysqli_query($_conn, $sqlPass);
 
         if (mysqli_num_rows($resultName) >= 1) {
-            die("<script>alert('Password details are incorrect');window.location.href='Signin.php';</script>");
+            die("<script>alert('Password details are incorrect');window.location.href='Signup.php';</script>");
         } else if (mysqli_num_rows($resultPass) >= 1) {
-            die("<script>alert('Username details are incorrect');window.location.href='Signin.php';</script>");
+            die("<script>alert('Username details are incorrect');window.location.href='Signup.php';</script>");
         } else {
-            die("<script>alert('$username');window.location.href='Signin.php';</script>");
+            die("<script>alert('$username');window.location.href='Signup.php';</script>");
         }
     }
      else {
         // If username and password match, set session variables
         if ($rows = mysqli_fetch_array($result)) {
+
             // Store user data in session variables
             $_SESSION['userID'] = $rows['id'];
             $_SESSION['userName'] = $rows['name'];
@@ -47,10 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['userPassword'] = $rows['password'];
             $_SESSION['usertype'] = $rows['usertype'];
 
+
             // Redirect based on user role
             if (intval($rows['usertype']) === 0) {
+                //  '/' means available across whole website
+                setcookie('id',$rows['userID'], time() + 3600, '/');
                 echo "<script>alert('Welcome User');window.location.href='Homepage.php';</script>";
+                
+
             } else if (intval($rows['usertype']) === 1) {
+                setcookie('useID',$rows['id'], time() + 3600, '/');
                 echo "<script>alert('Welcome Admin');window.location.href='Homepage.php';</script>";
             }
         }

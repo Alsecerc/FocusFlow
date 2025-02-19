@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (isset($_COOKIE['id'])) {
+    header("Location: Homepage.php");
+    exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+if (!isset($_COOKIE['id'])) {
+    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,7 +70,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -69,9 +80,9 @@
             </nav>
         </div>
     </header>
-    
+
     <main>
-    <div class="SIDEBAR">
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -137,12 +148,24 @@
             </nav>
         </div>
 
-    
-    
-    
-    <h1>This is acocnt</h1>
+        <article class="PROFILE">
+            <h1 class="ARTICLE_TITLE">Account Management</h1>
+            <section>
+                <img src="img/USER_ICON.png" alt="user profile" class="PROFILE__PIC">
+                <div>
+                    <?php
+                    echo$_COOKIE['id'];
+                    ?>
+                    <p>Username : <span id="profile_name"></span></p>
+                    <p>Email : <span id="profile_email"></span></p>
+                    <p>Password : <span id="profile_password"></span></p>
+                </div>
+            </section>
+
+        </article>
+
     </main>
-    
+
     <script src="Registered.js" defer></script>
 </body>
 

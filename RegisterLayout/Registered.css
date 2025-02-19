@@ -1400,3 +1400,17 @@ link to page/ create a page */
 
 
 
+/* Page: account setting */
+
+.PROFILE {
+    margin: 0 auto;
+
+    width: 100%;
+}
+
+.PROFILE__PIC {
+    /* This ensures the image fills the container while keeping the aspect ratio. */
+    object-fit: cover;
+    background-color: var(--COLOR-BLUE4);
+    border-radius: 99px;
+}

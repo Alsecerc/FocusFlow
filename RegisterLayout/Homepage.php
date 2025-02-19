@@ -1,4 +1,13 @@
-<!-- change to .php -->
+<?php
+                               
+session_start();
+
+if (!isset($_COOKIE['id'])) {
+    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +49,7 @@
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <a href="CusService.php" class="HEADER__UL__ICON">
+                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>

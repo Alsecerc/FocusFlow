@@ -20,3 +20,4 @@ RewriteRule ^(.+)\.php$ /%1 [R=301,L]
 
 # if enter wrong path user will be redirect to the 404 page
 ErrorDocument 404 http://localhost/RWD_assignment/FocusFlow/Landing_Page/404
+ErrorDocument 404 http://localhost:8081/RWD_assignment/FocusFlow/Landing_Page/404
