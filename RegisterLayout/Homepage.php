@@ -126,7 +126,7 @@ if (!isset($_COOKIE['userID'])) {
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -137,7 +137,7 @@ if (!isset($_COOKIE['userID'])) {
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Person 1
                             <button class="material-icons">
                                 more_horiz

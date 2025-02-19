@@ -48,7 +48,8 @@ html {
 body {
     overflow-x: hidden;
 
-    display: flex;
+    display: grid;
+    grid-template-rows: 80px 1fr;
     flex-direction: column;
 
     height: 100vh;
@@ -63,6 +64,8 @@ main {
     font-family: var(--FF-BODY);
     /* let the main container takes up the rest of space */
     flex-grow: 1;
+
+    overflow-y: hidden;
 }
 
 button {
@@ -1468,4 +1471,100 @@ link to page/ create a page */
     background-color: var(--ACCENT-RED);
     margin: 0 auto;
 
+}
+
+
+/* Page: DM page */
+.DMPage {
+    width: 100%;
+    height: 100%;
+
+    overflow-y: hidden;
+
+    display: grid;
+    grid-template-rows: 100px 1fr 75px;
+}
+
+/* HEADER SECTION */
+.DMPAGE__HEADER {
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.DMPAGE__HEADER2 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    height: 100%;
+}
+
+.PROFILE_ICON {
+    font-size: 5rem;
+}
+
+.PROFILE_CAM {
+    font-size: 2rem;
+}
+
+/* CONVERSATION SECTION */
+.DMPAGE__CONVERSATION {
+    background-color: var(--COLOR-LIGHT1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    overflow-y: auto;
+}
+
+.CONVERSATION {
+    background-color: var(--COLOR-DARK1);
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+    border-radius: var(--BORDER-RD-CONTACT);
+    max-width: 60%;
+    color: var(--COLOR-LIGHT1);
+    margin: 1rem;
+}
+
+.RECEIVE {
+    align-self: flex-start;
+}
+
+.SENT {
+    align-self: flex-end;
+    background-color: var(--COLOR-BLUE2);
+}
+
+
+
+/* MESSAGE SECTION */
+.DMPAGE__MESSAGE {
+    background-color: var(--COLOR-DARK2);
+}
+
+.DMPAGE__MESSAGE,
+.MESSAGE__BOX {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    overflow-y: auto;
+}
+
+.ENTER__MESSAGE {
+    min-width: 500px;
+
+    border: none;
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+}
+
+.SEND__MESSAGE {
+    cursor: pointer;
 }
