@@ -75,12 +75,5 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-function logOut() {
-    // Remove the userID cookie by setting its expiration date to the past
-    document.cookie = "userID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    // Redirect to the homepage or login page
-    window.location.href = "../Landing_Page/Homepage.php";
-}
 
 

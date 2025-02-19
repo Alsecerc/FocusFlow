@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['userID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+?>
+
 <form action="GoalAdd.php" method="POST">
     <label>Goal Title:</label>
     <input type="text" name="goal_title" required>

@@ -2,7 +2,7 @@
 
 session_start();
 
-if (!isset($_COOKIE['userID'])) {
+if (!isset($_SESSION['userID'])) {
     echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -158,7 +158,7 @@ if (!isset($_COOKIE['userID'])) {
                 <div>
                     <?php
                     include "../RegisterLayout/conn.php"; // Database connection file
-                    $userID = $_COOKIE['userID'];
+                    $userID = $_SESSION['userID'];
 
                     $name = $_SESSION['userName'];
                     $email = $_SESSION['userEmail'];
@@ -216,7 +216,7 @@ if (!isset($_COOKIE['userID'])) {
                         $_SESSION['userEmail'] = $newEmail;
                         $_SESSION['userPassword'] = $newPassword;
 
-                        $userID = $_COOKIE['userID'];
+                        $userID = $_SESSION['userID'];
 
                         $sql = "UPDATE users SET " .
                             "name = '$newName'," .
@@ -232,7 +232,7 @@ if (!isset($_COOKIE['userID'])) {
                 </div>
             </section>
             <div class="PROFILE__LOGOUT">
-                <button class="PROFILE__LOGOUT_B" onclick="logOut()">Log Out</button>
+                <a class="PROFILE__LOGOUT_B" href="AccountLogOutBackend.php">Log Out</a>
             </div>
 
         </article>

@@ -1,12 +1,13 @@
 <?php
-session_start();
-include "conn.php"; // Database connection
 
-if (!isset($_COOKIE['id'])) {
-    die("User not logged in");
+session_start();
+
+if (!isset($_SESSION['userID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
 }
 
-$user_id = $_COOKIE['id'];
+$user_id = $_SESSION['userID'];
 $goal_title = $_POST['goal_title'];
 $goal_description = $_POST['goal_description'];
 $goal_type = $_POST['goal_type'];

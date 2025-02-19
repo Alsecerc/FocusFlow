@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['userID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+
+?>
+
 <form action="update_goal.php" method="POST">
     <label>Goal ID:</label>
     <input type="number" name="goal_id" required>
@@ -11,11 +22,11 @@
 session_start();
 include "conn.php";
 
-if (!isset($_COOKIE['id'])) {
+if (!isset($_COOKIE['userID'])) {
     die("User not logged in");
 }
 
-$user_id = $_COOKIE['id'];
+$user_id = $_SESSION['userID'];
 if (isset($_POST['goal_id']) && isset($_POST['progress'])) {
     $goal_id = $_POST['goal_id'];
     $progress = $_POST['progress'];

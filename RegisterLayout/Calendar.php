@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['userID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -202,7 +213,7 @@
                 }
             }
 
-            $user_id = 1;
+            $user_id = $_COOKIE['userID'];
 
             $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
             $result = mysqli_query($_conn, $sql);

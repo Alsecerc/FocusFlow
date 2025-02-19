@@ -27,11 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $resultPass = mysqli_query($_conn, $sqlPass);
 
         if (mysqli_num_rows($resultName) >= 1) {
-            die("<script>alert('Password details are incorrect');window.location.href='Signup.php';</script>");
+            die("<script>alert('Password details are incorrect');window.location.href='Login.php';</script>");
         } else if (mysqli_num_rows($resultPass) >= 1) {
-            die("<script>alert('Username details are incorrect');window.location.href='Signup.php';</script>");
+            die("<script>alert('Username details are incorrect');window.location.href='Login.php';</script>");
         } else {
-            die("<script>alert('$username');window.location.href='Signup.php';</script>");
+            die("<script>alert('Both details are incorrect');window.location.href='Login.php';</script>");
         }
     } else {
         // If username and password match, set session variables
@@ -45,18 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['usertype'] = $rows['usertype'];
 
             $username = $_SESSION['userName'];
-
-            // Redirect based on user role
-            if (intval($rows['usertype']) === 0) {
-                //  '/' means available across whole website
-                setcookie('useID', $rows['userID'], time() + 3600, '/');
-                echo "<script>alert('Welcome back, $username!');</script>";
-                echo "<script>window.location.href='Homepage.php';</script>";
-            } else if (intval($rows['usertype']) === 1) {
-                setcookie('userID', $rows['id'], time() + 3600, '/');
-                echo "<script>alert('Welcome back, $username!');</script>";
-                echo "<script>window.location.href='Homepage.php';</script>";
-            }
+            //  '/' means available across whole website
+            // set for 1 day
+            setcookie('UID', $rows['userID'], time() + (86400), '/');
+            echo "<script>alert('Welcome back, $username!');</script>";
+            echo "<script>window.location.href='Homepage.php';</script>";
         }
     }
 }
