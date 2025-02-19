@@ -154,7 +154,32 @@ if (!isset($_COOKIE['id'])) {
                 <img src="img/USER_ICON.png" alt="user profile" class="PROFILE__PIC">
                 <div>
                     <?php
-                    echo$_COOKIE['id'];
+                    include "../RegisterLayout/conn.php"; // Database connection file
+                        $userID = $_COOKIE['id'];
+                    
+                        // Prepare SQL query
+                        $sql = "SELECT id, name, email, usertype, last_login FROM users WHERE id = ?";
+                        $stmt = $_conn->prepare($sql);
+                        $stmt->bind_param("i", $userID); // "i" means integer
+                    
+                        // Execute and fetch result
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                    
+                        if ($result->num_rows > 0) {
+                            $user = $result->fetch_assoc(); // Fetch user data
+                            echo "<h2>Welcome, " . htmlspecialchars($user['name']) . "!</h2>";
+                            echo "<p>Email: " . htmlspecialchars($user['email']) . "</p>";
+                            echo "<p>User Type: " . htmlspecialchars($user['usertype']) . "</p>";
+                            echo "<p>Last Login: " . htmlspecialchars($user['last_login']) . "</p>";
+                        } else {
+                            echo "<p>No user found.</p>";
+                        }
+                    
+                        // Close statement and connection
+                        $stmt->close();
+                        $_conn->close();
+                    
                     ?>
                     <p>Username : <span id="profile_name"></span></p>
                     <p>Email : <span id="profile_email"></span></p>

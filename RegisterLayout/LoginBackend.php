@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
 
             } else if (intval($rows['usertype']) === 1) {
-                setcookie('useID',$rows['id'], time() + 3600, '/');
+                setcookie('userID',$rows['id'], time() + 3600, '/');
                 echo "<script>alert('Welcome Admin');window.location.href='Homepage.php';</script>";
             }
         }
