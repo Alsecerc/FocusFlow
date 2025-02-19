@@ -192,6 +192,7 @@ if (!isset($_COOKIE['id'])) {
     </main>
 
     <script src="Registered.js" defer></script>
+    <script src="Account.js" defer></script>
 </body>
 
 </html>

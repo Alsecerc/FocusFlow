@@ -141,6 +141,7 @@
 
     </main>
     <script src="Registered.js" defer></script>
+    <script src="CusService.js" defer></script>
 </body>
 
 </html>

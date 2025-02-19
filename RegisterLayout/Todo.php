@@ -159,9 +159,13 @@
             </section>
 
             <section class="TODO__CONTAINER">
-                <div class="TODO__CARD" draggable="true">
+                <div class="TODO__CARD" id="To Do 1">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
-                    <p class="TODO__TASK">Get grocery</p>
+                    <p class="TODO__TASK" draggable="true">Get grocery</p>
+                </div>
+                <div class="TODO__CARD" id="To Do 2">
+                    <h3 class="TODO__CARD_HEADER">To Do 2</h3>
+                    <p class="TODO__TASK" draggable="true">Get Food</p>
                 </div>
             </section>
         </article>

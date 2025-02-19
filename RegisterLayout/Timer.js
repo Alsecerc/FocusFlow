@@ -1,191 +1,222 @@
+
 document.addEventListener("DOMContentLoaded", function(event) {
-    if (window.location.pathname.toLowerCase().includes('timer')){
-        console.log("Running js code on Timer page...");
+    if (window.location.pathname.toLowerCase().includes('timer')) {
+        console.log("Running JS code on Timer page...");
+
         let pomodoro = document.getElementById("pomodoro-timer");
         let short = document.getElementById("short-timer");
         let long = document.getElementById("long-timer");
 
-        // let timers = document.querySelectorAll(".timer-display");
         let session = document.getElementById("pomodoro-session");
         let shortBreak = document.getElementById("short-break");
         let longBreak = document.getElementById("long-break");
 
         let startBtn = document.getElementById("start");
         let stopBtn = document.getElementById("stop");
+        let addButton = document.getElementById("plus-btn");
+        let minusButton = document.getElementById("minus-btn");
 
-        let timerMsg = document.getElementById("timer-message");
-        let button = document.querySelector(".button");
-
-        let addButton = document.getElementById('plus-btn');
-        let minusButton = document.getElementById('minus-btn');
-
-        let currentTimer = null;
-        let myInterval = null;
-        let SetTimer = null;
+        let intervalId = null;
         let isFirstUpdate = true;
-        let intervalId;
+        let POMODORO__TIMES = 0;
+        const LONG__BREAK__TIMES = 4;
 
-        function ShowDefaultTimer(){
-            const pomodoro_minutes = 10;
-            const pomodoro_seconds = 0;
-            pomodoro.textContent = `${String(pomodoro_minutes).padStart(2,'0')}:${String(pomodoro_seconds).padStart(2,'0')}`
+        let pomodoro_minutes = 0;
+        let pomodoro_seconds = 5;
+        let short_break_minutes = 0;
+        let short_break_seconds = 5;
+        let long_break_minutes = 15;
+        let long_break_seconds = 0;
+
+        function ShowDefaultTimer() {
+            pomodoro.textContent = formatTime(pomodoro_minutes, pomodoro_seconds);
+            short.textContent = formatTime(short_break_minutes, short_break_seconds);
+            long.textContent = formatTime(long_break_minutes, long_break_seconds);
             pomodoro.style.display = 'block';
-
-            const short_break_minutes = 5;
-            const short_break_seconds = 0;
-
-            short.innerHTML = `${String(short_break_minutes).padStart(2,'0')}:${String(short_break_seconds).padStart(2,'0')}`;
             short.style.display = 'none';
-
-            const long_break_minutes = 10;
-            const long_break_seconds = 0;
-
-            long.innerHTML = `${String(long_break_minutes).padStart(2,'0')}:${String(long_break_seconds).padStart(2,'0')}`;
             long.style.display = 'none';
         }
-        
-        function addTime(ID__TIMER){
-            addButton.addEventListener('click', () => {
-                let Time = ID__TIMER.textContent;
-                let [minutes, seconds] = Time.split(':').map(Number);
-                if (minutes >= 60){
-                    console.log('Minutes cannot be more than 60');
-                }else{
-                    minutes++;
-                }                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-            })
+
+        function formatTime(minutes, seconds) {
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        function minusTime(ID__TIMER){
-            minusButton.addEventListener('click', () => {
-                console.log('start minus');
-                let currentTime = ID__TIMER.textContent;
-                let [minutes, seconds] = currentTime.split(':').map(Number);
-                
-                if (minutes <= 0){
-                    console.log('Time cannot be negative');
-                }else{
-                    minutes--;
-                }
-                ID__TIMER.textContent = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-                console.log('minus complete');
-            })
+        function CurrentTimer() {
+            const timers = document.querySelectorAll('.timer-display .time span');
+            return Array.from(timers).find(timer => timer.style.display === 'block')?.id || null;
         }
 
-        /**
-         * Returns the current type of time.
-         * 
-         * @returns {Time_type} The current type of time displaying.
-         * 
-         */
-        function CurrentTimer (){
-            let TIMERS = document.querySelectorAll('.timer-display .time span');
-            let CURRENT__TIMER = null;
-            console.log('looking for current timer');
-            if (TIMERS.length === 0) {
-                console.log("No timers found.");
-                return; // Exit the function if no timers are found
-            }
-
-            let timer = Array.from(TIMERS).find(timer => timer.style.display = 'block');
-
-            console.log(`The return id is ${timer.id}`);
-            return timer.id;
+        function DisplayTimer(timer, minutes, seconds) {
+            timer.textContent = formatTime(minutes, seconds);
         }
 
-        function timerTypeSelection (){
-
+        function display_none_other(activeTimer) {
+            const timers = document.querySelectorAll('.timer-display .time span');
+            timers.forEach(timer => {
+                timer.style.display = timer.id === activeTimer.id ? 'block' : 'none';
+            });
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
         }
-        
-        /**
-         * Start button 
-         * 
-         * When user press start button it will start counting the time
-         * 
-         */
-        function TimeUpdate(){
 
-            if(isFirstUpdate){
-                console.log('Ignore first update');
+        function restartInterval() {
+            if (intervalId) clearInterval(intervalId);
+            intervalId = setInterval(TimeUpdate, 1000);
+            stopBtn.disabled = false;
+        }
+
+        function TimeUpdate() {
+            if (isFirstUpdate) {
                 isFirstUpdate = false;
                 return;
             }
-            const TypeTimer = CurrentTimer();
-            const timer = document.getElementById(TypeTimer);
 
-            let currentTime = timer.textContent;
-            let [minutes, seconds] = currentTime.split(':').map(Number);
+            const activeTimerId = CurrentTimer();
+            if (!activeTimerId) return;
 
-            console.log('Started count');
-            if (seconds > 0){
+            const timer = document.getElementById(activeTimerId);
+            let [minutes, seconds] = timer.textContent.split(':').map(Number);
+
+            if (seconds > 0) {
                 seconds--;
-            }else if (seconds == 0){
-                if (minutes > 0){
-                    minutes--;
-                    seconds = 59;
-                }else{
-                    console.log('Time up');
-                    clearInterval(intervalId);
-                }
+            } else if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                handleTimerEnd(timer);
+                return;
             }
-            timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            DisplayTimer(timer, minutes, seconds);
         }
 
-        function StartButton (){
-            startBtn.addEventListener('click', ()=> {
-                if(intervalId){
-                    clearInterval(intervalId);
+        function handleTimerEnd(timer) {
+            if (timer.id === pomodoro.id) {
+                POMODORO__TIMES++;
+                if (POMODORO__TIMES === LONG__BREAK__TIMES) {
+                    display_none_other(long);
+                } else {
+                    display_none_other(short);
                 }
-                console.log('Pressed Start button');
-                intervalId = setInterval(TimeUpdate, 1000);
-            })
-        }
-
-        function StopButton (){
-            stopBtn.addEventListener('click', ()=> {
-                console.log("Stopped");
+                restartInterval();
+                return;
+            } else {
+                resetTime();
+                display_none_other(pomodoro);
                 clearInterval(intervalId);
-            })
+                intervalId = null;
+                intervalId = setInterval(TimeUpdate, 1000);
+            }
         }
 
-        function test() {
-            let timers = document.querySelectorAll('.timer-display .time span');
-            
-            let observer = new MutationObserver((mutationList) =>{
-                mutationList.forEach(mutation =>{
-                    if(mutation.type === 'childList'){
-                        console.log(`Timer updated: ${mutation.target.id} → ${mutation.target.textContent}`);
-                    }
-                })
-            })
-            // Ensure that timers is not empty
-            if (timers.length === 0) {
-                console.log("No timers found.");
-                return; // Exit the function if no timers are found
-            }
-            let config = { childList: true};
-            timers.forEach((timer) => { // Loop through each element in the NodeList
-                // let style = window.getComputedStyle(timer); // Get the computed style for each element
-                if (timer.style.display === 'block') {
-                    console.log(`${timer.id}, ${timer.textContent} is displaying`); // Log the id of the timer that is visible
-                }else{
-                    console.log(`${timer.id} is not displaying`);
-                }
-                // console.log(`${timer.id}, ${timer.textContent}, ${timer.style.display} is displaying`);
-                observer.observe(timer, config);
+        function StartButton() {
+            startBtn.addEventListener("click", () => {
+                const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(`Starting timer: ${TIMER__ID.id}`);
+
+                if (intervalId) clearInterval(intervalId);
+                intervalId = setInterval(TimeUpdate, 1000);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
             });
         }
-        const timer_id = CurrentTimer();
-        const CURRENT__TYPE__TIMER = document.getElementById(`${timer_id}`);
+
+        function StopButton() {
+            stopBtn.addEventListener("click", () => {
+                const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(`Stopping timer: ${TIMER__ID.id}`);
+
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+        }
+
+        function addTime() {
+            addButton.addEventListener("click", () => {
+                const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(`Adding time to: ${TIMER__ID.id}`);
+
+                let [minutes, seconds] = TIMER__ID.textContent.split(":").map(Number);
+
+                if (minutes < 60) {
+                    minutes++;
+                } else {
+                    console.log("Minutes cannot be more than 60");
+                }
+
+                updateGlobalTime(TIMER__ID, minutes, seconds);
+            });
+        }
+
+        function minusTime() {
+            minusButton.addEventListener("click", () => {
+                const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(`Removing time from: ${TIMER__ID.id}`);
+
+                let [minutes, seconds] = TIMER__ID.textContent.split(":").map(Number);
+
+                if (minutes > 0) {
+                    minutes--;
+                } else {
+                    console.log("Time cannot be negative");
+                }
+
+                updateGlobalTime(TIMER__ID, minutes, seconds);
+            });
+        }
+
+        function updateGlobalTime(TIMER__ID, minutes, seconds) {
+            if (TIMER__ID.id === pomodoro.id) {
+                pomodoro_minutes = minutes;
+                pomodoro_seconds = seconds;
+            } else if (TIMER__ID.id === short.id) {
+                short_break_minutes = minutes;
+                short_break_seconds = seconds;
+            } else if (TIMER__ID.id === long.id) {
+                long_break_minutes = minutes;
+                long_break_seconds = seconds;
+            }
+
+            TIMER__ID.textContent = formatTime(minutes, seconds);
+            console.log(`Updated ${TIMER__ID.id} to ${minutes}:${seconds}`);
+        }
+
+        function resetTime() {
+            pomodoro.textContent = formatTime(pomodoro_minutes, pomodoro_seconds);
+            short.textContent = formatTime(short_break_minutes, short_break_seconds);
+            long.textContent = formatTime(long_break_minutes, long_break_seconds);
+        }
+
+        function timerTypeSelection() {
+            document.querySelector(".button-container").addEventListener("click", (event) => {
+                if (event.target.id === session.id) {
+                    display_none_other(pomodoro);
+                    console.log("Switched to Pomodoro timer");
+                } else if (event.target.id === shortBreak.id) {
+                    display_none_other(short);
+                    console.log("Switched to Short Break timer");
+                } else if (event.target.id === longBreak.id) {
+                    display_none_other(long);
+                    console.log("Switched to Long Break timer");
+                }
+                clearInterval(intervalId);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+        }
+
+        // Initialize everything
         ShowDefaultTimer();
-        //testing
-        // console.log(CURRENT__TYPE__TIMER);
-        addTime(CURRENT__TYPE__TIMER);
-        minusTime(CURRENT__TYPE__TIMER);
-        test();
-        TimeUpdate();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
         StartButton();
         StopButton();
-        //testing
+        addTime();
+        minusTime();
+        timerTypeSelection();
     }
 });
