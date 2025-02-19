@@ -17,6 +17,7 @@ function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, 
 
     container.appendChild(newGroupCard);
     console.log("Created group");
+    console.log(container)
 }
 
 function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, paragraphContent = null) {
@@ -57,12 +58,14 @@ function CreateTaskForm() {
 
     const form = document.createElement('form');
     form.id = 'taskForm';
+    form.method = 'post';
 
     const label = document.createElement('label');
     label.setAttribute('for', 'Group');
 
     const selection = document.createElement('select');
     selection.id = 'GROUP__NAME__TASK';
+    selection.name = 'GROUPNAMECHOICE[]';
 
     const observer = new MutationObserver(UpdateSelection);
 
@@ -83,11 +86,12 @@ function CreateTaskForm() {
 
     UpdateSelection();
     const userinput = document.createElement('input');
+    userinput.value = "";
     userinput.id = 'taskContent';
     userinput.type = 'text';
     userinput.placeholder = 'Enter the task';
     userinput.required = 'true';
-    userinput.id = 'taskContent';
+    userinput.name = 'USERTASK';
 
     const submission_Button = document.createElement('button');
     submission_Button.type = 'submit';
@@ -112,6 +116,27 @@ function CreateTaskForm() {
     document.body.appendChild(main);
     console.log("created Task Form");
     console.log("MutationObserver started: Watching for changes...");
+
+
+
+    form.addEventListener('submit', function (event) {
+
+        event.preventDefault(); // Prevent default form submission
+        
+        const formData = new FormData(form); // Capture form data
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+        fetch('Todo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("Response from PHP:");
+        })
+        .catch(error => console.error("Error:", error));
+    });
 }
 
 function GetGroupName() {
@@ -143,9 +168,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         // Find the button that has "Task" as its text content
         const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
 
-        let Draggable = document.querySelectorAll(`.${GroupCardTask.className}`);
+        // let Draggable = document.querySelectorAll(`.${GroupCardTask.className}`);
 
-        let Droppable = document.querySelectorAll(`.${GroupCard.className}`);
+        // let Droppable = document.querySelectorAll(`.${GroupCard.className}`);
 
         let debounceTimeout;
 
@@ -249,15 +274,36 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         
                     // Pause observer while updating
                     observer.disconnect();
+                    
+                    try {
+                        const draggables = document.querySelectorAll(`.${GroupCardTask.className}`)
+                        console.log('hi'); // Debugging
         
-                    const draggables = document.querySelectorAll(`.${GroupCardTask.className}`);
-                    const droppables = document.querySelectorAll(`.${GroupCard.className}`);
-        
-                    console.log('hi'); // Debugging
-        
-                    Drag(draggables);
-                    Drop(droppables);
-        
+                        Drag(draggables);
+                        
+                    }catch (error){
+                        if(error instanceof TypeError){
+                            console.error("Caught a TypeError:", error.message);
+                        }else {
+                            // Handle other types of errors if needed
+                            console.error("An unexpected error occurred:", error);
+                        }
+                    }
+                    
+                    try{
+                        const droppables = document.querySelectorAll(`.${GroupCard.className}`);
+                        
+                        Drop(droppables);
+
+                    }catch (error){
+                        if(error instanceof TypeError){
+                            console.error("Caught a TypeError for droppables:", error.message);
+                        }else {
+                            // Handle other types of errors if needed
+                            console.error("An unexpected error occurred:", error);
+                        }
+                    }
+
                     // Resume observer **AFTER** execution to avoid recursive calls
                     setTimeout(() => {
                         observer.observe(GroupContainer, { childList: true, subtree: true });
@@ -270,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
             observer.observe(GroupContainer, { childList: true, subtree: true });
         }
         
-
         function Drag(draggables) {
             draggables.forEach(element => {
                 element.addEventListener('dragstart', () => {
@@ -292,6 +337,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         }
         
         function Drop(droppables) {
+            if (droppables === null) return;
             droppables.forEach(zone => {
                 console.log(zone.dataset)
                 if (!zone.dataset.listener) { // Avoid adding multiple event listeners
