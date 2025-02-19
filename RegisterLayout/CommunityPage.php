@@ -1,8 +1,8 @@
 <?php
-                               
+
 session_start();
 
-if (!isset($_COOKIE['userID'])) {
+if (!isset($_SESSION['userID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -81,7 +81,7 @@ if (!isset($_COOKIE['userID'])) {
         </div>
     </header>
     <main>
-        <!-- temp SIDEBAR_SHOW -->
+
         <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
@@ -148,9 +148,70 @@ if (!isset($_COOKIE['userID'])) {
             </nav>
         </div>
 
+        <article class="COMMUNITY1">
+            <section class="COMMUNITY1__HEADER">
+                <h1>Team Alpha</h1>
+                <div>
+                    <a href="#" class="HEADER__UL__ICON"><span class="material-icons">
+                            upload_file
+                        </span>
+                    </a>
+                    <a href="#" class="HEADER__UL__ICON">
+                        <span class="material-icons">
+                            folder
+                        </span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="COMMUNITY1__MAIN">
+                2
+            </section>
+
+            <section class="COMMUNITY1__MEMBER">
+                <h3>Member List</h3>
+                <ul class="MEMBER_LIST">
+                    <li class="MEMBER">
+                        <a href="CommunityDMPage.php?name=John+Doe" class="memberName">
+                            <span class="material-icons">sentiment_very_satisfied</span>
+                            <p>John Doe</p>
+                        </a>
+                    </li>
+                    <li class="MEMBER">
+                        <a href="CommunityDMPage.php?name=Jane+Smith" class="memberName">
+                            <span class="material-icons">sentiment_very_satisfied</span>
+                            <p>Jane Smith</p>
+                        </a>
+                    </li>
+                    <li class="MEMBER">
+                        <a href="CommunityDMPage.php?name=Michael+Johnson" class="memberName">
+                            <span class="material-icons">sentiment_very_satisfied</span>
+                            <p>Michael Johnson</p>
+                        </a>
+                    </li>
+                    <li class="MEMBER">
+                        <a href="CommunityDMPage.php?name=Emily+Davis" class="memberName">
+                            <span class="material-icons">sentiment_very_satisfied</span>
+                            <p>Emily Davis</p>
+                        </a>
+                    </li>
+                    <li class="MEMBER">
+                        <a href="CommunityDMPage.php?name=David+Wilson" class="memberName">
+                            <span class="material-icons">sentiment_very_satisfied</span>
+                            <p>David Wilson</p>
+                        </a>
+                    </li>
+                </ul>
+
+
+
+
+            </section>
+        </article>
+
     </main>
     <script src="Registered.js" defer></script>
-    <script src="CusService.js" defer></script>
+    <script src="Community.js" defer></script>
 </body>
 
 </html>

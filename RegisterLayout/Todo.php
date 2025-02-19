@@ -1,6 +1,13 @@
 <!-- change to .php -->
 <?php 
     // include 'conn.php';
+
+session_start();
+
+if (!isset($_COOKIE['userID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
     // $_GET["groupName"];
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){
@@ -25,6 +32,9 @@
     // echo $task;
     // echo $GroupChoice;
     // echo $GroupName;
+
+
+
 ?>
 
 <!DOCTYPE html>

@@ -2,7 +2,10 @@
                                
 session_start();
 
-if (!isset($_COOKIE['userID'])) {
+// echo $_COOKIE['UID'];
+// echo $_SESSION['userID'];
+
+if (!isset($_SESSION['userID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }

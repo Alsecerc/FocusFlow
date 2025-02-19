@@ -2,10 +2,24 @@
 
 session_start();
 
-if (!isset($_COOKIE['userID'])) {
+if (!isset($_SESSION['userID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
+
+include "conn.php";
+
+$result = $_conn->query("SELECT * FROM chat_messages ORDER BY timestamp ASC");
+
+$messages = [];
+while ($row = $result->fetch_assoc()) {
+    $messages[] = $row;
+}
+
+
+echo "<script>";
+echo "var MessageList = " . json_encode($messages) . ";";
+echo "</script>";
 
 ?>
 
@@ -158,7 +172,12 @@ if (!isset($_COOKIE['userID'])) {
                     <span class="material-icons PROFILE_ICON">
                         face
                     </span>
-                    <h1>James Carter</h1>
+                    <?php
+                    // Get the name from URL
+                    $name = isset($_GET['name']) ? $_GET['name'] : "Default Name";
+                    ?>
+                    <h1><?php echo htmlspecialchars($name); ?></h1>
+
                 </div>
                 <span class="material-icons PROFILE_CAM">
                     videocam
@@ -168,24 +187,69 @@ if (!isset($_COOKIE['userID'])) {
             <section class="DMPAGE__CONVERSATION">
                 <div class="CONVERSATION RECEIVE">Hey! How are you?</div>
                 <div class="CONVERSATION SENT">I’m good, how about you?</div>
-                <div class="CONVERSATION RECEIVE">Hey! How are you?</div>
-                <div class="CONVERSATION SENT">I’m good, how about you?</div>
-                <div class="CONVERSATION RECEIVE">Hey! How are you?</div>
-                <div class="CONVERSATION SENT">I’m good, how about you?</div>
-                <div class="CONVERSATION RECEIVE">Hey! How are you?</div>
-                <div class="CONVERSATION SENT">I’m good, how about you?</div>
-                <div class="CONVERSATION RECEIVE">Hey! How are you?</div>
-                <div class="CONVERSATION SENT">I’m good, how about you?</div>
             </section>
 
             <section class="DMPAGE__MESSAGE">
-                <div class="MESSAGE__BOX">
-                    <input class= "ENTER__MESSAGE" type="text" name="message" id="message" placeholder="Type something...">
-                    <button onclick="sendMSG()" class="SEND__MESSAGE"><span class="material-icons">
+
+                <form action="CommunityDMPage.php" method="POST" class="MESSAGE__BOX" id="chatForm">
+                    <input class="ENTER__MESSAGE" type="text" name="message" id="message1" placeholder="Type something...">
+                    <button type="submit" class="SEND__MESSAGE"><span class="material-icons">
                             send
                         </span></button>
-                </div>
+                </form>
+                <?php
+                // include "conn.php";
+
+                // if (!$_conn) {
+                //     die("Connection failed: " . mysqli_connect_error());
+                // }
+
+                // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                //     include "conn.php";
+
+                //     $userID = $_COOKIE['userID'] ?? "";
+                //     $message = $_POST['message'] ?? "";
+
+                //     if (!empty(trim($message))) {
+                //         $userID = mysqli_real_escape_string($_conn, $userID);
+                //         $message = mysqli_real_escape_string($_conn, $message);
+
+                //         $sql = "INSERT INTO chat_messages (user_id, message) VALUES ('$userID', '$message')";
+
+                //         if (!mysqli_query($_conn, $sql)) {
+                //             echo json_encode(["status" => "error", "message" => mysqli_error($_conn)]);
+                //         }
+                //     }
+                // }
+
+
+                // $user_id = $_COOKIE['userID'] ?? ""; // Get user ID from cookie
+
+                // if (!empty($user_id)) {
+                //     $sql = "SELECT message, timestamp FROM chat_messages WHERE user_id = '$user_id' ORDER BY timestamp ASC";
+                //     $result = mysqli_query($_conn, $sql);
+
+                //     $messages = []; // Store messages
+
+                //     while ($row = mysqli_fetch_assoc($result)) {
+                //         $messages[] = $row;
+                //     }
+
+
+
+                //     echo "<script>";
+                //     echo "var MsgLog = " . json_encode($messages) . ";";
+                //     echo "</script>";
+                // } else {
+                //     echo json_encode(["status" => "error", "message" => "User ID not found."]);
+                // }
+
+                // mysqli_close($_conn);
+                ?>
             </section>
+
+
+
 
         </article>
 
