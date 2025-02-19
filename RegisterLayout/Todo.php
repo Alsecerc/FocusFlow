@@ -1,4 +1,31 @@
 <!-- change to .php -->
+<?php 
+    // include 'conn.php';
+    // $_GET["groupName"];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+        if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){
+            $groupName = $_POST['GROUPNAMECHOICE'];
+            $taskContent = $_POST['USERTASK'];
+            $groupName = htmlspecialchars($groupName[0], ENT_QUOTES, 'UTF-8');
+            $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
+    
+            echo "Selected Group: " . $groupName . "<br>";
+            echo "Task Content: " . $taskContent . "<br>";
+        }else{
+            echo "missing form data";
+        }
+    }else{
+        // echo "ERROR";
+        // echo "Request Method: " . $_SERVER['REQUEST_METHOD'];
+    }
+    // $task = $_POST["USERTASK"];
+    // $GroupChoice = $_POST["GROUPNAMECHOICE"];
+    // $GroupName = $_POST["GROUPNAME"];
+    
+    // echo $task;
+    // echo $GroupChoice;
+    // echo $GroupName;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -168,8 +195,6 @@
 
     </main>
 
-
-
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>
         <form id="groupForm" method="post">
@@ -177,40 +202,9 @@
             <button type="submit">Add Group</button>
         </form>
     </div>
-    <!-- <div class="TODO__TASK__ADD" style="display: none;">
-        <h2>Add New Task</h2>
-        <form id="taskForm">
-            <label for="Group">Choose your group:</label>
-            <select id="GROUP__NAME__TASK" multiple required>
-                <option value="To Do 1">To Do 1</option>
-            </select>
-            <input type="text" id="taskContent" placeholder="Enter the task" required>
-            <button type="submit">Add task</button>
-        </form>
-    </div> -->
     <script src="Registered.js" defer></script>
     <script src="Todo.js" defer></script>
 </body>
 
 </html>
 
-<?php 
-    // $_GET["groupName"];
-    if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){
-            $groupName = $_POST['GROUPNAMECHOICE'];
-            $taskContent = $_POST['USERTASK'];
-            $groupName = htmlspecialchars($groupName[0], ENT_QUOTES, 'UTF-8');
-            $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
-    
-            echo "Selected Group: " . $groupName . "<br>";
-            echo "Task Content: " . $taskContent . "<br>";
-        }else{
-            echo "missing form data";
-        }
-    }
-    // $task = $_POST["USERTASK"];
-    // $GroupChoice = $_POST["GROUPNAMECHOICE"];
-    // $GroupName = $_POST["GROUPNAME"];
-    
-?>
