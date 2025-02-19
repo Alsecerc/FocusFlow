@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
@@ -26,12 +27,12 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
@@ -156,55 +157,100 @@
 
                         <label class="INPUT__BOX">
                             <input type="date" name="start_date" id="start_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Date : </span>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="start_date_ph">Starting Date : </span>
                         </label>
 
                         <label class="INPUT__BOX">
-                            <input type="date" name="due_date" id="due_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Due Date : </span>
+                            <input type="time" name="start_time" id="start_time" class="INPUT__INPUT" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="start_time_ph">Starting Time : </span>
                         </label>
 
                         <label class="INPUT__BOX">
-                            <input type="time" name="time" id="time" class="INPUT__INPUT" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Starting Time : </span>
+                            <input type="time" name="end_time" id="end_time" class="INPUT__INPUT" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="end_time_ph">Ending Time : </span>
                         </label>
 
-                        <label class="INPUT__BOX">
-                            <input type="number" name="duration" id="duration" class="INPUT__INPUT" min="0" required>
-                            <span class="INPUT__PLACEHOLDER">Duration (hours) : </span>
-                        </label>
                         <div class="POP_UP__CONTROLS">
                             <button type="button" class="CONTROLS__CLOSE">Close</button>
-                            <button type="reset" class="CONTROLS__RESET" onclick="ResetInput()">Reset</button>
+                            <button type="reset" class="CONTROLS__RESET" id="resetButton">Reset</button>
                             <button type="submit" class="CONTROLS__SUBMIT">Submit</button>
                         </div>
                     </form>
                 </div>
             </div>
             <?php
-            $taskTitle = $_POST['task_title'] ?? null;
-            $taskDesc = $_POST['task_desc'] ?? null;
-            $startDate = $_POST['start_date'] ?? null;
-            $dueDate = $_POST['due_date'] ?? null;
-            $startTime = $_POST['time'] ?? null;
-            $duration = $_POST['duration'] ?? null;
+            include 'conn.php';
+
+            if (!$_conn) {
+                die("Connection failed: " . mysqli_connect_error());
+            }
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $taskTitle = $_POST['task_title'] ?? "";
+                $taskDesc = $_POST['task_desc'] ?? "";
+                $startDate = $_POST['start_date'] ?? "";
+                $startTime = $_POST['start_time'] ?? "";
+                $endTime = $_POST['end_time'] ?? "";
+
+                $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
+            VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),1)";
+
+                if (mysqli_query($_conn, $sql)) {
+                    echo "<script><alert>New record created successfully</alert></script>";
+                } else {
+                    echo "Error: " . $sql . "<br>" . mysqli_error($_conn);
+                }
+            }
+
+            $user_id = 1;
+
+            $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
+            $result = mysqli_query($_conn, $sql);
+
+            // Check if there are results
+            if (mysqli_num_rows($result) > 0) {
+                // Initialize an array to store the data
+                $taskList = array();
+
+                // Fetch each row as an associative array
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $TaskList[] = array(
+                        'task_title' => $row['task_title'],
+                        'task_desc' => $row['task_desc'],
+                        'start_date' => $row['start_date'],
+                        'start_time' => $row['start_time'],
+                        'end_time' => $row['end_time'],
+                        'created_at' => $row['created_at'],
+                        'user_id' => $row['user_id']
+                    );
+                }
+
+                // Send the task list to the frontend in JSON format
+                echo "<script>";
+                echo "var TaskList = " . json_encode($TaskList) . ";";
+                echo "</script>";
+            } else {
+                echo "0 results";
+            }
+
+            mysqli_close($_conn);
             ?>
 
             <h1 class="ARTICLE_TITLE">Calendar</h1>
             <section class="CALENDAR">
                 <div class="CALENDAR__HEADER">
-                    <h1 class="CALENDAR__TITLE" id="calendar__title1"></h1>
+                    <h1 class="CALENDAR__TITLE" id="calendar__title1"><span id="MONTH"></span> <span id="YEAR"></span></h1>
                     <div class="TITLE__CONTAINER">
                         <div class="Header__Container">
-                            <button class="Header__Button" onclick="goToToday()"><span class=" Header__Wording">Today</span></button>
+                            <button class="Header__Button" id="today"><span class=" Header__Wording">Today</span></button>
                         </div>
                         <div class="Header__Container">
                             <button class="Header__Button OPEN_POP_UP"><span class="material-icons Header__Wording">add</span></button>
                         </div>
                         <div class="Header__Container">
-                            <button onclick="toggleViewPrevious()" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
+                            <button type="button" class="Header__Button SelectView" id="left"><span class="material-icons Header__Wording">arrow_left</span></button>
                             <span style="margin: 0 1rem;">Week</span>
-                            <button onclick="toggleViewNext()" class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
+                            <button class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
                         </div>
                         <!-- <div class="BUTTON__CONTAINER">
                         <button onclick="togglePeriod('week')" id="weekButton" class="CALENDAR__HEADER__BUTTON">W</button>
@@ -218,13 +264,14 @@
                     <div class="CALENDAR__CONTENT__CONTAINER" id="weekContent">
                         <div class="HEADER">
                             <ul class="DAY_NAME">
-                                <li>Sunday</li>
-                                <li>Monday</li>
-                                <li>Tuesday</li>
-                                <li>Wednesday</li>
-                                <li>Thursday</li>
-                                <li>Friday</li>
-                                <li>Saturday</li>
+                                <!-- store data in li -->
+                                <li data-mobile="S" data-tablet="Sun"><span>Sunday</span></li>
+                                <li data-mobile="M" data-tablet="Mon"><span>Monday</span></li>
+                                <li data-mobile="T" data-tablet="Tue"><span>Tuesday</span></li>
+                                <li data-mobile="W" data-tablet="Wed"><span>Wednesday</span></li>
+                                <li data-mobile="T" data-tablet="Thu"><span>Thursday</span></li>
+                                <li data-mobile="F" data-tablet="Fri"><span>Friday</span></li>
+                                <li data-mobile="S" data-tablet="Sat"><span>Saturday</span></li>
                             </ul>
 
                             <ul class="DAY_NUM">
@@ -270,11 +317,6 @@
                         </div>
 
                         <div class="EVENT__CONTAINER">
-                            <!-- how long / which day / what time -->
-                            <div class="EVENT EVENT1">
-                                <div class="EVENT__STATUS"></div>
-                                <span class="EVENT__NAME">Event 1</span>
-                            </div>
                         </div>
 
                     </div>

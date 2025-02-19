@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <header>
+<header>
         <div class="HEADER__LEFT">
             <a href="Homepage.php">
                 <h1 class="HEADER__TITLE CLICKABLE">F<span class="material-symbols-outlined HEADER__ICON">
@@ -52,15 +52,20 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="CONTACT">
-                        <a class="DROPDOWN__ITEM" href="">Customer Service</a>
-                        <a class="DROPDOWN__ITEM" href="">Help Center</a>
-                        <a class="DROPDOWN__ITEM" href="">Social Media Links</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#contactus">Customer Service</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#FAQ">FAQ</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>
                     </div>
                 </ul>
             </nav>
         </div>
-        <div class="HEADER__SIGNUP CTA">
-            SIGN UP
+        <div class="CTA__GROUP">
+            <div class="HEADER__LOGIN CTA">
+                <a href="../RegisterLayout/Login.php">LOGIN</a>
+            </div>
+            <div class="HEADER__SIGNUP CTA">
+                <a href="../RegisterLayout/Signup.php">SIGN UP</a>
+            </div>
         </div>
     </header>
 

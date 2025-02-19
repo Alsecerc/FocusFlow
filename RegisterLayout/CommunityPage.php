@@ -6,16 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Support</title>
+    <title>Community</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -28,12 +29,12 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
@@ -60,7 +61,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -70,9 +71,9 @@
             </nav>
         </div>
     </header>
-    
     <main>
-    <div class="SIDEBAR">
+        <!-- temp SIDEBAR_SHOW -->
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -116,7 +117,7 @@
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -127,7 +128,7 @@
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Person 1
                             <button class="material-icons">
                                 more_horiz

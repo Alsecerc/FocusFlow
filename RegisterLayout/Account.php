@@ -1,15 +1,27 @@
+<?php
+
+session_start();
+
+if (!isset($_COOKIE['id'])) {
+    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow</title>
+    <title>Account</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
@@ -26,12 +38,12 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
@@ -58,7 +70,7 @@
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -68,8 +80,9 @@
             </nav>
         </div>
     </header>
+
     <main>
-    <div class="SIDEBAR">
+        <div class="SIDEBAR">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -113,7 +126,7 @@
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -124,7 +137,7 @@
                 <h4 class="NAV_TITLE">DM</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Person 1
                             <button class="material-icons">
                                 more_horiz
@@ -135,8 +148,24 @@
             </nav>
         </div>
 
+        <article class="PROFILE">
+            <h1 class="ARTICLE_TITLE">Account Management</h1>
+            <section>
+                <img src="img/USER_ICON.png" alt="user profile" class="PROFILE__PIC">
+                <div>
+                    <?php
+                    echo$_COOKIE['id'];
+                    ?>
+                    <p>Username : <span id="profile_name"></span></p>
+                    <p>Email : <span id="profile_email"></span></p>
+                    <p>Password : <span id="profile_password"></span></p>
+                </div>
+            </section>
+
+        </article>
+
     </main>
-    <h1>ZHELLO</h1>
+
     <script src="Registered.js" defer></script>
     <script src="Account.js" defer></script>
 </body>

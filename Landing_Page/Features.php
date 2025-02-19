@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,15 +55,20 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="CONTACT">
-                        <a class="DROPDOWN__ITEM" href="">Customer Service</a>
-                        <a class="DROPDOWN__ITEM" href="">Help Center</a>
-                        <a class="DROPDOWN__ITEM" href="">Social Media Links</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#contactus">Customer Service</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#FAQ">FAQ</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>
                     </div>
                 </ul>
             </nav>
         </div>
-        <div class="HEADER__SIGNUP CTA">
-            SIGN UP
+        <div class="CTA__GROUP">
+            <div class="HEADER__LOGIN CTA">
+                <a href="../RegisterLayout/Login.php">LOGIN</a>
+            </div>
+            <div class="HEADER__SIGNUP CTA">
+                <a href="../RegisterLayout/Signup.php">SIGN UP</a>
+            </div>
         </div>
     </header>
 

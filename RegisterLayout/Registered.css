@@ -259,6 +259,7 @@ header {
     z-index: 100;
     top: 0px;
 
+    min-width: 100%;
     width: 100%;
     height: 80px;
 
@@ -318,14 +319,14 @@ header {
 
     margin: 20px 0;
     min-width: 200px;
-    width: 750px;
+    width: 100%;
 
     box-shadow: 0 4px 10px 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
 }
 
 .HEADER__SEARCH_INPUT,
@@ -336,10 +337,9 @@ header {
 }
 
 .HEADER__SEARCH_INPUT {
-    flex: 1;
+    /* flex: 1; */
     border: none;
     outline: none;
-    padding-left: 20px;
     font-size: 16px;
 }
 
@@ -352,8 +352,7 @@ header {
 
     display: flex;
     align-items: center;
-
-    padding-right: 20px;
+    padding-left: 20px;
 }
 
 .HEADER__SEARCH_BUTTON:hover {
@@ -516,7 +515,7 @@ link to page/ create a page */
 /* SIDEBAR */
 .SIDEBAR {
     width: 250px;
-    height: 100vh;
+    min-height: 100vh;
 
     background-color: var(--COLOR-DARK2);
 
@@ -585,7 +584,7 @@ link to page/ create a page */
 
 
 
-/* TODO: Todo Management */
+/* PAGE: Todo Management */
 .TODO {
     height: 100%;
 }
@@ -638,11 +637,15 @@ link to page/ create a page */
     padding: var(--PADDING-TB);
 
     display: flex;
-    flex-wrap: nowrap;  /* Prevent wrapping */
-    overflow-x: auto;   /* Enable horizontal scrolling */
-    overflow-y: hidden; /* Prevent vertical stretching */
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    overflow-y: hidden;
+    /* Prevent vertical stretching */
     white-space: nowrap;
-    align-items: flex-start; /* Keep items aligned at the top */
+    align-items: flex-start;
+    /* Keep items aligned at the top */
     gap: 1rem;
     pointer-events: auto;
 }
@@ -652,11 +655,18 @@ link to page/ create a page */
     color: var(--COLOR-DARK3);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
+<<<<<<< HEAD
+=======
+
+>>>>>>> ec6c4de97908bca5cdfcf3ffcc7c74073dd4c0d4
     display: flex;
     flex-direction: column;
-    flex: 0 0 auto;  /* Prevent cards from growing */
-    min-width: 200px; /* Ensure a reasonable size */
-    max-width: 250px; /* Prevent excessive stretching */
+    flex: 0 0 auto;
+    /* Prevent cards from growing */
+    min-width: 200px;
+    /* Ensure a reasonable size */
+    max-width: 250px;
+    /* Prevent excessive stretching */
     margin-right: 1rem;
     cursor: grab;
 }
@@ -671,15 +681,20 @@ link to page/ create a page */
     background: white;
     color: black;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+<<<<<<< HEAD
     margin-bottom: 20px;
+=======
+
+>>>>>>> ec6c4de97908bca5cdfcf3ffcc7c74073dd4c0d4
     padding: 12px;
     border-radius: 4px;
-  
+
     font-size: 16px;
     cursor: grab;
 }
 
-.TODO__GROUP__ADD, .TODO__TASK__ADD{
+.TODO__GROUP__ADD,
+.TODO__TASK__ADD {
     display: none;
     position: fixed;
     /* Fixed positioning relative to the viewport */
@@ -715,7 +730,7 @@ link to page/ create a page */
     pointer-events: block;
 }
 
-#groupForm{
+#groupForm {
     z-index: 1;
 
     display: flex;
@@ -724,7 +739,7 @@ link to page/ create a page */
 }
 
 #groupForm input,
-#groupForm button{
+#groupForm button {
     margin-bottom: 10px;
     /* Add space between form elements */
     padding: 10px;
@@ -732,7 +747,7 @@ link to page/ create a page */
     border-radius: 4px;
 }
 
-#groupForm button{
+#groupForm button {
     background-color: #4CAF50;
     /* Green background color */
     color: white;
@@ -741,7 +756,7 @@ link to page/ create a page */
     /* Pointer cursor on hover */
 }
 
-#groupForm button:hover{
+#groupForm button:hover {
     background-color: #45a049;
     /* Darker green on hover */
 }
@@ -807,7 +822,7 @@ link to page/ create a page */
     color: white;
 }
 
-/* TODO: Calendar Page */
+/* PAGE: Calendar Page */
 
 /* Header */
 .CONTAINER {
@@ -859,7 +874,7 @@ link to page/ create a page */
     width: 100%;
     padding: 0.5rem;
     color: var(--COLOR-DARK2);
-    
+
     transition: all 0.3s ease;
 
     user-select: none;
@@ -918,6 +933,9 @@ link to page/ create a page */
         "SIDEBAR MAIN";
 
     position: relative;
+
+    border-radius: var(--BORDER-RD-CONTACT);
+    overflow: hidden;
 }
 
 .DAY_NUM,
@@ -929,6 +947,12 @@ link to page/ create a page */
 .DAY_NUM {
     background-color: var(--COLOR-DARK2);
     color: var(--COLOR-LIGHT1);
+}
+
+.DAY_NAME li,
+.DAY_NUM li {
+    text-align: center;
+    font-weight: bold;
 }
 
 .HEADER {
@@ -949,6 +973,7 @@ link to page/ create a page */
 .TIMESLOT__CONTAINER {
     grid-area: SIDEBAR;
     justify-content: left;
+    font-weight: bold;
 }
 
 .TIMESLOT {
@@ -985,7 +1010,7 @@ link to page/ create a page */
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     /* 24 hours * 4 interval (1interval = 15mins) = 96 rows */
-    grid-template-rows: repeat(96, 1fr);
+    grid-template-rows: repeat(100, 15px);
     position: relative;
 }
 
@@ -997,18 +1022,12 @@ link to page/ create a page */
     color: var(--COLOR-LIGHT1);
 
     border-radius: var(--BORDER-RD-CONTACT);
-}
 
-.EVENT1 {
-    /* height = how long is event */
-    height: 60px;
+    padding: 1rem;
 
-    /* 
-    starts at 10 
-    abs(9-10) = 1 * 60 = 60px offset
-    60/15 (interval) = 4 + 1 (for offset) = 5
-    */
-    grid-row: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* pop up */
@@ -1177,12 +1196,13 @@ link to page/ create a page */
 
 
 
-/* TODO: Promodo Timer Page */
+/* PAGE: Promodo Timer Page */
 
 .TIMER__BODY {
     background-color: #1e213f;
     color: #d7e0ff;
-    min-height: 100vh; /* Fixes the white space issue */
+    min-height: 100vh;
+    /* Fixes the white space issue */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1207,7 +1227,8 @@ link to page/ create a page */
     border-radius: 50%;
     text-align: center;
     margin: 0 auto;
-    position: relative; /* To help with positioning */
+    position: relative;
+    /* To help with positioning */
 }
 
 .pomodoro {
@@ -1222,7 +1243,8 @@ link to page/ create a page */
     border-radius: 50%;
     background: #151932;
     box-shadow: 20px 20px 42px #0e1021, -20px -20px 42px #1c2244;
-    overflow: hidden; /* Prevents overlap */
+    overflow: hidden;
+    /* Prevents overlap */
 }
 
 .pomodoro::before {
@@ -1235,7 +1257,8 @@ link to page/ create a page */
 }
 
 .time {
-    font-size: 4rem !important; /* Adjusts timer size */
+    font-size: 4rem !important;
+    /* Adjusts timer size */
     margin: 20px auto;
 }
 
@@ -1338,7 +1361,8 @@ link to page/ create a page */
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px; /* Space between buttons and timer */
+    gap: 20px;
+    /* Space between buttons and timer */
 }
 
 /* Adjust Buttons (Stacked) */
@@ -1384,4 +1408,21 @@ link to page/ create a page */
 /* Start & Stop Buttons */
 .buttons {
     margin-top: 20px;
+}
+
+
+
+/* Page: account setting */
+
+.PROFILE {
+    margin: 0 auto;
+
+    width: 100%;
+}
+
+.PROFILE__PIC {
+    /* This ensures the image fills the container while keeping the aspect ratio. */
+    object-fit: cover;
+    background-color: var(--COLOR-BLUE4);
+    border-radius: 99px;
 }

@@ -1,0 +1,79 @@
+/* Phone */
+@media (max-width: 468px) {
+    html {
+        background-color: lightseagreen;
+        min-width: 725px;
+    }
+
+    header {
+        min-width: 722px;
+        font-size: 1.5rem;
+    }
+
+    .HEADER__SEARCH {
+        display: none;
+    }
+
+    .SIDEBAR {
+        min-height: 100%;
+        min-width: 100%;
+
+        left: -800px;
+    }
+
+    .SIDEBAR_SHOW {
+        left: 0;
+    }
+
+    .SIDEBAR,
+    .HEADER__ICON,
+    .HEADER__UL__ICON>span,
+    .SIDEBAR__ITEM>span {
+        font-size: 2rem;
+    }
+
+    /* TODO: CALENDAR PAGE */
+    li::before {
+        content: attr(data-mobile);
+    }
+    li span {
+        display: none; 
+    }
+
+
+}
+
+/* Tablet */
+@media (min-width: 468px) and (max-width: 1024px) {
+    html {
+        background-color: lightseagreen;
+        min-width: 725px;
+    }
+
+    header {
+        min-width: 722px;
+    }
+
+    .SIDEBAR {
+        min-height: 100%;
+    }
+
+    .SIDEBAR_SHOW {
+        left: 0;
+    }
+
+    /*TODO: CALENDAR PAGE */
+    li::before {
+        content: attr(data-tablet);
+    }
+    li span {
+        display: none;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    html {
+        background-color: lightcoral;
+    }
+}

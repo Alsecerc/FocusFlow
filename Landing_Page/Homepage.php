@@ -51,15 +51,20 @@
                         </span>
                     </li>
                     <div class="HEADER__DROPDOWN" id="CONTACT">
-                        <a class="DROPDOWN__ITEM" href="">Customer Service</a>
-                        <a class="DROPDOWN__ITEM" href="">Help Center</a>
-                        <a class="DROPDOWN__ITEM" href="">Social Media Links</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#contactus">Customer Service</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#FAQ">FAQ</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>
                     </div>
                 </ul>
             </nav>
         </div>
-        <div class="HEADER__SIGNUP CTA">
-            SIGN UP
+        <div class="CTA__GROUP">
+            <div class="HEADER__LOGIN CTA">
+                <a href="../RegisterLayout/Login.php">LOGIN</a>
+            </div>
+            <div class="HEADER__SIGNUP CTA">
+                <a href="../RegisterLayout/Signup.php">SIGN UP</a>
+            </div>
         </div>
     </header>
 
@@ -70,8 +75,8 @@
                     <h1>Boost Your <span class="KEYWORD">Productivity</span> Today!</h1>
                     <h3>Manage your time effectively with our smart task management and calendar system.</h3>
                     <div class="WELCOME__CTA">
-                        <button class="HEADER__SIGNUP CLICKABLE CTA">GET STARTED</button>
-                        <a class="HEADER__SIGNUP CLICKABLE" href="Plans.php">VIEW PLAN</a>
+                        <a class="HEADER__SIGNUP CLICKABLE CTA" href="../RegisterLayout/Signup.php">GET STARTED</a>
+                        <a class="HEADER__LOGIN CLICKABLE" href="Plans.php">VIEW PLAN</a>
                     </div>
                 </div>
                 <img src="img\TITLE_IMAGE.png" alt="Productive Person" class="WELCOME__IMAGE">
@@ -160,78 +165,6 @@
 
             </section>
         </article>
-
-        <!-- <article class="SURVEY DISPLAY">
-            <h3 class="CENTER ARTICLE_TITLE">Website Feedback Survey</h3>
-            <form action="Homepage.php" method="POST">
-                <fieldset class="SURVEY__FORM">
-                    <div class="SURVEY__FORM_GROUP">
-
-                        <label class="INPUT__BOX">
-                            <input type="text" name="username" class="INPUT__INPUT" required>
-                            <span class="INPUT__PLACEHOLDER">Name</span>
-                        </label>
-
-                        <label class="INPUT__BOX">
-                            <input type="email" name="email" class="INPUT__INPUT" required>
-                            <span class="INPUT__PLACEHOLDER">Email</span>
-                        </label>
-
-                        <label class="INPUT__BOX">
-                            <input type="text" name="role" class="INPUT__INPUT" required>
-                            <span class="INPUT__PLACEHOLDER">Role/ Profession</span>
-                        </label>
-
-                    </div>
-                    <div class="SURVEY__FORM_GROUP">
-                
-                        <label for="ease-of-use">How easy was it to navigate the website?</label>
-                        <select id="ease-of-use" name="ease-of-use" class="SELECT_CONTAINER" required>
-                            <option value="" disabled selected>Select</option>
-                            <option value="very-easy">Very Easy</option>
-                            <option value="easy">Easy</option>
-                            <option value="neutral">Neutral</option>
-                            <option value="difficult">Difficult</option>
-                            <option value="very-difficult">Very Difficult</option>
-                        </select>
-                    </div>
-
-                    <div class="SURVEY__FORM_GROUP">
-               
-                        <label for="most-used-feature">Which feature(s) do you use the most?</label>
-                        <select name="most-used-feature" id="most-used-feature" class="SELECT_CONTAINER" required>
-                            <option value="" disabled selected>Select</option>
-                            <option value="task-management">Task Management</option>
-                            <option value="calendar">Calendar</option>
-                            <option value="notes">Notes</option>
-                            <option value="pomodoro-timer">Pomodoro Timer</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-
-                    <div class="SURVEY__FORM_GROUP">
-                     
-                        <label for="impact">Has the website helped you become more productive?</label>
-                        <select name="impact" id="impact" class="SELECT_CONTAINER" required>
-                            <option value="" disabled selected>Select</option>
-                            <option value="significantly-more">Significantly More Productive</option>
-                            <option value="more">More Productive</option>
-                            <option value="neutral">No Change</option>
-                            <option value="less">Less Productive</option>
-                        </select>
-                    </div>
-
-                    <div class="SURVEY__FORM_GROUP">
-                        <label for="suggestions">What improvements would you suggest to make the website more effective
-                            for
-                            you?</label>
-                        <textarea class="SURVEY__SUGGESTIONS" name="suggestions" rows="4" cols="50" placeholder="Enter your feedback..."></textarea>
-                    </div>
-                 
-                    <button type="submit" class="CLICKABLE SURVEY__SUBMIT">Submit</button>
-                </fieldset>
-            </form>
-        </article> -->
     </main>
 
     <footer class="FOOTER">
@@ -244,7 +177,7 @@
             <h4 class="FOOTER__LINK__TITLE">Contact</h4>
             <ul>
                 <li><a href="Homepage.php#benefit">Our Service</a></li>
-                <li><a href="">Get Help</a></li>
+                <li><a href="GetHelp.php">Get Help</a></li>
             </ul>
         </div>
 

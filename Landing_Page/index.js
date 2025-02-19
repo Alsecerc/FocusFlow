@@ -288,29 +288,66 @@ document.querySelectorAll(".SIDEBAR__LIST .SIDEBAR__ITEM").forEach((ITEM) => {
 const PLAN__BUTTON = getQueryAll(".TYPE")[0];
 const PLAN_SWITCH = getQueryAll(".TYPE__MONTH")[0];
 let PricingArray = Array.from(getQueryAll("#PLANS__PRICE"));
-let Price = [["RM0/year", "RM558/year", "RM1200/year"],["RM0/month", "RM49/month", "RM100/month"]];
+let Price = [["RM0/year", "RM558/year", "RM1200/year"], ["RM0/month", "RM49/month", "RM100/month"]];
 
-PLAN__BUTTON.addEventListener('click', function() {
-    PLAN_SWITCH.classList.toggle("TYPE__ANNUAL");
-    
-    if (PLAN_SWITCH.classList.contains("TYPE__ANNUAL")) {
-        let index = 0;
-        PLAN_SWITCH.innerHTML = "Y";
-        PricingArray.forEach((text) => {
-            text.innerHTML = Price[0][index];
-            index++;
-        })
+if (PLAN__BUTTON) {
+    PLAN__BUTTON.addEventListener('click', function () {
+        PLAN_SWITCH.classList.toggle("TYPE__ANNUAL");
 
-    } else {
-        let index = 0;
-        PLAN_SWITCH.innerHTML = "M";
-        PricingArray.forEach((text) => {
-            text.innerHTML = Price[1][index];
-            index++;
-        })
+        if (PLAN_SWITCH.classList.contains("TYPE__ANNUAL")) {
+            let index = 0;
+            PLAN_SWITCH.innerHTML = "Y";
+            PricingArray.forEach((text) => {
+                text.innerHTML = Price[0][index];
+                index++;
+            })
 
-    }
+        } else {
+            let index = 0;
+            PLAN_SWITCH.innerHTML = "M";
+            PricingArray.forEach((text) => {
+                text.innerHTML = Price[1][index];
+                index++;
+            })
+
+        }
+    });
+}
+
+
+// TODO: Page: Get help page
+// PAGE: Customer Service
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdownContainers = document.querySelectorAll(".dropdown-container");
+
+    dropdownContainers.forEach((container) => {
+        const button = container.querySelector(".dropdown-button");
+
+        if (button) {
+            button.addEventListener("click", function (event) {
+                event.stopPropagation(); // Prevent the click from closing immediately
+                container.classList.toggle("open");
+
+                // Close other dropdowns when one is opened
+                dropdownContainers.forEach((otherContainer) => {
+                    if (otherContainer !== container) {
+                        otherContainer.classList.remove("open");
+                    }
+                });
+            });
+        }
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", function (event) {
+        dropdownContainers.forEach((container) => {
+            if (!container.contains(event.target)) {
+                container.classList.remove("open");
+            }
+        });
+    });
 });
+
 
 
 

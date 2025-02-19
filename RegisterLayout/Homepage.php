@@ -1,4 +1,13 @@
-<!-- change to .php -->
+<?php
+                               
+session_start();
+
+if (!isset($_COOKIE['id'])) {
+    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +21,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
@@ -28,18 +38,18 @@
             </a>
         </div>
         <div class="HEADER__SEARCH">
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
             <button class="HEADER__SEARCH_BUTTON">
                 <span class="material-symbols-outlined">
                     search
                 </span>
             </button>
+            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
         </div>
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <a href="CusService.php" class="HEADER__UL__ICON">
+                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>
