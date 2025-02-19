@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_COOKIE['userID'])) {
-    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
 

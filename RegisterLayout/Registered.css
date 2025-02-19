@@ -1412,9 +1412,60 @@ link to page/ create a page */
     width: 100%;
 }
 
+.PROFILE__PIC__CONT {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 1rem;
+}
+
 .PROFILE__PIC {
     /* This ensures the image fills the container while keeping the aspect ratio. */
     object-fit: cover;
     background-color: var(--COLOR-BLUE4);
     border-radius: 99px;
+}
+
+.PROFILE__SEC {
+    display: flex;
+    justify-content: space-around;
+}
+
+.PROFILE__CHANGE,
+.PROFILE__SAVE,
+.PROFILE__LOGOUT_B {
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+
+    padding: 0.5rem 1rem;
+
+    cursor: pointer;
+
+    border-radius: var(--BORDER-RD-CONTACT);
+}
+
+.PROFILE__DETAILS {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+.PROFILE__DETAILS>.INPUT__BOX>.INPUT__PLACEHOLDER {
+    color: var(--COLOR-DARK2);
+}
+
+.PROFILE__LOGOUT {
+    margin: var(--MARGIN-CONTAINER-TB) auto;
+
+    display: flex;
+    justify-content: center;
+}
+
+
+.PROFILE__LOGOUT_B {
+    background-color: var(--ACCENT-RED);
+    margin: 0 auto;
+
 }

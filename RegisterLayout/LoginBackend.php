@@ -33,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             die("<script>alert('$username');window.location.href='Signup.php';</script>");
         }
-    }
-     else {
+    } else {
         // If username and password match, set session variables
         if ($rows = mysqli_fetch_array($result)) {
 
@@ -45,20 +44,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['userPassword'] = $rows['password'];
             $_SESSION['usertype'] = $rows['usertype'];
 
+            $username = $_SESSION['userName'];
 
             // Redirect based on user role
             if (intval($rows['usertype']) === 0) {
                 //  '/' means available across whole website
-                setcookie('id',$rows['userID'], time() + 3600, '/');
-                echo "<script>alert('Welcome User');window.location.href='Homepage.php';</script>";
-                
-
+                setcookie('useID', $rows['userID'], time() + 3600, '/');
+                echo "<script>alert('Welcome back, $username!');</script>";
+                echo "<script>window.location.href='Homepage.php';</script>";
             } else if (intval($rows['usertype']) === 1) {
-                setcookie('userID',$rows['id'], time() + 3600, '/');
-                echo "<script>alert('Welcome Admin');window.location.href='Homepage.php';</script>";
+                setcookie('userID', $rows['id'], time() + 3600, '/');
+                echo "<script>alert('Welcome back, $username!');</script>";
+                echo "<script>window.location.href='Homepage.php';</script>";
             }
         }
     }
 }
-?>
-
