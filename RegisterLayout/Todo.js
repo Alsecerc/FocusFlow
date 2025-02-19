@@ -293,9 +293,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         
         function Drop(droppables) {
             droppables.forEach(zone => {
-                console.log(zone.dataset.listener)
+                console.log(zone.dataset)
                 if (!zone.dataset.listener) { // Avoid adding multiple event listeners
-                    console.log(zone.dataset)
+                    
                     zone.dataset.listener = "true"; 
         
                     zone.addEventListener("dragover", (e) => {
