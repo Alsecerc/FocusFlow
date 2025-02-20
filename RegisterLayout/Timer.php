@@ -2,9 +2,13 @@
 
 session_start();
 
-if (!isset($_COOKIE['userID'])) {
-    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+if (!isset($_SESSION['userID']) && !isset($_COOKIE['UID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='Homepage.php'</script>";
     exit();
+}
+
+if (isset($_COOKIE['UID'])) {
+    $_SESSION['userID'] = $_COOKIE['UID'];
 }
 
 ?>

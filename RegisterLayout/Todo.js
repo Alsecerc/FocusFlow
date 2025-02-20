@@ -59,6 +59,7 @@ function CreateTaskForm() {
     const form = document.createElement('form');
     form.id = 'taskForm';
     form.method = 'post';
+    form.action = "Todo.php";
 
     const label = document.createElement('label');
     label.setAttribute('for', 'Group');
@@ -133,7 +134,7 @@ function CreateTaskForm() {
         })
         .then(response => response.text())
         .then(data => {
-            console.log("Response from PHP:");
+            console.log("Response from PHP:", data);
         })
         .catch(error => console.error("Error:", error));
     });

@@ -1,40 +1,6 @@
 <!-- change to .php -->
 <?php 
-    // include 'conn.php';
-
 session_start();
-
-if (!isset($_COOKIE['userID'])) {
-    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
-    exit();
-}
-    // $_GET["groupName"];
-    if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){
-            $groupName = $_POST['GROUPNAMECHOICE'];
-            $taskContent = $_POST['USERTASK'];
-            $groupName = htmlspecialchars($groupName[0], ENT_QUOTES, 'UTF-8');
-            $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
-    
-            echo "Selected Group: " . $groupName . "<br>";
-            echo "Task Content: " . $taskContent . "<br>";
-        }else{
-            echo "missing form data";
-        }
-    }else{
-        // echo "ERROR";
-        // echo "Request Method: " . $_SERVER['REQUEST_METHOD'];
-    }
-    // $task = $_POST["USERTASK"];
-    // $GroupChoice = $_POST["GROUPNAMECHOICE"];
-    // $GroupName = $_POST["GROUPNAME"];
-    
-    // echo $task;
-    // echo $GroupChoice;
-    // echo $GroupName;
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -196,10 +162,10 @@ if (!isset($_COOKIE['userID'])) {
             </section>
 
             <section class="TODO__CONTAINER">
-                <div class="TODO__CARD" id="To Do 1">
+                <!-- <div class="TODO__CARD" id="To Do 1">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
                     <p class="TODO__TASK" draggable="true">Get grocery</p>
-                </div>
+                </div> -->
             </section>
         </article>
 
@@ -207,9 +173,9 @@ if (!isset($_COOKIE['userID'])) {
 
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>
-        <form id="groupForm" method="post">
+        <form id="groupForm" method="post" action="<?php echo htmlspecialchars(basename(__FILE__))?>">
             <input type="text" id="groupName" name= "GROUPNAME" value = "" placeholder="Enter group name" required>
-            <button type="submit">Add Group</button>
+            <button type="submit" name="submitForm">Add Group</button>
         </form>
     </div>
     <script src="Registered.js" defer></script>
@@ -218,3 +184,49 @@ if (!isset($_COOKIE['userID'])) {
 
 </html>
 
+<?php 
+    include 'conn.php';
+    
+    // // echo $_COOKIE['userID'];
+    if (!isset($_SESSION['userID']) && !isset($_COOKIE['UID'])) {
+        echo "<script>alert('Please Log In/ Create an account');window.location.href='Homepage.php'</script>";
+        exit();
+    }
+
+    if (isset($_SESSION['UID'])) {
+        $_SESSION['userID'] = $_COOKIE['UID'];
+    }
+
+    if(!empty($_POST['submitForm'])){
+        echo "submited";
+    }
+
+    // $_GET["groupName"];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+        if ((isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])) || isset($_POST['GROUPNAME'])){
+            $groupName = $_POST['GROUPNAMECHOICE'];
+            $taskContent = $_POST['USERTASK'];
+            $GNAME = $_POST['GROUPNAME'];
+            $groupName = htmlspecialchars($groupName[0], ENT_QUOTES, 'UTF-8');
+            $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
+            $GNAME = htmlspecialchars($GNAME, ENT_QUOTES, 'UTF-8');
+
+            echo "Group name: " . $GNAME . "<br>";
+            echo "Selected Group: " . $groupName . "<br>";
+            echo "Task Content: " . $taskContent . "<br>";
+        }else{
+            echo "missing form data";
+        }
+    }else{
+
+        echo "Request Method: " . $_SERVER['REQUEST_METHOD'];
+
+    }
+    // $task = $_POST["USERTASK"];
+    // $GroupChoice = $_POST["GROUPNAMECHOICE"];
+    // $GroupName = $_POST["GROUPNAME"];
+    
+    // e0cho $task;
+    // echo $GroupChoice;
+    // echo $GroupName;
+?>
