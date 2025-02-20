@@ -1,5 +1,5 @@
 <?php
-                               
+
 session_start();
 
 // echo $_COOKIE['UID'];
@@ -58,11 +58,15 @@ if (!isset($_SESSION['userID'])) {
                             </span>
                         </a>
                     </li>
-                    <li>
-                        <div class="HEADER__UL__ICON">
+                    <li style="position: relative;">
+                        <div class="HEADER__UL__ICON" id="notiButton">
                             <span class="material-icons">
                                 notifications
                             </span>
+                        </div>
+
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup">
+                            <p>No new notifications</p>
                         </div>
                     </li>
                     <li>
@@ -85,7 +89,7 @@ if (!isset($_SESSION['userID'])) {
     </header>
     <main>
         <!-- temp SIDEBAR_SHOW -->
-        <div class="SIDEBAR">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -123,6 +127,13 @@ if (!isset($_SESSION['userID'])) {
                             </span>Analytics
                         </a>
                     </li>
+                    <li>
+                        <a href="Goal.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                track_changes
+                            </span>Goals
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
@@ -137,14 +148,24 @@ if (!isset($_SESSION['userID'])) {
                         </a>
                     </li>
                 </ul>
-                <h4 class="NAV_TITLE">DM</h4>
-                <ul>
+                <h4 class="NAV_TITLE">Direct Messages</h4>
+                <ul class="DM_USER_LIST">
                     <li>
-                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Person 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
+                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
+                            Micheal Brown
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                            Jane Smith
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                            Sarah Lee
+                            <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
                 </ul>

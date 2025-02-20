@@ -49,7 +49,7 @@ if (!isset($_SESSION['userID'])) {
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <a href="CusService.php" class="HEADER__UL__ICON">
+                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>
@@ -82,7 +82,7 @@ if (!isset($_SESSION['userID'])) {
     </header>
     <main>
 
-        <div class="SIDEBAR">
+    <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -120,6 +120,13 @@ if (!isset($_SESSION['userID'])) {
                             </span>Analytics
                         </a>
                     </li>
+                    <li>
+                        <a href="Goal.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                track_changes
+                                </span>Goals
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
@@ -134,14 +141,24 @@ if (!isset($_SESSION['userID'])) {
                         </a>
                     </li>
                 </ul>
-                <h4 class="NAV_TITLE">DM</h4>
-                <ul>
+                <h4 class="NAV_TITLE">Direct Messages</h4>
+                <ul class="DM_USER_LIST">
                     <li>
-                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Person 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
+                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
+                            Micheal Brown
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                            Jane Smith
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                        Sarah Lee
+                            <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
                 </ul>
@@ -152,15 +169,28 @@ if (!isset($_SESSION['userID'])) {
             <section class="COMMUNITY1__HEADER">
                 <h1>Team Alpha</h1>
                 <div>
-                    <a href="#" class="HEADER__UL__ICON"><span class="material-icons">
+                    <a href="#" class="HEADER__UL__ICON" onclick="openPopup()"><span class="material-icons">
                             upload_file
                         </span>
                     </a>
-                    <a href="#" class="HEADER__UL__ICON">
+                    <div class="COM__POPUP__OVERLAY" id="popupOverlay">
+                        <div class="COM__POPUP">
+                            <button class="close-btn" onclick="closePopup()">×</button>
+                            <iframe id="popupIframe" class="popup-iframe"></iframe>
+                        </div>
+                    </div>
+
+                    <a href="#" class="HEADER__UL__ICON" onclick="openPopup1()">
                         <span class="material-icons">
                             folder
                         </span>
                     </a>
+                    <div class="COM__POPUP__OVERLAY" id="popupOverlay">
+                        <div class="COM__POPUP">
+                            <button class="close-btn" onclick="closePopup2()">×</button>
+                            <iframe id="popupIframe" class="popup-iframe"></iframe>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -170,39 +200,34 @@ if (!isset($_SESSION['userID'])) {
 
             <section class="COMMUNITY1__MEMBER">
                 <h3>Member List</h3>
-                <ul class="MEMBER_LIST">
-                    <li class="MEMBER">
-                        <a href="CommunityDMPage.php?name=John+Doe" class="memberName">
-                            <span class="material-icons">sentiment_very_satisfied</span>
-                            <p>John Doe</p>
-                        </a>
-                    </li>
-                    <li class="MEMBER">
-                        <a href="CommunityDMPage.php?name=Jane+Smith" class="memberName">
-                            <span class="material-icons">sentiment_very_satisfied</span>
-                            <p>Jane Smith</p>
-                        </a>
-                    </li>
-                    <li class="MEMBER">
-                        <a href="CommunityDMPage.php?name=Michael+Johnson" class="memberName">
-                            <span class="material-icons">sentiment_very_satisfied</span>
-                            <p>Michael Johnson</p>
-                        </a>
-                    </li>
-                    <li class="MEMBER">
-                        <a href="CommunityDMPage.php?name=Emily+Davis" class="memberName">
-                            <span class="material-icons">sentiment_very_satisfied</span>
-                            <p>Emily Davis</p>
-                        </a>
-                    </li>
-                    <li class="MEMBER">
-                        <a href="CommunityDMPage.php?name=David+Wilson" class="memberName">
-                            <span class="material-icons">sentiment_very_satisfied</span>
-                            <p>David Wilson</p>
-                        </a>
-                    </li>
-                </ul>
 
+                <?php
+                include "conn.php";
+
+                $sql = "SELECT id, name FROM users"; // Adjust table/column names as needed
+                $result = mysqli_query($_conn, $sql);
+
+                if (!$result) {
+                    echo "<p>Error loading members: " . mysqli_error($_conn) . "</p>";
+                } else {
+                    echo '<ul class="MEMBER_LIST">';
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $userID = $row['id']; // Assuming 'userID' is the primary key
+                        $username = htmlspecialchars($row['name']); // Prevent XSS
+
+                        echo "<li class='MEMBER'>
+                <a href='CommunityDMPage.php?receiver_id=$userID&name=" . urlencode($username) . "' class='memberName'>
+                    <span class='material-icons'>sentiment_very_satisfied</span>
+                    <p>$username</p>
+                </a>
+              </li>";
+                    }
+                    echo '</ul>';
+                }
+
+                mysqli_close($_conn);
+
+                ?>
 
 
 

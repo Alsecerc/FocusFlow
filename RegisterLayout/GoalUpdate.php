@@ -19,12 +19,6 @@ if (!isset($_SESSION['userID'])) {
     <button type="submit">Update Progress</button>
 </form>
 <?php
-session_start();
-include "conn.php";
-
-if (!isset($_COOKIE['userID'])) {
-    die("User not logged in");
-}
 
 $user_id = $_SESSION['userID'];
 if (isset($_POST['goal_id']) && isset($_POST['progress'])) {

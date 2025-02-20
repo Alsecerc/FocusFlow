@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['userID'])) {
-    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
 
@@ -15,7 +15,7 @@ if (!isset($_SESSION['userID'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account</title>
+    <title>Calendar </title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -80,6 +80,7 @@ if (!isset($_SESSION['userID'])) {
             </nav>
         </div>
     </header>
+
     <main>
     <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
@@ -164,100 +165,8 @@ if (!isset($_SESSION['userID'])) {
             </nav>
         </div>
 
-        <article class="PROFILE">
-            <h1 class="ARTICLE_TITLE">Account Management</h1>
-            <section class="PROFILE__SEC">
-                <div class="PROFILE__PIC__CONT">
-                    <img src="img/USER_ICON.png" alt="user profile" class="PROFILE__PIC">
-                    <!-- <button class="PROFILE__CHANGE">Change</button> -->
-                </div>
-                <div>
-                    <?php
-                    include "../RegisterLayout/conn.php"; // Database connection file
-                    $userID = $_SESSION['userID'];
-
-                    $name = $_SESSION['userName'];
-                    $email = $_SESSION['userEmail'];
-                    $password = $_SESSION['userPassword'];
-                    $type = $_SESSION['usertype'];
-
-                    $user = [
-                        "name" => $name,
-                        "email" => $email,
-                        "password" => $password,
-                        "type" => $type
-                    ];
-
-
-                    echo "<script>";
-                    echo "var User = " . json_encode($user) . ";";
-                    echo "</script>";
-
-                    ?>
-
-                    <form action="Account.php" method="POST" class="PROFILE__DETAILS">
-
-                        Username :
-                        <label class="INPUT__BOX">
-                            <input type="text" name="username" class="INPUT__INPUT">
-                            <span class="INPUT__PLACEHOLDER" id="profile_name"></span>
-                        </label>
-
-                        Email :
-                        <label class="INPUT__BOX">
-                            <input type="email" name="email" class="INPUT__INPUT">
-                            <span class="INPUT__PLACEHOLDER" id="profile_email"></span>
-                        </label>
-
-                        Password :
-                        <label class="INPUT__BOX">
-                            <input type="password" name="password" class="INPUT__INPUT" minlength="8"
-                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
-                                title="Must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character.">
-                            <span class="INPUT__PLACEHOLDER" id="profile_password"></span>
-                        </label>
-
-
-
-                        <button type="submit" onclick="saveChanges()" class="PROFILE__SAVE">Save Changes</button>
-                    </form>
-                    <?php
-                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                        // Get new values from the form
-                        $newName = !empty(trim($_POST['username'])) ? trim($_POST['username']) : $_SESSION['userName'];
-                        $newEmail = !empty(trim($_POST['email'])) ? trim($_POST['email']) : $_SESSION['userEmail'];
-                        $newPassword = !empty(trim($_POST['password'])) ? trim($_POST['password']) : $_SESSION['userPassword'];
-
-                        $_SESSION['userName'] = $newName;
-                        $_SESSION['userEmail'] = $newEmail;
-                        $_SESSION['userPassword'] = $newPassword;
-
-                        $userID = $_SESSION['userID'];
-
-                        $sql = "UPDATE users SET " .
-                            "name = '$newName'," .
-                            "email = '$newEmail'," .
-                            "password = '$newPassword'" .
-                            "WHERE id = $userID";
-
-                        $result = mysqli_query($_conn, $sql);
-                    }
-
-                    ?>
-
-                </div>
-            </section>
-            <div class="PROFILE__LOGOUT">
-                <a class="PROFILE__LOGOUT_B" href="AccountLogOutBackend.php">Log Out</a>
-            </div>
-
-        </article>
-
     </main>
-
-
     <script src="Registered.js" defer></script>
-    <script src="Account.js" defer></script>
 </body>
 
 </html>
