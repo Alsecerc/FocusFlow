@@ -185,10 +185,10 @@ if (!isset($_SESSION['userID'])) {
             </section>
 
             <section class="TODO__CONTAINER">
-                <!-- <div class="TODO__CARD" id="To Do 1">
+                <div class="TODO__CARD" id="To Do 1">
                     <h3 class="TODO__CARD_HEADER">To Do 1</h3>
                     <p class="TODO__TASK" draggable="true">Get grocery</p>
-                </div> -->
+                </div>
             </section>
         </article>
 
@@ -196,7 +196,7 @@ if (!isset($_SESSION['userID'])) {
 
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>
-        <form id="groupForm" method="post">
+        <form id="groupForm" action="TodoBackend.php" method="POST">
             <input type="text" id="groupName" name= "GROUPNAME" value = "" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>
         </form>
@@ -206,24 +206,3 @@ if (!isset($_SESSION['userID'])) {
 </body>
 
 </html>
-
-<?php 
-    // $_GET["groupName"];
-    if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){
-            $groupName = $_POST['GROUPNAMECHOICE'];
-            $taskContent = $_POST['USERTASK'];
-            $groupName = htmlspecialchars($groupName[0], ENT_QUOTES, 'UTF-8');
-            $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
-    
-            echo "Selected Group: " . $groupName . "<br>";
-            echo "Task Content: " . $taskContent . "<br>";
-        }else{
-            echo "missing form data";
-        }
-    }
-    // $task = $_POST["USERTASK"];
-    // $GroupChoice = $_POST["GROUPNAMECHOICE"];
-    // $GroupName = $_POST["GROUPNAME"];
-    
-?>
