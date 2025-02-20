@@ -2,7 +2,7 @@
 
 session_start();
 
-if (!isset($_COOKIE['userID'])) {
+if (!isset($_SESSION['userID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -24,7 +24,7 @@ if (!isset($_COOKIE['userID'])) {
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -48,7 +48,7 @@ if (!isset($_COOKIE['userID'])) {
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <a href="CusService.php" class="HEADER__UL__ICON">
+                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>
@@ -69,7 +69,7 @@ if (!isset($_COOKIE['userID'])) {
                         </a>
                     </li>
                     <li>
-                    <a href="Account.php" class="HEADER__UL__ICON">
+                        <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
                             </span>
@@ -80,7 +80,7 @@ if (!isset($_COOKIE['userID'])) {
         </div>
     </header>
     <main>
-    <div class="SIDEBAR">
+    <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -118,13 +118,20 @@ if (!isset($_COOKIE['userID'])) {
                             </span>Analytics
                         </a>
                     </li>
+                    <li>
+                        <a href="Goal.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                track_changes
+                                </span>Goals
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -132,14 +139,24 @@ if (!isset($_COOKIE['userID'])) {
                         </a>
                     </li>
                 </ul>
-                <h4 class="NAV_TITLE">DM</h4>
-                <ul>
+                <h4 class="NAV_TITLE">Direct Messages</h4>
+                <ul class="DM_USER_LIST">
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Person 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
+                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
+                            Micheal Brown
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                            Jane Smith
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                        Sarah Lee
+                            <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
                 </ul>

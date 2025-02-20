@@ -64,8 +64,6 @@ main {
     font-family: var(--FF-BODY);
     /* let the main container takes up the rest of space */
     flex-grow: 1;
-
-    overflow-y: hidden;
 }
 
 button {
@@ -396,8 +394,22 @@ header {
     background-color: var(--COLOR-DARK1);
 }
 
-/* add hover and click effect for icons
-link to page/ create a page */
+.NOTIFICATION__POPUP {
+    position: absolute;
+    top: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    padding: 1rem;
+    box-shadow: var(--SHADOW-WHITEBG);
+
+    background-color: var(--COLOR-LIGHT1);
+    color: var(--COLOR-DARK3);
+
+    display: none;
+
+    border-radius: 0 0 var(--BORDER-RD-CONTACT) var(--BORDER-RD-CONTACT);
+}
 
 
 
@@ -517,8 +529,9 @@ link to page/ create a page */
 
 /* SIDEBAR */
 .SIDEBAR {
+
     width: 250px;
-    min-height: 100vh;
+    height: calc(100% - 80px);
 
     background-color: var(--COLOR-DARK2);
 
@@ -547,6 +560,7 @@ link to page/ create a page */
     color: var(--COLOR-LIGHT1);
 
     border-bottom: 2px solid var(--COLOR-DARK1);
+
 }
 
 .SIDEBAR__NAV>ul {
@@ -565,7 +579,7 @@ link to page/ create a page */
     align-items: center;
     gap: 1rem;
 
-    padding: 1rem;
+    padding: 0.7rem 1rem;
     transition: var(--TRANS);
 
     border-radius: var(--BORDER-RD-CONTACT);
@@ -909,6 +923,7 @@ link to page/ create a page */
 
     display: flex;
     flex-direction: column;
+    
 }
 
 /* Set container to gridss */
@@ -916,7 +931,7 @@ link to page/ create a page */
     margin: var(--MARGIN);
 
     border-top: 1px solid var(--COLOR-DARK1);
-    background-color: var(--COLOR-LIGHT2);
+    background-color: var(--COLOR-LIGHT1);
 
     display: grid;
     /* auto means columns size will be determine by content */
@@ -994,7 +1009,7 @@ link to page/ create a page */
     left: 50px;
     z-index: 1;
 
-    background-color: var(--BORDER-COLOR);
+    background-color: hsla(0, 0%, 0%, 0.1);
     width: calc(100% - 50px);
     height: 1px;
 }
@@ -1588,12 +1603,13 @@ link to page/ create a page */
 
 .COMMUNITY1__HEADER {
     grid-area: hd;
-    background-color: var(--ACCENT-GREEN);
+    background-color: var(--COLOR-DARK2);
 
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
+
 .COMMUNITY1__HEADER h1 {
     font-size: 2rem;
 }
@@ -1639,3 +1655,165 @@ link to page/ create a page */
     background-color: var(--COLOR-DARK1);
 }
 
+/* Community POP UP */
+.COM__POPUP__OVERLAY {
+    opacity: 0;
+    transition: all 0.5s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* Popup Content */
+.COM__POPUP {
+    background: var(--COLOR-DARK2);
+    width: 50%;
+    height: 60%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Close Button */
+.close-btn {
+    align-self: flex-end;
+    font-size: 20px;
+    cursor: pointer;
+    background: var(--ACCENT-RED);
+    color: var(--COLOR-LIGHT1);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Iframe styling */
+.popup-iframe {
+    flex-grow: 1;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+.CM__POPUP {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+.CM__POPUP__TITLE {
+    font-family: var(--FF-HEADINGS);
+    color: var(--COLOR-LIGHT1);
+}
+
+.CM__POPUP__BUTTON {
+    padding: 0.5rem 1rem;
+    color: var(--COLOR-LIGHT1);
+    background-color: var(--COLOR-DARK2);
+    border-radius: var(--BORDER-RD-CONTACT);
+}
+
+.CM__POPUP__BUTTON,
+.CM__POPUP__INPUT {
+    cursor: pointer;
+}
+
+.FileLink {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.CM__POPUP__FORM {
+    background-color: var(--COLOR-LIGHT1);
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    padding: 0.5rem 1rem;
+}
+
+
+/* Page : Goal Setting */
+.GOAL__MAIN {
+    padding: 2rem 3rem;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+}
+
+.GOAL__INPUT {
+    padding-top: 2rem;
+    margin: 0 auto;
+}
+
+.GOAL__FORM {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 1rem;
+}
+
+/* setting goals */
+.GOAL__SET {
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+
+    padding: 0.5rem 1rem;
+    border-radius: var(--BORDER-RD-CONTACT);
+
+cursor: pointer;
+}
+
+
+/* displaying goals */
+.GOAL__DISPLAY {
+    margin: var(--MARGIN-CONTAINER-TB) 0;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+
+    flex-grow: 1;
+
+    overflow-y: auto;
+}
+
+.GOAL__CARD {
+    height: fit-content;
+
+    background-color: var(--COLOR-LIGHT1);
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+    box-shadow: var(--SHADOW-WHITEBG);
+}
+
+.GOAL__BAR {
+    width: 100%;
+    background-color: var(--ACCENT-RED);
+}
+
+.GOAL__TITLE {
+    text-align: center;
+    border-bottom: 1px solid var(--BORDER-COLOR);
+}
+
+.GOAL__BAR_FILL {
+    height: 20px;
+    background-color: var(--ACCENT-GREEN);
+    width: 0%;
+    text-align: center;
+    color: var(--COLOR-LIGHT1);
+}

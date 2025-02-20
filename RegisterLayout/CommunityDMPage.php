@@ -9,7 +9,7 @@ if (!isset($_SESSION['userID'])) {
 
 include "conn.php";
 
-$result = $_conn->query("SELECT * FROM chat_messages ORDER BY timestamp ASC");
+$result = $_conn->query("SELECT * FROM message ORDER BY sent_at ASC");
 
 $messages = [];
 while ($row = $result->fetch_assoc()) {
@@ -63,7 +63,7 @@ echo "</script>";
             <nav>
                 <ul class="HEADER__UL">
                     <li>
-                        <a href="CusService.php" class="HEADER__UL__ICON">
+                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>
@@ -94,9 +94,9 @@ echo "</script>";
             </nav>
         </div>
     </header>
-    <main>
+    <main style="overflow-y: auto;">
         <!-- temp SIDEBAR_SHOW -->
-        <div class="SIDEBAR">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -134,6 +134,13 @@ echo "</script>";
                             </span>Analytics
                         </a>
                     </li>
+                    <li>
+                        <a href="Goal.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                track_changes
+                                </span>Goals
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
@@ -151,14 +158,20 @@ echo "</script>";
                 <h4 class="NAV_TITLE">Direct Messages</h4>
                 <ul class="DM_USER_LIST">
                     <li>
-                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
-                            Person 1
+                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
+                            Micheal Brown
                             <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
                     <li>
-                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Person 2
+                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                            Jane Smith
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                        Sarah Lee
                             <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
@@ -185,67 +198,42 @@ echo "</script>";
             </section>
 
             <section class="DMPAGE__CONVERSATION">
-                <div class="CONVERSATION RECEIVE">Hey! How are you?</div>
-                <div class="CONVERSATION SENT">I’m good, how about you?</div>
+                <?php
+                $senderID = $_SESSION['userID'];
+                $receiverID = $_GET['receiver_id'];
+
+
+                $sql = "SELECT * FROM message 
+        WHERE (sender_id = '$senderID' AND receiver_id = '$receiverID') 
+        OR (sender_id = '$receiverID' AND receiver_id = '$senderID')
+        ORDER BY sent_at ASC";
+
+                $result = mysqli_query($_conn, $sql);
+                if (!$result) {
+                    echo "<p>Error loading messages: " . mysqli_error($_conn) . "</p>";
+                } else {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $messageText = htmlspecialchars($row['message_text']); // Prevent XSS
+                        $isSent = ($row['sender_id'] == $senderID) ? "SENT" : "RECEIVE"; // Identify sender
+
+                        echo "<div class='CONVERSATION $isSent'>$messageText</div>";
+                    }
+                }
+
+
+                ?>
             </section>
 
             <section class="DMPAGE__MESSAGE">
 
-                <form action="CommunityDMPage.php" method="POST" class="MESSAGE__BOX" id="chatForm">
+                <form action="CommunityDMPageSendMsg.php" method="POST" class="MESSAGE__BOX" id="chatForm">
+                    <!-- change this dynamically -->
+                    <input type="hidden" name="receiver_id" value=<?php echo $receiverID; ?>>
                     <input class="ENTER__MESSAGE" type="text" name="message" id="message1" placeholder="Type something...">
                     <button type="submit" class="SEND__MESSAGE"><span class="material-icons">
                             send
                         </span></button>
                 </form>
-                <?php
-                // include "conn.php";
-
-                // if (!$_conn) {
-                //     die("Connection failed: " . mysqli_connect_error());
-                // }
-
-                // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                //     include "conn.php";
-
-                //     $userID = $_COOKIE['userID'] ?? "";
-                //     $message = $_POST['message'] ?? "";
-
-                //     if (!empty(trim($message))) {
-                //         $userID = mysqli_real_escape_string($_conn, $userID);
-                //         $message = mysqli_real_escape_string($_conn, $message);
-
-                //         $sql = "INSERT INTO chat_messages (user_id, message) VALUES ('$userID', '$message')";
-
-                //         if (!mysqli_query($_conn, $sql)) {
-                //             echo json_encode(["status" => "error", "message" => mysqli_error($_conn)]);
-                //         }
-                //     }
-                // }
-
-
-                // $user_id = $_COOKIE['userID'] ?? ""; // Get user ID from cookie
-
-                // if (!empty($user_id)) {
-                //     $sql = "SELECT message, timestamp FROM chat_messages WHERE user_id = '$user_id' ORDER BY timestamp ASC";
-                //     $result = mysqli_query($_conn, $sql);
-
-                //     $messages = []; // Store messages
-
-                //     while ($row = mysqli_fetch_assoc($result)) {
-                //         $messages[] = $row;
-                //     }
-
-
-
-                //     echo "<script>";
-                //     echo "var MsgLog = " . json_encode($messages) . ";";
-                //     echo "</script>";
-                // } else {
-                //     echo json_encode(["status" => "error", "message" => "User ID not found."]);
-                // }
-
-                // mysqli_close($_conn);
-                ?>
             </section>
 
 

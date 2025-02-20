@@ -81,8 +81,8 @@ if (!isset($_SESSION['userID'])) {
         </div>
     </header>
 
-    <main>
-        <div class="SIDEBAR">
+    <main class="CALENDAR__MAIN">
+    <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -120,13 +120,20 @@ if (!isset($_SESSION['userID'])) {
                             </span>Analytics
                         </a>
                     </li>
+                    <li>
+                        <a href="Goal.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                track_changes
+                                </span>Goals
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
                             Channel 1
                             <button class="material-icons">
                                 more_horiz
@@ -134,14 +141,24 @@ if (!isset($_SESSION['userID'])) {
                         </a>
                     </li>
                 </ul>
-                <h4 class="NAV_TITLE">DM</h4>
-                <ul>
+                <h4 class="NAV_TITLE">Direct Messages</h4>
+                <ul class="DM_USER_LIST">
                     <li>
-                        <a href="" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Person 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
+                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
+                            Micheal Brown
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                            Jane Smith
+                            <button class="material-icons">more_horiz</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
+                        Sarah Lee
+                            <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
                 </ul>
@@ -203,8 +220,10 @@ if (!isset($_SESSION['userID'])) {
                 $startTime = $_POST['start_time'] ?? "";
                 $endTime = $_POST['end_time'] ?? "";
 
+                $user_id = $_SESSION['userID'];
+
                 $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
-            VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),1)";
+            VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),$user_id)";
 
                 if (mysqli_query($_conn, $sql)) {
                     echo "<script><alert>New record created successfully</alert></script>";
@@ -213,8 +232,8 @@ if (!isset($_SESSION['userID'])) {
                 }
             }
 
-            $user_id = $_COOKIE['userID'];
 
+            $user_id = $_SESSION['userID'];
             $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
             $result = mysqli_query($_conn, $sql);
 

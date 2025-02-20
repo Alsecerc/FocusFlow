@@ -1,37 +1,44 @@
-function autoReply() {
-    setTimeout(() => {
-        let botReply = document.createElement("div");
-        botReply.classList.add("CONVERSATION", "RECEIVE");
-        botReply.textContent = "Example reply...";
-        document.querySelector(".DMPAGE__CONVERSATION").appendChild(botReply);
-    }, 200);
-}
-
+document.getElementById("chatForm").addEventListener("submit", sendMSG);
 
 function sendMSG(event) {
-    event.preventDefault(); // Prevent form from refreshing
+    event.preventDefault(); // Prevent form submission refresh
 
-    let messageInput = document.getElementById("message1"); // Get the input field
-    let messageText = messageInput.value.trim(); // Get the trimmed text
+    let messageInput = document.getElementById("message1");
+    let messageText = messageInput.value.trim();
+    let receiverID = document.querySelector("input[name='receiver_id']").value;
 
-    if (messageText === "") return; // Prevent sending empty messages
+    if (messageText === "") return; // Prevent empty messages
 
-    let conversationSection = document.querySelector(".DMPAGE__CONVERSATION");
+    // Create form data
+    let formData = new FormData();
+    formData.append("message", messageText);
+    formData.append("receiver_id", receiverID);
 
-    let newMessage = document.createElement("div");
-    newMessage.classList.add("CONVERSATION", "SENT"); // Add CSS class
-    newMessage.textContent = messageText; // Set text content
 
-    conversationSection.appendChild(newMessage); // Append to chat container
-    conversationSection.scrollTop = conversationSection.scrollHeight; // Auto-scroll to the latest message
+    // Send the data using Fetch API
+    fetch("CommunityDMPageSendMsg.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            let conversationSection = document.querySelector(".DMPAGE__CONVERSATION");
 
-    messageInput.value = ""; // Clear input field after sending
+            let newMessage = document.createElement("div");
+            newMessage.classList.add("CONVERSATION", "SENT"); 
+            newMessage.textContent = messageText; 
 
-    autoReply(); // Simulate bot response
+            conversationSection.appendChild(newMessage);
+            conversationSection.scrollTop = conversationSection.scrollHeight; // Auto-scroll
+
+            messageInput.value = ""; // Clear input field
+        } else {
+            alert("Error: " + data.message); // Show error message
+        }
+    })
+    .catch(error => console.error("Error:", error));
 }
-
-// Attach event listener to form
-// document.getElementById("chatForm").addEventListener("submit", sendMSG);
 
 let EnterMessage = document.querySelector(".ENTER__MESSAGE");
 if (EnterMessage) {
@@ -73,3 +80,20 @@ if (EnterMessage) {
 // fetchMessages();
 
 
+// Community Pop up
+function openPopup() {
+    document.getElementById("popupIframe").src = "CommunityPageUpload.php"; 
+    document.getElementById("popupOverlay").style.opacity = "1"; 
+    document.getElementById("popupOverlay").style.zIndex = "1000"; 
+}
+
+function closePopup() {
+    document.getElementById("popupOverlay").style.opacity = "0"; 
+    document.getElementById("popupOverlay").style.zIndex = "-1"; 
+}
+
+function openPopup1() {
+    document.getElementById("popupIframe").src = "CommunityPageView.php"; 
+    document.getElementById("popupOverlay").style.opacity = "1"; 
+    document.getElementById("popupOverlay").style.zIndex = "1000"; 
+}

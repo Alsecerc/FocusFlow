@@ -1,20 +1,9 @@
 <?php
-
 session_start();
 
 if (!isset($_SESSION['userID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
-}
-
-?>
-
-<?php
-session_start();
-include "conn.php";
-
-if (!isset($_SESSION['userID'])) {
-    die("User not logged in");
 }
 
 $user_id = $_SESSION['userID'];
