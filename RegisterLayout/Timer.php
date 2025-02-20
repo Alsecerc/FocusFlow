@@ -7,6 +7,10 @@ if (!isset($_SESSION['userID'])) {
     exit();
 }
 
+if (isset($_COOKIE['UID'])) {
+    $_SESSION['userID'] = $_COOKIE['UID'];
+}
+
 ?>
 
 <!DOCTYPE html>
