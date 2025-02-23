@@ -34,7 +34,7 @@ function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, paragrap
     }
     console.log(Group.id);
     const paragraph = document.createElement('p')
-    paragraph.className = 'TODO__TASK';
+    paragraph.classList.add('TODO__TASK');
     paragraph.textContent = paragraphContent.length > 500 ? paragraphContent.substring(0, 500) + "..." : paragraphContent;
     paragraph.draggable = 'true';
 
@@ -59,7 +59,7 @@ function CreateTaskForm() {
     const form = document.createElement('form');
     form.id = 'taskForm';
     form.method = 'post';
-    form.action = "Todo.php";
+    form.action = "TodoBackend.php";
 
     const label = document.createElement('label');
     label.setAttribute('for', 'Group');
@@ -118,26 +118,6 @@ function CreateTaskForm() {
     console.log("created Task Form");
     console.log("MutationObserver started: Watching for changes...");
 
-
-
-    form.addEventListener('submit', function (event) {
-
-        event.preventDefault(); // Prevent default form submission
-        
-        const formData = new FormData(form); // Capture form data
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
-        fetch('Todo.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log("Response from PHP:", data);
-        })
-        .catch(error => console.error("Error:", error));
-    });
 }
 
 function GetGroupName() {
@@ -177,6 +157,27 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 
         // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
         let observer; // Global variable
+        
+        function getdataFromDatabase (){
+            createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
+
+            fetch('TodoBackend.php')
+            .then(response => {
+                if (!response.ok) {
+                throw new Error('Network response was not ok');
+                }
+                // Convert the response to JSON
+                return response.json();
+            })
+            .then(data => {
+                // Use the retrieved data
+                console.log('Data from PHP:', data);
+                // For example, update the DOM or process the data further
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+        }
 
         function GroupButton (){
             if (groupButton) {
@@ -196,6 +197,21 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                             overlay.style.display = 'block';
                             groupFrom.addEventListener("submit", function (event) {
                                 event.preventDefault(); // Prevent the default form submission behavior
+
+                                let formData = new FormData(this);
+
+                                // Send the form data to PHP using fetch
+                                fetch('TodoBackend.php', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    console.log('Server response:', data);
+                                    // Optionally, handle the server response here
+                                })
+                                .catch(error => console.error('Error:', error));
+                                
 
                                 // Call the function to retrieve the input value
                                 const groupName = GetGroupName();
@@ -233,7 +249,21 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                             AddTask.style.display = 'block'; // make the form visisble
                             overlay.style.display = 'block';
                             taskForm.addEventListener('submit', function (event) {
-                                event.preventDefault();
+                                event.preventDefault(); // Prevent default form submission (block all the data submit to the php file)
+        
+                                const formData = new FormData(taskForm); // Capture form data
+                                for (let [key, value] of formData.entries()) {
+                                    console.log(key, value);
+                                }
+                                fetch('TodoBackend.php', { // to send the form data to the php file when submition
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    console.log("Response from PHP:", data);
+                                })
+                                .catch(error => console.error("Error:", error));
                                 if (taskForm) {
                                     CreateNewTask(GroupCard.className, groupChoice.value, taskContent.value);
                                     console.log(groupChoice.value);
@@ -367,7 +397,6 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
             });
         }
         
-        
         function insertAboveTask(zone, mouseY) {
             const tasks = [...zone.querySelectorAll(".TODO__CARD:not(.is-dragging)")]; // Get all tasks except the one being dragged
         
@@ -387,7 +416,6 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         
             return closestTask; // Return the closest task, or null if none found
         }
-        
         
         // setTimeout(()=>{
         //     createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'chen');
