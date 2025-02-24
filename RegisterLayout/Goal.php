@@ -3,7 +3,7 @@
 session_start();
 include "conn.php";
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -207,7 +207,7 @@ if (!isset($_SESSION['userID'])) {
             <div class="GOAL__DISPLAY">
                 <?php
 
-                $user_id = $_SESSION['userID'];
+                $user_id = $_COOKIE['UID'];
 
                 $sql = "SELECT * FROM goals WHERE user_id = ?";
                 $stmt = $_conn->prepare($sql);
@@ -259,7 +259,7 @@ if (!isset($_SESSION['userID'])) {
                 </form>
                 <?php
 
-                $user_id = $_SESSION['userID'];
+                $user_id = $_COOKIE['UID'];
 
                 if ($_SERVER["REQUEST_METHOD"] === 'POST') {
                     if (isset($_POST['goal_id']) && isset($_POST['progress'])) {

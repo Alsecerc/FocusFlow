@@ -2,7 +2,7 @@
 
 session_start();
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -220,7 +220,7 @@ if (!isset($_SESSION['userID'])) {
                 $startTime = $_POST['start_time'] ?? "";
                 $endTime = $_POST['end_time'] ?? "";
 
-                $user_id = $_SESSION['userID'];
+                $user_id = $_COOKIE['UID'];
 
                 $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
             VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),$user_id)";
@@ -233,7 +233,7 @@ if (!isset($_SESSION['userID'])) {
             }
 
 
-            $user_id = $_SESSION['userID'];
+            $user_id = $_COOKIE['UID'];
             $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
             $result = mysqli_query($_conn, $sql);
 

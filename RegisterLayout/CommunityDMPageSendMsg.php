@@ -13,7 +13,7 @@ if (!$_conn) {
 
 // Ensure POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sender_id = $_SESSION['userID'] ?? "";
+    $sender_id = $_COOKIE['UID'] ?? "";
     $receiver_id = $_POST['receiver_id'] ?? "";
     $message_text = trim($_POST['message'] ?? "");
 

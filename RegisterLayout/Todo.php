@@ -2,10 +2,11 @@
 <?php 
 session_start();
 
-// if (!isset($_SESSION['userID'])) {
-//     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
-//     exit();
-// }
+if (!isset($_COOKIE['UID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+    exit();
+}
+ 
 ?>
 
 <!DOCTYPE html>
@@ -185,7 +186,7 @@ session_start();
 
             <section class="TODO__CONTAINER">
                 <div class="TODO__CARD" id="To Do 1">
-                    <h3 class="TODO__CARD_HEADER">To Do 1</h3>
+                    <h3 class="TODO__CARD_HEADER">chen</h3>
                     <p class="TODO__TASK" draggable="true">Get grocery</p>
                 </div>
             </section>
@@ -195,6 +196,7 @@ session_start();
 
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>
+        <button id="closeGroupAdd" style="position: absolute; top: 5px; right: 5px; font-size: 24px; border: none; background: none; cursor: pointer;">&times;</button>
         <form id="groupForm" action="TodoBackend.php" method="POST">
             <input type="text" id="groupName" name= "GROUPNAME" value = "" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>

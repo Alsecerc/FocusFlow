@@ -149,18 +149,12 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         // Find the button that has "Task" as its text content
         const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
 
-        // let Draggable = document.querySelectorAll(`.${GroupCardTask.className}`);
-
-        // let Droppable = document.querySelectorAll(`.${GroupCard.className}`);
-
         let debounceTimeout;
 
         // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
         let observer; // Global variable
-        
-        function getdataFromDatabase (){
-            createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
 
+        function updateTodataBase(){
             fetch('TodoBackend.php')
             .then(response => {
                 if (!response.ok) {
@@ -172,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
             .then(data => {
                 // Use the retrieved data
                 console.log('Data from PHP:', data);
+                
                 // For example, update the DOM or process the data further
             })
             .catch(error => {
@@ -180,6 +175,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         }
 
         function GroupButton (){
+            document.getElementById("closeGroupAdd").addEventListener("click", function() {
+                document.getElementById("groupAdd").style.display = "none";
+            });
             if (groupButton) {
                 groupButton.addEventListener('click', () => {
 
@@ -428,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         CreateTaskForm();
         GroupButton();
         TaskButton();
+        updateTodataBase();
         // MovingCard();
     }
 })

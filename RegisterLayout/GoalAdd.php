@@ -2,12 +2,12 @@
 include "conn.php";
 session_start();
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
 
-$user_id = $_SESSION['userID'];
+$user_id = $_COOKIE['UID'];
 $goal_title = $_POST['goal_title'];
 $goal_description = $_POST['goal_description'];
 $goal_type = $_POST['goal_type'];
