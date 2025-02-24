@@ -140,6 +140,48 @@ button {
     --TRANS: all 1s ease;
 }
 
+[data-theme="theme_earth"] {
+    --COLOR-LIGHT1: #FFFBF2;
+    --COLOR-LIGHT2: #FDE8C8;
+    --COLOR-LIGHT3: #F1C27D;
+    --COLOR-DARK1: #A05A2C;
+    --COLOR-DARK2: #7A3E1D;
+    --COLOR-DARK3: #4E2A15;
+    --COLOR-ACCENT1: #D88C9A;
+    --COLOR-ACCENT2: #E29578;
+    --COLOR-ACCENT3: #FFB085;
+    --COLOR-ACCENT4: #FFDAC6;
+}
+
+[data-theme="theme_neon"] {
+    --COLOR-LIGHT1: #F8F8F2;
+    --COLOR-LIGHT2: #FF79C6;
+    --COLOR-LIGHT3: #BD93F9;
+    --COLOR-DARK1: #282A36;
+    --COLOR-DARK2: #1E1F29;
+    --COLOR-DARK3: #191A21;
+    --COLOR-ACCENT1: #50FA7B;
+    --COLOR-ACCENT2: #FFB86C;
+    --COLOR-ACCENT3: #8BE9FD;
+    --COLOR-ACCENT4: #FF5555;
+}
+
+[data-theme="theme_forest"] {
+    --COLOR-LIGHT1: #E8F6EF;
+    --COLOR-LIGHT2: #B4D3B2;
+    --COLOR-LIGHT3: #84A98C;
+    --COLOR-DARK1: #52796F;
+    --COLOR-DARK2: #354F52;
+    --COLOR-DARK3: #2F3E46;
+    --COLOR-ACCENT1: #CAD2C5;
+    --COLOR-ACCENT2: #A4C3B2;
+    --COLOR-ACCENT3: #7AA899;
+    --COLOR-ACCENT4: #576F72;
+
+}
+
+
+
 
 /* ==========UTILITY========== */
 
@@ -411,6 +453,22 @@ header {
     /* display: none; */
 
     border-radius: 0 0 var(--BORDER-RD-CONTACT) var(--BORDER-RD-CONTACT);
+}
+
+
+.NOTI__LINK,
+.NOTI__ITEM {
+    font-family: var(--FF-BODY);
+    color: black;
+    font-weight: 500;
+}
+
+.NOTI__LINK:visited {
+    color: inherit;
+}
+
+.NOTI__LINK:hover {
+    color: var(--COLOR-BLUE3);
 }
 
 .NOTI__ITEM {
@@ -933,7 +991,7 @@ header {
 
     display: flex;
     flex-direction: column;
-    
+
 }
 
 /* Set container to gridss */
@@ -1783,7 +1841,7 @@ header {
     padding: 0.5rem 1rem;
     border-radius: var(--BORDER-RD-CONTACT);
 
-cursor: pointer;
+    cursor: pointer;
 }
 
 
