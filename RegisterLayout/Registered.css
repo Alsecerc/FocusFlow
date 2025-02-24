@@ -374,7 +374,7 @@ header {
     min-width: 160px;
 }
 
-.HEADER__UL li {
+.HEADER__ITEM {
     display: flex;
     align-items: center;
 }
@@ -395,6 +395,8 @@ header {
 }
 
 .NOTIFICATION__POPUP {
+    width: 300px;
+
     position: absolute;
     top: 150%;
     left: 50%;
@@ -406,9 +408,17 @@ header {
     background-color: var(--COLOR-LIGHT1);
     color: var(--COLOR-DARK3);
 
-    display: none;
+    /* display: none; */
 
     border-radius: 0 0 var(--BORDER-RD-CONTACT) var(--BORDER-RD-CONTACT);
+}
+
+.NOTI__ITEM {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    margin-bottom: var(--MARGIN);
 }
 
 

@@ -1,9 +1,7 @@
 <?php
 
 session_start();
-
-// echo $_COOKIE['UID'];
-// echo $_SESSION['userID'];
+include "conn.php";
 
 if (!isset($_SESSION['userID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
@@ -51,32 +49,60 @@ if (!isset($_SESSION['userID'])) {
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
-                    <li>
+                    <li class="HEADER__ITEM">
                         <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>
                         </a>
                     </li>
-                    <li style="position: relative;">
+                    <li class="HEADER__ITEM" style="position: relative;user-select:none;cursor:pointer;">
                         <div class="HEADER__UL__ICON" id="notiButton">
                             <span class="material-icons">
                                 notifications
                             </span>
                         </div>
+                        <?php
+                        $userID = $_SESSION["userID"];
+                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
+                        $result = $_conn->query($sql);
+                        ?>
 
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup">
-                            <p>No new notifications</p>
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default;">
+                            <?php if ($result->num_rows > 0): ?>
+                                <ul id="notificationList">
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <li class="NOTI__ITEM">
+                                            <?php
+                                            if ($row['type'] == 'system') {
+                                                echo "📢 System Notification: " . $row['notification_message'];
+                                            } else {
+                                                $sender_id = (int) $row['sender_id'];
+
+                                                // Query to fetch the sender's name
+                                                $sql = "SELECT name FROM user WHERE id = $sender_id";
+                                                $user_result = $_conn->query($sql);
+                                            }
+                                            ?>
+                                            <small> (<?= $row['created_at'] ?>)</small>
+                                        </li>
+                                    <?php endwhile; ?>
+                                </ul>
+                            <?php else: ?>
+                                <p id="noNotifications">No new notifications</p>
+                            <?php endif; ?>
                         </div>
+
+
                     </li>
-                    <li>
+                    <li class="HEADER__ITEM">
                         <a href="Setting.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 settings
                             </span>
                         </a>
                     </li>
-                    <li>
+                    <li class="HEADER__ITEM">
                         <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
