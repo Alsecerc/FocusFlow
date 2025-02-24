@@ -63,7 +63,7 @@ if (!isset($_COOKIE['UID'])) {
                             </span>
                         </div>
                         <?php
-                        $userID = $_SESSION["userID"];
+                        $userID = $_COOKIE['UID'];
                         $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
                         $result = $_conn->query($sql);
                         ?>
