@@ -163,6 +163,13 @@ if (!isset($_COOKIE['UID'])) {
             </nav>
         </div>
 
+   
+        <button onclick="changeTheme('earth')"></button>
+    <button onclick="changeTheme('earth')"></button>
+    <button onclick="changeTheme('neon')"></button>
+    <button onclick="changeTheme('forest')"></button>
+        
+        
     </main>
     <script src="Registered.js" defer></script>
     <script src="Setting.js" defer></script>
