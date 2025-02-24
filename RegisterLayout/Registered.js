@@ -33,18 +33,18 @@ MENU_BUTTON.addEventListener('click', function () {
     SIDEBAR.classList.toggle("SIDEBAR_SHOW");
 });
 
-let NOTI__BUTTON = getQuery("#notiButton");
-NOTI__BUTTON.addEventListener("click", function() {
-    let popup = document.getElementById("notificationPopup");
-    
-    // Toggle display property
-    if (popup.style.display === "none" || popup.style.display === "") {
-        popup.style.display = "block";
-    } else {
-        popup.style.display = "none";
-    }
+let NOTI__BUTTON = document.querySelector("#notiButton"); 
+if (NOTI__BUTTON) { 
+    NOTI__BUTTON.addEventListener("click", function() {
+        let popup = document.getElementById("notificationPopup");
 
-});
+        if (popup.style.display === "none" || popup.style.display === "") {
+            popup.style.display = "block";
+        } else {
+            popup.style.display = "none";
+        }
+    });
+}
 
 
 
@@ -471,8 +471,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 
 
-        // add card into calendar
-        console.log(TaskList)
 
         // let taskList = [TaskObject];
 
