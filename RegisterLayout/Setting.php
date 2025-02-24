@@ -165,6 +165,7 @@ if (!isset($_COOKIE['UID'])) {
 
     </main>
     <script src="Registered.js" defer></script>
+    <script src="Setting.js" defer></script>
 </body>
 
 </html>

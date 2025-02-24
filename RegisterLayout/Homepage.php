@@ -68,24 +68,33 @@ if (!isset($_COOKIE['UID'])) {
                         $result = $_conn->query($sql);
                         ?>
 
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default;">
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default; display:none;">
                             <?php if ($result->num_rows > 0): ?>
                                 <ul id="notificationList">
                                     <?php while ($row = $result->fetch_assoc()): ?>
-                                        <li class="NOTI__ITEM">
-                                            <?php
-                                            if ($row['type'] == 'system') {
-                                                echo "📢 System Notification: " . $row['notification_message'];
-                                            } else {
-                                                $sender_id = (int) $row['sender_id'];
+                                        <?php if ($row['type'] == 'system'): ?>
+                                            <li class="NOTI__ITEM">
+                                                📢 System Notification: <?= $row['notification_message'] ?>
+                                                <small> (<?= $row['created_at'] ?>)</small>
+                                            </li>
+                                        <?php else: ?>
+                                            <li class="NOTI__ITEM NOTI__ITEM__MSG">
+                                                <?php
+                                                $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
+                                                $result2 = $_conn->query($sql2); 
+                                                $sender = $result2->fetch_assoc(); 
 
-                                                // Query to fetch the sender's name
-                                                $sql = "SELECT name FROM user WHERE id = $sender_id";
-                                                $user_result = $_conn->query($sql);
-                                            }
-                                            ?>
-                                            <small> (<?= $row['created_at'] ?>)</small>
-                                        </li>
+                                                if ($result2->num_rows > 0) {
+                                                ?>
+                                                    <a href="CommunityDMPage?receiver_id=<?= $row['sender_id'] ?>&name=<?= urlencode($sender['name']) ?>" class="NOTI__LINK">
+                                                        🗨️ <?= $row['notification_message'] ?>
+                                                        <small> (<?= $row['created_at'] ?>)</small>
+                                                    </a>
+                                                <?php
+                                                }
+                                                ?>
+                                            </li>
+                                        <?php endif; ?>
                                     <?php endwhile; ?>
                                 </ul>
                             <?php else: ?>
