@@ -80,7 +80,7 @@ if (!isset($_COOKIE['UID'])) {
         </div>
     </header>
     <main>
-    <div class="SIDEBAR" style="overflow-y: auto;">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -122,7 +122,7 @@ if (!isset($_COOKIE['UID'])) {
                         <a href="Goal.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 track_changes
-                                </span>Goals
+                            </span>Goals
                         </a>
                     </li>
                 </ul>
@@ -155,13 +155,20 @@ if (!isset($_COOKIE['UID'])) {
                     </li>
                     <li>
                         <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                        Sarah Lee
+                            Sarah Lee
                             <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
                 </ul>
             </nav>
         </div>
+
+
+        <button onclick="changeTheme('default')"></button>
+        <button onclick="changeTheme('earth')"></button>
+        <button onclick="changeTheme('neon')"></button>
+        <button onclick="changeTheme('forest')"></button>
+
 
     </main>
     <script src="Registered.js" defer></script>

@@ -1,3 +1,8 @@
 function changeTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'default') {
+        document.documentElement.removeAttribute('data-theme'); // Removes the attribute
+    } else {
+        document.documentElement.setAttribute('data-theme', theme);
+    }
 }
+
