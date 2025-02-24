@@ -20,13 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql = "INSERT INTO user (USERNAME_USER, EMAIL_USER, PASSWORD_USER, age, gender, productivity_goals, preferred_hours, purpose)
             VALUES ('$username', '$email', '$password', '$age', '$gender', '$productivity_goals', '$preferred_hours', '$purpose')";
 
-    if ($conn->query($sql) === TRUE) {
+    if ($_conn->query($sql) === TRUE) {
         header("Location: Signin.php");
         exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn-> error;
+        echo "Error: " . $sql . "<br>" . $_conn-> error;
     }
-    $conn->close();
+    $_conn->close();
 }
 ?>
 
