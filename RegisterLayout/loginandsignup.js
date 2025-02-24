@@ -134,6 +134,18 @@ class FormValidator {
             if (this.validateAllFields()) {
                 this.form.submit();
             }
+
+            let formData = new FormData(this);
+            fetch('LoginBackend.php',{
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Server response:', data);
+                // Optionally, handle the server response here
+            })
+            .catch(error => console.error('Error:', error));
         });
     }
 

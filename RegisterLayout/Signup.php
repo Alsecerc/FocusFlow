@@ -2,7 +2,7 @@
 session_start();
 include 'conn.php';
 
-if (!isset($_COOKIE['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: Signin.php");
         exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $sql . "<br>" . $conn-> error;
     }
     $conn->close();
 }

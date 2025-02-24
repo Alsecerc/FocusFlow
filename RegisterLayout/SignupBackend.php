@@ -2,7 +2,6 @@
 include "conn.php";
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
-
 $username = mysqli_real_escape_string($_conn, $_POST['name']);
 $email = mysqli_real_escape_string($_conn, $_POST['email']);
 $password = mysqli_real_escape_string($_conn, $_POST['password']);

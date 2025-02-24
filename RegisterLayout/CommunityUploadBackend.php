@@ -19,7 +19,7 @@ if (isset($_POST['upload'])) {
         mkdir($targetDir, 0777, true);
     }
 
-    $userID = $_SESSION['userID'];
+    $userID = $_COOKIE['UID'];
 
     // Move file to the folder
     if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {

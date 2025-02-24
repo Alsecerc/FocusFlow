@@ -899,6 +899,17 @@ header {
     color: white;
 }
 
+#closeGroupAdd {
+    position: absolute; 
+    top: 5px; 
+    right: 5px; 
+    font-size: 24px; 
+    border: none; 
+    background: none; 
+    cursor: pointer;
+}
+
+
 /* PAGE: Calendar Page */
 
 /* Header */

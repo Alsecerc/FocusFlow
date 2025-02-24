@@ -3,7 +3,7 @@
 session_start();
 include "conn.php";
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }

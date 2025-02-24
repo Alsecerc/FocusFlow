@@ -2,11 +2,10 @@
 
 session_start();
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
-
 ?>
 
 <form action="update_goal.php" method="POST">
@@ -20,7 +19,7 @@ if (!isset($_SESSION['userID'])) {
 </form>
 <?php
 
-$user_id = $_SESSION['userID'];
+$user_id = $_COOKIE['UID'];
 if (isset($_POST['goal_id']) && isset($_POST['progress'])) {
     $goal_id = $_POST['goal_id'];
     $progress = $_POST['progress'];

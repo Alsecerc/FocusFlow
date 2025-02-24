@@ -2,7 +2,7 @@
 session_start();
 include 'conn.php';
 
-if (isset($_SESSION['userID'])) {
+if (isset($_COOKIE['UID'])) {
     header("Location: Homepage.php");
     exit();
 }else{

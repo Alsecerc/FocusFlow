@@ -1,12 +1,11 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
-
-$user_id = $_SESSION['userID'];
+$user_id = $_COOKIE['UID'];
 
 $sql = "SELECT * FROM goals WHERE user_id = ?";
 $stmt = $_conn->prepare($sql);

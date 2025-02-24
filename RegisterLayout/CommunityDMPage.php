@@ -2,7 +2,7 @@
 
 session_start();
 
-if (!isset($_SESSION['userID'])) {
+if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
@@ -199,7 +199,7 @@ echo "</script>";
 
             <section class="DMPAGE__CONVERSATION">
                 <?php
-                $senderID = $_SESSION['userID'];
+                $senderID = $_COOKIE['UID'];
                 $receiverID = $_GET['receiver_id'];
 
 

@@ -2,8 +2,8 @@
 
 session_start();
 
-if (!isset($_SESSION['userID'])) {
-    echo "<script>window.location.href='../Landing_Page/Homepage.php'</script>";
+if (!isset($_COOKIE['UID'])) {
+    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
 
@@ -174,12 +174,12 @@ if (!isset($_SESSION['userID'])) {
                 <div>
                     <?php
                     include "../RegisterLayout/conn.php"; // Database connection file
-                    $userID = $_SESSION['userID'];
+                    $userID = $_COOKIE['UID'];
 
-                    $name = $_SESSION['userName'];
-                    $email = $_SESSION['userEmail'];
-                    $password = $_SESSION['userPassword'];
-                    $type = $_SESSION['usertype'];
+                    $name = $_COOKIE['USERNAME'];
+                    $email = $_COOKIE['EMAIL'];
+                    $password = $_COOKIE['PASSWORD'];
+                    $type = $_COOKIE['USERTYPE'];
 
                     $user = [
                         "name" => $name,
@@ -224,15 +224,14 @@ if (!isset($_SESSION['userID'])) {
                     <?php
                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Get new values from the form
-                        $newName = !empty(trim($_POST['username'])) ? trim($_POST['username']) : $_SESSION['userName'];
-                        $newEmail = !empty(trim($_POST['email'])) ? trim($_POST['email']) : $_SESSION['userEmail'];
-                        $newPassword = !empty(trim($_POST['password'])) ? trim($_POST['password']) : $_SESSION['userPassword'];
+                        $newName = !empty(trim($_POST['username'])) ? trim($_POST['username']) : $_COOKIE['USERNAME'];
+                        $newEmail = !empty(trim($_POST['email'])) ? trim($_POST['email']) : $_COOKIE['EMAIL'];
+                        $newPassword = !empty(trim($_POST['password'])) ? trim($_POST['password']) : $_COOKIE['PASSWORD'];
+                        $_COOKIE['UID'] = $newName;
+                        $_COOKIE['EMAIL'] = $newEmail;
+                        $_COOKIE['PASSWORD'] = $newPassword;
 
-                        $_SESSION['userName'] = $newName;
-                        $_SESSION['userEmail'] = $newEmail;
-                        $_SESSION['userPassword'] = $newPassword;
-
-                        $userID = $_SESSION['userID'];
+                        $userID = $_COOKIE['UID'];
 
                         $sql = "UPDATE users SET " .
                             "name = '$newName'," .

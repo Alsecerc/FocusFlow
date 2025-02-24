@@ -47,9 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_SESSION['userName'];
             //  '/' means available across whole website
             // set for 1 day
-            setcookie('UID', $rows['userID'], time() + 86400, '/');
-            echo "<script>alert('Welcome back, $username!');</script>";
-            echo "<script>window.location.href='Homepage.php';</script>";
+            setcookie("UID", $rows['id'], time() + 86400, '/');
+            setcookie("USERNAME", $rows['name'], time() + 86400, '/');
+            setcookie("EMAIL", $rows['email'], time() + 86400, '/');
+            setcookie("PASSWORD", $rows['password'], time() + 86400, '/');
+            setcookie("USERTYPE", $rows['usertype'], time() + 86400, '/');
+
+            if (isset($_COOKIE["UID"])){
+                echo "<script>alert('Welcome back, $username!');</script>";
+
+            }else{
+                echo "<script>window.location.href='Homepage.php';</script>";
+
+            }
         }
     }
 }

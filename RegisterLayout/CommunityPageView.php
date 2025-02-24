@@ -1,7 +1,7 @@
 <?php
 include 'conn.php'; // Database connection
 session_start();
-$userID = $_SESSION['userID'];
+$userID = $_COOKIE['UID'];
 
 $sql = "SELECT * FROM files WHERE user_id = $userID ORDER BY uploaded_at DESC";
 $result = $_conn->query($sql);
