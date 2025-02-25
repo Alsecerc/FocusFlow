@@ -220,10 +220,6 @@ if (!isset($_COOKIE['UID'])) {
             </section>
 
             <section class="TODO__CONTAINER">
-                <div class="TODO__CARD" id="To Do 1">
-                    <h3 class="TODO__CARD_HEADER">chen</h3>
-                    <p class="TODO__TASK" draggable="true">Get grocery</p>
-                </div>
             </section>
         </article>
 
@@ -231,7 +227,7 @@ if (!isset($_COOKIE['UID'])) {
 
     <div class="TODO__GROUP__ADD" style="display: none;">
         <h2>Add a New Group</h2>
-        <button id="closeGroupAdd" style="position: absolute; top: 5px; right: 5px; font-size: 24px; border: none; background: none; cursor: pointer;">&times;</button>
+        <button id="closeGroupAdd">&times;</button>
         <form id="groupForm" action="TodoBackend.php" method="POST">
             <input type="text" id="groupName" name= "GROUPNAME" value = "" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>

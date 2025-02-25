@@ -29,6 +29,7 @@ function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, paragrap
     let Container = document.querySelectorAll(`.${NameOfContainerClass}`);
     Group = Array.from(Container).find(Name => Name.id === NameOfGroup);
     if (!Group){
+        console.log(Group, Container);
         console.log("Cannot find group")
         return;
     }
@@ -52,6 +53,10 @@ function CreateTaskForm() {
     const main = document.createElement('div');
     main.className = 'TODO__TASK__ADD';
     main.style.display = 'none';
+
+    const TASKBUTTON = document.createElement('button');
+    TASKBUTTON.id = 'closeTaskButton';
+    TASKBUTTON.textContent = 'x';
 
     const header = document.createElement('h2');
     header.textContent = "Choose Your group:";
@@ -111,7 +116,9 @@ function CreateTaskForm() {
     form.appendChild(userinput);
     form.appendChild(submission_Button);
 
+    
     main.appendChild(header);
+    main.appendChild(TASKBUTTON);
     main.appendChild(form);
 
     document.body.appendChild(main);
@@ -135,11 +142,11 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         // Get all buttons with the class "TODO__ADD"
         const buttons = document.querySelectorAll(".TODO__ADD");
 
-        const GroupCard = document.querySelector('.TODO__CARD');
+        let GroupCard = document.querySelector('.TODO__CARD');
 
         const GroupCardHeader = document.querySelector('.TODO__CARD_HEADER');
 
-        const GroupCardTask = document.querySelector('.TODO__TASK');
+        let GroupCardTask = document.querySelector('.TODO__TASK');
         // Convert NodeList to an array for easier handling (optional)
         const buttonArray = Array.from(buttons);
 
@@ -176,7 +183,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 
         function GroupButton (){
             document.getElementById("closeGroupAdd").addEventListener("click", function() {
-                document.getElementById("groupAdd").style.display = "none";
+                document.querySelector('.TODO__GROUP__ADD').style.display = "none";
+                document.querySelector('.Hiddenlayer').style.display = "none";
+                document.getElementById("groupName").value = '';
             });
             if (groupButton) {
                 groupButton.addEventListener('click', () => {
@@ -193,6 +202,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                         if (box.style.display === 'none') {
                             box.style.display = 'block';
                             overlay.style.display = 'block';
+
+                             // Call the function to retrieve the input value of the group name
+
                             groupFrom.addEventListener("submit", function (event) {
                                 event.preventDefault(); // Prevent the default form submission behavior
 
@@ -209,15 +221,22 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                                     // Optionally, handle the server response here
                                 })
                                 .catch(error => console.error('Error:', error));
-                                
-
-                                // Call the function to retrieve the input value
                                 const groupName = GetGroupName();
+                                
                                 console.log("Group Name:", groupName);
                                 box.style.display = 'none';
                                 if (groupFrom) {
-                                    createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
-                                    overlay.style.display = 'none';
+                                    if(CheckIfgroupNameSame(groupName)){
+                                        alert('please dont enter the same groupname');
+                                        document.querySelector('.Hiddenlayer').style.display = "none";
+                                        document.getElementById("groupName").value = '';
+                                        return;
+                                    }else{
+                                        createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
+                                        overlay.style.display = 'none';
+                                        document.getElementById("groupName").value = '';
+                                    }
+
                                 }
                             }, { once: true });
                             console.log("Box is now visible");
@@ -234,7 +253,33 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
             }
         }
 
+        function CheckIfgroupNameSame(GROUPNAME){
+            const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
+            
+            if(GROUPNAMELIST.length > 0){
+                console.log(GROUPNAMELIST);
+
+                for (let i = 0; i < GROUPNAMELIST.length; i++){
+                    if (GROUPNAME === GROUPNAMELIST[i].id){
+                        console.log("its the same");
+                        return true;
+                        
+                    }else{
+                        return false;
+                    }
+                }
+            }else{
+                console.log("length is 0");
+            }
+        }
+
         function TaskButton (){
+            document.getElementById('closeTaskButton').addEventListener('click', function(){
+                document.querySelector('.TODO__TASK__ADD').style.display = "none";
+                document.querySelector('.Hiddenlayer').style.display = "none";
+                document.getElementById('taskContent').value = '';
+
+            })
             if (taskButton) {
                 taskButton.addEventListener('click', () => {
                     const AddTask = document.querySelector('.TODO__TASK__ADD');
@@ -242,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                     const taskForm = document.getElementById('taskForm');
                     const groupChoice = document.getElementById('GROUP__NAME__TASK');
                     const taskContent = document.getElementById('taskContent');
+                    console.log(AddTask)
                     if (AddTask) {
                         if (AddTask.style.display === 'none') {
                             AddTask.style.display = 'block'; // make the form visisble
@@ -263,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                                 })
                                 .catch(error => console.error("Error:", error));
                                 if (taskForm) {
+                                    console.log(GroupCard);
                                     CreateNewTask(GroupCard.className, groupChoice.value, taskContent.value);
                                     console.log(groupChoice.value);
                                     console.log(taskContent.value);
@@ -276,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                             overlay.style.display = 'none';
                         }
                     } else {
-                        console.log("not enough length")
+                        console.log("not enough length");
                     }
                 });
             }
@@ -297,31 +344,37 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                 const relevantMutations = mutations.some(mutation => 
                     mutation.addedNodes && mutation.addedNodes.length > 0
                 );
+
+                GroupCard = document.querySelector('.TODO__CARD');
+                GroupCardTask = document.querySelector('.TODO__TASK');
         
                 if (relevantMutations) {
                     isUpdating = true; // Prevent looping
         
                     // Pause observer while updating
                     observer.disconnect();
-                    
-                    try {
-                        const draggables = document.querySelectorAll(`.${GroupCardTask.className}`)
-                        console.log('hi'); // Debugging
-        
-                        Drag(draggables);
-                        
-                    }catch (error){
-                        if(error instanceof TypeError){
-                            console.error("Caught a TypeError:", error.message);
-                        }else {
-                            // Handle other types of errors if needed
-                            console.error("An unexpected error occurred:", error);
+                    if(GroupCardTask === null){
+                        console.log("its null ignore");
+                    }else{
+                        try {
+                            const draggables = document.querySelectorAll(`.${GroupCardTask.className}`)
+                            console.log(draggables); // Debugging
+            
+                            Drag(draggables);
+                            
+                        }catch (error){
+                            if(error instanceof TypeError){
+                                console.error("Caught a TypeError:", error.message);
+                            }else {
+                                // Handle other types of errors if needed
+                                console.error("An unexpected error occurred:", error);
+                            }
                         }
                     }
                     
                     try{
                         const droppables = document.querySelectorAll(`.${GroupCard.className}`);
-                        
+                        // console.log(droppables)
                         Drop(droppables);
 
                     }catch (error){
@@ -421,12 +474,22 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         
         // Drag();
         // Drop();
-        DragAndDrop();
+        
         // MovingCard();
+
+        // updateTodataBase();
+        // MovingCard();
+
+        DragAndDrop();
         CreateTaskForm();
         GroupButton();
         TaskButton();
-        updateTodataBase();
-        // MovingCard();
+        // if (document.querySelectorAll(`.${GroupCardTask.className}`).length === 0){
+        //     console.log("its a null");
+        // }else{
+        //     
+        // }
+        
+        
     }
 })
