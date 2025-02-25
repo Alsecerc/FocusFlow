@@ -1,5 +1,5 @@
 <?php
-
+include "conn.php";
 session_start();
 
 if (!isset($_COOKIE['UID'])) {
@@ -48,28 +48,62 @@ if (!isset($_COOKIE['UID'])) {
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
-                    <li>
-                        <a href="CusService.php" class="HEADER__UL__ICON">
+                    <li class="HEADER__ITEM">
+                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 support_agent
                             </span>
                         </a>
                     </li>
-                    <li>
-                        <div class="HEADER__UL__ICON">
+                    <li class="HEADER__ITEM" style="position: relative;user-select:none;cursor:pointer;">
+                        <div class="HEADER__UL__ICON" id="notiButton">
                             <span class="material-icons">
                                 notifications
                             </span>
                         </div>
+                        <?php
+                        $userID = $_COOKIE['UID'];
+                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
+                        $result = $_conn->query($sql);
+                        ?>
+
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default; display:none;">
+                            <?php if ($result->num_rows > 0): ?>
+                                <ul id="notificationList">
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <?php if ($row['type'] == 'system'): ?>
+                                            <li class="NOTI__ITEM">
+                                                📢 System Notification: <?= $row['notification_message'] ?>
+                                                <small> (<?= $row['created_at'] ?>)</small>
+                                            </li>
+                                        <?php else: ?>
+                                            <li class="NOTI__ITEM NOTI__ITEM__MSG">
+                                                <?php
+                                                $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
+                                                $result2 = $_conn->query($sql2);
+                                                $sender = $result2->fetch_assoc();
+
+                                                if ($result2->num_rows > 0) {
+                                                ?>
+                                                    <a href="CommunityDMPage?receiver_id=<?= $row['sender_id'] ?>&name=<?= urlencode($sender['name']) ?>" class="NOTI__LINK">
+                                                        🗨️ <?= $row['notification_message'] ?>
+                                                        <small> (<?= $row['created_at'] ?>)</small>
+                                                    </a>
+                                                <?php
+                                                }
+                                                ?>
+                                            </li>
+                                        <?php endif; ?>
+                                    <?php endwhile; ?>
+                                </ul>
+                            <?php else: ?>
+                                <p id="noNotifications">No new notifications</p>
+                            <?php endif; ?>
+                        </div>
+
+
                     </li>
-                    <li>
-                        <a href="Setting.php" class="HEADER__UL__ICON">
-                            <span class="material-icons">
-                                settings
-                            </span>
-                        </a>
-                    </li>
-                    <li>
+                    <li class="HEADER__ITEM">
                         <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle
@@ -82,7 +116,7 @@ if (!isset($_COOKIE['UID'])) {
     </header>
 
     <main class="CALENDAR__MAIN">
-    <div class="SIDEBAR" style="overflow-y: auto;">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -124,7 +158,7 @@ if (!isset($_COOKIE['UID'])) {
                         <a href="Goal.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 track_changes
-                                </span>Goals
+                            </span>Goals
                         </a>
                     </li>
                 </ul>
@@ -157,7 +191,7 @@ if (!isset($_COOKIE['UID'])) {
                     </li>
                     <li>
                         <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                        Sarah Lee
+                            Sarah Lee
                             <button class="material-icons">more_horiz</button>
                         </a>
                     </li>

@@ -105,13 +105,6 @@ if (!isset($_COOKIE['UID'])) {
 
                     </li>
                     <li class="HEADER__ITEM">
-                        <a href="Setting.php" class="HEADER__UL__ICON">
-                            <span class="material-icons">
-                                settings
-                            </span>
-                        </a>
-                    </li>
-                    <li class="HEADER__ITEM">
                         <a href="Account.php" class="HEADER__UL__ICON">
                             <span class="material-icons">
                                 account_circle

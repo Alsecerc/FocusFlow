@@ -849,5 +849,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 
+// Settings page
+function changeTheme(theme) {
+    if (theme === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.removeItem('theme'); // Remove stored theme
+    } else {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme); // Save theme in localStorage
+        
+    }
+}
+
+// Apply the saved theme on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+});
+
+
 
 

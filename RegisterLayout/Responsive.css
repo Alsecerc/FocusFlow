@@ -1,8 +1,8 @@
 /* Phone */
 @media (max-width: 468px) {
     html {
-        background-color: lightseagreen;
         min-width: 725px;
+        min-height: 725px;
     }
 
     header {
@@ -36,17 +36,32 @@
     li::before {
         content: attr(data-mobile);
     }
+
     li span {
-        display: none; 
+        display: none;
     }
 
+    .CALENDAR__HEADER {
+        font-size: 1.5rem;
+    }
 
+    .Header__Wording {
+        font-size: 1.3rem;
+    }
+
+/* Account page */
+.PROFILE {
+    font-size: 1.4rem;
+}
+
+.INPUT__INPUT {
+    width: 250px;
+}
 }
 
 /* Tablet */
 @media (min-width: 468px) and (max-width: 1024px) {
     html {
-        background-color: lightseagreen;
         min-width: 725px;
     }
 
@@ -66,6 +81,7 @@
     li::before {
         content: attr(data-tablet);
     }
+
     li span {
         display: none;
     }
@@ -74,6 +90,5 @@
 /* Desktop */
 @media (min-width: 1025px) {
     html {
-        background-color: lightcoral;
     }
 }

@@ -33,15 +33,14 @@ a:visited {
     font-family: var(--FF-BODY);
     font-weight: 500;
     text-decoration: none;
-    color: var(--LINK);
+    color: var(--COLOR-LIGHT1);
 }
 
 a:is(:hover, :focus, :active) {
-    color: var(--LINK-HOVER);
+    color: var(--COLOR-ACCENT3);
 }
 
 html {
-    position: relative;
     height: 100%;
 }
 
@@ -52,7 +51,9 @@ body {
     grid-template-rows: 80px 1fr;
     flex-direction: column;
 
-    height: 100vh;
+    background-color: var(--COLOR-ACCENT4);
+
+    height: 100%;
 }
 
 header,
@@ -95,23 +96,11 @@ button {
     --COLOR-DARK1: #626262;
     --COLOR-DARK2: #333333;
     --COLOR-DARK3: #171717;
-    --COLOR-BLUE1: #03045E;
-    --COLOR-BLUE2: #1d1f79;
-    --COLOR-BLUE3: #90E0EF;
-    --COLOR-BLUE4: #CAF0F8;
+    --COLOR-ACCENT1: #0b0b0b;
+    --COLOR-ACCENT2: #3b3b3b;
+    --COLOR-ACCENT3: #6c6c6c;
+    --COLOR-ACCENT4: #c8c8c8;
 
-
-    /* Accent Colors for Features */
-    --ACCENT-GREEN: #10b981;
-    /* Success, completion */
-    --ACCENT-YELLOW: #f59e0b;
-    /* Warnings, pending */
-    --ACCENT-RED: #ef4444;
-    /* Errors, high priority */
-
-    /* LINK */
-    --LINK-HOVER: var(--COLOR-BLUE3);
-    --LINK: var(--COLOR-LIGHT1);
 
     /* BORDERS */
     --BORDER-COLOR: #333;
@@ -227,11 +216,11 @@ button {
 
 .KEYWORD {
     font-size: 2rem;
-    color: var(--COLOR-BLUE1);
+    color: var(--COLOR-ACCENT1);
 }
 
 .CTA {
-    background-color: var(--COLOR-BLUE2) !important;
+    background-color: var(--COLOR-ACCENT2) !important;
 }
 
 .BOLD {
@@ -256,7 +245,7 @@ button {
     flex-grow: 1;
     height: 4px;
 
-    background-color: var(--COLOR-BLUE1);
+    background-color: var(--COLOR-ACCENT1);
 }
 
 .ARTICLE_TITLE::before {
@@ -271,11 +260,11 @@ button {
 
 /* For plans page */
 .GREEN {
-    color: var(--ACCENT-GREEN);
+    color: var(--COLOR-DARK1);
 }
 
 .RED {
-    color: var(--ACCENT-RED);
+    color: var(--COLOR-DARK3);
 }
 
 .ENLARGE {
@@ -326,6 +315,7 @@ header {
 
     margin: 0 20px;
 }
+
 
 
 /* LEFT SIDE OF HEADER */
@@ -432,7 +422,7 @@ header {
 }
 
 .HEADER__UL__ICON:hover>.material-icons {
-    color: var(--COLOR-BLUE3);
+    color: var(--COLOR-ACCENT3);
     background-color: var(--COLOR-DARK1);
 }
 
@@ -441,8 +431,8 @@ header {
 
     position: absolute;
     top: 150%;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 100%;
+    transform: translateX(-70%);
 
     padding: 1rem;
     box-shadow: var(--SHADOW-WHITEBG);
@@ -468,7 +458,7 @@ header {
 }
 
 .NOTI__LINK:hover {
-    color: var(--COLOR-BLUE3);
+    color: var(--COLOR-ACCENT3);
 }
 
 .NOTI__ITEM {
@@ -736,7 +726,7 @@ header {
 }
 
 .TODO__CARD {
-    background-color: var(--COLOR-BLUE3);
+    background-color: var(--COLOR-ACCENT3);
     color: var(--COLOR-DARK3);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
@@ -753,7 +743,7 @@ header {
 }
 
 .TODO__CARD_HEADER {
-    border-bottom: 2px solid var(--COLOR-BLUE1);
+    border-bottom: 2px solid var(--COLOR-ACCENT1);
     cursor: pointer;
     margin-bottom: 1rem;
 }
@@ -900,12 +890,12 @@ header {
 }
 
 #closeGroupAdd {
-    position: absolute; 
-    top: 5px; 
-    right: 5px; 
-    font-size: 24px; 
-    border: none; 
-    background: none; 
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 24px;
+    border: none;
+    background: none;
     cursor: pointer;
 }
 
@@ -946,7 +936,7 @@ header {
 }
 
 .Header__Button {
-    /* background-color: var(--COLOR-BLUE3); */
+    /* background-color: var(--COLOR-ACCENT3); */
     border: 1px solid var(--COLOR-DARK1);
     border-radius: 99px;
 
@@ -961,7 +951,8 @@ header {
 .Header__Wording {
     width: 100%;
     padding: 0.5rem;
-    color: var(--COLOR-DARK2);
+    color: var(--COLOR-DARK3);
+    background-color: var(--COLOR-ACCENT3);
 
     transition: all 0.3s ease;
 
@@ -1051,11 +1042,11 @@ header {
 }
 
 .HEADER-HIGHLIGHT {
-    background-color: var(--COLOR-BLUE1);
+    background-color: var(--COLOR-ACCENT1);
 }
 
 .DAY_NUM-HIGHLIGHT {
-    background-color: var(--COLOR-BLUE2);
+    background-color: var(--COLOR-ACCENT2);
 }
 
 
@@ -1101,13 +1092,15 @@ header {
     /* 24 hours * 4 interval (1interval = 15mins) = 96 rows */
     grid-template-rows: repeat(100, 15px);
     position: relative;
+
+    border-right: 1px solid var(--COLOR-ACCENT1);
 }
 
 .EVENT {
     position: absolute;
     z-index: 2;
 
-    background-color: var(--COLOR-BLUE1);
+    background-color: var(--COLOR-ACCENT1);
     color: var(--COLOR-LIGHT1);
 
     border-radius: var(--BORDER-RD-CONTACT);
@@ -1224,15 +1217,15 @@ header {
     top: -40%;
     left: 0;
 
-    color: var(--ACCENT-RED);
+    color: var(--COLOR-DARK3);
 }
 
 .INVALID_BORDER {
-    border: 2px solid var(--ACCENT-RED);
+    border: 2px solid var(--COLOR-DARK3);
 }
 
 .VALID_BORDER {
-    border: 2px solid var(--ACCENT-GREEN);
+    border: 2px solid var(--COLOR-DARK1);
 }
 
 .VALID_PLACEHOLDER {
@@ -1240,7 +1233,7 @@ header {
     top: -40%;
     left: 0;
 
-    color: var(--ACCENT-GREEN);
+    color: var(--COLOR-DARK1);
 }
 
 .POP_UP__CONTROLS {
@@ -1264,7 +1257,7 @@ header {
 }
 
 .CONTROLS__SUBMIT {
-    background-color: var(--ACCENT-GREEN);
+    background-color: var(--COLOR-DARK1);
     color: white;
 }
 
@@ -1513,6 +1506,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 
     gap: 1rem;
 }
@@ -1520,7 +1514,7 @@ header {
 .PROFILE__PIC {
     /* This ensures the image fills the container while keeping the aspect ratio. */
     object-fit: cover;
-    background-color: var(--COLOR-BLUE4);
+    background-color: var(--COLOR-ACCENT4);
     border-radius: 99px;
 }
 
@@ -1562,7 +1556,7 @@ header {
 
 
 .PROFILE__LOGOUT_B {
-    background-color: var(--ACCENT-RED);
+    background-color: var(--COLOR-DARK3);
     margin: 0 auto;
 
 }
@@ -1630,7 +1624,7 @@ header {
 
 .SENT {
     align-self: flex-end;
-    background-color: var(--COLOR-BLUE2);
+    background-color: var(--COLOR-ACCENT2);
 }
 
 
@@ -1696,7 +1690,7 @@ header {
 
 .COMMUNITY1__MAIN {
     grid-area: mn;
-    background-color: var(--ACCENT-RED);
+    background-color: var(--COLOR-DARK3);
 }
 
 .COMMUNITY1__MEMBER {
@@ -1768,7 +1762,7 @@ header {
     align-self: flex-end;
     font-size: 20px;
     cursor: pointer;
-    background: var(--ACCENT-RED);
+    background: var(--COLOR-DARK3);
     color: var(--COLOR-LIGHT1);
     border: none;
     padding: 5px 10px;
@@ -1881,7 +1875,7 @@ header {
 
 .GOAL__BAR {
     width: 100%;
-    background-color: var(--ACCENT-RED);
+    background-color: var(--COLOR-DARK3);
 }
 
 .GOAL__TITLE {
@@ -1891,8 +1885,20 @@ header {
 
 .GOAL__BAR_FILL {
     height: 20px;
-    background-color: var(--ACCENT-GREEN);
+    background-color: var(--COLOR-DARK1);
     width: 0%;
     text-align: center;
     color: var(--COLOR-LIGHT1);
+}
+
+
+/* setting page */
+
+.SETTING__BUTTON {
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+
+    background-color: var(--COLOR-ACCENT2);
+    color: var(--COLOR-ACCENT4);
 }
