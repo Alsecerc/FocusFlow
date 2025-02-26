@@ -247,24 +247,24 @@ if (!isset($_COOKIE['UID'])) {
                 die("Connection failed: " . mysqli_connect_error());
             }
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $taskTitle = $_POST['task_title'] ?? "";
-                $taskDesc = $_POST['task_desc'] ?? "";
-                $startDate = $_POST['start_date'] ?? "";
-                $startTime = $_POST['start_time'] ?? "";
-                $endTime = $_POST['end_time'] ?? "";
+            // if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            //     $taskTitle = $_POST['task_title'] ?? "";
+            //     $taskDesc = $_POST['task_desc'] ?? "";
+            //     $startDate = $_POST['start_date'] ?? "";
+            //     $startTime = $_POST['start_time'] ?? "";
+            //     $endTime = $_POST['end_time'] ?? "";
 
-                $user_id = $_COOKIE['UID'];
+            //     $user_id = $_COOKIE['UID'];
 
-                $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
-            VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),$user_id)";
+            //     $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
+            // VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),$user_id)";
 
-                if (mysqli_query($_conn, $sql)) {
-                    echo "<script><alert>New record created successfully</alert></script>";
-                } else {
-                    echo "Error: " . $sql . "<br>" . mysqli_error($_conn);
-                }
-            }
+            //     if (mysqli_query($_conn, $sql)) {
+            //         echo "<script><alert>New task created successfully</alert></script>";
+            //     } else {
+            //         echo "Error: " . $sql . "<br>" . mysqli_error($_conn);
+            //     }
+            // }
 
 
             $user_id = $_COOKIE['UID'];
@@ -287,15 +287,17 @@ if (!isset($_COOKIE['UID'])) {
                         'created_at' => $row['created_at'],
                         'user_id' => $row['user_id']
                     );
+
+                   
+                    
                 }
+
 
                 // Send the task list to the frontend in JSON format
                 echo "<script>";
                 echo "var TaskList = " . json_encode($TaskList) . ";";
                 echo "</script>";
-            } else {
-                echo "0 results";
-            }
+            } 
 
             mysqli_close($_conn);
             ?>
