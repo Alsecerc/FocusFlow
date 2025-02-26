@@ -20,8 +20,8 @@ function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, 
     console.log(container)
 }
 
-function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, paragraphContent = null) {
-    if (NameOfContainerClass === null || NameOfGroup === null || paragraphContent === null){
+function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, TaskTitle = null, TaskContent = null) {
+    if (NameOfContainerClass === null || NameOfGroup === null || TaskTitle === null || TaskContent === null){
         console.log('Please enter something.');
         return;
     }
@@ -33,18 +33,57 @@ function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, paragrap
         console.log("Cannot find group")
         return;
     }
-    console.log(Group.id);
-    const paragraph = document.createElement('p')
-    paragraph.classList.add('TODO__TASK');
-    paragraph.textContent = paragraphContent.length > 500 ? paragraphContent.substring(0, 500) + "..." : paragraphContent;
-    paragraph.draggable = 'true';
+    const formattedTime = "00:10:00";
 
-    Group.appendChild(paragraph);
+    console.log(Group.id);
+
+    const header = document.createElement('h3');
+    header.classList.add('TODO__TASK');
+    header.textContent = TaskTitle.length > 500 ? TaskTitle.substring(0, 500) + "..." : TaskTitle;
+    header.draggable = 'true';
+
+    const paragraph = document.createElement('p');
+    paragraph.classList.add('TODO__TASK__CONTENT');
+    paragraph.textContent = TaskContent;
+
+    const timestamp = document.createElement('p2');
+    timestamp.classList.add('TODO__TASK__TIME');
+    timestamp.id = formattedTime;
+    timestamp.textContent = formattedTime;
+
+    header.appendChild(paragraph);
+    header.appendChild(timestamp);
+    Group.appendChild(header);
+}
+
+function preventTyping(){
+    document.querySelectorAll('.timer-inputs').forEach(input =>{
+        input.addEventListener('keydown',function(event){
+            event.preventDefault();
+        });
+
+        input.addEventListener('paste', function(event){
+            event.preventDefault();
+        });
+    })
+}
+
+function timeleftToCompleteTask(taskTitle, day, hours, mins, seconds){
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} 
+    ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+    console.log(formattedDate);
+}
+
+function SetFinaltimerUpateTodatabase (taskTitle, day, hours, mins, seconds){
+    
 }
 
 function CreateTaskForm() {
 
     console.log("Creating Task Form......");
+    
 
     if (document.getElementById('taskForm')) {
         console.log("Form already exists");
@@ -91,13 +130,69 @@ function CreateTaskForm() {
     }
 
     UpdateSelection();
+
+    const TaskTitle = document.createElement('input');
+    TaskTitle.value = "";
+    TaskTitle.id = "taskTitle";
+    TaskTitle.type = "text";
+    TaskTitle.placeholder = 'Enter the Task title';
+    TaskTitle.required = true;
+    TaskTitle.name = 'TASKTITLE';
+
     const userinput = document.createElement('input');
     userinput.value = "";
     userinput.id = 'taskContent';
     userinput.type = 'text';
     userinput.placeholder = 'Enter the task';
-    userinput.required = 'true';
+    userinput.required = true;
     userinput.name = 'USERTASK';
+
+    const taskDays = document.createElement('input');
+    taskDays.type = 'number';
+    taskDays.id = 'taskDays';
+    taskDays.placeholder = 'Days';
+    taskDays.min = '0';
+    taskDays.step = '1';
+    taskDays.onkeydown = "return false";
+    taskDays.required = true;
+    taskDays.value = '';
+    taskDays.classList.add('TIMER__INPUT');
+
+    const taskHours = document.createElement('input');
+    taskHours.type = 'number';
+    taskHours.id = 'taskHours';
+    taskHours.placeholder = 'Hours';
+    taskHours.min = '0';
+    taskHours.max = '23';
+    taskHours.step = '1';
+    taskHours.onkeydown = "return false";
+    taskHours.required = true;
+    taskHours.classList.add('TIMER__INPUT');
+
+    const taskMinutes = document.createElement('input');
+    taskMinutes.type = 'number';
+    taskMinutes.id = 'taskMinutes';
+    taskMinutes.placeholder = 'Minutes';
+    taskMinutes.min = '0';
+    taskMinutes.max = '59';
+    taskMinutes.step = '1';
+    taskMinutes.onkeydown = "return false";
+    taskMinutes.required = true;
+    taskMinutes.classList.add('TIMER__INPUT');
+
+    const taskSeconds = document.createElement('input');
+    taskSeconds.type = 'number';
+    taskSeconds.id = 'taskSeconds';
+    taskSeconds.placeholder = 'Seconds';
+    taskSeconds.min = '0';
+    taskSeconds.max = '59';
+    taskSeconds.step = '1';
+    taskSeconds.onkeydown = "return false";
+    taskSeconds.required = true;
+    taskSeconds.classList.add('TIMER__INPUT');
+
+    const timerInput = document.createElement('div');
+    timerInput.classList.add('timer-inputs');
 
     const submission_Button = document.createElement('button');
     submission_Button.type = 'submit';
@@ -111,9 +206,16 @@ function CreateTaskForm() {
         form.remove();
     })
 
+    timerInput.appendChild(taskDays);
+    timerInput.appendChild(taskHours);
+    timerInput.appendChild(taskMinutes);
+    timerInput.appendChild(taskSeconds);
+
     form.appendChild(label);
     form.appendChild(selection);
+    form.appendChild(TaskTitle);
     form.appendChild(userinput);
+    form.appendChild(timerInput);
     form.appendChild(submission_Button);
 
     
@@ -182,11 +284,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         }
 
         function GroupButton (){
-            document.getElementById("closeGroupAdd").addEventListener("click", function() {
-                document.querySelector('.TODO__GROUP__ADD').style.display = "none";
-                document.querySelector('.Hiddenlayer').style.display = "none";
-                document.getElementById("groupName").value = '';
-            });
+            const closeGroupAdd = document.getElementById("closeGroupAdd");
+
+            closeGroupAdd.addEventListener("click", handleGroupNameCloseBtn);
             if (groupButton) {
                 groupButton.addEventListener('click', () => {
 
@@ -204,41 +304,12 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                             overlay.style.display = 'block';
 
                              // Call the function to retrieve the input value of the group name
-
-                            groupFrom.addEventListener("submit", function (event) {
-                                event.preventDefault(); // Prevent the default form submission behavior
-
-                                let formData = new FormData(this);
-
-                                // Send the form data to PHP using fetch
-                                fetch('TodoBackend.php', {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(response => response.text())
-                                .then(data => {
-                                    console.log('Server response:', data);
-                                    // Optionally, handle the server response here
-                                })
-                                .catch(error => console.error('Error:', error));
-                                const groupName = GetGroupName();
-                                
-                                console.log("Group Name:", groupName);
-                                box.style.display = 'none';
-                                if (groupFrom) {
-                                    if(CheckIfgroupNameSame(groupName)){
-                                        alert('please dont enter the same groupname');
-                                        document.querySelector('.Hiddenlayer').style.display = "none";
-                                        document.getElementById("groupName").value = '';
-                                        return;
-                                    }else{
-                                        createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
-                                        overlay.style.display = 'none';
-                                        document.getElementById("groupName").value = '';
-                                    }
-
-                                }
-                            }, { once: true });
+                            if (!groupFrom) {
+                                console.error("groupForm is not found in the DOM");
+                                return;
+                            }
+                            groupFrom.removeEventListener("submit", handleGroupNameSubmitWrapper);
+                            groupFrom.addEventListener("submit", handleGroupNameSubmitWrapper, { once: true });
                             console.log("Box is now visible");
 
                         } else {
@@ -255,10 +326,9 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
 
         function CheckIfgroupNameSame(GROUPNAME){
             const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
-            
+            console.log(GROUPNAMELIST);
             if(GROUPNAMELIST.length > 0){
-                console.log(GROUPNAMELIST);
-
+                
                 for (let i = 0; i < GROUPNAMELIST.length; i++){
                     if (GROUPNAME === GROUPNAMELIST[i].id){
                         console.log("its the same");
@@ -273,15 +343,155 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
             }
         }
 
-        function TaskButton (){
-            document.getElementById('closeTaskButton').addEventListener('click', function(){
-                document.querySelector('.TODO__TASK__ADD').style.display = "none";
-                document.querySelector('.Hiddenlayer').style.display = "none";
-                document.getElementById('taskContent').value = '';
+        function GroupNameAvaliablity (){
+            const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
+            if(GROUPNAMELIST.length > 0){
+                return true;
+            }else{
+                return false;
+            }
+        }
 
+        function handleGroupNameSubmit (event, box, overlay, groupFrom){
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            let formData = new FormData(this);
+
+            // Send the form data to PHP using fetch
+            fetch('TodoBackend.php', {
+                method: 'POST',
+                body: formData
             })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Server response:', data);
+                // Optionally, handle the server response here
+            })
+            .catch(error => console.error('Error:', error));
+            const groupName = GetGroupName();
+            
+            box.style.display = 'none';
+            if (groupFrom) {
+                if(CheckIfgroupNameSame(groupName)){
+                    alert('please dont enter the same groupname');
+                    document.querySelector('.Hiddenlayer').style.display = "none";
+                    document.getElementById("groupName").value = '';
+                    groupFrom.removeEventListener("submit", handleGroupNameSubmit);
+                    return;
+                }else{
+                    createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
+                    console.log("submited: ", groupName);
+                    overlay.style.display = 'none';
+                    document.getElementById("groupName").value = '';
+                }
+            }
+        }
+
+        function handleGroupNameSubmitWrapper(event){
+            let boxes = document.getElementsByClassName('TODO__GROUP__ADD');
+            const box = boxes[0];
+            const overlay = document.querySelector('.Hiddenlayer');
+            const groupFrom = document.getElementById("groupForm");
+            handleGroupNameSubmit.call(this, event, box, overlay, groupFrom)
+        }
+
+        function handleGroupNameCloseBtn(){
+            document.querySelector('.TODO__GROUP__ADD').style.display = "none";
+            document.querySelector('.Hiddenlayer').style.display = "none";
+            document.getElementById("groupName").value = '';
+            document.getElementById('taskTitle').value = '';
+
+            let groupFrom = document.getElementById("groupForm");
+
+            if (groupFrom != null){
+                groupFrom.removeEventListener('submit', handleGroupNameSubmitWrapper);
+            }
+        }
+
+        function handleTaskNameSubmit (event, AddTask, overlay, groupChoice, taskTitle ,taskContent, taskForm){
+            event.preventDefault(); // Prevent default form submission (block all the data submit to the php file)
+        
+            const formData = new FormData(this); // Capture form data
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+            fetch('TodoBackend.php', { // to send the form data to the php file when submition
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Response from PHP:", data);
+            })
+            .catch(error => console.error("Error:", error));
+            if (taskForm) {
+                console.log(GroupCard);
+
+                const day = document.querySelector('.TIMER__INPUT[placeholder="Days"]');
+                const hours = document.querySelector('.TIMER__INPUT[placeholder="Hours"]');
+                const minutes = document.querySelector('.TIMER__INPUT[placeholder="Minutes"]');
+                const seconds = document.querySelector('.TIMER__INPUT[placeholder="Seconds"]');
+                
+                CreateNewTask(GroupCard.className, groupChoice.value, taskTitle.value, taskContent.value);
+                console.log(groupChoice.value);
+                console.log(taskContent.value);
+                document.getElementById('taskContent').value = '';
+                document.getElementById('taskTitle').value = '';
+                const TIMERINPUT = document.querySelectorAll('.TIMER__INPUT');
+                TIMERINPUT.forEach(input => {
+                    input.value = '';
+                })
+                AddTask.style.display = 'none';
+                overlay.style.display = 'none';
+                return;
+            }
+        }
+
+        function handleTaskNameCloseBtn(){
+            console.log("Closed task form page");
+            // clear all the input when close the form
+            document.querySelector('.TODO__TASK__ADD').style.display = "none";
+            document.querySelector('.Hiddenlayer').style.display = "none";
+            document.getElementById('taskContent').value = '';
+            document.getElementById('taskTitle').value = '';
+
+            const TIMERINPUT = document.querySelectorAll('.TIMER__INPUT');
+            TIMERINPUT.forEach(input => {
+                input.value = '';
+            })
+
+            let taskForm = document.getElementById('taskForm');
+            if (typeof taskForm !== "undefined" && taskForm) {
+                taskForm.removeEventListener("submit", handleTaskNameSubmitWrapper);
+            }
+        }
+
+        function handleTaskNameSubmitWrapper(event) {
+            // Assuming the parameters are available globally or you retrieve them here
+            const addTask = document.querySelector('.TODO__TASK__ADD');
+            const overlay = document.querySelector('.Hiddenlayer');
+            const taskForm = document.getElementById('taskForm');
+            const groupChoice = document.getElementById('GROUP__NAME__TASK');
+            const taskContent = document.getElementById('taskContent');
+            const TaskTItle = document.getElementById('taskTitle');
+            console.log(TaskTItle);
+            handleTaskNameSubmit.call(this, event, addTask, overlay, groupChoice, TaskTItle, taskContent, taskForm);
+        }
+
+        function TaskButton (){
+            const closeTaskButton = document.getElementById('closeTaskButton');
+            if (closeTaskButton){
+                closeTaskButton.addEventListener('click', handleTaskNameCloseBtn);
+            }else{
+                console.error("close button not found");
+            }
+
             if (taskButton) {
                 taskButton.addEventListener('click', () => {
+                    if(!GroupNameAvaliablity()){
+                        alert('No Group avaliable please go to enter group first');
+                        return;
+                    }
                     const AddTask = document.querySelector('.TODO__TASK__ADD');
                     const overlay = document.querySelector('.Hiddenlayer');
                     const taskForm = document.getElementById('taskForm');
@@ -292,32 +502,8 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
                         if (AddTask.style.display === 'none') {
                             AddTask.style.display = 'block'; // make the form visisble
                             overlay.style.display = 'block';
-                            taskForm.addEventListener('submit', function (event) {
-                                event.preventDefault(); // Prevent default form submission (block all the data submit to the php file)
-        
-                                const formData = new FormData(taskForm); // Capture form data
-                                for (let [key, value] of formData.entries()) {
-                                    console.log(key, value);
-                                }
-                                fetch('TodoBackend.php', { // to send the form data to the php file when submition
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(response => response.text())
-                                .then(data => {
-                                    console.log("Response from PHP:", data);
-                                })
-                                .catch(error => console.error("Error:", error));
-                                if (taskForm) {
-                                    console.log(GroupCard);
-                                    CreateNewTask(GroupCard.className, groupChoice.value, taskContent.value);
-                                    console.log(groupChoice.value);
-                                    console.log(taskContent.value);
-                                    AddTask.style.display = 'none';
-                                    overlay.style.display = 'none';
-                                    return;
-                                }
-                            },{once : true});
+                            // taskForm.removeEventListener("submit", handleTaskNameSubmitWrapper);
+                            taskForm.addEventListener('submit', handleTaskNameSubmitWrapper,{once : true});
                         } else {
                             AddTask.style.display = 'none';
                             overlay.style.display = 'none';
@@ -484,12 +670,14 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         CreateTaskForm();
         GroupButton();
         TaskButton();
+        preventTyping();
         // if (document.querySelectorAll(`.${GroupCardTask.className}`).length === 0){
         //     console.log("its a null");
         // }else{
         //     
         // }
-        
-        
+
+        timeleftToCompleteTask();
+ // Output: "2025-02-25 14:30:45"
     }
 })
