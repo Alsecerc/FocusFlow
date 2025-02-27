@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2025 at 04:06 PM
+-- Generation Time: Feb 27, 2025 at 04:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -225,29 +225,30 @@ CREATE TABLE `tasks` (
   `end_time` time NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `user_id` int(10) UNSIGNED NOT NULL,
-  `status` enum('complete','incomplete') NOT NULL DEFAULT 'incomplete',
-  `category` varchar(255) NOT NULL
+  `status` enum('Incomplete','Complete','Timeout') DEFAULT 'Incomplete',
+  `category` varchar(255) NOT NULL,
+  `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tasks`
 --
 
-INSERT INTO `tasks` (`id`, `task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`, `status`, `category`) VALUES
-(3, 'Submit English Essay', 'Upload final essay draft on portal.', '2025-02-28', '23:00:00', '23:30:00', '2025-02-25 13:34:25', 1, 'complete', 'Academics'),
-(4, 'Group Presentation', 'Prepare slides for History project.', '2025-02-26', '16:00:00', '17:30:00', '2025-02-25 13:34:25', 2, 'incomplete', 'Collaboration'),
-(5, 'Read Research Papers', 'Review 3 research papers for thesis.', '2025-03-01', '14:00:00', '15:30:00', '2025-02-25 13:34:25', 2, 'complete', 'Research'),
-(6, 'Study for Biology Test', 'Memorize cell structures and functions.', '2025-02-27', '19:00:00', '21:00:00', '2025-02-25 13:34:25', 2, 'incomplete', 'Exam Preparation'),
-(7, 'Weekly Standup Meeting', 'Discuss project updates with team.', '2025-03-02', '09:00:00', '09:45:00', '2025-02-25 13:34:25', 3, 'incomplete', 'Meetings'),
-(8, 'Code Review', 'Check and approve teammates’ code.', '2025-03-03', '10:30:00', '11:30:00', '2025-02-25 13:34:25', 3, 'complete', 'Software Development'),
-(9, 'Sprint Planning', 'Plan next development sprint tasks.', '2025-03-04', '14:00:00', '15:00:00', '2025-02-25 13:34:25', 3, 'incomplete', 'Project Management'),
-(10, 'Client Report', 'Prepare and send progress report.', '2025-03-05', '16:00:00', '17:00:00', '2025-02-25 13:34:25', 4, 'complete', 'Work Reports'),
-(11, 'Brainstorming Session', 'Come up with ideas for marketing.', '2025-03-06', '13:00:00', '14:30:00', '2025-02-25 13:34:25', 4, 'incomplete', 'Creativity'),
-(12, 'Social Media Strategy', 'Plan posts for next month.', '2025-03-07', '15:00:00', '16:30:00', '2025-02-25 13:34:25', 4, 'incomplete', 'Marketing'),
-(13, 'Budget Review', 'Analyze last quarter expenses.', '2025-03-08', '10:00:00', '11:30:00', '2025-02-25 13:34:25', 5, 'incomplete', 'Finance'),
-(14, 'Employee Feedback Survey', 'Collect responses from team.', '2025-03-09', '12:00:00', '13:30:00', '2025-02-25 13:34:25', 5, 'incomplete', 'HR'),
-(15, 'Plan Team Retreat', 'Finalize location and agenda.', '2025-03-10', '14:00:00', '15:30:00', '2025-02-25 13:34:25', 5, 'complete', 'Event Planning'),
-(25, 'asd', 'asd', '2025-02-26', '01:01:00', '14:03:00', '2025-02-26 02:46:53', 1, 'complete', 'Academics');
+INSERT INTO `tasks` (`id`, `task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`, `status`, `category`, `end_date`) VALUES
+(3, 'Submit English Essay', 'Upload final essay draft on portal.', '2025-02-28', '23:00:00', '23:30:00', '2025-02-25 13:34:25', 1, 'Complete', 'Academics', NULL),
+(4, 'Group Presentation', 'Prepare slides for History project.', '2025-02-26', '16:00:00', '17:30:00', '2025-02-25 13:34:25', 2, 'Incomplete', 'Collaboration', NULL),
+(5, 'Read Research Papers', 'Review 3 research papers for thesis.', '2025-03-01', '14:00:00', '15:30:00', '2025-02-25 13:34:25', 2, 'Complete', 'Research', NULL),
+(6, 'Study for Biology Test', 'Memorize cell structures and functions.', '2025-02-27', '19:00:00', '21:00:00', '2025-02-25 13:34:25', 2, 'Incomplete', 'Exam Preparation', NULL),
+(7, 'Weekly Standup Meeting', 'Discuss project updates with team.', '2025-03-02', '09:00:00', '09:45:00', '2025-02-25 13:34:25', 3, 'Incomplete', 'Meetings', NULL),
+(8, 'Code Review', 'Check and approve teammates’ code.', '2025-03-03', '10:30:00', '11:30:00', '2025-02-25 13:34:25', 3, 'Complete', 'Software Development', NULL),
+(9, 'Sprint Planning', 'Plan next development sprint tasks.', '2025-03-04', '14:00:00', '15:00:00', '2025-02-25 13:34:25', 3, 'Incomplete', 'Project Management', NULL),
+(10, 'Client Report', 'Prepare and send progress report.', '2025-03-05', '16:00:00', '17:00:00', '2025-02-25 13:34:25', 4, 'Complete', 'Work Reports', NULL),
+(11, 'Brainstorming Session', 'Come up with ideas for marketing.', '2025-03-06', '13:00:00', '14:30:00', '2025-02-25 13:34:25', 4, 'Incomplete', 'Creativity', NULL),
+(12, 'Social Media Strategy', 'Plan posts for next month.', '2025-03-07', '15:00:00', '16:30:00', '2025-02-25 13:34:25', 4, 'Incomplete', 'Marketing', NULL),
+(13, 'Budget Review', 'Analyze last quarter expenses.', '2025-03-08', '10:00:00', '11:30:00', '2025-02-25 13:34:25', 5, 'Incomplete', 'Finance', NULL),
+(14, 'Employee Feedback Survey', 'Collect responses from team.', '2025-03-09', '12:00:00', '13:30:00', '2025-02-25 13:34:25', 5, 'Incomplete', 'HR', NULL),
+(15, 'Plan Team Retreat', 'Finalize location and agenda.', '2025-03-10', '14:00:00', '15:30:00', '2025-02-25 13:34:25', 5, 'Complete', 'Event Planning', NULL),
+(25, 'asd', 'asd', '2025-02-26', '01:01:00', '14:03:00', '2025-02-26 02:46:53', 1, 'Complete', 'Academics', NULL);
 
 -- --------------------------------------------------------
 
@@ -497,6 +498,17 @@ ALTER TABLE `tasks`
 ALTER TABLE `team`
   ADD CONSTRAINT `team_ibfk_1` FOREIGN KEY (`leader_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `team_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+DELIMITER $$
+--
+-- Events
+--
+CREATE DEFINER=`root`@`localhost` EVENT `update_timeout_event` ON SCHEDULE EVERY 1 MINUTE STARTS '2025-02-27 23:29:09' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE tasks
+  SET status = 'Timeout'
+  WHERE CONCAT(end_date, ' ', end_time) <= NOW()
+    AND status = 'Incomplete'$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

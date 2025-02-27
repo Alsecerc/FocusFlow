@@ -68,16 +68,112 @@ function preventTyping(){
     })
 }
 
-function timeleftToCompleteTask(taskTitle, day, hours, mins, seconds){
+function timeleftToCompleteTask(Cate, taskTitle, taskContent){
     const now = new Date();
     const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} 
     ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
     console.log(formattedDate);
+
+    fetch("TodoBackend.php",{
+        method: "POST",
+        headers: {"Content-Type": "application/json" },
+        body: JSON.stringify({
+            type: "fetch_task",
+            Category: Cate,
+            title: taskTitle,
+            Content: taskContent
+        })
+    })
+    .then(response => response.json())  // Parse as JSON
+    .then(data => console.log("Received Task Data:", data))  // Log received data
+    .catch(error => console.error("Error fetching data:", error));
+    
+    fetch("TodoBackend.php?type=products", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(response => response.json()) // Convert response to JSON
+    .then(data => console.log("Received:", data)) // Log response
+    .catch(error => console.error("Error fetching data:", error));
+    
+    
+    let second = now.getSeconds();
+
+    // if(week >= 1){
+    //     console.log(week + " week left");
+    // }else if (day >= 1){
+    //     console.log(day + " day left");
+    // }else if(hours >= 1){
+    //     console.log(hours + " hour left");
+    // }else if (mins >= 1){
+    //     console.log(mins + " min left");
+    // }else{
+    //     console.log(seconds + " second left");
+    // }
 }
 
-function SetFinaltimerUpateTodatabase (taskTitle, day, hours, mins, seconds){
+function FinalDate (days, hours, mins, seconds){
+    const now = new Date();
     
+    let finalSeconds = now.getSeconds() + seconds;
+    let extraMinutes = Math.floor(finalSeconds / 60);
+    finalSeconds = finalSeconds % 60;  // Keep seconds in range 0-59
+
+    let finalMinutes = now.getMinutes() + mins + extraMinutes;
+    let extraHours = Math.floor(finalMinutes / 60);
+    finalMinutes = finalMinutes % 60;  // Keep minutes in range 0-59
+
+    let finalHours = now.getHours() + hours + extraHours;
+    let extraDays = Math.floor(finalHours / 24);
+    finalHours = finalHours % 24;  // Keep hours in range 0-23
+
+    let finalDays = now.getDate() + days + extraDays;
+    let finalDate = new Date(now.getFullYear(), now.getMonth(), finalDays, finalHours, finalMinutes, finalSeconds);
+
+    let wordarray = finalDate.toString().split(" ");
+    wordarray[1] = finalDate.toLocaleString('en-US', { month: 'long' });
+    return wordarray;
+}
+
+function convertMonthToNumber(month) {
+    const months = {
+        "January": 1, "February": 2, "March": 3, "April": 4, 
+        "May": 5, "June": 6, "July": 7, "August": 8, 
+        "September": 9, "October": 10, "November": 11, "December": 12
+    };
+    return months[month] || -1;  // Returns -1 if the month is invalid
+}
+
+function SetFinaltimerUpateTodatabase (category, taskTitle, taskContent, days, hours, mins, seconds){
+    let finalDate = FinalDate(days, hours, mins, seconds);
+    finalDate.forEach((time, index) => {
+        console.log(index, time)
+    })
+
+    let month = convertMonthToNumber(finalDate[1])
+    DATE = finalDate[3] + " " + String(month).padStart(2, '0') + " " + String(finalDate[2]).padStart(2, '0');
+    console.log(DATE);
+
+    TIME = finalDate[4];
+    console.log(TIME);
+
+    fetch('TodoBackend.php', {
+        method: 'POST',  // or 'GET' depending on your requirement
+        headers: {
+            'Content-Type': 'application/json' // For form data
+        },
+        body: JSON.stringify({
+            cate : category,
+            title: taskTitle,
+            content : taskContent,
+            time : TIME,
+            date : DATE
+        })
+    })
+    .then(response => response.text())  // Handle response
+    .then(data => console.log('Response:', data))
+    .catch(error => console.error('Error:', error));
 }
 
 function CreateTaskForm() {
@@ -678,6 +774,7 @@ document.addEventListener('DOMContentLoaded', function () { // only active the c
         // }
 
         timeleftToCompleteTask();
+        SetFinaltimerUpateTodatabase("hello", "well", null, 0, 24, 59, 0);
  // Output: "2025-02-25 14:30:45"
     }
 })
