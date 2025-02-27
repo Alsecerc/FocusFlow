@@ -3,8 +3,14 @@ include 'conn.php'; // Database connection
 session_start();
 $userID = $_COOKIE['UID'];
 
-$sql = "SELECT * FROM files WHERE user_id = $userID ORDER BY uploaded_at DESC";
-$result = $_conn->query($sql);
+$teamName = $_GET['team'];  // Get team name from URL
+$teamName = $_conn->real_escape_string($teamName); // Prevent SQL injection
+
+$sql = "SELECT * FROM files WHERE user_id = ? AND team_name = ? ORDER BY uploaded_at DESC";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("is", $userID, $teamName); // "i" for integer, "s" for string
+$stmt->execute();
+$result = $stmt->get_result();
 
 
 ?>
@@ -22,7 +28,7 @@ $result = $_conn->query($sql);
 </head>
 
 <body class="CM__POPUP">
-    <h2 class="CM__POPUP__TITLE"><?php echo $_GET['team'] ?> : Uploaded Files</h2>
+    <h2 class="CM__POPUP__TITLE"><?php echo htmlspecialchars($teamName); ?> : Uploaded Files</h2>
     <ul>
         <?php while ($row = $result->fetch_assoc()):
         ?>

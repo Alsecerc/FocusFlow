@@ -596,8 +596,6 @@ header {
 
     background-color: var(--COLOR-DARK2);
 
-    border-right: 3px solid var(--BORDER-COLOR);
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1960,6 +1958,37 @@ header {
 
 .COMMUNITY1__HEADER h1 {
     font-size: 2rem;
+}
+
+.COMMUNITY1__HEADER__RIGHT {
+    display: flex;
+
+    gap: 1rem;
+}
+
+.COMMUNITY1__HEADER__RIGHT > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-width: 120px;
+}
+
+.COMMUNITY__HEADER__TITLE {
+    margin-bottom: 0.5rem;
+
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.COMMUNITY1__HEADER__RIGHT > div:hover .COMMUNITY__HEADER__TITLE {
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+.LEADER {
+    padding: var(--PADDING-TB) var(--PADDING-LR);
 }
 
 

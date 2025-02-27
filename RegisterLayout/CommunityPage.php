@@ -208,31 +208,44 @@ if (!isset($_COOKIE['UID'])) {
 
                 echo " <h1> $teamName </h1>";
                 ?>
+                <div class="COMMUNITY1__HEADER__RIGHT">
 
+                    <div>
+                        <p class="COMMUNITY__HEADER__TITLE">Add Task</p>
+                        <a href="#" class="HEADER__UL__ICON">
+                            <span class="material-icons">
+                                add_circle_outline
+                            </span>
+                        </a>
+                    </div>
 
-
-                <div>
-                    <a href="#" class="HEADER__UL__ICON" onclick="openPopup()">
-                        <span class="material-icons">
-                            upload_file
-                        </span>
-                    </a>
-                    <div class="COM__POPUP__OVERLAY" id="popupOverlay">
-                        <div class="COM__POPUP">
-                            <button class="close-btn" onclick="closePopup()">×</button>
-                            <iframe id="popupIframe" class="popup-iframe"></iframe>
+                    <div>
+                        <p class="COMMUNITY__HEADER__TITLE">Upload File</p>
+                        <a href="#" class="HEADER__UL__ICON" onclick="openPopup()">
+                            <span class="material-icons">
+                                upload_file
+                            </span>
+                        </a>
+                        <div class="COM__POPUP__OVERLAY" id="popupOverlay">
+                            <div class="COM__POPUP">
+                                <button class="close-btn" onclick="closePopup()">×</button>
+                                <iframe id="popupIframe" class="popup-iframe"></iframe>
+                            </div>
                         </div>
                     </div>
 
-                    <a href="#" class="HEADER__UL__ICON" onclick="openPopup1()">
-                        <span class="material-icons">
-                            folder
-                        </span>
-                    </a>
-                    <div class="COM__POPUP__OVERLAY" id="popupOverlay">
-                        <div class="COM__POPUP">
-                            <button class="close-btn" onclick="closePopup2()">×</button>
-                            <iframe id="popupIframe" class="popup-iframe"></iframe>
+                    <div>
+                        <p class="COMMUNITY__HEADER__TITLE">View Share File</p>
+                        <a href="#" class="HEADER__UL__ICON" onclick="openPopup1()">
+                            <span class="material-icons">
+                                folder
+                            </span>
+                        </a>
+                        <div class="COM__POPUP__OVERLAY" id="popupOverlay">
+                            <div class="COM__POPUP">
+                                <button class="close-btn" onclick="closePopup2()">×</button>
+                                <iframe id="popupIframe" class="popup-iframe"></iframe>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -243,38 +256,109 @@ if (!isset($_COOKIE['UID'])) {
             </section>
 
             <section class="COMMUNITY1__MEMBER">
-                <h3>Member List</h3>
+                <h3>Leader</h3>
 
                 <?php
+                if (!isset($_GET['team']) || empty($_GET['team'])) {
+                    die("<p>Error: Team name is required!</p>");
+                }
+
                 include "conn.php";
 
-                $sql = "SELECT id, name FROM users"; // Adjust table/column names as needed
-                $result = mysqli_query($_conn, $sql);
+                // Get the team name from the URL
+                $teamName = $_GET['team'];
+                $currentUserID = isset($_COOKIE['UID']) ? $_COOKIE['UID'] : null; // Get logged-in user ID from cookie
+
+                // Prepare the query to get team details
+                $sql = "SELECT * FROM team WHERE team_name = ?";
+                $stmt = $_conn->prepare($sql);
+                $stmt->bind_param("s", $teamName);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
                 if (!$result) {
-                    echo "<p>Error loading members: " . mysqli_error($_conn) . "</p>";
+                    echo "<p>Error loading team: " . htmlspecialchars($_conn->error) . "</p>";
+                } else {
+                    if ($row = $result->fetch_assoc()) {
+                        $leaderID = $row['leader_id']; // Assuming 'leader_id' exists in 'team' table
+
+                        // Fetch leader's name securely
+                        $sqlLeader = "SELECT name FROM users WHERE id = ?";
+                        $stmtLeader = $_conn->prepare($sqlLeader);
+                        $stmtLeader->bind_param("i", $leaderID);
+                        $stmtLeader->execute();
+                        $leaderResult = $stmtLeader->get_result();
+
+                        if ($leaderRow = $leaderResult->fetch_assoc()) {
+                            $leaderName = htmlspecialchars($leaderRow['name']);
+
+                            // If logged-in user is the leader, show as <p>, otherwise show as <a>
+                            if ($currentUserID == $leaderID) {
+                                echo "<p class='LEADER'>$leaderName (You)</p>";
+                            } else {
+                                echo "<a href='CommunityDMPage.php?receiver_id=" . urlencode($leaderID) . "&name=" . urlencode($leaderName) . "' class='LEADER_NAME'>$leaderName</a>";
+                            }
+                        }
+
+                        $stmtLeader->close();
+                    }
+                }
+
+                $stmt->close();
+                ?>
+
+
+                <h3>Member List</h3>
+                <?php
+
+
+                if (!isset($_GET['team']) || empty($_GET['team'])) {
+                    die("<p>Error: Team name is required!</p>");
+                }
+
+                // Sanitize the team name
+                $teamName = $_GET['team'];
+
+                // Prepare the first query securely
+                $sql = "SELECT * FROM team WHERE team_name = ?";
+                $stmt = $_conn->prepare($sql);
+                $stmt->bind_param("s", $teamName);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if (!$result) {
+                    echo "<p>Error loading members: " . htmlspecialchars($_conn->error) . "</p>";
                 } else {
                     echo '<ul class="MEMBER_LIST">';
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $userID = $row['id']; // Assuming 'userID' is the primary key
-                        $username = htmlspecialchars($row['name']); // Prevent XSS
+                    while ($row = $result->fetch_assoc()) {
+                        $memberID = $row['member_id']; // Assuming 'member_id' is the correct column
 
-                        echo "<li class='MEMBER'>
-                <a href='CommunityDMPage.php?receiver_id=$userID&name=" . urlencode($username) . "' class='memberName'>
+                        // Securely fetch user details using prepared statements
+                        $sql2 = "SELECT * FROM users WHERE id = ?";
+                        $stmt2 = $_conn->prepare($sql2);
+                        $stmt2->bind_param("i", $memberID);
+                        $stmt2->execute();
+                        $result2 = $stmt2->get_result();
+
+                        if ($row2 = $result2->fetch_assoc()) {
+                            $username = htmlspecialchars($row2['name']); // Prevent XSS
+
+                            echo "<li class='MEMBER'>
+                <a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($username) . "' class='memberName'>
                     <span class='material-icons'>sentiment_very_satisfied</span>
                     <p>$username</p>
                 </a>
               </li>";
+                        }
+                        $stmt2->close();
                     }
                     echo '</ul>';
                 }
 
-                mysqli_close($_conn);
-
+                // Close statements and connection
+                $stmt->close();
+                $_conn->close();
                 ?>
-
-
-
             </section>
         </article>
 
