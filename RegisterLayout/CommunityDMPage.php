@@ -39,7 +39,7 @@ echo "</script>";
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -94,8 +94,8 @@ echo "</script>";
                                             <li class="NOTI__ITEM NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
-                                                $result2 = $_conn->query($sql2); 
-                                                $sender = $result2->fetch_assoc(); 
+                                                $result2 = $_conn->query($sql2);
+                                                $sender = $result2->fetch_assoc();
 
                                                 if ($result2->num_rows > 0) {
                                                 ?>
@@ -172,7 +172,14 @@ echo "</script>";
                         <a href="Goal.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 track_changes
-                                </span>Goals
+                            </span>Goals
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                chat
+                            </span>Direct Message
                         </a>
                     </li>
                 </ul>
@@ -189,95 +196,125 @@ echo "</script>";
                         </a>
                     </li>
                 </ul>
-                <h4 class="NAV_TITLE">Direct Messages</h4>
-                <ul class="DM_USER_LIST">
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
-                            Micheal Brown
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Jane Smith
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                        Sarah Lee
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                </ul>
             </nav>
         </div>
 
-        <article class="DMPage">
-            <section class="DMPAGE__HEADER">
-                <div class="DMPAGE__HEADER2">
-                    <span class="material-icons PROFILE_ICON">
-                        face
-                    </span>
-                    <?php
-                    // Get the name from URL
-                    $name = isset($_GET['name']) ? $_GET['name'] : "Default Name";
-                    ?>
-                    <h1><?php echo htmlspecialchars($name); ?></h1>
-
-                </div>
-                <span class="material-icons PROFILE_CAM">
-                    videocam
-                </span>
-            </section>
-
-            <section class="DMPAGE__CONVERSATION">
+        <div class="DM__MAIN">
+            <div class="DMLIST__SIDEBAR">
                 <?php
-                $senderID = $_COOKIE['UID'];
-                $receiverID = $_GET['receiver_id'];
+
+                // display recently text
+                // display all person who have a convo b4
+                $sql2 = "SELECT users.id, users.name, MAX(message.sent_at) as last_message_time
+        FROM message 
+        JOIN users ON (message.receiver_id = users.id OR message.sender_id = users.id) 
+        WHERE message.sender_id = " . $_COOKIE['UID'] . " OR message.receiver_id = " . $_COOKIE['UID'] . " 
+        GROUP BY users.id, users.name 
+        ORDER BY last_message_time DESC";
 
 
-                $sql = "SELECT * FROM message 
+                $result2 = $_conn->query($sql2);
+                ?>
+
+                <div class="DMLIST__SIDEBAR">
+                    <h3 style="text-align: center;">Direct Messages</h3>
+                    <ul class="DM__LIST__UL">
+                        <?php
+                        if ($result2->num_rows > 0) {
+                            while ($row = $result2->fetch_assoc()) {
+                                echo "<li class='DM__LIST__PERSON'><span class='material-icons'>perm_identity</span><a href='CommunityDMPage.php?receiver_id=" . $row['id'] . "&name=" . urlencode($row['name']) . "'>" . htmlspecialchars($row['name']) . "</a></li>";
+                            }
+                        } else {
+                            echo "<li>No messages found</li>";
+                        }
+                        ?>
+                    </ul>
+                </div>
+            </div>
+
+            <article class="DMPage">
+                <section class="DMPAGE__HEADER">
+                    <div class="DMPAGE__HEADER2">
+                        <span class="material-icons PROFILE_ICON">
+                            face
+                        </span>
+                        <?php
+                        $senderID = $_COOKIE['UID'];
+
+
+                        if (!isset($_GET['receiver_id'])) {
+                            $sqlLastPerson = "SELECT receiver_id FROM message 
+  WHERE sender_id = '$senderID' 
+  ORDER BY sent_at DESC LIMIT 1";
+
+                            $resultLastPerson = mysqli_query($_conn, $sqlLastPerson);
+                            if ($rowLastPerson = mysqli_fetch_assoc($resultLastPerson)) {
+                                $receiverID = $rowLastPerson['receiver_id'];
+
+                                $sqlGetName = "SELECT * FROM users 
+                                WHERE '$receiverID' = id";
+                                $resultName = mysqli_query($_conn, $sqlGetName);
+                                if ($rowName = mysqli_fetch_assoc($resultName)) {
+                                    $userName = $rowName['name'];
+                                }
+                            } else {
+                                $receiverID = null; // No messages yet
+                            }
+                        } else {
+                            $receiverID = $_GET['receiver_id'];
+                        }
+
+
+                        // Get the name from URL
+                        $name = isset($_GET['name']) ? $_GET['name'] : $userName;
+                        ?>
+                        <h1><?php echo htmlspecialchars($name); ?></h1>
+
+                    </div>
+                    <span class="material-icons PROFILE_CAM">
+                        videocam
+                    </span>
+                </section>
+
+                <section class="DMPAGE__CONVERSATION">
+                    <?php
+                    $sql3 = "SELECT * FROM message 
         WHERE (sender_id = '$senderID' AND receiver_id = '$receiverID') 
         OR (sender_id = '$receiverID' AND receiver_id = '$senderID')
         ORDER BY sent_at ASC";
 
-                $result = mysqli_query($_conn, $sql);
-                if (!$result) {
-                    echo "<p>Error loading messages: " . mysqli_error($_conn) . "</p>";
-                } else {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $messageText = htmlspecialchars($row['message_text']); // Prevent XSS
-                        $isSent = ($row['sender_id'] == $senderID) ? "SENT" : "RECEIVE"; // Identify sender
+                    $result3 = mysqli_query($_conn, $sql3);
+                    if (!$result3) {
+                        echo "<p>Error loading messages: " . mysqli_error($_conn) . "</p>";
+                    } else {
+                        while ($row = mysqli_fetch_assoc($result3)) {
+                            $messageText = htmlspecialchars($row['message_text']); // Prevent XSS
+                            $isSent = ($row['sender_id'] == $senderID) ? "SENT" : "RECEIVE"; // Identify sender
 
-                        echo "<div class='CONVERSATION $isSent'>$messageText</div>";
+                            echo "<div class='CONVERSATION $isSent'>$messageText</div>";
+                        }
                     }
-                }
 
 
-                ?>
-            </section>
+                    ?>
+                </section>
 
-            <section class="DMPAGE__MESSAGE">
+                <section class="DMPAGE__MESSAGE">
 
-                <form action="CommunityDMPageSendMsg.php" method="POST" class="MESSAGE__BOX" id="chatForm">
-                    <!-- change this dynamically -->
-                    <input type="hidden" name="receiver_id" value=<?php echo $receiverID; ?>>
-                    <input class="ENTER__MESSAGE" type="text" name="message" id="message1" placeholder="Type something...">
-                    <button type="submit" class="SEND__MESSAGE"><span class="material-icons">
-                            send
-                        </span></button>
-                </form>
-            </section>
-
-
-
-
-        </article>
-
+                    <form action="CommunityDMPageSendMsg.php" method="POST" class="MESSAGE__BOX" id="chatForm">
+                        <!-- change this dynamically -->
+                        <input type="hidden" name="receiver_id" value=<?php echo $receiverID; ?>>
+                        <input class="ENTER__MESSAGE" type="text" name="message" id="message1" placeholder="Type something...">
+                        <button type="submit" class="SEND__MESSAGE"><span class="material-icons">
+                                send
+                            </span></button>
+                    </form>
+                </section>
+            </article>
+        </div>
     </main>
     <script src="Registered.js" defer></script>
-    <script src="Community.js" defer></script>
+    <script src="CommunityDM.js" defer></script>
 </body>
 
 </html>

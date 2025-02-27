@@ -10,7 +10,7 @@
 
 <body class="CM__POPUP">
 
-    <h2 class="CM__POPUP__TITLE">Upload a File</h2>
+    <h2 class="CM__POPUP__TITLE"><?php echo $_GET['team'] ?> : Upload a File</h2>
     <form  class="CM__POPUP__FORM" action="CommunityUploadBackend.php" method="POST" enctype="multipart/form-data">
         <input class="CM__POPUP__INPUT" type="file" name="file" required>
         <button type="submit" name="upload" class="CM__POPUP__BUTTON">Upload</button>

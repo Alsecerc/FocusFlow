@@ -1,5 +1,21 @@
+function getCookie(name) {
+    let cookies = document.cookie.split('; ');
+    for (let cookie of cookies) {
+        let [key, value] = cookie.split('=');
+        if (key === name) {
+            // remove the %20 for spaces
+            return decodeURIComponent(value);
+        }
+    }
+    return null; // Return null if cookie not found
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function (event) {
     if (window.location.pathname.includes('Calendar')) {
+
+
 
 
         const TimeNow = new Date();
@@ -253,8 +269,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
             setTimeout(() => {
                 StoreWeekDate.forEach(ThisDay => {
                     TaskList.forEach(task => {
-                        let DateOnly = task['start_date'].split('-')[2];
-                        if (DateOnly == ThisDay[0]) { // Only display tasks for the selected date
+                        let DateOnly = task['start_date'].split('-');
+
+                        if (parseInt(DateOnly[2]) === ThisDay[0] && parseInt(DateOnly[1]) === ThisDay[1] && parseInt(DateOnly[0]) === ThisDay[2]) { // Only display tasks for the selected date
                             let StartDate = new Date(task['start_date']);
                             let Length = CalcDuration(task['start_time'], task['end_time']);
                             let StartRow = CalcStart(task['start_time']);
@@ -265,17 +282,142 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             taskElement.style.gridColumn = `${StartColumn + 1} / ${StartColumn + 2}`;
                             taskElement.style.gridRow = `${StartRow}`;
                             taskElement.style.height = `${Length}px`;
-                            taskElement.innerHTML = `<span class="EVENT__NAME" style="text-align: center;">${task['task_title']}</span>`;
+                            taskElement.setAttribute("data-task-id", task['task_id']);
 
+                            // Display task title
+                            let taskTitle = document.createElement("span");
+                            taskTitle.classList.add("EVENT__NAME");
+                            taskTitle.style.textAlign = "center";
+                            taskTitle.textContent = task['task_title'];
+
+                            // Create task info div
+                            let taskInfo = document.createElement("div");
+                            taskInfo.classList.add("EVENT_INFO");
+
+                            let username = getCookie("USERNAME");
+
+                            // First, set the innerHTML (without removing taskTitle)
+                            taskInfo.innerHTML = `
+                            <h3 class="TASK__TITLE" style='text-align:center;'>${task['task_title']}</h3>
+                                <p class="TASK__DESC" ><strong>Description</strong><br> ${task['task_desc']}</p>
+                                <p class="TASK__START" ><strong>Start Date:</strong> ${task['start_date']}</p>
+                                <p class="TASK__END" ><strong>Time:</strong> ${task['start_time']} - ${task['end_time']}</p>
+                                <p class="TASK__CREATED" >
+                                <strong>Created At:</strong> ${task['created_at']} <br>
+                                <strong>By:</strong> ${username}
+                                </p>
+                                <p class="TASK__STATUS" ><strong>Status</strong><br> ${task['status']}</p>
+                                <p class="TASK__CATEGORY" ><strong>Category</strong><br> ${task['category']}</p>
+                                <button class="TASKINFO__BUTTON STATUS CLICKABLE"><span class="material-icons">
+                                done
+                                </span></button>
+                                <button class="TASKINFO__BUTTON DELETE CLICKABLE"><span class="material-icons">
+delete
+</span></button>
+<button class="TASKINFO__BUTTON CLOSE CLICKABLE"><span class="material-icons">
+close
+</span></button>
+
+                            `;
+
+                            // Append elements
+                            taskElement.appendChild(taskInfo);
+                            taskElement.appendChild(taskTitle);
                             taskContainer.appendChild(taskElement);
                         }
+
                     });
                 });
 
-            }, 1000)
+            }, 0)
+        }
+
+        setTimeout(() => {
+            let allTasks = Array.from(document.getElementsByClassName("EVENT"));
+
+            // loop for all task
+            allTasks.forEach(taskElement => {
+                let taskInfo = taskElement.querySelector(".EVENT_INFO");
+                let closeButton = taskInfo.querySelector(".CLOSE");
+                let taskId = taskElement.getAttribute("data-task-id");
+                let ChangeStatus = taskElement.querySelector(".STATUS");
+                let DeleteTask = taskElement.querySelector(".DELETE");
+
+
+                taskElement.addEventListener("click", function (event) {
+                    taskElement.querySelectorAll(".EVENT_INFO").forEach(info => {
+                        if (info !== taskInfo) {
+                            info.classList.remove("EVENTINFO_SHOW");
+                        }
+                    });
+
+                    taskInfo.classList.toggle("EVENTINFO_SHOW");
+                    taskInfo.classList.add("FRONT");
+                    // Prevent event from bubbling to document
+                    event.stopPropagation();
+                });
+
+                // Close button functionality
+                closeButton.addEventListener("click", function (event) {
+                    taskInfo.classList.remove("EVENTINFO_SHOW");
+                    event.stopPropagation(); // Prevent event from triggering the task click event
+                });
+
+                ChangeStatus.addEventListener("click", function () {
+                    sendData(taskId, "Completed");
+                });
+
+                DeleteTask.addEventListener("click", function () {
+                    sendData(taskId, "Delete");
+                });
+
+            });
+        }, 100);
+
+        function sendData(taskId, status) {
+            fetch("CalendarDeleteTask.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `task_id=${encodeURIComponent(taskId)}&status=${encodeURIComponent(status)}`
+            })
+                .then(response => response.json()) // Parse response as JSON
+                .then(data => {
+                    console.log("Response from PHP:", data);
+                    if (data.success) {
+                        alert("Task updated successfully!");
+                        location.reload(); // Reload page to update task list
+                    } else {
+                        alert("Failed to delete task: " + data.error);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
 
 
+        function adjustEventWidth(taskElement, columnSpan) {
+            let container = document.querySelector(".EVENT__CONTAINER");
+            let columnWidth = container.clientWidth / 7; // 7 columns
+            taskElement.style.width = `${columnWidth * columnSpan}px`;
+
+        }
+
+        function updateEventLayout() {
+            document.querySelectorAll(".EVENT__NAME").forEach((task) => {
+                adjustEventWidth(task, 1);
+            });
+        }
+
+        setTimeout(() => {
+            updateEventLayout()
+        }, 100);
+
+
+        window.addEventListener("resize", function () {
+            updateEventLayout();
+            console.log('hello')
+        });
 
 
 
@@ -287,10 +429,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
         function OpenPopUp() {
             PopUp.classList.add("ACTIVE");
+            PopUp.classList.add("FRONT");
         }
 
         function ClosePopUp() {
             PopUp.classList.remove("ACTIVE");
+            PopUp.classList.remove("FRONT");
             ResetInput;
         }
 
@@ -385,16 +529,147 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
         function ValidInput(INPUT, PLACEHOLDER) {
             INPUT.classList.remove("INVALID_BORDER");
-            PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
             INPUT.classList.add("VALID_BORDER");
-            PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+            if (PLACEHOLDER != "") {
+                PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+                PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+            }
         }
 
         function InvalidInput(INPUT, PLACEHOLDER) {
             INPUT.classList.add("INVALID_BORDER");
-            PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
             INPUT.classList.remove("VALID_BORDER");
-            PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+            if (PLACEHOLDER != "") {
+                PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+                PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+            }
         }
     }
+
+    // Pop up category select
+    fetch("CalendarFetchCat.php") // Fetch categories from PHP
+        .then(response => response.json())
+        .then(data => {
+            let dropdown = document.getElementById("task_group");
+            data.forEach(category => {
+                let option = document.createElement("option");
+                option.value = category;
+                option.textContent = category;
+                dropdown.appendChild(option);
+            });
+        });
+
+    let dropdown = document.getElementById("task_group");
+    let newCategoryInput = document.getElementById("new_category");
+    let addButton = document.getElementById("add_category");
+
+    dropdown.addEventListener("change", function () {
+        if (dropdown.value === "add_new") {
+            newCategoryInput.style.display = "block";
+        } else {
+            newCategoryInput.style.display = "none";
+        }
+    });
+
+    addButton.addEventListener("click", function () {
+        let newCategory = newCategoryInput.value.trim();
+        if (newCategory) {
+            fetch("add_category.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "category=" + encodeURIComponent(newCategory)
+            })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === "success") {
+                        let option = document.createElement("option");
+                        option.value = newCategory;
+                        option.textContent = newCategory;
+                        dropdown.appendChild(option);
+                        dropdown.value = newCategory;
+                        newCategoryInput.value = "";
+                        newCategoryInput.style.display = "none";
+                    } else {
+                        alert("Error adding category");
+                    }
+                });
+        }
+    });
+
+    // allow user to add new category
+    document.getElementById("add_category").addEventListener("click", function () {
+        let select = document.getElementById("task_group");
+        let input = document.getElementById("new_category");
+        let button = document.getElementById("add_category");
+        let placeholder = document.getElementById("cat_placeholder");
+
+        if (select.style.display === "none") {
+            // If input is active, switch back to dropdown
+            select.style.display = "block";
+            input.style.display = "none";
+            input.value = ""; // Clear input field
+            button.textContent = "Add"; // Reset button text
+            select.required = true; // Make dropdown required
+            input.required = false; // Remove required from input
+        } else {
+            // If dropdown is active, switch to input field
+            select.style.display = "none";
+            input.style.display = "block";
+            input.focus();
+            button.textContent = "Cancel"; // Change button text to indicate toggle
+            input.required = true; // Make input required
+            select.required = false; // Remove required from dropdown
+        }
+    });
+
+    // validate category input
+    let cat_input = document.getElementById("new_category");
+    let placeholder = document.getElementsByClassName("INPUT__PLACEHOLDER")[0];
+    cat_input.addEventListener('input', function () {
+        if (cat_input.value.trim() == '') {
+            InvalidInput(cat_input, placeholder);
+        } else if (!cat_input.checkValidity()) {
+            InvalidInput(cat_input, placeholder);
+        } else {
+            // If the input is valid, remove the INVALID class
+            ValidInput(cat_input, placeholder);
+        }
+    });
+
+
+    // when submitting forms
+    document.getElementById("submitButton").addEventListener("click", function () {
+        let taskTitle = document.getElementById("task_title").value.trim();
+        let taskDesc = document.getElementById("task_desc").value.trim();
+        let taskGroup = document.getElementById("task_group").value.trim();
+        let startDate = document.getElementById("start_date").value;
+        let startTime = document.getElementById("start_time").value;
+        let endTime = document.getElementById("end_time").value;
+
+        if (taskTitle && taskDesc && taskGroup && startDate && startTime && endTime) {
+            let formData = new FormData();
+            formData.append("task_title", taskTitle);
+            formData.append("task_desc", taskDesc);
+            formData.append("task_group", taskGroup);
+            formData.append("start_date", startDate);
+            formData.append("start_time", startTime);
+            formData.append("end_time", endTime);
+
+            fetch("add_task.php", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === "success") {
+                        alert("Task added successfully!");
+                        location.reload();
+                    } else {
+                        alert("Error adding task.");
+                    }
+                });
+        } else {
+            alert("Please fill in all fields.");
+        }
+    });
 });

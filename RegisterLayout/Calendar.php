@@ -205,7 +205,16 @@ if (!isset($_COOKIE['UID'])) {
                 <div class="OVERLAY"></div>
                 <div class="POP_UP__CONTENT">
                     <h2>Create Task</h2>
-                    <form action="Calendar.php" method="POST" id="popUpForm">
+                    <form action="CalendarAddCat.php" method="POST" id="popUpForm">
+                        <label class="INPUT__BOX" style="display: flex;">
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS">Task Category : </span>
+                            <select id="task_group" name="task_group" class="INPUT__INPUT" required>
+                                <option value="" disabled selected>Select or Add Category</option>
+                                <!-- Categories from database will be inserted here dynamically -->
+                            </select>
+                            <input type="text" id="new_category" class="INPUT__INPUT" style="display: none;">
+                            <button type="button" id="add_category" class="CLICKABLE">Add</button>
+                        </label>
 
                         <label class="INPUT__BOX">
                             <input type="text" name="task_title" id="task_title" class="INPUT__INPUT" required>
@@ -233,7 +242,7 @@ if (!isset($_COOKIE['UID'])) {
                         </label>
 
                         <div class="POP_UP__CONTROLS">
-                            <button type="button" class="CONTROLS__CLOSE">Close</button>
+                            <button type="button" class="CONTROLS__CLOSE" id="submitButton">Close</button>
                             <button type="reset" class="CONTROLS__RESET" id="resetButton">Reset</button>
                             <button type="submit" class="CONTROLS__SUBMIT">Submit</button>
                         </div>
@@ -247,26 +256,6 @@ if (!isset($_COOKIE['UID'])) {
                 die("Connection failed: " . mysqli_connect_error());
             }
 
-            // if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            //     $taskTitle = $_POST['task_title'] ?? "";
-            //     $taskDesc = $_POST['task_desc'] ?? "";
-            //     $startDate = $_POST['start_date'] ?? "";
-            //     $startTime = $_POST['start_time'] ?? "";
-            //     $endTime = $_POST['end_time'] ?? "";
-
-            //     $user_id = $_COOKIE['UID'];
-
-            //     $sql = "INSERT INTO tasks(`task_title`, `task_desc`, `start_date`, `start_time`, `end_time`, `created_at`, `user_id`) 
-            // VALUES ('$taskTitle','$taskDesc','$startDate','$startTime','$endTime',CURRENT_TIMESTAMP(),$user_id)";
-
-            //     if (mysqli_query($_conn, $sql)) {
-            //         echo "<script><alert>New task created successfully</alert></script>";
-            //     } else {
-            //         echo "Error: " . $sql . "<br>" . mysqli_error($_conn);
-            //     }
-            // }
-
-
             $user_id = $_COOKIE['UID'];
             $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
             $result = mysqli_query($_conn, $sql);
@@ -279,17 +268,17 @@ if (!isset($_COOKIE['UID'])) {
                 // Fetch each row as an associative array
                 while ($row = mysqli_fetch_assoc($result)) {
                     $TaskList[] = array(
+                        'task_id' => $row['id'],
                         'task_title' => $row['task_title'],
                         'task_desc' => $row['task_desc'],
                         'start_date' => $row['start_date'],
                         'start_time' => $row['start_time'],
                         'end_time' => $row['end_time'],
                         'created_at' => $row['created_at'],
-                        'user_id' => $row['user_id']
+                        'user_id' => $row['user_id'],
+                        'status' => $row['status'],
+                        'category' => $row['category']
                     );
-
-                   
-                    
                 }
 
 
@@ -297,7 +286,7 @@ if (!isset($_COOKIE['UID'])) {
                 echo "<script>";
                 echo "var TaskList = " . json_encode($TaskList) . ";";
                 echo "</script>";
-            } 
+            }
 
             mysqli_close($_conn);
             ?>

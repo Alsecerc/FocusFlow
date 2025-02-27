@@ -13,6 +13,7 @@ if (isset($_POST['upload'])) {
     $fileSize = $file['size'];
     $targetDir = "uploads/"; // Folder to store files
     $targetFilePath = $targetDir . $fileName;
+    $teamName = $_GET['team'];
 
     // Ensure the folder exists
     if (!is_dir($targetDir)) {
