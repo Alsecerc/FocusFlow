@@ -761,6 +761,9 @@ header {
 
     font-size: 16px;
     cursor: grab;
+    
+    
+    
 }
 
 .TODO__GROUP__ADD,
@@ -912,6 +915,55 @@ header {
     color: #000;
 }
 
+.TODO__TASK__CONTENT {
+    background-color: #f4f4f4;
+    color: #333;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 6px;
+    line-height: 1.5;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    
+    /* Handle long text */
+    max-height: 100px; /* Limit content height */
+    overflow: hidden; /* Hide overflowing content */
+    text-overflow: ellipsis; /* Show "..." when too long */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Show only 3 lines */
+    -webkit-box-orient: vertical;
+}
+
+.TODO__TASK__TIME {
+    font-size: 12px;
+    color: gray;
+    
+    bottom: 5px;
+    right: 10px;
+}
+
+.timer-inputs {
+    display: flex;
+    gap: 10px; /* Space between elements */
+    align-items: center; /* Align items in center */
+}
+
+.timer-inputs input {
+    width: 75px; /* Adjust input width */
+    padding: 5px;
+    text-align: center;
+}
+
+.timer-inputs button {
+    padding: 5px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.timer-inputs button:hover {
+    background-color: #45a049;
+}
 
 /* PAGE: Calendar Page */
 
