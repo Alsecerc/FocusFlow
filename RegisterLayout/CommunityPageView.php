@@ -22,7 +22,7 @@ $result = $_conn->query($sql);
 </head>
 
 <body class="CM__POPUP">
-    <h2 class="CM__POPUP__TITLE">Uploaded Files</h2>
+    <h2 class="CM__POPUP__TITLE"><?php echo $_GET['team'] ?> : Uploaded Files</h2>
     <ul>
         <?php while ($row = $result->fetch_assoc()):
         ?>

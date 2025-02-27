@@ -114,6 +114,7 @@ button {
     /* em = relative to font size */
     --PADDING-TB: clamp(0.5em, 2vh, 1.2em);
     --PADDING-LR: clamp(1em, 3vw, 2em);
+    --PADDING-NORMAL: 0.5rem 1rem;
 
     /* STANDARD MARGIN */
     /* MIN - use 1em if lesser if 2.5vh is lesser than 1em */
@@ -208,10 +209,12 @@ button {
 
 .CLICKABLE:hover {
     cursor: pointer;
+
+    transform: scale(1.1);
 }
 
 .CLICKABLE:active {
-    transform: scale(1.2);
+    transform: scale(0.8);
 }
 
 .KEYWORD {
@@ -298,7 +301,7 @@ header {
     border-bottom: var(--BORDER);
 
     color: var(--COLOR-LIGHT1);
-    background-color: var(--COLOR-DARK2);
+    background-color: var(--COLOR-DARK3);
 
     display: flex;
     justify-content: space-between;
@@ -902,12 +905,12 @@ header {
 }
 
 #closeTaskButton {
-    position: absolute; 
-    top: 5px; 
-    right: 5px; 
-    font-size: 24px; 
-    border: none; 
-    background: none; 
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 24px;
+    border: none;
+    background: none;
     cursor: pointer;
     color: #000;
 }
@@ -1160,21 +1163,178 @@ header {
 
 .EVENT {
     position: absolute;
-    z-index: 2;
+    z-index: 1;
 
     background-color: var(--COLOR-ACCENT1);
     color: var(--COLOR-LIGHT1);
 
     border-radius: var(--BORDER-RD-CONTACT);
 
-    padding: 1rem;
-
     display: flex;
     align-items: center;
     justify-content: center;
+
+    cursor: pointer;
+
 }
 
-/* pop up */
+.EVENT__NAME {
+    padding: 1rem;
+    text-wrap: nowrap;
+
+
+
+}
+
+
+/* event pop up */
+.EVENT_INFO {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Center it */
+
+    width: 500px;
+    background: var(--COLOR-LIGHT1);
+    color: var(--COLOR-DARK1);
+    padding: 1rem;
+
+    border-radius: var(--BORDER-RD-CONTACT);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
+    display: none;
+}
+
+
+.EVENTINFO_SHOW {
+    width: 500px;
+    height: 500px;
+
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0.5rem;
+    grid-row-gap: 1rem;
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
+
+    align-items: center;
+}
+
+.TASK__CATEGORY {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.TASK__TITLE {
+    grid-area: 1 / 2 / 2 / 6;
+}
+
+.TASK__STATUS {
+    grid-area: 1 / 6 / 2 / 7;
+}
+
+.TASK__DESC {
+    grid-area: 2 / 1 / 4 / 7;
+    height: 100%;
+}
+
+.TASK__START {
+    grid-area: 4 / 1 / 5 / 5;
+}
+
+.TASK__END {
+    grid-area: 4 / 5 / 5 / 7;
+}
+
+.TASK__CREATED {
+    grid-area: 5 / 1 / 6 / 5;
+}
+
+.STATUS {
+    grid-area: 5 / 5 / 6 / 6;
+}
+
+.DELETE {
+    grid-area: 5 / 6 / 6 / 7;
+}
+
+.TASK__TITLE {
+    font-size: 1.3rem;
+}
+
+.TASK__CATEGORY,
+.TASK__STATUS {
+    text-align: center;
+}
+
+
+.TASK__CATEGORY,
+.TASK__STATUS,
+.TASK__START,
+.TASK__END,
+.TASK__CREATED,
+.TASK__USER {
+    font-size: 0.8rem;
+}
+
+.TASK__CATEGORY,
+.TASK__STATUS,
+.TASK__DESC {
+    padding: 0.5rem;
+}
+
+
+.TASK__DESC {
+    background-color: var(--COLOR-DARK1);
+    color: var(--COLOR-LIGHT1);
+
+    border-radius: var(--BORDER-RD-CONTACT);
+}
+
+.TASK__START,
+.TASK__END {
+    height: 50px;
+}
+
+.TASKINFO__BUTTON {
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+    border-radius: var(--BORDER-RD-CONTACT);
+    font-size: 0.5rem;
+
+    cursor: pointer;
+
+    height: fit-content;
+    width: fit-content;
+
+    align-self: center;
+    justify-self: center;
+}
+
+
+.STATUS {
+    background-color: green;
+    color: whitesmoke;
+}
+
+.DELETE {
+    background-color: #C70000;
+    color: whitesmoke;
+}
+
+.CLOSE {
+    padding: 0;
+
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.CLOSE .material-icons {
+    color: var(--COLOR-DARK1);
+}
+
+/* pop up form*/
 .POP_UP {
     position: fixed;
     top: 10000px;
@@ -1242,6 +1402,17 @@ header {
     border-radius: var(--BORDER-RD-CONTACT);
 }
 
+#add_category {
+    margin-left: var(--MARGIN);
+    padding: 0.5rem 1rem;
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    background-color: var(--COLOR-DARK1);
+    color: var(--COLOR-LIGHT2);
+
+    min-width: 75px;
+}
+
 
 
 
@@ -1279,15 +1450,15 @@ header {
     top: -40%;
     left: 0;
 
-    color: var(--COLOR-DARK3);
+    color: red;
 }
 
 .INVALID_BORDER {
-    border: 2px solid var(--COLOR-DARK3);
+    border: 2px solid red;
 }
 
 .VALID_BORDER {
-    border: 2px solid var(--COLOR-DARK1);
+    border: 2px solid green;
 }
 
 .VALID_PLACEHOLDER {
@@ -1295,7 +1466,7 @@ header {
     top: -40%;
     left: 0;
 
-    color: var(--COLOR-DARK1);
+    color: green;
 }
 
 .POP_UP__CONTROLS {
@@ -1337,6 +1508,9 @@ header {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
 }
+
+
+
 
 
 
@@ -1625,6 +1799,45 @@ header {
 
 
 /* Page: Community DM page */
+.DM__MAIN {
+    display: grid;
+    grid-template-columns: 25% 1fr;
+
+    height: 100%;
+}
+
+.DMLIST__SIDEBAR {
+    background-color: var(--COLOR-DARK3);
+    color: var(--COLOR-LIGHT1);
+
+    padding: var(--PADDING-NORMAL);
+}
+
+.DM__LIST__UL {
+    margin: var(--MARGIN);
+}
+
+.DM__LIST__PERSON {
+    display: flex;
+    align-items: center;
+
+    padding: var(--PADDING-NORMAL);
+    margin: 0.5rem 0;
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    transition: all 0.5s ease;
+}
+
+.DM__LIST__PERSON:hover > span,
+.DM__LIST__PERSON:hover > a {
+    color: var(--COLOR-LIGHT3);
+}
+.DM__LIST__PERSON:hover {
+    background-color: var(--COLOR-DARK1);
+}
+
+
+
 .DMPage {
     width: 100%;
     height: 100%;
@@ -1845,6 +2058,8 @@ header {
     align-items: center;
     flex-direction: column;
     gap: 5rem;
+
+    background-color: var(--COLOR-DARK2);
 }
 
 .CM__POPUP__TITLE {

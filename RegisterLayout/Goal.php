@@ -199,7 +199,7 @@ if (!isset($_COOKIE['UID'])) {
             </nav>
         </div>
         <article class="GOAL__MAIN">
-            <button class="GOAL__SET" onclick="togglePopup()">show</button>
+            <button class="GOAL__SET" onclick="togglePopup()">Add Goal</button>
             <div class="GOAL__INPUT" style="display: none;">
                 <form action="GoalAdd.php" method="POST" class="GOAL__FORM">
 

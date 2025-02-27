@@ -81,8 +81,8 @@ if (!isset($_COOKIE['UID'])) {
                                             <li class="NOTI__ITEM NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
-                                                $result2 = $_conn->query($sql2); 
-                                                $sender = $result2->fetch_assoc(); 
+                                                $result2 = $_conn->query($sql2);
+                                                $sender = $result2->fetch_assoc();
 
                                                 if ($result2->num_rows > 0) {
                                                 ?>
@@ -162,42 +162,46 @@ if (!isset($_COOKIE['UID'])) {
                             </span>Goals
                         </a>
                     </li>
+                    <li>
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">
+                                chat
+                            </span>Direct Message
+                        </a>
+                    </li>
                 </ul>
             </nav>
+            <?php
+            $loggedInUserID = $_COOKIE['UID']; // Assuming you store the logged-in user ID in a cookie
+
+            $sql = "SELECT id, team_name FROM team 
+            WHERE leader_id = ? OR member_id = ? 
+            GROUP BY team_name";
+            $stmt = $_conn->prepare($sql);
+            $stmt->bind_param("ii", $loggedInUserID, $loggedInUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            ?>
+
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li>
-                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Channel 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-                <h4 class="NAV_TITLE">Direct Messages</h4>
-                <ul class="DM_USER_LIST">
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
-                            Micheal Brown
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Jane Smith
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Sarah Lee
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo '<li>
+        <a href="CommunityPage.php?team_id=' . urlencode($row['id']) . '&team=' . urlencode($row['team_name']) . '" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+            ' . htmlspecialchars($row['team_name']) . '
+        </a>
+      </li>';
+                        }
+                    } else {
+                        echo '<li>No teams found</li>';
+                    }
+                    ?>
                 </ul>
             </nav>
+
         </div>
 
     </main>
