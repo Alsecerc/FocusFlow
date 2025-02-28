@@ -100,6 +100,14 @@ button {
     --COLOR-ACCENT2: #3b3b3b;
     --COLOR-ACCENT3: #6c6c6c;
     --COLOR-ACCENT4: #c8c8c8;
+    --COLOR-RED: #B22222;
+    --COLOR-YELLOW: #D4AF37;
+    --COLOR-GREEN: #228B22;
+    --COLOR-RED-LIGHT: #DC6666;
+    /* Soft Firebrick Red */
+    --COLOR-YELLOW-LIGHT: #F5D76E;
+    /* Light Gold Yellow */
+    --COLOR-GREEN-LIGHT: #6FCF97;
 
 
     /* BORDERS */
@@ -141,6 +149,12 @@ button {
     --COLOR-ACCENT2: #E29578;
     --COLOR-ACCENT3: #FFB085;
     --COLOR-ACCENT4: #FFDAC6;
+    --COLOR-RED: #D94835;
+    --COLOR-YELLOW: #E3A53F;
+    --COLOR-GREEN: #8C9A5A;
+    --COLOR-RED-LIGHT: #E87D6E;
+    --COLOR-YELLOW-LIGHT: #F2C678;
+    --COLOR-GREEN-LIGHT: #B3BE82;
 }
 
 [data-theme="theme_neon"] {
@@ -154,6 +168,12 @@ button {
     --COLOR-ACCENT2: #FFB86C;
     --COLOR-ACCENT3: #8BE9FD;
     --COLOR-ACCENT4: #FF5555;
+    --COLOR-RED: #FF5555;
+    --COLOR-YELLOW: #F1FA8C;
+    --COLOR-GREEN: #50FA7B;
+    --COLOR-RED-LIGHT: #FF9999;
+    --COLOR-YELLOW-LIGHT: #FAF6B4;
+    --COLOR-GREEN-LIGHT: #8AFFC1;
 }
 
 [data-theme="theme_forest"] {
@@ -167,7 +187,12 @@ button {
     --COLOR-ACCENT2: #A4C3B2;
     --COLOR-ACCENT3: #7AA899;
     --COLOR-ACCENT4: #576F72;
-
+    --COLOR-RED: #A23E48;
+    --COLOR-YELLOW: #E9C46A;
+    --COLOR-GREEN: #2A9D8F;
+    --COLOR-RED-LIGHT: #D1828A;
+    --COLOR-YELLOW-LIGHT: #F4D58D;
+    --COLOR-GREEN-LIGHT: #66C2B3;
 }
 
 
@@ -759,9 +784,9 @@ header {
 
     font-size: 16px;
     cursor: grab;
-    
-    
-    
+
+
+
 }
 
 .TODO__GROUP__ADD,
@@ -921,32 +946,39 @@ header {
     border-radius: 6px;
     line-height: 1.5;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    
+
     /* Handle long text */
-    max-height: 100px; /* Limit content height */
-    overflow: hidden; /* Hide overflowing content */
-    text-overflow: ellipsis; /* Show "..." when too long */
+    max-height: 100px;
+    /* Limit content height */
+    overflow: hidden;
+    /* Hide overflowing content */
+    text-overflow: ellipsis;
+    /* Show "..." when too long */
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Show only 3 lines */
+    -webkit-line-clamp: 3;
+    /* Show only 3 lines */
     -webkit-box-orient: vertical;
 }
 
 .TODO__TASK__TIME {
     font-size: 12px;
     color: gray;
-    
+
     bottom: 5px;
     right: 10px;
 }
 
 .timer-inputs {
     display: flex;
-    gap: 10px; /* Space between elements */
-    align-items: center; /* Align items in center */
+    gap: 10px;
+    /* Space between elements */
+    align-items: center;
+    /* Align items in center */
 }
 
 .timer-inputs input {
-    width: 75px; /* Adjust input width */
+    width: 75px;
+    /* Adjust input width */
     padding: 5px;
     text-align: center;
 }
@@ -1826,10 +1858,11 @@ header {
     transition: all 0.5s ease;
 }
 
-.DM__LIST__PERSON:hover > span,
-.DM__LIST__PERSON:hover > a {
+.DM__LIST__PERSON:hover>span,
+.DM__LIST__PERSON:hover>a {
     color: var(--COLOR-LIGHT3);
 }
+
 .DM__LIST__PERSON:hover {
     background-color: var(--COLOR-DARK1);
 }
@@ -1966,7 +1999,7 @@ header {
     gap: 1rem;
 }
 
-.COMMUNITY1__HEADER__RIGHT > div {
+.COMMUNITY1__HEADER__RIGHT>div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1982,20 +2015,67 @@ header {
     transition: all 0.3s ease-in-out;
 }
 
-.COMMUNITY1__HEADER__RIGHT > div:hover .COMMUNITY__HEADER__TITLE {
+.COMMUNITY1__HEADER__RIGHT>div:hover .COMMUNITY__HEADER__TITLE {
     transform: translateY(0px);
     opacity: 1;
 }
 
-.LEADER {
-    padding: var(--PADDING-TB) var(--PADDING-LR);
+.LEADER__CONTAINER {
+    margin-bottom: 1rem;
 }
 
+
+.LEADER {
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
 .COMMUNITY1__MAIN {
     grid-area: mn;
     background-color: var(--COLOR-DARK3);
 }
+
+.TASK__CONTAINER {
+    padding: 20px;
+    background: var(--COLOR-ACCENT3);
+}
+
+.TASK_LIST {
+    list-style: none;
+    padding: 0;
+}
+
+.TASK_ITEM {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 5px solid ;
+    background: var(--COLOR-ACCENT2);
+    color: var(--COLOR-ACCENT1);
+}
+
+.task-completed {
+    background: var(--COLOR-GREEN-LIGHT);
+    border-color: var(--COLOR-GREEN);
+}
+
+.task-inprogress {
+    background: var(--COLOR-YELLOW-LIGHT);
+    border-color: var(--COLOR-YELLOW);
+}
+
+.task-pending {
+    background: var(--COLOR-RED-LIGHT);
+    border-color: var(--COLOR-RED);
+}
+
+.task-status {
+    font-weight: bold;
+}
+
+
 
 .COMMUNITY1__MEMBER {
     grid-area: mm;

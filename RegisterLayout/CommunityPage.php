@@ -252,113 +252,176 @@ if (!isset($_COOKIE['UID'])) {
             </section>
 
             <section class="COMMUNITY1__MAIN">
-                2
+                <div class="TASK__CONTAINER">
+                    <h3>Task List</h3>
+                    <?php
+                    include "conn.php";
+
+                    if (!isset($_GET['team']) || empty($_GET['team'])) {
+                        die("<p>Error: Team name is required!</p>");
+                    }
+
+                    $teamName = $_GET['team'];
+
+                    // Prepare query to get tasks assigned to the team
+                    $sql = "SELECT gt.task_name, gt.task_description, gt.status, gt.due_date, u.name AS assigned_to_name 
+                FROM group_tasks gt
+                JOIN users u ON gt.assigned_to = u.id
+                WHERE gt.team_name = ?";
+                    $stmt = $_conn->prepare($sql);
+                    $stmt->bind_param("s", $teamName);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($result->num_rows > 0) {
+                        echo '<ul class="TASK_LIST">';
+                        while ($row = $result->fetch_assoc()) {
+                            $taskName = htmlspecialchars($row['task_name']);
+                            $taskDesc = htmlspecialchars($row['task_description']);
+                            $status = htmlspecialchars($row['status']);
+                            $dueDate = htmlspecialchars($row['due_date']);
+                            $assignedTo = htmlspecialchars($row['assigned_to_name']);
+
+                            // Assign class based on task status
+                            $statusClass = ($status == 'completed') ? 'task-completed' : (($status == 'in progress') ? 'task-inprogress' : 'task-pending');
+
+                            echo "<li class='TASK_ITEM $statusClass'>
+                        <h4>$taskName</h4>
+                        <p><strong>Description:</strong> $taskDesc</p>
+                        <p><strong>Assigned To:</strong> $assignedTo</p>
+                        <p><strong>Status:</strong> <span class='task-status'>$status</span></p>
+                        <p><strong>Due Date:</strong> $dueDate</p>
+                    </li>";
+                        }
+                        echo '</ul>';
+                    } else {
+                        echo "<p>No tasks available for this team.</p>";
+                    }
+
+                    $stmt->close();
+                    $_conn->close();
+                    ?>
+                </div>
             </section>
 
+
+
+
             <section class="COMMUNITY1__MEMBER">
-                <h3>Leader</h3>
+                <div class="LEADER__CONTAINER">
+                    <h3>Leader</h3>
 
-                <?php
-                if (!isset($_GET['team']) || empty($_GET['team'])) {
-                    die("<p>Error: Team name is required!</p>");
-                }
+                    <?php
+                    if (!isset($_GET['team']) || empty($_GET['team'])) {
+                        die("<p>Error: Team name is required!</p>");
+                    }
 
-                include "conn.php";
+                    include "conn.php";
 
-                // Get the team name from the URL
-                $teamName = $_GET['team'];
-                $currentUserID = isset($_COOKIE['UID']) ? $_COOKIE['UID'] : null; // Get logged-in user ID from cookie
+                    // Get the team name from the URL
+                    $teamName = $_GET['team'];
+                    $currentUserID = isset($_COOKIE['UID']) ? $_COOKIE['UID'] : null; // Get logged-in user ID from cookie
 
-                // Prepare the query to get team details
-                $sql = "SELECT * FROM team WHERE team_name = ?";
-                $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("s", $teamName);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                    // Prepare the query to get team details
+                    $sql = "SELECT * FROM team WHERE team_name = ?";
+                    $stmt = $_conn->prepare($sql);
+                    $stmt->bind_param("s", $teamName);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                if (!$result) {
-                    echo "<p>Error loading team: " . htmlspecialchars($_conn->error) . "</p>";
-                } else {
-                    if ($row = $result->fetch_assoc()) {
-                        $leaderID = $row['leader_id']; // Assuming 'leader_id' exists in 'team' table
+                    if (!$result) {
+                        echo "<p>Error loading team: " . htmlspecialchars($_conn->error) . "</p>";
+                    } else {
+                        if ($row = $result->fetch_assoc()) {
+                            $leaderID = $row['leader_id']; // Assuming 'leader_id' exists in 'team' table
 
-                        // Fetch leader's name securely
-                        $sqlLeader = "SELECT name FROM users WHERE id = ?";
-                        $stmtLeader = $_conn->prepare($sqlLeader);
-                        $stmtLeader->bind_param("i", $leaderID);
-                        $stmtLeader->execute();
-                        $leaderResult = $stmtLeader->get_result();
+                            // Fetch leader's name securely
+                            $sqlLeader = "SELECT name FROM users WHERE id = ?";
+                            $stmtLeader = $_conn->prepare($sqlLeader);
+                            $stmtLeader->bind_param("i", $leaderID);
+                            $stmtLeader->execute();
+                            $leaderResult = $stmtLeader->get_result();
 
-                        if ($leaderRow = $leaderResult->fetch_assoc()) {
-                            $leaderName = htmlspecialchars($leaderRow['name']);
+                            if ($leaderRow = $leaderResult->fetch_assoc()) {
+                                $leaderName = htmlspecialchars($leaderRow['name']);
 
-                            // If logged-in user is the leader, show as <p>, otherwise show as <a>
-                            if ($currentUserID == $leaderID) {
-                                echo "<p class='LEADER'>$leaderName (You)</p>";
-                            } else {
-                                echo "<a href='CommunityDMPage.php?receiver_id=" . urlencode($leaderID) . "&name=" . urlencode($leaderName) . "' class='LEADER_NAME'>$leaderName</a>";
+                                // If logged-in user is the leader, show as <p>, otherwise show as <a>
+                                if ($currentUserID == $leaderID) {
+                                    echo "<p class='LEADER'><span class='material-icons'>account_circle</span>$leaderName (You)</p>";
+                                } else {
+                                    echo "<li class='MEMBER'><a href='CommunityDMPage.php?receiver_id=" . urlencode($leaderID) . "&name=" . urlencode($leaderName) . "'><span class='material-icons'>boy</span>$leaderName</a></li>";
+                                }
                             }
+
+                            $stmtLeader->close();
                         }
-
-                        $stmtLeader->close();
                     }
-                }
 
-                $stmt->close();
-                ?>
+                    $stmt->close();
+                    ?>
+                </div>
+                <div class="MEMBER__CONTAINER">
+                    <h3>Member List</h3>
+                    <?php
 
 
-                <h3>Member List</h3>
-                <?php
+                    if (!isset($_GET['team']) || empty($_GET['team'])) {
+                        die("<p>Error: Team name is required!</p>");
+                    }
 
+                    // Sanitize the team name
+                    $teamName = $_GET['team'];
 
-                if (!isset($_GET['team']) || empty($_GET['team'])) {
-                    die("<p>Error: Team name is required!</p>");
-                }
+                    // Prepare the first query securely
+                    $sql = "SELECT * FROM team WHERE team_name = ?";
+                    $stmt = $_conn->prepare($sql);
+                    $stmt->bind_param("s", $teamName);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                // Sanitize the team name
-                $teamName = $_GET['team'];
+                    if (!$result) {
+                        echo "<p>Error loading members: " . htmlspecialchars($_conn->error) . "</p>";
+                    } else {
+                        echo '<ul class="MEMBER_LIST">';
+                        while ($row = $result->fetch_assoc()) {
+                            $memberID = $row['member_id']; // Assuming 'member_id' is the correct column
 
-                // Prepare the first query securely
-                $sql = "SELECT * FROM team WHERE team_name = ?";
-                $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("s", $teamName);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                            // Securely fetch user details using prepared statements
+                            $sql2 = "SELECT * FROM users WHERE id = ?";
+                            $stmt2 = $_conn->prepare($sql2);
+                            $stmt2->bind_param("i", $memberID);
+                            $stmt2->execute();
+                            $result2 = $stmt2->get_result();
 
-                if (!$result) {
-                    echo "<p>Error loading members: " . htmlspecialchars($_conn->error) . "</p>";
-                } else {
-                    echo '<ul class="MEMBER_LIST">';
-                    while ($row = $result->fetch_assoc()) {
-                        $memberID = $row['member_id']; // Assuming 'member_id' is the correct column
+                            if ($row2 = $result2->fetch_assoc()) {
+                                $username = htmlspecialchars($row2['name']); // Prevent XSS
 
-                        // Securely fetch user details using prepared statements
-                        $sql2 = "SELECT * FROM users WHERE id = ?";
-                        $stmt2 = $_conn->prepare($sql2);
-                        $stmt2->bind_param("i", $memberID);
-                        $stmt2->execute();
-                        $result2 = $stmt2->get_result();
-
-                        if ($row2 = $result2->fetch_assoc()) {
-                            $username = htmlspecialchars($row2['name']); // Prevent XSS
-
-                            echo "<li class='MEMBER'>
-                <a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($username) . "' class='memberName'>
-                    <span class='material-icons'>sentiment_very_satisfied</span>
-                    <p>$username</p>
-                </a>
-              </li>";
+                                if ($username == $_COOKIE['USERNAME']) {
+                                    echo "<li class='MEMBER'>
+                                    <a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($username) . "' class='memberName'>
+                                        <span class='material-icons'>account_circle</span>
+                                        <p>$username</p>
+                                    </a>
+                                  </li>";
+                                } else {
+                                    echo "<li class='MEMBER'>
+                                    <a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($username) . "' class='memberName'>
+                                        <span class='material-icons'>boy</span>
+                                        <p>$username</p>
+                                    </a>
+                                  </li>";
+                                }
+                            }
+                            $stmt2->close();
                         }
-                        $stmt2->close();
+                        echo '</ul>';
                     }
-                    echo '</ul>';
-                }
 
-                // Close statements and connection
-                $stmt->close();
-                $_conn->close();
-                ?>
+                    // Close statements and connection
+                    $stmt->close();
+                    $_conn->close();
+                    ?>
+                </div>
             </section>
         </article>
 
