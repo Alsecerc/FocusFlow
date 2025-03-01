@@ -570,7 +570,16 @@ header {
     margin-bottom: var(--MARGIN);
 }
 
+.READ > *,
+.READ{
+    font-weight: 350;
+    color: rgba(0, 0, 0, 0.289);
+}
 
+.UNREAD {
+    font-weight: 350;
+    color: rgba(0, 0, 0, 0.289);
+}
 
 
 /* MENU ICON STYLE */
@@ -1212,11 +1221,11 @@ header {
 }
 
 .HEADER-HIGHLIGHT {
-    background-color: var(--COLOR-ACCENT1);
+    background-color: var(--COLOR-ACCENT2);
 }
 
 .DAY_NUM-HIGHLIGHT {
-    background-color: var(--COLOR-ACCENT2);
+    background-color: var(--COLOR-ACCENT3);
 }
 
 
@@ -1268,10 +1277,9 @@ header {
 
 .EVENT {
     position: absolute;
-    z-index: 1;
 
-    background-color: var(--COLOR-ACCENT1);
-    color: var(--COLOR-LIGHT1);
+    background-color: var(--COLOR-LIGHT3);
+    color: var(--COLOR-DARK3);
 
     border-radius: var(--BORDER-RD-CONTACT);
 
@@ -1280,14 +1288,6 @@ header {
     justify-content: center;
 
     cursor: pointer;
-
-}
-
-.EVENT__NAME {
-    padding: 1rem;
-    text-wrap: nowrap;
-
-
 
 }
 

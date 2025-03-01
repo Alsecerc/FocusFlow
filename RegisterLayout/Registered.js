@@ -33,17 +33,58 @@ MENU_BUTTON.addEventListener('click', function () {
     SIDEBAR.classList.toggle("SIDEBAR_SHOW");
 });
 
-let NOTI__BUTTON = document.querySelector("#notiButton");
-if (NOTI__BUTTON) {
-    NOTI__BUTTON.addEventListener("click", function () {
-        let popup = document.getElementById("notificationPopup");
+// let NOTI__BUTTON = document.querySelector("#notiButton");
+// if (NOTI__BUTTON) {
+//     NOTI__BUTTON.addEventListener("click", function () {
+//         let popup = document.getElementById("notificationPopup");
 
-        if (popup.style.display === "none" || popup.style.display === "") {
-            popup.style.display = "block";
-        } else {
-            popup.style.display = "none";
+//         if (popup.style.display === "none" || popup.style.display === "") {
+//             popup.style.display = "block";
+//         } else {
+//             popup.style.display = "none";
+//         }
+//     });
+// }
+
+let = openNoti = false
+
+document.getElementById("notiButton").addEventListener("click", function () {
+    let notificationPopup = document.getElementById("notificationPopup");
+
+    // Toggle visibility
+    if (notificationPopup.style.display === "none" || notificationPopup.style.display === "") {
+        notificationPopup.style.display = "block";
+
+        // if there is unread message 
+        if (document.querySelector(".NOTI__ITEM.UNREAD")) {
+            // trigger to mark message read when close
+            openNoti = true;
         }
-    });
+
+    } else {
+        notificationPopup.style.display = "none";
+
+        if (openNoti) {
+            markNotificationsAsRead();
+            openNoti = false;
+        }
+    }
+});
+
+function markNotificationsAsRead() {
+    fetch("1Notification.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+        .then(response => response.text())
+        .then(data => {
+            if (data === "success") {
+                console.log("Notifications marked as read");
+            } else {
+                console.error("Failed to update notifications");
+            }
+        })
+        .catch(error => console.error("Error:", error));
 }
 
 
@@ -500,7 +541,7 @@ function searchFunction() {
                         let assignmentText = item.assignment_type === "assigned_to_me"
                             ? `(Task assigned to you in ${item.name})`
                             : `(You assigned this task in ${item.name})`;
-                    
+
                         resultList += `<li onclick="redirectToTeam('${item.id}','${item.name}')">
                                         <span class="material-icons">groups</span>
                                         <div class='RESULT__GROUP_TASK'>
@@ -509,7 +550,7 @@ function searchFunction() {
                                         </div>
                                       </li>`;
                     }
-                     else if (item.type === "goal") {
+                    else if (item.type === "goal") {
                         resultList += `<li onclick="redirectToGoal()"><span class="material-icons">track_changes</span> Goal : ${item.name}</li>`;
                     }
                 });
@@ -528,7 +569,7 @@ function redirectToPage(pageLink) {
     window.location.href = pageLink;
 }
 
-function redirectToDM(memberId,memberName) {
+function redirectToDM(memberId, memberName) {
     window.location.href = `CommunityDMPage.php?receiver_id=${memberId}&name=${memberName}`;
 }
 

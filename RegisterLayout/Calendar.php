@@ -25,7 +25,7 @@ if (!isset($_COOKIE['UID'])) {
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -207,7 +207,7 @@ if (!isset($_COOKIE['UID'])) {
                             <button type="button" id="add_category" class="CLICKABLE">Add</button>
                         </label>
 
-                        
+
                         <label class="INPUT__BOX">
                             <input type="text" name="task_title" id="task_title" class="INPUT__INPUT" required>
                             <span class="INPUT__PLACEHOLDER">Task Name : </span>
