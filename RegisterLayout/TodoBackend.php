@@ -1,152 +1,179 @@
 <?php 
     session_start();
     include "conn.php";
-    $userId = $_COOKIE['UID'];
-    // update data to database
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    //     if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){ // update when submit task form
-    //         $groupchoice = $_POST['GROUPNAMECHOICE'][0];
-    //         $taskContent = $_POST['USERTASK'];
-    //         $groupchoice = htmlspecialchars($groupchoice, ENT_QUOTES, 'UTF-8');
-    //         $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
-    //         $taskTitle = $groupchoice[0];
-    //         $taskDesc = $taskContent;
-    //         $startDate = date('Y-m-d');
-    //         $start_time = date('H:i:s');
-    //         $endTime = (isset($_POST['END__TIME']) && !empty($_POST['END__TIME'])) ? $_POST['END__TIME'] : date('H:i:s', strtotime('+1 hour'));  // add 1 hour by default
-    //         $sql = "INSERT INTO tasks (task_title, task_desc, start_date, start_time, end_time, user_id) VALUES (?, ?, ?, ?, ?, ?)";
-            
-    //         if (rowExistance($userId, $groupchoice, $_conn)){
-    //             sqlInsertion($_conn, $sql, 'sssssi', $taskTitle, $taskDesc, $startDate, $start_time, $endTime, $userId);
-    //         }else{
-    //             echo"Row does not exists";
-    //             $_conn->close();
-    //         }
-    
-    //         echo "user id:". $userId. "<br>";
-    //         echo "Selected Group: " . $groupchoice . "<br>";
-    //         echo "Task Content: " . $taskContent . "<br>";
 
-    //     }else if (isset($_POST['GROUPNAME'])) {
-    //         // update when submit group form
-    //         date_default_timezone_set('Asia/Kuala_Lumpur');
+    // Initialize response function for early errors
+    function sendJsonResponse($data) {
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
 
-    //         $taskTitle = $_POST['GROUPNAME'];
-    //         $taskTitle = htmlspecialchars($taskTitle, ENT_QUOTES, 'UTF-8');
+    // First check database connection
+    if (!isset($_conn) || $_conn->connect_error) {
+        sendJsonResponse(["error" => "Database connection failed"]);
+        exit;
+    }
 
-    //         $sql = "INSERT INTO tasks (task_title, user_id) VALUES (?, ?)";
+    // Then check authentication
+    if (!isset($_COOKIE['UID'])) {
+        sendJsonResponse(["error" => "User not authenticated"]);
+        exit;
+    }
 
-    //         sqlInsertion($_conn, $sql, 'si',$taskTitle, $userId);
+    // After validation, set up global variables
+    $GLOBALS['userId'] = $_COOKIE['UID'];
+    $GLOBALS['conn'] = $_conn;
 
-    //         echo "Group name: " . $taskTitle . "<br>";
-    //     }
-    //     else{
-    //         echo "missing form data";
-    //     }
-    // }else{
-    //     echo "Request method:" . $_SERVER['REQUEST_METHOD']. "<br>";
-    // }
-    
+    // Now call the main function
     SendfinalDate();
-    function SendfinalDate(){
+
+    function SendfinalDate() {
+        // Access globals properly
+        global $conn, $userId;
+
+        // Set error handling
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
         header("Content-Type: application/json");
-    
-        // Start output buffering
-        ob_start();
-        $data = json_decode(file_get_contents("php://input"), true);
-        // Check request method
-        if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['type'])) {
-            $type = $_GET['type'];  // Fetch 'type' from URL
-            if (!$type) {
-                ob_clean();
-                echo json_encode(["error" => "No type specified"]);
-                exit;
-            }else{
-                $response = [];
-
-                $finalDate = 2121;
-
-                $finalTime = 1221;
         
-                // Choose data based on type
-                switch ($type) {
-                    case "users":
-                        $response = ["users" => ["Alice", "Bob", "Charlie"]];
-                        break;
-                    case "products":
-                        $response = ["products" => ["Laptop", "Phone", "Tablet"]];
-                        break;
-                    case "FinalDate":
-                        $response = ["Date" => [$finalDate], [$finalTime]];
-                        break;
-                    case "update_task":
-                        // Handle task update
-                        if (!isset($data['cate'], $data['title'], $data['content'], $data['time'], $data['date'])) {
-                            $response = ["error" => "Missing task data"];
-                        } else {
-                            $category = $data['cate'];
-                            $title = $data['title'];
-                            $content = $data['content'];
-                            $time = $data['time'];
-                            $date = $data['date'];
-                
-                            // Process data (e.g., insert into database)
-                            $response = ["message" => "Task updated successfully", "title" => $title, "category" => $category];
-                        }
-                        break;
-                    case "fetch_task":
-                        if($type === "fetch_task"){
-                            if (!isset($data['tasktitle'], $data['taskcontent'], $data['taskcontent'])){
-                                ob_clean();
-                                echo json_encode(["error" => "Missing task title or content"]);
-                                exit;
-                            }else{
-
-                            }
-                        }
-                    default:
-                        $response = ["error" => "Invalid request"];
-                }
-                
-                // Clean output and return JSON
-                ob_clean();
-                echo json_encode($response);
-                exit;
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            
+            if ($_SERVER["REQUEST_METHOD"] === "GET") {
+                handleGetRequest();
+            } else if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                handlePostRequest($data);
             }
-
-        } elseif ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['type'])) {
-            if (!$data) {
-                ob_clean();
-                echo json_encode(["error" => "No data received"]);
-                exit;
-            }
-            if (isset($data['type'])) {
-                ob_clean();
-                echo json_encode(["error" => "No type specified"]);
-                exit;
-            }
+        } catch (Exception $e) {
+            ob_clean();
+            echo json_encode(["error" => $e->getMessage()]);
+            exit;
         }
-        
     }
 
-    // function UpdateThedeadlineOftask(){
+    function handleGetRequest() {
+        if (!isset($_GET['type'])) {
+            sendJsonResponse(["error" => "No type specified"]);
+        }
 
+        $type = $_GET['type'];
+        $response = [];
 
-    //     if ($data) {
-    //         $category = $data['cate'];
-    //         $title = $data['title'];
-    //         $content = $data['content'];
-    //         $time = $data['time'];
-    //         $date = $data['date'];
-    
-    //         // Now you can insert into the database
-    //         echo "Task received: $title in category $category";
-    //     } else {
-    //         echo "No data received.";
-    //     }
-    // }
+        switch ($type) {
+            case "FinalDate":
+                $response = [
+                    "Date" => ["Date"],
+                    "Time" => ["Time"]
+                ];
+                break;
+            case "users":
+                $response = ["users" => ["Alice", "Bob", "Charlie"]];
+                break;
+            case "products":
+                $response = ["products" => ["Laptop", "Phone", "Tablet"]];
+                break;
+            default:
+                $response = ["error" => "Invalid request type"];
+        }
+        sendJsonResponse($response);
+    }
+
+    function handlePostRequest($data) {
+        // Access globals properly
+        global $conn, $userId;
+
+        if (!$data || !isset($data['type'])) {
+            sendJsonResponse(["error" => "No data received"]);
+        }
+
+        switch ($data['type']) {
+            case "fetch_task":
+                handleFetchTask($data, $conn, $userId);
+                break;
+            case "update_task":
+                handleUpdateTask($data);
+                break;
+            default:
+                sendJsonResponse(["error" => "Invalid request type"]);
+        }
+    }
+
+    function handleFetchTask($data, $conn, $userId) {
+        if (!isset($data['Category'], $data['title'], $data['Content'])) {
+            sendJsonResponse(["error" => "Missing required parameters"]);
+        }
+
+        try {
+            // Sanitize inputs
+            $category = filter_var($data['Category'], FILTER_SANITIZE_STRING);
+            $title = filter_var($data['title'], FILTER_SANITIZE_STRING);
+            $content = filter_var($data['Content'], FILTER_SANITIZE_STRING);
+
+            $sql = "SELECT end_date, end_time FROM tasks 
+                   WHERE task_title = ? AND task_desc = ? AND category = ? AND user_id = ?";
+            
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Query preparation failed");
+            }
+
+            $stmt->bind_param('sssi', $title, $content, $category, $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 0) {
+                sendJsonResponse(["error" => "Task not found"]);
+            }
+
+            $row = $result->fetch_assoc();
+            sendJsonResponse([
+                "status" => "success",
+                "data" => [
+                    "date" => $row['end_date'],
+                    "time" => $row['end_time'],
+                    "category" => $category,
+                    "title" => $title,
+                    "content" => $content
+                ]
+            ]);
+        } catch (Exception $e) {
+            sendJsonResponse(["error" => $e->getMessage()]);
+        } finally {
+            if (isset($stmt)) {
+                $stmt->close();
+            }
+        }
+    }
+
+    function handleUpdateTask($data) {
+        if (!validateTaskData($data)) {
+            sendJsonResponse(["error" => "Invalid task data"]);
+        }
+
+        try {
+            // Add your database update logic here
+            $response = [
+                "status" => "success",
+                "message" => "Task updated successfully",
+                "data" => $data
+            ];
+            sendJsonResponse($response);
+        } catch (Exception $e) {
+            sendJsonResponse(["error" => $e->getMessage()]);
+        }
+    }
+
+    function validateTaskData($data) {
+        $required = ['cate', 'title', 'content', 'time', 'date'];
+        foreach ($required as $field) {
+            if (!isset($data[$field]) || empty(trim($data[$field]))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Inserts data into the database using a prepared statement.

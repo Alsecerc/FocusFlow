@@ -1,4 +1,21 @@
+// Add global variables at the top of the file
+let GroupCard = null;
+let GroupContainer = null;
+let GroupCardTask = null;
+
+// Add input validation helper
+function validateInput(value, maxLength = 500) {
+    if (!value || typeof value !== 'string') return false;
+    return value.trim().length > 0 && value.trim().length <= maxLength;
+}
+
+// Improve createNewGroup with validation
+
 function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, Content) {
+    if (!validateInput(Content)) {
+        console.error('Invalid group name');
+        return false;
+    }
     console.log("Creating group");
     let container = document.querySelector(`.${NameOfContainer}`);
     if (!container) {
@@ -20,97 +37,102 @@ function createNewGroup(NameOfContainer, ClassName, headerTag, headerClassName, 
     console.log(container)
 }
 
-function CreateNewTask(NameOfContainerClass = null, NameOfGroup = null, TaskTitle = null, TaskContent = null) {
-    if (NameOfContainerClass === null || NameOfGroup === null || TaskTitle === null || TaskContent === null){
-        console.log('Please enter something.');
+// Add error handling to CreateNewTask
+function CreateNewTask(NameOfContainerClass, NameOfGroup, TaskTitle, TaskContent) {
+    try {
+        if (!validateInput(TaskTitle) || !validateInput(TaskContent, 1000)) {
+            throw new Error('Invalid task data');
+        }
+        if (NameOfContainerClass === null || NameOfGroup === null || TaskTitle === null || TaskContent === null){
+            console.log('Please enter something.');
+            return;
+        }
+
+        let Container = document.querySelectorAll(`.${NameOfContainerClass}`);
+        Group = Array.from(Container).find(Name => Name.id === NameOfGroup);
+        if (!Group){
+            console.log(Group, Container);
+            console.log("Cannot find group")
+            return;
+        }
+        const formattedTime = "00:10:00";
+
+        console.log(Group.id);
+
+        const header = document.createElement('h3');
+        header.classList.add('TODO__TASK');
+        header.textContent = TaskTitle.length > 500 ? TaskTitle.substring(0, 500) + "..." : TaskTitle;
+        header.draggable = 'true';
+
+        const paragraph = document.createElement('p');
+        paragraph.classList.add('TODO__TASK__CONTENT');
+        paragraph.textContent = TaskContent;
+
+        const timestamp = document.createElement('p2');
+        timestamp.classList.add('TODO__TASK__TIME');
+        timestamp.id = formattedTime;
+        timestamp.textContent = formattedTime;
+
+        header.appendChild(paragraph);
+        header.appendChild(timestamp);
+        Group.appendChild(header);
+    } catch (error) {
+        console.error('Task creation failed:', error);
+        return false;
+    }
+}
+
+// Improve fetch calls with timeout and error handling
+function timeleftToCompleteTask(Cate, taskTitle, taskContent) {
+    // Add input validation
+    if (!Cate || !taskTitle || !taskContent) {
+        console.error('Missing required parameters');
         return;
     }
 
-    let Container = document.querySelectorAll(`.${NameOfContainerClass}`);
-    Group = Array.from(Container).find(Name => Name.id === NameOfGroup);
-    if (!Group){
-        console.log(Group, Container);
-        console.log("Cannot find group")
-        return;
-    }
-    const formattedTime = "00:10:00";
-
-    console.log(Group.id);
-
-    const header = document.createElement('h3');
-    header.classList.add('TODO__TASK');
-    header.textContent = TaskTitle.length > 500 ? TaskTitle.substring(0, 500) + "..." : TaskTitle;
-    header.draggable = 'true';
-
-    const paragraph = document.createElement('p');
-    paragraph.classList.add('TODO__TASK__CONTENT');
-    paragraph.textContent = TaskContent;
-
-    const timestamp = document.createElement('p2');
-    timestamp.classList.add('TODO__TASK__TIME');
-    timestamp.id = formattedTime;
-    timestamp.textContent = formattedTime;
-
-    header.appendChild(paragraph);
-    header.appendChild(timestamp);
-    Group.appendChild(header);
-}
-
-function preventTyping(){
-    document.querySelectorAll('.timer-inputs').forEach(input =>{
-        input.addEventListener('keydown',function(event){
-            event.preventDefault();
-        });
-
-        input.addEventListener('paste', function(event){
-            event.preventDefault();
-        });
-    })
-}
-
-function timeleftToCompleteTask(Cate, taskTitle, taskContent){
-    const now = new Date();
-    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} 
-    ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-
-    console.log(formattedDate);
-
-    fetch("TodoBackend.php",{
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    console.log("Fetching task data...");
+    
+    return fetch("TodoBackend.php", {
         method: "POST",
-        headers: {"Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        signal: controller.signal,
         body: JSON.stringify({
             type: "fetch_task",
+            function: "Send_Task_info_check_to_database_select",
             Category: Cate,
             title: taskTitle,
             Content: taskContent
         })
     })
-    .then(response => response.json())  // Parse as JSON
-    .then(data => console.log("Received Task Data:", data))  // Log received data
-    .catch(error => console.error("Error fetching data:", error));
-    
-    fetch("TodoBackend.php?type=products", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
+    .then(async response => {
+        clearTimeout(timeout);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Response received:', data); // Now we'll see the actual data
+        return data;
     })
-    .then(response => response.json()) // Convert response to JSON
-    .then(data => console.log("Received:", data)) // Log response
-    .catch(error => console.error("Error fetching data:", error));
-    
-    
-    let second = now.getSeconds();
+    .catch(error => {
+        clearTimeout(timeout);
+        console.error("Error:", error);
+        throw error;
+    });
+}
 
-    // if(week >= 1){
-    //     console.log(week + " week left");
-    // }else if (day >= 1){
-    //     console.log(day + " day left");
-    // }else if(hours >= 1){
-    //     console.log(hours + " hour left");
-    // }else if (mins >= 1){
-    //     console.log(mins + " min left");
-    // }else{
-    //     console.log(seconds + " second left");
-    // }
+// And where you call it, add await:
+async function someFunction() {
+    try {
+        const result = await timeleftToCompleteTask("Academics", "asd", "asd");
+        console.log("Task data:", result);
+    } catch (error) {
+        console.error("Failed to get task data:", error);
+    }
 }
 
 function FinalDate (days, hours, mins, seconds){
@@ -164,6 +186,7 @@ function SetFinaltimerUpateTodatabase (category, taskTitle, taskContent, days, h
             'Content-Type': 'application/json' // For form data
         },
         body: JSON.stringify({
+            type : "update_task",
             cate : category,
             title: taskTitle,
             content : taskContent,
@@ -171,7 +194,16 @@ function SetFinaltimerUpateTodatabase (category, taskTitle, taskContent, days, h
             date : DATE
         })
     })
-    .then(response => response.text())  // Handle response
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // Expecting JSON)  // Handle response
+     }) 
+    //  .then(text => {
+    //     console.log("Raw Response:", text); // Log raw response
+    //     return JSON.parse(text); // Attempt to parse JSON
+    // })
     .then(data => console.log('Response:', data))
     .catch(error => console.error('Error:', error));
 }
@@ -330,451 +362,500 @@ function GetGroupName() {
     return groupNameInput.value;
 }
 
-document.addEventListener('DOMContentLoaded', function () { // only active the code when it is on the specific file
-    if (window.location.pathname.toLowerCase().includes('todo')) {
-        console.log("Todo page activated");
+// Improve form submission security
+function handleTaskNameSubmit(event, AddTask, overlay, groupChoice, taskTitle, taskContent, taskForm) {
+    event.preventDefault();
 
-        const GroupContainer = document.querySelector('.TODO__CONTAINER');
-        // const AllGroupContainer = document.querySelectorAll('.TODO__CONTAINER');
+    // Update GroupCard reference
+    GroupCard = document.querySelector('.TODO__CARD');
+    
+    if (!GroupCard) {
+        console.error('No group card found. Please create a group first.');
+        alert('Please create a group before adding tasks.');
+        return;
+    }
 
-        // Get all buttons with the class "TODO__ADD"
-        const buttons = document.querySelectorAll(".TODO__ADD");
+    if (!groupChoice || !groupChoice.value) {
+        console.error('No group selected');
+        alert('Please select a group first.');
+        return;
+    }
 
-        let GroupCard = document.querySelector('.TODO__CARD');
-
-        const GroupCardHeader = document.querySelector('.TODO__CARD_HEADER');
-
-        let GroupCardTask = document.querySelector('.TODO__TASK');
-        // Convert NodeList to an array for easier handling (optional)
-        const buttonArray = Array.from(buttons);
-
-        // Find the button that has "Group" as its text content
-        const groupButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Group"));
-
-        // Find the button that has "Task" as its text content
-        const taskButton = buttonArray.find(btn => btn.textContent.trim().startsWith("Task"));
-
-        let debounceTimeout;
-
-        // createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
-        let observer; // Global variable
-
-        function updateTodataBase(){
-            fetch('TodoBackend.php')
-            .then(response => {
-                if (!response.ok) {
-                throw new Error('Network response was not ok');
-                }
-                // Convert the response to JSON
-                return response.json();
-            })
-            .then(data => {
-                // Use the retrieved data
-                console.log('Data from PHP:', data);
-                
-                // For example, update the DOM or process the data further
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-            });
-        }
-
-        function GroupButton (){
-            const closeGroupAdd = document.getElementById("closeGroupAdd");
-
-            closeGroupAdd.addEventListener("click", handleGroupNameCloseBtn);
-            if (groupButton) {
-                groupButton.addEventListener('click', () => {
-
-                    let classname = 'TODO__GROUP__ADD';
-                    let boxes = document.getElementsByClassName(classname);
-                    // Check if any elements were found
-                    if (boxes.length > 0) {
-                        // Access the first element in the collection
-                        const box = boxes[0];
-                        const overlay = document.querySelector('.Hiddenlayer');
-                        const groupFrom = document.getElementById("groupForm");
-                        // Toggle the display property
-                        if (box.style.display === 'none') {
-                            box.style.display = 'block';
-                            overlay.style.display = 'block';
-
-                             // Call the function to retrieve the input value of the group name
-                            if (!groupFrom) {
-                                console.error("groupForm is not found in the DOM");
-                                return;
-                            }
-                            groupFrom.removeEventListener("submit", handleGroupNameSubmitWrapper);
-                            groupFrom.addEventListener("submit", handleGroupNameSubmitWrapper, { once: true });
-                            console.log("Box is now visible");
-
-                        } else {
-                            box.style.display = 'none';
-                            overlay.style.display = 'none';
-                            console.log("Box is now hidden");
-                        }
-                    } else {
-                        console.log("No elements found with the class 'TODO__GROUP__ADD'");
-                    }
-                })
-            }
-        }
-
-        function CheckIfgroupNameSame(GROUPNAME){
-            const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
-            console.log(GROUPNAMELIST);
-            if(GROUPNAMELIST.length > 0){
-                
-                for (let i = 0; i < GROUPNAMELIST.length; i++){
-                    if (GROUPNAME === GROUPNAMELIST[i].id){
-                        console.log("its the same");
-                        return true;
-                        
-                    }else{
-                        return false;
-                    }
-                }
-            }else{
-                console.log("length is 0");
-            }
-        }
-
-        function GroupNameAvaliablity (){
-            const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
-            if(GROUPNAMELIST.length > 0){
-                return true;
-            }else{
-                return false;
-            }
-        }
-
-        function handleGroupNameSubmit (event, box, overlay, groupFrom){
-            event.preventDefault(); // Prevent the default form submission behavior
-
-            let formData = new FormData(this);
-
-            // Send the form data to PHP using fetch
-            fetch('TodoBackend.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log('Server response:', data);
-                // Optionally, handle the server response here
-            })
-            .catch(error => console.error('Error:', error));
-            const groupName = GetGroupName();
-            
-            box.style.display = 'none';
-            if (groupFrom) {
-                if(CheckIfgroupNameSame(groupName)){
-                    alert('please dont enter the same groupname');
-                    document.querySelector('.Hiddenlayer').style.display = "none";
-                    document.getElementById("groupName").value = '';
-                    groupFrom.removeEventListener("submit", handleGroupNameSubmit);
-                    return;
-                }else{
-                    createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
-                    console.log("submited: ", groupName);
-                    overlay.style.display = 'none';
-                    document.getElementById("groupName").value = '';
-                }
-            }
-        }
-
-        function handleGroupNameSubmitWrapper(event){
-            let boxes = document.getElementsByClassName('TODO__GROUP__ADD');
-            const box = boxes[0];
-            const overlay = document.querySelector('.Hiddenlayer');
-            const groupFrom = document.getElementById("groupForm");
-            handleGroupNameSubmit.call(this, event, box, overlay, groupFrom)
-        }
-
-        function handleGroupNameCloseBtn(){
-            document.querySelector('.TODO__GROUP__ADD').style.display = "none";
-            document.querySelector('.Hiddenlayer').style.display = "none";
-            document.getElementById("groupName").value = '';
-            document.getElementById('taskTitle').value = '';
-
-            let groupFrom = document.getElementById("groupForm");
-
-            if (groupFrom != null){
-                groupFrom.removeEventListener('submit', handleGroupNameSubmitWrapper);
-            }
-        }
-
-        function handleTaskNameSubmit (event, AddTask, overlay, groupChoice, taskTitle ,taskContent, taskForm){
-            event.preventDefault(); // Prevent default form submission (block all the data submit to the php file)
+    const formData = new FormData(this);
+    
+    // Send form data to server
+    fetch('TodoBackend.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("Response from PHP:", data);
         
-            const formData = new FormData(this); // Capture form data
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-            fetch('TodoBackend.php', { // to send the form data to the php file when submition
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log("Response from PHP:", data);
-            })
-            .catch(error => console.error("Error:", error));
-            if (taskForm) {
-                console.log(GroupCard);
-
-                const day = document.querySelector('.TIMER__INPUT[placeholder="Days"]');
-                const hours = document.querySelector('.TIMER__INPUT[placeholder="Hours"]');
-                const minutes = document.querySelector('.TIMER__INPUT[placeholder="Minutes"]');
-                const seconds = document.querySelector('.TIMER__INPUT[placeholder="Seconds"]');
-                
+        if (taskForm) {
+            try {
+                // Create the task UI element
                 CreateNewTask(GroupCard.className, groupChoice.value, taskTitle.value, taskContent.value);
-                console.log(groupChoice.value);
-                console.log(taskContent.value);
+                
+                // Clear form fields
                 document.getElementById('taskContent').value = '';
                 document.getElementById('taskTitle').value = '';
-                const TIMERINPUT = document.querySelectorAll('.TIMER__INPUT');
-                TIMERINPUT.forEach(input => {
+                document.querySelectorAll('.TIMER__INPUT').forEach(input => {
                     input.value = '';
-                })
+                });
+                
+                // Hide the form
                 AddTask.style.display = 'none';
                 overlay.style.display = 'none';
+            } catch (error) {
+                console.error('Error creating task:', error);
+                alert('Failed to create task. Please try again.');
+            }
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert('Failed to save task. Please try again.');
+    });
+}
+
+// Move utility functions to the top of the file
+function preventTyping(){
+    document.querySelectorAll('.timer-inputs').forEach(input =>{
+        input.addEventListener('keydown',function(event){
+            event.preventDefault();
+        });
+
+        input.addEventListener('paste', function(event){
+            event.preventDefault();
+        });
+    });
+}
+
+// Move DragAndDrop and related functions before the DOMContentLoaded event
+function DragAndDrop() {
+    let isUpdating = false;
+    let pendingMutations = false;
+    let observer = null;
+
+    // Check for initial elements
+    const container = document.querySelector('.TODO__CONTAINER');
+    if (!container) {
+        console.error('Container not found');
+        return;
+    }
+
+    const handleMutations = () => {
+        if (isUpdating) return;
+        isUpdating = true;
+
+        try {
+            const cards = document.querySelectorAll('.TODO__CARD');
+            const tasks = document.querySelectorAll('.TODO__TASK');
+
+            // Initialize drag for tasks
+            if (tasks.length > 0) {
+                Drag(tasks);
+            }
+
+            // Initialize drop zones for cards
+            if (cards.length > 0) {
+                Drop(cards);
+            }
+        } catch (error) {
+            console.error('Drag and Drop error:', error);
+        } finally {
+            isUpdating = false;
+        }
+    };
+
+    // Create and start observer
+    observer = new MutationObserver(handleMutations);
+    observer.observe(container, { 
+        childList: true, 
+        subtree: true 
+    });
+
+    // Initial setup
+    handleMutations();
+}
+
+function Drag(elements) {
+    elements.forEach(element => {
+        // Remove existing listeners first
+        element.removeEventListener('dragstart', handleDragStart);
+        element.removeEventListener('dragend', handleDragEnd);
+
+        // Add new listeners
+        element.addEventListener('dragstart', handleDragStart);
+        element.addEventListener('dragend', handleDragEnd);
+    });
+}
+
+function handleDragStart(e) {
+    e.target.classList.add('is-dragging');
+}
+
+function handleDragEnd(e) {
+    e.target.classList.remove('is-dragging');
+}
+
+function Drop(zones) {
+    zones.forEach(zone => {
+        if (zone.dataset.dropInitialized) return;
+        zone.dataset.dropInitialized = 'true';
+
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('drop', handleDrop);
+    });
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    const draggable = document.querySelector('.is-dragging');
+    if (!draggable) return;
+
+    const closestTask = insertAboveTask(e.currentTarget, e.clientY);
+    if (!closestTask) {
+        e.currentTarget.appendChild(draggable);
+    } else {
+        e.currentTarget.insertBefore(draggable, closestTask);
+    }
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+}
+
+function insertAboveTask(zone, mouseY) {
+    const tasks = [...zone.querySelectorAll(".TODO__CARD:not(.is-dragging)")]; // Get all tasks except the one being dragged
+
+    let closestTask = null;
+    let closestOffset = Number.POSITIVE_INFINITY; // Use positive infinity to find the smallest offset
+
+    tasks.forEach(task => {
+        const { top, height } = task.getBoundingClientRect();
+        const middleY = top + height / 2; // Middle of the task box
+        const offset = mouseY - middleY; // Difference between mouse and middle of task
+
+        if (offset < 0 && Math.abs(offset) < Math.abs(closestOffset)) {
+            closestOffset = offset;
+            closestTask = task; // Set the closest task above the mouse
+        }
+    });
+
+    return closestTask; // Return the closest task, or null if none found
+}
+
+// Cleanup function
+function cleanup() {
+    if (observer) {
+        observer.disconnect();
+    }
+    document.querySelectorAll('.TODO__TASK').forEach(task => {
+        task.removeEventListener('dragstart', null);
+        task.removeEventListener('dragend', null);
+    });
+}
+
+function GroupButton() {
+    const closeGroupAdd = document.getElementById("closeGroupAdd");
+    if (!closeGroupAdd) {
+        console.error("closeGroupAdd button not found");
+        return;
+    }
+
+    closeGroupAdd.addEventListener("click", handleGroupNameCloseBtn);
+    const groupButton = Array.from(document.querySelectorAll(".TODO__ADD"))
+        .find(btn => btn.textContent.trim().startsWith("Group"));
+
+    if (groupButton) {
+        groupButton.addEventListener('click', () => {
+            let classname = 'TODO__GROUP__ADD';
+            let boxes = document.getElementsByClassName(classname);
+            // Check if any elements were found
+            if (boxes.length > 0) {
+                // Access the first element in the collection
+                const box = boxes[0];
+                const overlay = document.querySelector('.Hiddenlayer');
+                const groupFrom = document.getElementById("groupForm");
+                // Toggle the display property
+                if (box.style.display === 'none') {
+                    box.style.display = 'block';
+                    overlay.style.display = 'block';
+
+                     // Call the function to retrieve the input value of the group name
+                    if (!groupFrom) {
+                        console.error("groupForm is not found in the DOM");
+                        return;
+                    }
+                    groupFrom.removeEventListener("submit", handleGroupNameSubmitWrapper);
+                    groupFrom.addEventListener("submit", handleGroupNameSubmitWrapper, { once: true });
+                    console.log("Box is now visible");
+
+                } else {
+                    box.style.display = 'none';
+                    overlay.style.display = 'none';
+                    console.log("Box is now hidden");
+                }
+            } else {
+                console.log("No elements found with the class 'TODO__GROUP__ADD'");
+            }
+        });
+    }
+}
+
+function TaskButton() {
+    const taskButton = Array.from(document.querySelectorAll(".TODO__ADD"))
+        .find(btn => btn.textContent.trim().startsWith("Task"));
+    const closeTaskButton = document.getElementById('closeTaskButton');
+    
+    if (closeTaskButton) {
+        closeTaskButton.addEventListener('click', handleTaskNameCloseBtn);
+    } else {
+        console.error("close button not found");
+    }
+
+    if (taskButton) {
+        taskButton.addEventListener('click', () => {
+            // Update GroupCard reference before checking
+            GroupCard = document.querySelector('.TODO__CARD');
+            
+            if (!GroupCard || !GroupNameAvaliablity()) {
+                alert('No groups available. Please create a group first.');
                 return;
             }
-        }
-
-        function handleTaskNameCloseBtn(){
-            console.log("Closed task form page");
-            // clear all the input when close the form
-            document.querySelector('.TODO__TASK__ADD').style.display = "none";
-            document.querySelector('.Hiddenlayer').style.display = "none";
-            document.getElementById('taskContent').value = '';
-            document.getElementById('taskTitle').value = '';
-
-            const TIMERINPUT = document.querySelectorAll('.TIMER__INPUT');
-            TIMERINPUT.forEach(input => {
-                input.value = '';
-            })
-
-            let taskForm = document.getElementById('taskForm');
-            if (typeof taskForm !== "undefined" && taskForm) {
-                taskForm.removeEventListener("submit", handleTaskNameSubmitWrapper);
-            }
-        }
-
-        function handleTaskNameSubmitWrapper(event) {
-            // Assuming the parameters are available globally or you retrieve them here
-            const addTask = document.querySelector('.TODO__TASK__ADD');
+            const AddTask = document.querySelector('.TODO__TASK__ADD');
             const overlay = document.querySelector('.Hiddenlayer');
             const taskForm = document.getElementById('taskForm');
             const groupChoice = document.getElementById('GROUP__NAME__TASK');
             const taskContent = document.getElementById('taskContent');
-            const TaskTItle = document.getElementById('taskTitle');
-            console.log(TaskTItle);
-            handleTaskNameSubmit.call(this, event, addTask, overlay, groupChoice, TaskTItle, taskContent, taskForm);
-        }
-
-        function TaskButton (){
-            const closeTaskButton = document.getElementById('closeTaskButton');
-            if (closeTaskButton){
-                closeTaskButton.addEventListener('click', handleTaskNameCloseBtn);
-            }else{
-                console.error("close button not found");
+            console.log(AddTask)
+            if (AddTask) {
+                if (AddTask.style.display === 'none') {
+                    AddTask.style.display = 'block'; // make the form visisble
+                    overlay.style.display = 'block';
+                    // taskForm.removeEventListener("submit", handleTaskNameSubmitWrapper);
+                    taskForm.addEventListener('submit', handleTaskNameSubmitWrapper,{once : true});
+                } else {
+                    AddTask.style.display = 'none';
+                    overlay.style.display = 'none';
+                }
+            } else {
+                console.log("not enough length");
             }
+        });
+    }
+}
 
-            if (taskButton) {
-                taskButton.addEventListener('click', () => {
-                    if(!GroupNameAvaliablity()){
-                        alert('No Group avaliable please go to enter group first');
-                        return;
-                    }
-                    const AddTask = document.querySelector('.TODO__TASK__ADD');
-                    const overlay = document.querySelector('.Hiddenlayer');
-                    const taskForm = document.getElementById('taskForm');
-                    const groupChoice = document.getElementById('GROUP__NAME__TASK');
-                    const taskContent = document.getElementById('taskContent');
-                    console.log(AddTask)
-                    if (AddTask) {
-                        if (AddTask.style.display === 'none') {
-                            AddTask.style.display = 'block'; // make the form visisble
-                            overlay.style.display = 'block';
-                            // taskForm.removeEventListener("submit", handleTaskNameSubmitWrapper);
-                            taskForm.addEventListener('submit', handleTaskNameSubmitWrapper,{once : true});
-                        } else {
-                            AddTask.style.display = 'none';
-                            overlay.style.display = 'none';
-                        }
-                    } else {
-                        console.log("not enough length");
-                    }
-                });
-            }
-        }
-
-        function selectelement (id){
-            let addedId = document.getElementById(id);
-            return addedId;
-        }
-
-        function DragAndDrop() {
-            let isUpdating = false; 
-        
-            observer = new MutationObserver((mutations) => {
-                if (isUpdating) return; // Prevent re-entry
-        
-                // Check if any relevant nodes were added
-                const relevantMutations = mutations.some(mutation => 
-                    mutation.addedNodes && mutation.addedNodes.length > 0
-                );
-
-                GroupCard = document.querySelector('.TODO__CARD');
-                GroupCardTask = document.querySelector('.TODO__TASK');
-        
-                if (relevantMutations) {
-                    isUpdating = true; // Prevent looping
-        
-                    // Pause observer while updating
-                    observer.disconnect();
-                    if(GroupCardTask === null){
-                        console.log("its null ignore");
-                    }else{
-                        try {
-                            const draggables = document.querySelectorAll(`.${GroupCardTask.className}`)
-                            console.log(draggables); // Debugging
-            
-                            Drag(draggables);
-                            
-                        }catch (error){
-                            if(error instanceof TypeError){
-                                console.error("Caught a TypeError:", error.message);
-                            }else {
-                                // Handle other types of errors if needed
-                                console.error("An unexpected error occurred:", error);
-                            }
-                        }
-                    }
-                    
-                    try{
-                        const droppables = document.querySelectorAll(`.${GroupCard.className}`);
-                        // console.log(droppables)
-                        Drop(droppables);
-
-                    }catch (error){
-                        if(error instanceof TypeError){
-                            console.error("Caught a TypeError for droppables:", error.message);
-                        }else {
-                            // Handle other types of errors if needed
-                            console.error("An unexpected error occurred:", error);
-                        }
-                    }
-
-                    // Resume observer **AFTER** execution to avoid recursive calls
-                    setTimeout(() => {
-                        observer.observe(GroupContainer, { childList: true, subtree: true });
-                        isUpdating = false; 
-                    }, 50); // Delay prevents excessive triggering
-                }
-            });
-        
-            // Start observing for changes
-            observer.observe(GroupContainer, { childList: true, subtree: true });
-        }
-        
-        function Drag(draggables) {
-            draggables.forEach(element => {
-                element.addEventListener('dragstart', () => {
-                    element.classList.add('is-dragging');
-        
-                    // Temporarily stop observing to avoid loops
-                    if (observer) observer.disconnect();
-                });
-        
-                element.addEventListener('dragend', () => {
-                    element.classList.remove('is-dragging');
-        
-                    // Restart observing with a slight delay to prevent instant recursion
-                    setTimeout(() => {
-                        if (observer) observer.observe(GroupContainer, { childList: true, subtree: true });
-                    }, 50);
-                });
-            });
-        }
-        
-        function Drop(droppables) {
-            if (droppables === null) return;
-            droppables.forEach(zone => {
-                console.log(zone.dataset)
-                if (!zone.dataset.listener) { // Avoid adding multiple event listeners
-                    
-                    zone.dataset.listener = "true"; 
-        
-                    zone.addEventListener("dragover", (e) => {
-                        e.preventDefault(); // Required to allow dropping
-        
-                        const curTask = document.querySelector(".is-dragging");
-                        const closestTask = insertAboveTask(zone, e.clientY);
-        
-                        if (!closestTask) {
-                            // If there's no task below, append at the end
-                            zone.appendChild(curTask);
-                        } else {
-                            // Insert before the closest task
-                            zone.insertBefore(curTask, closestTask);
-                        }
-                    });
-        
-                    zone.addEventListener("drop", (e) => {
-                        e.preventDefault(); // Prevent default drop behavior
-                    });
-                }
-            });
-        }
-        
-        function insertAboveTask(zone, mouseY) {
-            const tasks = [...zone.querySelectorAll(".TODO__CARD:not(.is-dragging)")]; // Get all tasks except the one being dragged
-        
-            let closestTask = null;
-            let closestOffset = Number.POSITIVE_INFINITY; // Use positive infinity to find the smallest offset
-        
-            tasks.forEach(task => {
-                const { top, height } = task.getBoundingClientRect();
-                const middleY = top + height / 2; // Middle of the task box
-                const offset = mouseY - middleY; // Difference between mouse and middle of task
-        
-                if (offset < 0 && Math.abs(offset) < Math.abs(closestOffset)) {
-                    closestOffset = offset;
-                    closestTask = task; // Set the closest task above the mouse
-                }
-            });
-        
-            return closestTask; // Return the closest task, or null if none found
-        }
-        
-        // setTimeout(()=>{
-        //     createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', 'chen');
-        // }, 1000)
-        
-        // Drag();
-        // Drop();
-        
-        // MovingCard();
-
-        // updateTodataBase();
-        // MovingCard();
-
-        DragAndDrop();
+document.addEventListener('DOMContentLoaded', function () {
+    if (!window.location.pathname.toLowerCase().includes('todo')) {
+        return;
+    }
+    
+    console.log("Todo page activated");
+    
+    try {
+        // Initialize functionality
         CreateTaskForm();
         GroupButton();
         TaskButton();
         preventTyping();
-        // if (document.querySelectorAll(`.${GroupCardTask.className}`).length === 0){
-        //     console.log("its a null");
-        // }else{
-        //     
-        // }
+        
+        // Initialize drag and drop after a short delay to ensure DOM is ready
+        setTimeout(DragAndDrop, 100);
 
-        timeleftToCompleteTask();
-        SetFinaltimerUpateTodatabase("hello", "well", null, 0, 24, 59, 0);
- // Output: "2025-02-25 14:30:45"
+        // Initialize global DOM elements after forms are created
+        GroupContainer = document.querySelector('.TODO__CONTAINER');
+        if (!GroupContainer) {
+            throw new Error('Required container element not found');
+        }
+
+        // Add cleanup on page unload
+        window.addEventListener('unload', cleanup);
+        
+        // Test functions only if groups exist
+        ObserveChanges('TODO__CONTAINER');
+        
+    } catch (error) {
+        console.error('Initialization error:', error);
     }
-})
+});
+
+function ObserveChanges(className) {
+    const container = document.querySelector(`.${className}`);
+    if (!container) {
+        console.error(`Container with class ${className} not found`);
+        return;
+    }
+
+    const observer = new MutationObserver(() => {
+        console.log(`Changes detected in ${className}`);
+        if (GroupNameAvaliablity()) {
+            SetFinaltimerUpateTodatabase("Academics", "asd", "asd", 0, 24, 59, 0);
+            timeleftToCompleteTask("Academics", "asd", "asd");
+        }
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
+
+}
+
+function CheckIfgroupNameSame(GROUPNAME){
+    const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
+    console.log(GROUPNAMELIST);
+    if(GROUPNAMELIST.length > 0){
+        
+        for (let i = 0; i < GROUPNAMELIST.length; i++){
+            if (GROUPNAME === GROUPNAMELIST[i].id){
+                console.log("its the same");
+                return true;
+                
+            }else{
+                return false;
+            }
+        }
+    }else{
+        console.log("length is 0");
+    }
+}
+
+function GroupNameAvaliablity (){
+    const GROUPNAMELIST = document.querySelectorAll('.TODO__CARD');
+    if(GROUPNAMELIST.length > 0){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function handleGroupNameSubmit (event, box, overlay, groupFrom){
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    let formData = new FormData(this);
+
+    // Send the form data to PHP using fetch
+    fetch('TodoBackend.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log('Server response:', data);
+        // Optionally, handle the server response here
+    })
+    .catch(error => console.error('Error:', error));
+    const groupName = GetGroupName();
+    
+    box.style.display = 'none';
+    if (groupFrom) {
+        if(CheckIfgroupNameSame(groupName)){
+            alert('please dont enter the same groupname');
+            document.querySelector('.Hiddenlayer').style.display = "none";
+            document.getElementById("groupName").value = '';
+            groupFrom.removeEventListener("submit", handleGroupNameSubmit);
+            return;
+        }else{
+            createNewGroup('TODO__CONTAINER', 'TODO__CARD', 'h3', 'TODO__CARD_HEADER', groupName);
+            console.log("submited: ", groupName);
+            overlay.style.display = 'none';
+            document.getElementById("groupName").value = '';
+        }
+    }
+}
+
+function handleGroupNameSubmitWrapper(event){
+    let boxes = document.getElementsByClassName('TODO__GROUP__ADD');
+    const box = boxes[0];
+    const overlay = document.querySelector('.Hiddenlayer');
+    const groupFrom = document.getElementById("groupForm");
+    handleGroupNameSubmit.call(this, event, box, overlay, groupFrom)
+}
+
+function handleGroupNameCloseBtn(){
+    document.querySelector('.TODO__GROUP__ADD').style.display = "none";
+    document.querySelector('.Hiddenlayer').style.display = "none";
+    document.getElementById("groupName").value = '';
+    document.getElementById('taskTitle').value = '';
+
+    let groupFrom = document.getElementById("groupForm");
+
+    if (groupFrom != null){
+        groupFrom.removeEventListener('submit', handleGroupNameSubmitWrapper);
+    }
+}
+
+function handleTaskNameSubmit (event, AddTask, overlay, groupChoice, taskTitle ,taskContent, taskForm){
+    event.preventDefault(); // Prevent default form submission (block all the data submit to the php file)
+
+    const formData = new FormData(this); // Capture form data
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+    }
+    fetch('TodoBackend.php', { // to send the form data to the php file when submition
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("Response from PHP:", data);
+    })
+    .catch(error => console.error("Error:", error));
+    if (taskForm) {
+        console.log(GroupCard);
+
+        const day = document.querySelector('.TIMER__INPUT[placeholder="Days"]');
+        const hours = document.querySelector('.TIMER__INPUT[placeholder="Hours"]');
+        const minutes = document.querySelector('.TIMER__INPUT[placeholder="Minutes"]');
+        const seconds = document.querySelector('.TIMER__INPUT[placeholder="Seconds"]');
+        
+        CreateNewTask(GroupCard.className, groupChoice.value, taskTitle.value, taskContent.value);
+        console.log(groupChoice.value);
+        console.log(taskContent.value);
+        document.getElementById('taskContent').value = '';
+        document.getElementById('taskTitle').value = '';
+        const TIMERINPUT = document.querySelectorAll('.TIMER__INPUT');
+        TIMERINPUT.forEach(input => {
+            input.value = '';
+        })
+        AddTask.style.display = 'none';
+        overlay.style.display = 'none';
+        return;
+    }
+}
+
+function handleTaskNameCloseBtn(){
+    console.log("Closed task form page");
+    // clear all the input when close the form
+    document.querySelector('.TODO__TASK__ADD').style.display = "none";
+    document.querySelector('.Hiddenlayer').style.display = "none";
+    document.getElementById('taskContent').value = '';
+    document.getElementById('taskTitle').value = '';
+
+    const TIMERINPUT = document.querySelectorAll('.TIMER__INPUT');
+    TIMERINPUT.forEach(input => {
+        input.value = '';
+    })
+
+    let taskForm = document.getElementById('taskForm');
+    if (typeof taskForm !== "undefined" && taskForm) {
+        taskForm.removeEventListener("submit", handleTaskNameSubmitWrapper);
+    }
+}
+
+function handleTaskNameSubmitWrapper(event) {
+    // Assuming the parameters are available globally or you retrieve them here
+    const addTask = document.querySelector('.TODO__TASK__ADD');
+    const overlay = document.querySelector('.Hiddenlayer');
+    const taskForm = document.getElementById('taskForm');
+    const groupChoice = document.getElementById('GROUP__NAME__TASK');
+    const taskContent = document.getElementById('taskContent');
+    const TaskTItle = document.getElementById('taskTitle');
+    console.log(TaskTItle);
+    handleTaskNameSubmit.call(this, event, addTask, overlay, groupChoice, TaskTItle, taskContent, taskForm);
+}
+
+function selectelement (id){
+    let addedId = document.getElementById(id);
+    return addedId;
+}
