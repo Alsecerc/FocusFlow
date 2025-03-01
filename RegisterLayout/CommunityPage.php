@@ -15,6 +15,7 @@ if (!isset($_COOKIE['UID'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Community</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -37,14 +38,14 @@ if (!isset($_COOKIE['UID'])) {
                 </h1>
             </a>
         </div>
+
         <div class="HEADER__SEARCH">
-            <button class="HEADER__SEARCH_BUTTON">
-                <span class="material-symbols-outlined">
-                    search
-                </span>
-            </button>
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
+            <span class="material-icons SEARCH_ICON">search</span>
+            <input type="text" id="searchInput" class="HEADER__SEARCH_INPUT" placeholder="Search..." onkeyup="searchFunction()" autocomplete="off">
+            <div id="searchResults" class="SEARCH_RESULTS"></div>
         </div>
+
+
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
@@ -121,59 +122,48 @@ if (!isset($_COOKIE['UID'])) {
                 <ul>
                     <li>
                         <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                home
-                            </span>Dashboard
+                            <span class="material-icons">home</span>Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                timer
-                            </span>Focus Timer
+                            <span class="material-icons">timer</span>Focus Timer
                         </a>
                     </li>
                     <li>
                         <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                task_alt
-                            </span>To Do
+                            <span class="material-icons">task_alt</span>To Do
                         </a>
                     </li>
                     <li>
                         <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                event
-                            </span>Calendar
+                            <span class="material-icons">event</span>Calendar
                         </a>
                     </li>
                     <li>
                         <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                analytics
-                            </span>Analytics
+                            <span class="material-icons">analytics</span>Analytics
                         </a>
                     </li>
                     <li>
                         <a href="Goal.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                track_changes
-                            </span>Goals
+                            <span class="material-icons">track_changes</span>Goals
                         </a>
                     </li>
                     <li>
                         <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                chat
-                            </span>Direct Message
+                            <span class="material-icons">chat</span>Direct Message
                         </a>
                     </li>
                 </ul>
             </nav>
-            <?php
-            $loggedInUserID = $_COOKIE['UID']; // Assuming you store the logged-in user ID in a cookie
 
-            $sql = "SELECT DISTINCT team_name FROM team WHERE leader_id = ? OR member_id = ?";
+            <?php
+            $loggedInUserID = $_COOKIE['UID']; // Assuming user ID is stored in a cookie
+
+            $sql = "SELECT id, team_name FROM team 
+            WHERE leader_id = ? OR member_id = ? 
+            GROUP BY team_name";
             $stmt = $_conn->prepare($sql);
             $stmt->bind_param("ii", $loggedInUserID, $loggedInUserID);
             $stmt->execute();
@@ -183,23 +173,23 @@ if (!isset($_COOKIE['UID'])) {
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <?php
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo '<li>
-                        <a href="CommunityPage.php?team=' . urlencode($row['team_name']) . '" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            ' . htmlspecialchars($row['team_name']) . '
-                        </a>
-                      </li>';
-                        }
-                    } else {
-                        echo '<li>No teams found</li>';
-                    }
-                    ?>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <li>
+                                <a href="CommunityPage.php?team_id=<?= urlencode($row['id']) ?>&team=<?= urlencode($row['team_name']) ?>"
+                                    class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                                    <?= htmlspecialchars($row['team_name']) ?>
+                                </a>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <li>No teams found</li>
+                    <?php endif; ?>
                 </ul>
             </nav>
-
         </div>
+
+
 
         <article class="COMMUNITY1">
             <section class="COMMUNITY1__HEADER">
@@ -210,14 +200,95 @@ if (!isset($_COOKIE['UID'])) {
                 ?>
                 <div class="COMMUNITY1__HEADER__RIGHT">
 
-                    <div>
+                    <div class="COMM__ADD_TASK">
                         <p class="COMMUNITY__HEADER__TITLE">Add Task</p>
-                        <a href="#" class="HEADER__UL__ICON">
-                            <span class="material-icons">
-                                add_circle_outline
-                            </span>
+                        <!-- Add Task Button -->
+                        <a href="#" class="HEADER__UL__ICON" id="openTaskForm">
+                            <span class="material-icons">add_circle_outline</span>
                         </a>
+
+                        <!-- the add task survey -->
+                        <div id="taskPopUp" class="ADD_TASK__SURVEY">
+                            <h4>Add New Task</h4>
+                            <form action=" CommunityAddTask.php" method="POST" id="taskPopUpForm" class="POP_UP__FORM">
+
+
+                                <!-- Task Name -->
+                                <label class="INPUT__BOX">
+                                    <input type="text" name="task_name" id="task_name" class="INPUT__INPUT" required>
+                                    <span class="INPUT__PLACEHOLDER">Task Name:</span>
+                                </label>
+
+                                <!-- Assigned To -->
+                                <label class="INPUT__BOX">
+                                    <select name="assigned_to" id="assigned_to" class="INPUT__INPUT" required>
+                                        <option value="" disabled selected>Select Member</option>
+                                        <!-- Dynamically load team members from database -->
+                                    </select>
+                                    <span class="INPUT__PLACEHOLDER AUTOFOCUS">Assign To:</span>
+                                </label>
+
+                                <!-- Task Description -->
+                                <label class="INPUT__BOX">
+                                    <input type="text" name="task_desc" id="task_desc" class="INPUT__INPUT" required>
+                                    <span class="INPUT__PLACEHOLDER">Task Description:</span>
+                                </label>
+
+                                <!-- Due Date -->
+                                <label class="INPUT__BOX">
+                                    <input type="date" name="due_date" id="due_date" class="INPUT__INPUT" min="" max="2040-01-01" required>
+                                    <span class="INPUT__PLACEHOLDER AUTOFOCUS">Due Date:</span>
+                                </label>
+
+                                <!-- Popup Controls -->
+                                <div class="POP_UP__CONTROLS">
+                                    <button type="button" class="CONTROLS__CLOSE" id="closeTaskForm">Close</button>
+                                    <button type="reset" class="CONTROLS__RESET">Reset</button>
+                                    <button type="submit" class="CONTROLS__SUBMIT">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+
+
                     </div>
+
+                    <?php
+
+                    // Ensure UID cookie and team name exist
+                    if (!isset($_COOKIE['UID']) || !isset($_GET['team'])) {
+                        die("Unauthorized request.");
+                    }
+
+                    $user_id = (int) $_COOKIE['UID'];
+                    $team_name = htmlspecialchars(urldecode($_GET['team']));
+
+                    // Check if the user is the leader of the team
+                    $sql = "SELECT leader_id FROM team WHERE team_name = ?";
+                    $stmt = $_conn->prepare($sql);
+                    $stmt->bind_param("s", $team_name);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    $isLeader = false;
+                    if ($row = $result->fetch_assoc()) {
+                        $isLeader = ($row['leader_id'] == $user_id);
+                    }
+
+                    $stmt->close();
+                    $_conn->close();
+                    ?>
+
+                    <!-- FRONTEND -->
+                    <?php if ($isLeader): ?>
+                        <div>
+                            <p class="COMMUNITY__HEADER__TITLE">Remove Task</p>
+                            <!-- Add Task Button -->
+                            <a href="#" class="HEADER__UL__ICON" id="removeTaskBtn">
+                                <span class="material-icons">remove_circle_outline</span>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
 
                     <div>
                         <p class="COMMUNITY__HEADER__TITLE">Upload File</p>
@@ -253,7 +324,23 @@ if (!isset($_COOKIE['UID'])) {
 
             <section class="COMMUNITY1__MAIN">
                 <div class="TASK__CONTAINER">
-                    <h3>Task List</h3>
+                    <div class="TASK__CONTAINER__TITLE">
+                        <h3 class="DISPLAY__TITLE">Task List</h3>
+                        <div class="DISPLAY__ICON">
+                            <div>
+                                <p>Completed </p>
+                                <span class="material-icons">check_circle</span>
+                            </div>
+                            <div>
+                                <p>In Progress </p>
+                                <span class="material-icons">pending</span>
+                            </div>
+                            <div>
+                                <p>Pending </p>
+                                <span class="material-icons">watch_later</span>
+                            </div>
+                        </div>
+                    </div>
                     <?php
                     include "conn.php";
 
@@ -264,39 +351,82 @@ if (!isset($_COOKIE['UID'])) {
                     $teamName = $_GET['team'];
 
                     // Prepare query to get tasks assigned to the team
-                    $sql = "SELECT gt.task_name, gt.task_description, gt.status, gt.due_date, u.name AS assigned_to_name 
-                FROM group_tasks gt
-                JOIN users u ON gt.assigned_to = u.id
-                WHERE gt.team_name = ?";
+                    $sql = "SELECT 
+                    gt.id,
+            gt.task_name, 
+            gt.task_description, 
+            gt.status, 
+            gt.due_date, 
+            gt.assigned_at, 
+            GROUP_CONCAT(DISTINCT u1.name SEPARATOR ', ') AS assigned_to_names, 
+            u2.name AS assigned_by_name
+        FROM group_tasks gt
+        JOIN users u1 ON FIND_IN_SET(u1.id, gt.assigned_to)
+        JOIN users u2 ON gt.assigned_by = u2.id
+        WHERE gt.team_name = ?
+        GROUP BY gt.task_name, gt.task_description, gt.status, gt.due_date, gt.assigned_at, u2.name";
+
+
                     $stmt = $_conn->prepare($sql);
                     $stmt->bind_param("s", $teamName);
                     $stmt->execute();
                     $result = $stmt->get_result();
 
                     if ($result->num_rows > 0) {
-                        echo '<ul class="TASK_LIST">';
+                        echo '<ul class="TASK_LIST" id="taskList">';
                         while ($row = $result->fetch_assoc()) {
+                            $taskID = htmlspecialchars($row['id']);
                             $taskName = htmlspecialchars($row['task_name']);
                             $taskDesc = htmlspecialchars($row['task_description']);
                             $status = htmlspecialchars($row['status']);
                             $dueDate = htmlspecialchars($row['due_date']);
-                            $assignedTo = htmlspecialchars($row['assigned_to_name']);
+                            $assignedTo = htmlspecialchars($row['assigned_to_names']); // Multiple people assigned
+                            $assignedFrom = htmlspecialchars($row['assigned_by_name']);
+                            $assignedAt = htmlspecialchars($row['assigned_at']);
 
-                            // Assign class based on task status
+                            // Assign class and icon based on task status
                             $statusClass = ($status == 'completed') ? 'task-completed' : (($status == 'in progress') ? 'task-inprogress' : 'task-pending');
+                            $statusIcon = ($status == 'completed') ? 'check_circle' : (($status == 'in progress') ? 'pending' : 'watch_later');
 
-                            echo "<li class='TASK_ITEM $statusClass'>
-                        <h4>$taskName</h4>
-                        <p><strong>Description:</strong> $taskDesc</p>
-                        <p><strong>Assigned To:</strong> $assignedTo</p>
-                        <p><strong>Status:</strong> <span class='task-status'>$status</span></p>
-                        <p><strong>Due Date:</strong> $dueDate</p>
-                    </li>";
+                            echo "<li class='TASK_ITEM $statusClass' data-task-id='$taskID'>
+                            <div class='REMOVE__OVERLAY REMOVE__OVERLAY__HIDE'><span class='material-icons'>
+do_disturb_on
+</span></div>
+                                <div class='TASK_ITEM_TITLE'>
+                                
+                                    <h4>$taskName</h4>
+                                    
+                                    <div class='TASK_STATUS_DROPDOWN'>
+                                        <button class='task-status-btn' onclick='toggleDropdown(this)'>
+                                            <span class='material-icons'>$statusIcon</span>
+                                        </button>
+                                        
+                                        <div class='dropdown-menu'>
+                                            <button onclick='updateStatus($taskID, \"pending\")'>Pending</button>
+                                            <button onclick='updateStatus($taskID, \"in progress\")'>In Progress</button>
+                                            <button onclick='updateStatus($taskID, \"completed\")'>Completed</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p><strong>Due Date:</strong> $dueDate</p>
+                                <div class='TASK_ITEM_MIDDLE'>
+                                    <strong>Description</strong>
+                                    <p>$taskDesc</p>
+                                </div>
+                                <div class='TASK_ITEM_BOTTOM'>
+                                    <h4>Members Assigned</h4>
+                                    <p>$assignedTo</p> <!-- Now displays multiple names -->
+                                </div>
+                                <small><strong>Assigned By: </strong>$assignedFrom</small><br>
+                                <small><strong>At: </strong>$assignedAt</small>
+                            </li>";
                         }
+
                         echo '</ul>';
                     } else {
-                        echo "<p>No tasks available for this team.</p>";
+                        echo "<p class='NO_TASK__FOUND'>No tasks found for this team.</p>";
                     }
+
 
                     $stmt->close();
                     $_conn->close();
@@ -308,7 +438,23 @@ if (!isset($_COOKIE['UID'])) {
 
 
             <section class="COMMUNITY1__MEMBER">
+
+                <button class="RESPONSIVE__MEMBER_BUTTON"><span class="material-icons RESPONSIVE__SHOW_ICON">
+                        keyboard_double_arrow_left
+                    </span></button>
+
+
                 <div class="LEADER__CONTAINER">
+                    <div class="MEMBER__MANAGE">
+                        <button class="HEADER__UL__ICON CLICKABLE" onclick="addMember()">
+                            <span class="material-icons">person_add</span>
+                        </button>
+
+                        <button class="HEADER__UL__ICON CLICKABLE" onclick="removeMember()">
+                            <span class="material-icons">person_remove</span>
+                        </button>
+
+                    </div>
                     <h3>Leader</h3>
 
                     <?php

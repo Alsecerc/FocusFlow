@@ -471,5 +471,76 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// search
+function searchFunction() {
+    let query = document.getElementById("searchInput").value;
+    let resultDiv = document.getElementById("searchResults");
+
+    if (query.length < 2) {
+        resultDiv.style.display = "none";
+        return;
+    }
+
+    fetch(`1Search.php?query=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            resultDiv.innerHTML = "";
+            if (data.length === 0) {
+                resultDiv.innerHTML = "<p class='SEARCH__NO_RESULT'>No results found</p>";
+            } else {
+                let resultList = "<ul>";
+                data.forEach(item => {
+                    if (item.type === "task") {
+                        resultList += `<li onclick="redirectToTask(${item.id})"><span class="material-icons">task_alt</span> Task :  ${item.name}</li>`;
+                    } else if (item.type === "page") {
+                        resultList += `<li onclick="redirectToPage('${item.link}')"><span class="material-icons">tab</span> Page : ${item.name}</li>`;
+                    } else if (item.type === "member") {
+                        resultList += `<li onclick="redirectToDM('${item.id}','${item.name}')"><span class="material-icons">chat</span> User : ${item.name}</li>`;
+                    } else if (item.type === "group_task") {
+                        let assignmentText = item.assignment_type === "assigned_to_me"
+                            ? `(Task assigned to you in ${item.name})`
+                            : `(You assigned this task in ${item.name})`;
+                    
+                        resultList += `<li onclick="redirectToTeam('${item.id}','${item.name}')">
+                                        <span class="material-icons">groups</span>
+                                        <div class='RESULT__GROUP_TASK'>
+                                            <div>Task: ${item.taskName}</div>
+                                            <small>${assignmentText}</small>
+                                        </div>
+                                      </li>`;
+                    }
+                     else if (item.type === "goal") {
+                        resultList += `<li onclick="redirectToGoal()"><span class="material-icons">track_changes</span> Goal : ${item.name}</li>`;
+                    }
+                });
+                resultList += "</ul>";
+                resultDiv.innerHTML = resultList;
+            }
+            resultDiv.style.display = "block";
+        });
+}
+
+function redirectToTask(taskId) {
+    window.location.href = `Todo.php?task_id=${taskId}`;
+}
+
+function redirectToPage(pageLink) {
+    window.location.href = pageLink;
+}
+
+function redirectToDM(memberId,memberName) {
+    window.location.href = `CommunityDMPage.php?receiver_id=${memberId}&name=${memberName}`;
+}
+
+function redirectToGoal() {
+    window.location.href = `Goal.php`;
+}
+
+function redirectToTeam(teamID, teamName) {
+    window.location.href = `CommunityPage.php?team_id=${teamID}&team=${teamName}`;
+}
+
+
+
 
 

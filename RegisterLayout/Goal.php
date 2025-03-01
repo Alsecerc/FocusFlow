@@ -25,7 +25,7 @@ if (!isset($_COOKIE['UID'])) {
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -37,14 +37,14 @@ if (!isset($_COOKIE['UID'])) {
                 </h1>
             </a>
         </div>
+
         <div class="HEADER__SEARCH">
-            <button class="HEADER__SEARCH_BUTTON">
-                <span class="material-symbols-outlined">
-                    search
-                </span>
-            </button>
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
+            <span class="material-icons SEARCH_ICON">search</span>
+            <input type="text" id="searchInput" class="HEADER__SEARCH_INPUT" placeholder="Search..." onkeyup="searchFunction()" autocomplete="off">
+            <div id="searchResults" class="SEARCH_RESULTS"></div>
         </div>
+
+
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
@@ -80,8 +80,8 @@ if (!isset($_COOKIE['UID'])) {
                                             <li class="NOTI__ITEM NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
-                                                $result2 = $_conn->query($sql2); 
-                                                $sender = $result2->fetch_assoc(); 
+                                                $result2 = $_conn->query($sql2);
+                                                $sender = $result2->fetch_assoc();
 
                                                 if ($result2->num_rows > 0) {
                                                 ?>
@@ -116,110 +116,108 @@ if (!isset($_COOKIE['UID'])) {
     </header>
 
     <main>
-    <div class="SIDEBAR" style="overflow-y: auto;">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
                         <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                home
-                            </span>Dashboard
+                            <span class="material-icons">home</span>Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                timer
-                            </span>Focus Timer
+                            <span class="material-icons">timer</span>Focus Timer
                         </a>
                     </li>
                     <li>
                         <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                task_alt
-                            </span>To Do
+                            <span class="material-icons">task_alt</span>To Do
                         </a>
                     </li>
                     <li>
                         <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                event
-                            </span>Calendar
+                            <span class="material-icons">event</span>Calendar
                         </a>
                     </li>
                     <li>
                         <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                analytics
-                            </span>Analytics
+                            <span class="material-icons">analytics</span>Analytics
                         </a>
                     </li>
                     <li>
                         <a href="Goal.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                track_changes
-                                </span>Goals
+                            <span class="material-icons">track_changes</span>Goals
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">chat</span>Direct Message
                         </a>
                     </li>
                 </ul>
             </nav>
+
+            <?php
+            $loggedInUserID = $_COOKIE['UID']; // Assuming user ID is stored in a cookie
+
+            $sql = "SELECT id, team_name FROM team 
+            WHERE leader_id = ? OR member_id = ? 
+            GROUP BY team_name";
+            $stmt = $_conn->prepare($sql);
+            $stmt->bind_param("ii", $loggedInUserID, $loggedInUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            ?>
+
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li>
-                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Channel 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-                <h4 class="NAV_TITLE">Direct Messages</h4>
-                <ul class="DM_USER_LIST">
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
-                            Micheal Brown
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Jane Smith
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                        Sarah Lee
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <li>
+                                <a href="CommunityPage.php?team_id=<?= urlencode($row['id']) ?>&team=<?= urlencode($row['team_name']) ?>"
+                                    class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                                    <?= htmlspecialchars($row['team_name']) ?>
+                                </a>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <li>No teams found</li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
+
         <article class="GOAL__MAIN">
-            <button class="GOAL__SET" onclick="togglePopup()">Add Goal</button>
+            <div style="display: flex; justify-content:space-between; align-items:center;">
+                <h2>Your Goals</h2>
+                <div>
+                    <button class="GOAL__SET" onclick="togglePopup()">Add Goal</button>
+                    <button class="GOAL__SET" onclick="toggleProgressPopup()">Update Goal</button>
+                </div>
+            </div>
             <div class="GOAL__INPUT" style="display: none;">
+                <h4>Set your goal</h4>
                 <form action="GoalAdd.php" method="POST" class="GOAL__FORM">
 
                     <label class="INPUT__BOX">
-                        <input type="text" name="goal_title" class="INPUT__INPUT">
+                        <input type="text" name="goal_title" class="INPUT__INPUT" required>
                         <span class="INPUT__PLACEHOLDER">Goal Title</span>
                     </label>
 
                     <label class="INPUT__BOX">
-                        <input type="text" name="goal_description" class="INPUT__INPUT">
+                        <input type="text" name="goal_description" class="INPUT__INPUT" required>
                         <span class="INPUT__PLACEHOLDER">Description</span>
                     </label>
 
-                    <div style="display: flex; flex-direction:column;">
-                        <label>Goal Type:</label>
+
+                    <label class="INPUT__BOX">
                         <select name="goal_type" required>
                             <option value="short-term">Short-Term</option>
                             <option value="long-term">Long-Term</option>
                         </select>
-                    </div>
+                        <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="goal_ph">Goal Type</span>
+                    </label>
 
                     <label class="INPUT__BOX">
                         <input type="date" name="start_time" id="start_time" class="INPUT__INPUT" max="2050-01-01" required>
@@ -231,10 +229,12 @@ if (!isset($_COOKIE['UID'])) {
                         <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="end_time_ph">Ending Date</span>
                     </label>
 
-                    <div style="display: flex; flex-direction:column;">
-                        <label>Reminder Time:</label>
+
+                    <label class="INPUT__BOX">
                         <input type="datetime-local" name="reminder_time" id="reminder_time">
-                    </div>
+                        <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="remainder_ph">Reminder Time</span>
+                    </label>
+
                     <button type="submit" class="GOAL__SET">Set Goal</button>
                 </form>
             </div>
@@ -281,15 +281,17 @@ if (!isset($_COOKIE['UID'])) {
                 <?php endif; ?>
             </div>
 
-            <div>
-                <form action="Goal.php" method="POST">
+
+
+            <div id="progressForm" style="display: none;">
+                <form action="Goal.php" id="goalUpdateForm" method="POST">
                     <label>Goal ID:</label>
                     <input type="number" name="goal_id" required>
 
                     <label>Progress:</label>
                     <input type="number" name="progress" min="0" max="100" required>
 
-                    <button type="submit" class="GOAL__SET">Update Progress</button>
+                    <button type="submit" class="GOAL__SET UPDATE__GOAL">Update Progress</button>
                 </form>
                 <?php
 

@@ -9,14 +9,14 @@ MOBILE: 468
 */
 
 /* ==========RESET========== */
-*,
-* ::before,
-* ::after {
-    margin: 0;
-    padding: 0;
+*:not(html),
+* ::before:not(html),
+* ::after:not(html) {
     box-sizing: border-box;
     scroll-behavior: smooth;
     scroll-margin-top: 100px;
+    /* margin: 0;
+    padding: 0; */
 }
 
 img {
@@ -54,6 +54,13 @@ body {
     background-color: var(--COLOR-ACCENT4);
 
     height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
 }
 
 header,
@@ -73,8 +80,9 @@ button {
 }
 
 .material-icons {
-    color: white;
+    color: var(--COLOR-ACCENT4);
 }
+
 
 
 
@@ -390,36 +398,101 @@ header {
     gap: 1rem;
 }
 
-.HEADER__SEARCH_INPUT,
-.HEADER__SEARCH_BUTTON {
+.HEADER__SEARCH_INPUT {
     color: var(--COLOR-DARK2);
     border: none;
     background-color: transparent;
 }
 
 .HEADER__SEARCH_INPUT {
-    /* flex: 1; */
+    width: 100%;
+    height: 100%;
+
     border: none;
     outline: none;
     font-size: 16px;
 }
 
-.HEADER__SEARCH_BUTTON {
+.SEARCH_ICON {
+    color: var(--COLOR-DARK3);
+    margin-left: var(--MARGIN);
+}
 
-    background: none;
+
+/* search func */
+.HEADER__SEARCH {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.SEARCH_RESULTS {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--COLOR-LIGHT2);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.SEARCH_RESULTS,
+.SEARCH_RESULTS li>.material-icons {
+    transition: all 0.3s ease;
+    color: var(--COLOR-DARK3);
+}
+
+.SEARCH_RESULTS ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.SEARCH__NO_RESULT,
+.SEARCH_RESULTS li {
+    transition: all 0.3s ease;
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
     cursor: pointer;
-
-    transition: var(--TRANS);
+    border-bottom: 2px solid var(--COLOR-ACCENT2);
 
     display: flex;
     align-items: center;
-    padding-left: 20px;
 }
 
-.HEADER__SEARCH_BUTTON:hover {
-    transform: scale(1.1);
+.SEARCH_RESULTS li>.material-icons {
+    margin-right: 1rem;
 }
 
+.SEARCH_RESULTS li:last-of-type {
+    border-bottom: none;
+}
+
+.SEARCH_RESULTS li:hover>.material-icons,
+.SEARCH_RESULTS li:hover {
+    color: var(--COLOR-ACCENT3);
+}
+
+.SEARCH_RESULTS li:hover {
+    background-color: var(--COLOR-ACCENT2);
+}
+
+.SEARCH__NO_RESULT {
+    cursor: default;
+    user-select: none;
+}
+
+.RESULT__GROUP_TASK {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
 
 
@@ -1031,7 +1104,7 @@ header {
 }
 
 .Header__Button {
-    /* background-color: var(--COLOR-ACCENT3); */
+    background-color: var(--COLOR-ACCENT3);
     border: 1px solid var(--COLOR-DARK1);
     border-radius: 99px;
 
@@ -1047,7 +1120,6 @@ header {
     width: 100%;
     padding: 0.5rem;
     color: var(--COLOR-DARK3);
-    background-color: var(--COLOR-ACCENT3);
 
     transition: all 0.3s ease;
 
@@ -1055,8 +1127,11 @@ header {
 }
 
 .Header__Button:hover .Header__Wording {
+    color: var(--COLOR-LIGHT3);
+}
+
+.Header__Button:hover {
     background-color: var(--COLOR-DARK2);
-    color: var(--COLOR-LIGHT1);
 }
 
 
@@ -1093,6 +1168,7 @@ header {
 
 /* Set container to gridss */
 .CALENDAR__CONTENT__CONTAINER {
+    overflow: hidden;
     margin: var(--MARGIN);
 
     border-top: 1px solid var(--COLOR-DARK1);
@@ -1110,7 +1186,6 @@ header {
     position: relative;
 
     border-radius: var(--BORDER-RD-CONTACT);
-    overflow: hidden;
 }
 
 .DAY_NUM,
@@ -1225,7 +1300,6 @@ header {
     transform: translate(-50%, -50%);
     /* Center it */
 
-    width: 500px;
     background: var(--COLOR-LIGHT1);
     color: var(--COLOR-DARK1);
     padding: 1rem;
@@ -1238,8 +1312,8 @@ header {
 
 
 .EVENTINFO_SHOW {
-    width: 500px;
-    height: 500px;
+    width: 50%;
+    height: 60%;
 
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -1399,6 +1473,8 @@ header {
     transform: translate(-50%, -50%) scale(1.15);
     opacity: 0;
     min-width: 10%;
+    height: 300px;
+    overflow-y: auto;
     background: var(--COLOR-LIGHT1);
     border-radius: var(--BORDER-RD-CONTACT);
     box-shadow: 0 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -1465,6 +1541,11 @@ header {
     user-select: none;
 }
 
+.INPUT__PLACEHOLDER#remainder_ph,
+.INPUT__PLACEHOLDER#goal_ph {
+    top: -80%;
+}
+
 /* + to find sibling selector */
 .INPUT__INPUT:focus+.INPUT__PLACEHOLDER,
 .AUTOFOCUS {
@@ -1501,9 +1582,10 @@ header {
 
 .POP_UP__CONTROLS {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 
     margin: var(--MARGIN);
+    user-select: none;
 }
 
 .POP_UP__CONTROLS button {
@@ -1547,19 +1629,16 @@ header {
 /* PAGE: Promodo Timer Page */
 
 .TIMER__BODY {
-    background-color: #1e213f;
-    color: #d7e0ff;
-    min-height: 100vh;
-    /* Fixes the white space issue */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: var(--COLOR-ACCENT4);
+    color: var(--COLOR-DARK3);
+    height: 100vh;
+
+    font-family: var(--FF-BODY);
 }
 
 .container {
     text-align: center;
     width: 100%;
-    padding: 10px 0;
 }
 
 .timer {
@@ -1997,6 +2076,8 @@ header {
     display: flex;
 
     gap: 1rem;
+
+    margin-bottom: 2rem;
 }
 
 .COMMUNITY1__HEADER__RIGHT>div {
@@ -2037,35 +2118,116 @@ header {
     background-color: var(--COLOR-DARK3);
 }
 
+.TASK__CONTAINER__TITLE {
+    display: flex;
+    justify-content: space-between;
+
+    border-bottom: 2px solid var(--COLOR-ACCENT1);
+
+    margin-bottom: calc(var(--MARGIN) * 2);
+}
+
+.DISPLAY__ICON>div>span,
+.DISPLAY__ICON>div,
+.DISPLAY__TITLE {
+    color: var(--COLOR-DARK3);
+}
+
+.DISPLAY__ICON>div {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.DISPLAY__ICON {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.DISPLAY__TITLE {
+    font-size: 1.5rem;
+}
+
 .TASK__CONTAINER {
+    height: 100%;
     padding: 20px;
     background: var(--COLOR-ACCENT3);
 }
 
+.TASK__CONTAINER>h3 {
+    color: var(--COLOR-DARK3);
+    margin-bottom: 1rem;
+}
+
+.NO_TASK__FOUND {
+    color: var(--COLOR-DARK3);
+}
+
 .TASK_LIST {
-    list-style: none;
-    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-rows: auto;
+    gap: 1rem;
 }
 
 .TASK_ITEM {
+    transition: all 0.3s ease-out;
+
+    position: relative;
+
     padding: 15px;
-    margin-bottom: 10px;
     border-radius: 5px;
-    border: 5px solid ;
+    border: 5px solid;
     background: var(--COLOR-ACCENT2);
-    color: var(--COLOR-ACCENT1);
+    color: var(--COLOR-DARK3);
 }
 
+.TASK_ITEM_TITLE {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.COMMUNITY__PROGRESS__ICON {
+    color: var(--COLOR-DARK3);
+}
+
+.TASK_ITEM_MIDDLE {
+    border-radius: var(--BORDER-RD-CONTACT);
+    padding: var(--PADDING-NORMAL);
+    min-height: 6rem;
+    border: 2px solid var(--BORDER-COLOR);
+
+    margin-top: var(--MARGIN);
+    margin-bottom: var(--MARGIN);
+}
+
+.TASK_ITEM_BOTTOM>h4 {
+    border-bottom: 2px solid var(--BORDER-COLOR);
+}
+
+.TASK_ITEM_BOTTOM>p {
+    padding: var(--PADDING-NORMAL);
+}
+
+.task-completed>.TASK_ITEM_BOTTOM>h4,
+.task-completed>.TASK_ITEM_MIDDLE,
 .task-completed {
     background: var(--COLOR-GREEN-LIGHT);
     border-color: var(--COLOR-GREEN);
 }
 
+
+.task-inprogress>.TASK_ITEM_BOTTOM>h4,
+.task-inprogress>.TASK_ITEM_MIDDLE,
 .task-inprogress {
     background: var(--COLOR-YELLOW-LIGHT);
     border-color: var(--COLOR-YELLOW);
 }
 
+.task-pending>.TASK_ITEM_BOTTOM>h4,
+.task-pending>.TASK_ITEM_MIDDLE,
 .task-pending {
     background: var(--COLOR-RED-LIGHT);
     border-color: var(--COLOR-RED);
@@ -2075,6 +2237,143 @@ header {
     font-weight: bold;
 }
 
+/* add task survey */
+.COMM__ADD_TASK {
+    position: relative;
+}
+
+.POP_UP__FORM {
+    margin: 0 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.ADD_TASK__SURVEY {
+    z-index: -1;
+    user-select: none;
+    opacity: 0;
+
+    transition: all 0.3s ease-in-out;
+
+    position: absolute;
+    top: 100%;
+    left: 50%;
+
+    background-color: var(--COLOR-LIGHT1);
+}
+
+.ADD_TASK__SURVEY_SHOW {
+    z-index: 1000;
+    user-select: auto;
+    opacity: 1;
+}
+
+.ADD_TASK__SURVEY>h4 {
+    color: var(--COLOR-DARK3);
+    text-align: center;
+    margin: var(--MARGIN) 0;
+}
+
+.REMOVE__OVERLAY__SHOW {
+    transition: all 0.5s ease-in-out;
+
+    opacity: 1;
+    z-index: 3;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.REMOVE__OVERLAY__HIDE {
+    transition: all 0.5s ease-in-out;
+
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+
+
+.REMOVE__OVERLAY {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.567);
+}
+
+
+.TASK_ITEM:has(.REMOVE__OVERLAY:hover) {
+    transform: scale(1.05);
+}
+
+.REMOVE__OVERLAY>span {
+    font-size: 5rem;
+    color: rgb(85, 0, 0);
+}
+
+
+
+/* update group task status */
+.TASK_STATUS_DROPDOWN {
+    position: relative;
+    display: inline-block;
+}
+
+.task-status-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+}
+
+.task-status-btn>span {
+    color: var(--COLOR-DARK3);
+
+    transition: all 0.3s ease;
+}
+
+.task-status-btn:hover>span {
+    color: var(--COLOR-DARK1);
+
+    transform: scale(1.1);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.dropdown-menu button {
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.dropdown-menu button:hover {
+    background: #f0f0f0;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
 
 
 .COMMUNITY1__MEMBER {
@@ -2082,6 +2381,13 @@ header {
     background-color: var(--COLOR-DARK2);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
+}
+
+.MEMBER__MANAGE {
+    display: flex;
+    justify-content: space-around;
+
+    margin-bottom: var(--MARGIN);
 }
 
 .MEMBER_LIST {
@@ -2205,27 +2511,60 @@ header {
 /* Page : Goal Setting */
 .GOAL__MAIN {
     padding: 2rem 3rem;
-
-    display: flex;
-    flex-direction: column;
-
     height: 100%;
 }
 
 .GOAL__INPUT {
-    padding-top: 2rem;
-    margin: 0 auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    overflow-y: auto;
+    background: var(--COLOR-LIGHT3);
+    color: var(--COLOR-DARK2);
+    padding: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1000;
 }
 
 .GOAL__FORM {
-    display: flex;
-    flex-wrap: wrap;
+    width: 100%;
 
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+
+    gap: 2rem 1rem;
+}
+
+#progressForm {
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--COLOR-LIGHT3);
+    color: var(--COLOR-DARK2);
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+}
+
+#goalUpdateForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.UPDATE__GOAL {
+    margin-top: var(--MARGIN);
 }
 
 /* setting goals */
 .GOAL__SET {
+    height: fit-content;
+
     background-color: var(--COLOR-DARK2);
     color: var(--COLOR-LIGHT1);
 
@@ -2256,12 +2595,13 @@ header {
     border-radius: var(--BORDER-RD-CONTACT);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
-    box-shadow: var(--SHADOW-WHITEBG);
 }
 
 .GOAL__BAR {
     width: 100%;
     background-color: var(--COLOR-DARK3);
+
+    padding: 0.4rem;
 }
 
 .GOAL__TITLE {
@@ -2273,8 +2613,9 @@ header {
     height: 20px;
     background-color: var(--COLOR-DARK1);
     width: 0%;
-    text-align: center;
     color: var(--COLOR-LIGHT1);
+
+    text-align: center;
 }
 
 

@@ -25,7 +25,7 @@ if (!isset($_COOKIE['UID'])) {
 </head>
 
 <body>
-    <header>
+<header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -37,14 +37,14 @@ if (!isset($_COOKIE['UID'])) {
                 </h1>
             </a>
         </div>
+
         <div class="HEADER__SEARCH">
-            <button class="HEADER__SEARCH_BUTTON">
-                <span class="material-symbols-outlined">
-                    search
-                </span>
-            </button>
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
+            <span class="material-icons SEARCH_ICON">search</span>
+            <input type="text" id="searchInput" class="HEADER__SEARCH_INPUT" placeholder="Search..." onkeyup="searchFunction()" autocomplete="off">
+            <div id="searchResults" class="SEARCH_RESULTS"></div>
         </div>
+
+
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
@@ -121,83 +121,73 @@ if (!isset($_COOKIE['UID'])) {
                 <ul>
                     <li>
                         <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                home
-                            </span>Dashboard
+                            <span class="material-icons">home</span>Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                timer
-                            </span>Focus Timer
+                            <span class="material-icons">timer</span>Focus Timer
                         </a>
                     </li>
                     <li>
                         <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                task_alt
-                            </span>To Do
+                            <span class="material-icons">task_alt</span>To Do
                         </a>
                     </li>
                     <li>
                         <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                event
-                            </span>Calendar
+                            <span class="material-icons">event</span>Calendar
                         </a>
                     </li>
                     <li>
                         <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                analytics
-                            </span>Analytics
+                            <span class="material-icons">analytics</span>Analytics
                         </a>
                     </li>
                     <li>
                         <a href="Goal.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                track_changes
-                            </span>Goals
+                            <span class="material-icons">track_changes</span>Goals
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">chat</span>Direct Message
                         </a>
                     </li>
                 </ul>
             </nav>
+
+            <?php
+            $loggedInUserID = $_COOKIE['UID']; // Assuming user ID is stored in a cookie
+
+            $sql = "SELECT id, team_name FROM team 
+            WHERE leader_id = ? OR member_id = ? 
+            GROUP BY team_name";
+            $stmt = $_conn->prepare($sql);
+            $stmt->bind_param("ii", $loggedInUserID, $loggedInUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            ?>
+
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li>
-                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Channel 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-                <h4 class="NAV_TITLE">Direct Messages</h4>
-                <ul class="DM_USER_LIST">
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
-                            Micheal Brown
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Jane Smith
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Sarah Lee
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <li>
+                                <a href="CommunityPage.php?team_id=<?= urlencode($row['id']) ?>&team=<?= urlencode($row['team_name']) ?>"
+                                    class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                                    <?= htmlspecialchars($row['team_name']) ?>
+                                </a>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <li>No teams found</li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
+
 
         <!-- Calendar Content -->
         <article class="CONTAINER">
@@ -205,7 +195,8 @@ if (!isset($_COOKIE['UID'])) {
                 <div class="OVERLAY"></div>
                 <div class="POP_UP__CONTENT">
                     <h2>Create Task</h2>
-                    <form action="CalendarAddCat.php" method="POST" id="popUpForm">
+                    <form action="CalendarAddTask.php" method="POST" id="popUpForm">
+
                         <label class="INPUT__BOX" style="display: flex;">
                             <span class="INPUT__PLACEHOLDER AUTOFOCUS">Task Category : </span>
                             <select id="task_group" name="task_group" class="INPUT__INPUT" required>
@@ -216,6 +207,7 @@ if (!isset($_COOKIE['UID'])) {
                             <button type="button" id="add_category" class="CLICKABLE">Add</button>
                         </label>
 
+                        
                         <label class="INPUT__BOX">
                             <input type="text" name="task_title" id="task_title" class="INPUT__INPUT" required>
                             <span class="INPUT__PLACEHOLDER">Task Name : </span>
@@ -229,6 +221,11 @@ if (!isset($_COOKIE['UID'])) {
                         <label class="INPUT__BOX">
                             <input type="date" name="start_date" id="start_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
                             <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="start_date_ph">Starting Date : </span>
+                        </label>
+
+                        <label class="INPUT__BOX">
+                            <input type="date" name="end_date" id="end_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="end_date_ph">Starting Date : </span>
                         </label>
 
                         <label class="INPUT__BOX">
@@ -272,6 +269,7 @@ if (!isset($_COOKIE['UID'])) {
                         'task_title' => $row['task_title'],
                         'task_desc' => $row['task_desc'],
                         'start_date' => $row['start_date'],
+                        'end_date' => $row['end_date'],
                         'start_time' => $row['start_time'],
                         'end_time' => $row['end_time'],
                         'created_at' => $row['created_at'],
