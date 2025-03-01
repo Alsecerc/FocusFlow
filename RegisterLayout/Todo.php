@@ -1,5 +1,5 @@
 <!-- change to .php -->
-<?php 
+<?php
 include "conn.php";
 session_start();
 
@@ -7,7 +7,7 @@ if (!isset($_COOKIE['UID'])) {
     echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
     exit();
 }
- 
+
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +40,14 @@ if (!isset($_COOKIE['UID'])) {
                 </h1>
             </a>
         </div>
+
         <div class="HEADER__SEARCH">
-            <button class="HEADER__SEARCH_BUTTON">
-                <span class="material-symbols-outlined">
-                    search
-                </span>
-            </button>
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
+            <span class="material-icons SEARCH_ICON">search</span>
+            <input type="text" id="searchInput" class="HEADER__SEARCH_INPUT" placeholder="Search..." onkeyup="searchFunction()" autocomplete="off">
+            <div id="searchResults" class="SEARCH_RESULTS"></div>
         </div>
+
+
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
@@ -83,8 +83,8 @@ if (!isset($_COOKIE['UID'])) {
                                             <li class="NOTI__ITEM NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
-                                                $result2 = $_conn->query($sql2); 
-                                                $sender = $result2->fetch_assoc(); 
+                                                $result2 = $_conn->query($sql2);
+                                                $sender = $result2->fetch_assoc();
 
                                                 if ($result2->num_rows > 0) {
                                                 ?>
@@ -119,88 +119,78 @@ if (!isset($_COOKIE['UID'])) {
     </header>
 
     <main>
-    <div class="SIDEBAR" style="overflow-y: auto;">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
                         <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                home
-                            </span>Dashboard
+                            <span class="material-icons">home</span>Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                timer
-                            </span>Focus Timer
+                            <span class="material-icons">timer</span>Focus Timer
                         </a>
                     </li>
                     <li>
                         <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                task_alt
-                            </span>To Do
+                            <span class="material-icons">task_alt</span>To Do
                         </a>
                     </li>
                     <li>
                         <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                event
-                            </span>Calendar
+                            <span class="material-icons">event</span>Calendar
                         </a>
                     </li>
                     <li>
                         <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                analytics
-                            </span>Analytics
+                            <span class="material-icons">analytics</span>Analytics
                         </a>
                     </li>
                     <li>
                         <a href="Goal.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                track_changes
-                                </span>Goals
+                            <span class="material-icons">track_changes</span>Goals
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
+                            <span class="material-icons">chat</span>Direct Message
                         </a>
                     </li>
                 </ul>
             </nav>
+
+            <?php
+            $loggedInUserID = $_COOKIE['UID']; // Assuming user ID is stored in a cookie
+
+            $sql = "SELECT id, team_name FROM team 
+            WHERE leader_id = ? OR member_id = ? 
+            GROUP BY team_name";
+            $stmt = $_conn->prepare($sql);
+            $stmt->bind_param("ii", $loggedInUserID, $loggedInUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            ?>
+
             <nav class="SIDEBAR__NAV COMMUNITY">
                 <h4 class="NAV_TITLE">Community</h4>
                 <ul>
-                    <li>
-                        <a href="CommunityPage.php" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                            Channel 1
-                            <button class="material-icons">
-                                more_horiz
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-                <h4 class="NAV_TITLE">Direct Messages</h4>
-                <ul class="DM_USER_LIST">
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=3&name=Michael+Brown" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 1')">
-                            Micheal Brown
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=2&name=Jane+Smith" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                            Jane Smith
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                        Sarah Lee
-                            <button class="material-icons">more_horiz</button>
-                        </a>
-                    </li>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <li>
+                                <a href="CommunityPage.php?team_id=<?= urlencode($row['id']) ?>&team=<?= urlencode($row['team_name']) ?>"
+                                    class="SIDEBAR__ITEM COMMUNITY__ITEM">
+                                    <?= htmlspecialchars($row['team_name']) ?>
+                                </a>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <li>No teams found</li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
+
 
         <!-- TODO LIST CONTENT -->
         <article class="TODO">
@@ -229,7 +219,7 @@ if (!isset($_COOKIE['UID'])) {
         <h2>Add a New Group</h2>
         <button id="closeGroupAdd">&times;</button>
         <form id="groupForm" action="TodoBackend.php" method="POST">
-            <input type="text" id="groupName" name= "GROUPNAME" value = "" placeholder="Enter group name" required>
+            <input type="text" id="groupName" name="GROUPNAME" value="" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>
         </form>
     </div>
@@ -238,4 +228,3 @@ if (!isset($_COOKIE['UID'])) {
 </body>
 
 </html>
-

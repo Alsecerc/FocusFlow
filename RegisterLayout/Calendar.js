@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
         document.getElementById("today").addEventListener("click", goToToday);
 
         window.onload = function () {
-            let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
 
             // adjust to start on sunday
             switch (dayName) {
@@ -70,7 +69,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     break;
             }
 
+            let previousMonthDays = new Date(year, MonthOffset, 0).getDate();
+
+            if (DayOffset <= 0) {
+                MonthOffset -= 1;
+                if (MonthOffset < 0) {
+                    MonthOffset = 11;
+                    YearOffset -= 1;
+                }
+                DayOffset = previousMonthDays + DayOffset;
+            }
+
+
+
+
             DAYNUM_LIST.forEach((Item) => {
+                let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
                 // find out date of month
                 if (DayOffset > totalDaysInMonth) {
                     // reset the date num with new month
@@ -105,27 +119,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
             DayOffset -= 14;
             StoreWeekDate = []
 
-            while (DayOffset <= 0) {
-                // go back 1 month
-                MonthOffset -= 1
+            let previousMonthDays = new Date(year, MonthOffset, 0).getDate();
+            if (DayOffset <= 0) {
+                MonthOffset -= 1;
                 if (MonthOffset < 0) {
-                    // go back previous year December
                     MonthOffset = 11;
                     YearOffset -= 1;
                 }
-                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
-                DayOffset += totalDaysInMonth;
+                DayOffset = previousMonthDays + DayOffset;
             }
 
             DAYNUM_LIST.forEach((Item) => {
-                let totalDaysInMonth = new Date(YearOffset, MonthOffset, 0).getDate();
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
                 if (DayOffset > totalDaysInMonth) {
                     // reset the date num with new month
-                    MonthOffset--;
+                    MonthOffset += 1;
                     DayOffset = 1;
-                    if (MonthOffset == -1) {
-                        MonthOffset = 12; // Reset to January
-                        YearOffset--;
+                    if (MonthOffset > 11) {
+                        MonthOffset = 0; // Reset to January
+                        YearOffset += 1;
                     }
 
                 } else {
@@ -138,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
             });
 
 
-
             HightLightToday();
             TITLE_MONTH.innerHTML = `${monthList[MonthOffset]}`
             TITLE_YEAR.innerHTML = `${YearOffset}`
@@ -147,10 +158,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
 
         function toggleViewNext() {
-            let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
+
             StoreWeekDate = []
 
+            let previousMonthDays = new Date(year, MonthOffset, 0).getDate();
+
+            if (DayOffset <= 0) {
+                MonthOffset -= 1;
+                if (MonthOffset < 0) {
+                    MonthOffset = 11;
+                    YearOffset -= 1;
+                }
+                DayOffset = previousMonthDays + DayOffset;
+            }
+
             DAYNUM_LIST.forEach((Item) => {
+                let totalDaysInMonth = new Date(YearOffset, MonthOffset + 1, 0).getDate();
                 if (DayOffset > totalDaysInMonth) {
                     // Move to next month
                     MonthOffset += 1;
@@ -225,6 +248,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
             // Update calendar title
             TITLE_MONTH.innerHTML = `${monthList[MonthOffset]}`;
             TITLE_YEAR.innerHTML = `${YearOffset}`;
+
 
             RenderTask();
         }
@@ -329,6 +353,10 @@ close
                     });
                 });
 
+                setTimeout(() => {
+                    updateEventLayout()
+                }, 100);
+
             }, 0)
         }
 
@@ -416,7 +444,6 @@ close
 
         window.addEventListener("resize", function () {
             updateEventLayout();
-            console.log('hello')
         });
 
 
@@ -466,6 +493,7 @@ close
         let INPUTS = getQueryAll('.INPUT__BOX');
         // initiate for checking if duedate if after
         let StartDate = null;
+        let EndDate = null;
         let StartTime = null;
         let EndTime = null;
 
@@ -487,6 +515,28 @@ close
                 let inputElement = element.querySelector(".INPUT__INPUT");
                 let inputValue = inputElement.value;
 
+
+                // check date validity
+                if (inputElement.id == "start_date" && inputValue) {
+                    // Assign null if no value is entered
+                    StartDate = inputValue || null;
+                } else if (inputElement.id == "end_date" && inputValue) {
+                    EndDate = inputValue || null;
+                }
+
+                if (StartDate && EndDate && StartDate > EndDate) {
+                    InvalidInput(getQuery("#start_date"), getQuery("#start_date_ph"));
+                    InvalidInput(getQuery("#end_date"), getQuery("#end_date_ph"));
+                } else {
+                    if (StartDate) {
+                        ValidInput(getQuery("#start_date"), getQuery("#start_date_ph"));
+                    }
+                    if (EndDate) {
+                        ValidInput(getQuery("#end_date"), getQuery("#end_date_ph"));
+                    }
+                }
+
+                // check time validity
                 if (inputElement.id == "start_time" && inputValue) {
                     // Assign null if no value is entered
                     StartTime = inputValue || null;
@@ -571,54 +621,28 @@ close
         }
     });
 
-    addButton.addEventListener("click", function () {
-        let newCategory = newCategoryInput.value.trim();
-        if (newCategory) {
-            fetch("add_category.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "category=" + encodeURIComponent(newCategory)
-            })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === "success") {
-                        let option = document.createElement("option");
-                        option.value = newCategory;
-                        option.textContent = newCategory;
-                        dropdown.appendChild(option);
-                        dropdown.value = newCategory;
-                        newCategoryInput.value = "";
-                        newCategoryInput.style.display = "none";
-                    } else {
-                        alert("Error adding category");
-                    }
-                });
-        }
-    });
-
-    // allow user to add new category
     document.getElementById("add_category").addEventListener("click", function () {
-        let select = document.getElementById("task_group");
-        let input = document.getElementById("new_category");
-        let button = document.getElementById("add_category");
-        let placeholder = document.getElementById("cat_placeholder");
-
-        if (select.style.display === "none") {
-            // If input is active, switch back to dropdown
-            select.style.display = "block";
-            input.style.display = "none";
-            input.value = ""; // Clear input field
-            button.textContent = "Add"; // Reset button text
-            select.required = true; // Make dropdown required
-            input.required = false; // Remove required from input
+        let newCategoryInput = document.getElementById("new_category");
+        let dropdown = document.getElementById("task_group");
+    
+        if (newCategoryInput.style.display === "none") {
+            // Show input field to enter new category
+            newCategoryInput.style.display = "block";
+            newCategoryInput.focus();
         } else {
-            // If dropdown is active, switch to input field
-            select.style.display = "none";
-            input.style.display = "block";
-            input.focus();
-            button.textContent = "Cancel"; // Change button text to indicate toggle
-            input.required = true; // Make input required
-            select.required = false; // Remove required from dropdown
+            let newCategory = newCategoryInput.value.trim();
+            if (newCategory) {
+                // Add new category as an option in dropdown
+                let option = document.createElement("option");
+                option.value = newCategory;
+                option.textContent = newCategory;
+                dropdown.appendChild(option);
+                dropdown.value = newCategory; // Set as selected
+    
+                // Hide input and clear value
+                newCategoryInput.style.display = "none";
+                newCategoryInput.value = "";
+            }
         }
     });
 
@@ -636,6 +660,31 @@ close
         }
     });
 
+    // allow user to add new category
+    document.getElementById("add_category").addEventListener("click", function () {
+        let select = document.getElementById("task_group");
+        let input = document.getElementById("new_category");
+        let button = document.getElementById("add_category");
+        let placeholder = document.getElementById("cat_placeholder");
+
+        if (select.style.display === "none") {
+            // If input is active, switch back to dropdown
+            select.style.display = "block";
+            input.style.display = "none";
+            input.value = ""; // Clear input field
+            button.textContent = "New"; // Reset button text
+            select.required = true; // Make dropdown required
+            input.required = false; // Remove required from input
+        } else {
+            // If dropdown is active, switch to input field
+            select.style.display = "none";
+            input.style.display = "block";
+            input.focus();
+            button.textContent = "Add"; // Change button text to indicate toggle
+            input.required = true; // Make input required
+            select.required = false; // Remove required from dropdown
+        }
+    });
 
     // when submitting forms
     document.getElementById("submitButton").addEventListener("click", function () {

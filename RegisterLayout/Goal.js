@@ -8,7 +8,7 @@ function togglePopup() {
         popup.style.display = "none"; // Hide the popup
     } else {
         popup.style.display = "block"; // Show the popup
-        button.innerHTML = "Hide";
+        button.innerHTML = "Close";
     }
 }
 
@@ -21,53 +21,96 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("end_time").setAttribute("min", today);
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    let reminderInput = document.getElementById("reminder_time");
+
+    function setMinDateTime() {
+        let now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for time zone
+
+        let minDateTime = now.toISOString().slice(0, 16); // Format YYYY-MM-DDTHH:MM
+        reminderInput.min = minDateTime;
+    }
+
+    setMinDateTime(); // Set initial min datetime
+});
+
+
 
 
 let INPUTS = getQueryAll('.INPUT__BOX');
 let StartTime = null;
 let EndTime = null;
 
-INPUTS.forEach((element) => {
-    let INPUT = element.querySelector(".INPUT__INPUT");
-    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
-
-    INPUT.addEventListener('input', function () {
-        // If the input is invalid, add the INVALID class
-        if (INPUT.value.trim() == '') {
-            InvalidInput(INPUT, PLACEHOLDER);
-        } else if (!INPUT.checkValidity()) {
-            InvalidInput(INPUT, PLACEHOLDER);
-        } else {
-            // If the input is valid, remove the INVALID class
-            ValidInput(INPUT, PLACEHOLDER);
-        }
-
-        let inputElement = element.querySelector(".INPUT__INPUT");
-        let inputValue = inputElement.value;
-
-
-        if (inputElement.id == "start_time" && inputValue) {
-            // Assign null if no value is entered
-            StartTime = inputValue || null;
-        } else if (inputElement.id == "end_time" && inputValue) {
-            EndTime = inputValue || null;
-        }
-
-        if ((StartTime >= EndTime) && StartTime && EndTime) {
-            InvalidInput(getQuery("#end_time"), getQuery("#end_time_ph"));
-            InvalidInput(getQuery("#start_time"), getQuery("#start_time_ph"));
-        } else {
-            if (StartTime) {
-                ValidInput(getQuery("#start_time"), getQuery("#start_time_ph"));
+if (INPUTS) {
+    INPUTS.forEach((element) => {
+        let INPUT = element.querySelector(".INPUT__INPUT");
+        let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+  
+        INPUT.addEventListener('input', function () {
+            // If the input is invalid, add the INVALID class
+            if (INPUT.value.trim() == '') {
+                InvalidInput(INPUT, PLACEHOLDER);
+            } else if (!INPUT.checkValidity()) {
+                InvalidInput(INPUT, PLACEHOLDER);
+            } else {
+                // If the input is valid, remove the INVALID class
+                ValidInput(INPUT, PLACEHOLDER);
             }
-            if (EndTime) {
-                ValidInput(getQuery("#end_time"), getQuery("#end_time_ph"));
+    
+            let inputElement = element.querySelector(".INPUT__INPUT");
+            let inputValue = inputElement.value;
+    
+    
+            if (inputElement.id == "start_time" && inputValue) {
+                // Assign null if no value is entered
+                StartTime = inputValue || null;
+            } else if (inputElement.id == "end_time" && inputValue) {
+                EndTime = inputValue || null;
             }
-        }
-
+    
+            if ((StartTime >= EndTime) && StartTime && EndTime) {
+                InvalidInput(getQuery("#end_time"), getQuery("#end_time_ph"));
+                InvalidInput(getQuery("#start_time"), getQuery("#start_time_ph"));
+            } else {
+                if (StartTime) {
+                    ValidInput(getQuery("#start_time"), getQuery("#start_time_ph"));
+                }
+                if (EndTime) {
+                    ValidInput(getQuery("#end_time"), getQuery("#end_time_ph"));
+                }
+            }
+    
+            if (inputElement.id == "reminder_time") {
+                if (reminderInput.value < reminderInput.min) {
+                    reminderInput.value = "";
+                    InvalidInput(getQuery("#reminder_time"), getQuery("#end_time_ph"));
+                } else {
+                    ValidInput(getQuery("#reminder_time"), getQuery("#end_time_ph"));
+                }
+            }
+        });
     });
-});
+}
 
+
+let form = document.getElementsByClassName("GOAL__FORM")[0];
+
+form.addEventListener("submit", function (event) {
+    console.log("Form submission triggered");
+
+    let startTime = document.getElementById("start_time").value;
+    let endTime = document.getElementById("end_time").value;
+
+
+    if ((startTime >= endTime) && startTime && endTime) {
+        console.log("Validation failed: End Time must be later than Start Time.");
+        alert("End Time must be later than Start Time.");
+        event.preventDefault();
+        return;
+    }
+
+});
 
 function ValidInput(INPUT, PLACEHOLDER) {
     INPUT.classList.remove("INVALID_BORDER");
@@ -81,4 +124,15 @@ function InvalidInput(INPUT, PLACEHOLDER) {
     PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
     INPUT.classList.remove("VALID_BORDER");
     PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+}
+
+
+
+function toggleProgressPopup() {
+    let form = document.getElementById("progressForm");
+    if (form.style.display === "none" || form.style.display === "") {
+        form.style.display = "block";
+    } else {
+        form.style.display = "none";
+    }
 }

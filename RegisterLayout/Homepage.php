@@ -38,14 +38,14 @@ if (!isset($_COOKIE['UID'])) {
                 </h1>
             </a>
         </div>
+
         <div class="HEADER__SEARCH">
-            <button class="HEADER__SEARCH_BUTTON">
-                <span class="material-symbols-outlined">
-                    search
-                </span>
-            </button>
-            <input type="text" class="HEADER__SEARCH_INPUT" placeholder="Search...">
+            <span class="material-icons SEARCH_ICON">search</span>
+            <input type="text" id="searchInput" class="HEADER__SEARCH_INPUT" placeholder="Search..." onkeyup="searchFunction()" autocomplete="off">
+            <div id="searchResults" class="SEARCH_RESULTS"></div>
         </div>
+
+
         <div class="HEADER__RIGHT">
             <nav>
                 <ul class="HEADER__UL">
@@ -115,8 +115,8 @@ if (!isset($_COOKIE['UID'])) {
             </nav>
         </div>
     </header>
+
     <main>
-        <!-- temp SIDEBAR_SHOW -->
         <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>

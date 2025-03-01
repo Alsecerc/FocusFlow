@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2025 at 04:33 PM
+-- Generation Time: Feb 28, 2025 at 04:03 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,8 @@ CREATE TABLE `files` (
 --
 
 INSERT INTO `files` (`id`, `user_id`, `team_name`, `file_name`, `file_type`, `file_size`, `file_path`, `uploaded_at`) VALUES
-(1, 1, 'Team Alpha', 'SYAD flight route (1).png', 'image/png', 243872, 'uploads/SYAD flight route (1).png', '2025-02-27 03:42:13');
+(1, 1, 'Team Alpha', 'SYAD flight route (1).png', 'image/png', 243872, 'uploads/SYAD flight route (1).png', '2025-02-27 03:42:13'),
+(2, 1, 'Alpha Squad', 'transaction.pdf', 'application/pdf', 5877, 'uploads/transaction.pdf', '2025-02-27 15:42:38');
 
 -- --------------------------------------------------------
 
@@ -89,8 +90,22 @@ CREATE TABLE `group_tasks` (
   `task_name` varchar(255) NOT NULL,
   `task_description` text NOT NULL,
   `status` enum('pending','in progress','completed') DEFAULT 'pending',
-  `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `assigned_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `due_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `group_tasks`
+--
+
+INSERT INTO `group_tasks` (`id`, `team_name`, `assigned_by`, `assigned_to`, `task_name`, `task_description`, `status`, `assigned_at`, `due_date`) VALUES
+(1, 'Alpha Squad', 1, 2, 'Prepare Presentation', 'Create slides for the upcoming project meeting.', 'pending', '2025-02-27 16:10:44', '2024-03-05'),
+(2, 'Alpha Squad', 1, 3, 'Research Market Trends', 'Gather information about current trends.', 'in progress', '2025-02-27 16:10:44', '2024-03-07'),
+(3, 'Alpha Squad', 1, 4, 'Draft Report', 'Write a draft for the project report.', 'completed', '2025-02-27 16:10:44', '2024-03-03'),
+(4, 'Beta Team', 5, 6, 'Code Review', 'Review the latest code updates.', 'pending', '2025-02-27 16:10:44', '2024-03-10'),
+(5, 'Beta Team', 5, 7, 'Write Documentation', 'Complete the technical documentation.', 'in progress', '2025-02-27 16:10:44', '2024-03-12'),
+(6, 'Gamma Crew', 8, 9, 'Test Features', 'Perform testing on new features.', 'completed', '2025-02-27 16:10:44', '2024-02-29'),
+(7, 'Gamma Crew', 8, 10, 'Bug Fixing', 'Resolve reported issues.', 'pending', '2025-02-27 16:10:44', '2024-03-08');
 
 -- --------------------------------------------------------
 
@@ -410,7 +425,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `goals`
@@ -422,7 +437,7 @@ ALTER TABLE `goals`
 -- AUTO_INCREMENT for table `group_tasks`
 --
 ALTER TABLE `group_tasks`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `message`
@@ -498,17 +513,6 @@ ALTER TABLE `tasks`
 ALTER TABLE `team`
   ADD CONSTRAINT `team_ibfk_1` FOREIGN KEY (`leader_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `team_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
-DELIMITER $$
---
--- Events
---
-CREATE DEFINER=`root`@`localhost` EVENT `update_timeout_event` ON SCHEDULE EVERY 1 MINUTE STARTS '2025-02-27 23:29:09' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE tasks
-  SET status = 'Timeout'
-  WHERE CONCAT(end_date, ' ', end_time) <= NOW()
-    AND status = 'Incomplete'$$
-
-DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

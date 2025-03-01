@@ -57,3 +57,271 @@ function openPopup1() {
     document.getElementById("popupOverlay").style.opacity = "1";
     document.getElementById("popupOverlay").style.zIndex = "1000";
 }
+
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+function checkMemberExists(memberId, callback) {
+    fetch(`CommunityCheckMember.php?member_id=${encodeURIComponent(memberId)}`)
+        .then(response => response.json())
+        .then(data => callback(data.exists)) // Call the callback function with true/false
+        .catch(error => console.error("Error:", error));
+}
+
+function addMember() {
+    let memberId = prompt("Enter member ID:");
+    let teamName = getQueryParam("team");
+
+    if (!memberId) {
+        alert("Member ID is required!");
+        return;
+    }
+
+    checkMemberExists(memberId, function (exists) {
+        if (!exists) {
+            alert("Member ID does not exist!");
+            return;
+        }
+
+        // Proceed with adding the member
+        fetch("CommunityAddMember.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `team_name=${encodeURIComponent(teamName)}&member_id=${memberId}&leader_id=1`
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+    });
+}
+
+
+function removeMember() {
+    let memberId = prompt("Enter member ID:");
+    let teamName = getQueryParam("team");
+
+    if (teamName && memberId) {
+        fetch("CommunityRemoveMember.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `team_name=${teamName}&member_id=${memberId}`
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+    }
+}
+
+
+// edit status for group task
+function toggleDropdown(button) {
+    let dropdown = button.nextElementSibling;
+    dropdown.classList.toggle('show');
+}
+
+function updateStatus(taskID, newStatus) {
+    fetch('CommunityUpdateTaskStatus.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `task_id=${taskID}&status=${newStatus}`
+    })
+        .then(response => response.text())
+        .then(data => {
+            if (data === 'success') {
+                location.reload();
+            } else {
+                alert('Failed to update status');
+            }
+        });
+}
+
+
+// add task pop up
+document.getElementById("openTaskForm").addEventListener("click", function () {
+    document.getElementById("taskPopUp").classList.toggle("ADD_TASK__SURVEY_SHOW");
+});
+
+// Pop up survey validation
+let INPUTS = getQueryAll('.INPUT__BOX');
+
+
+INPUTS.forEach((element) => {
+    // set min date to today
+    document.getElementById("due_date").min = new Date().toISOString().split("T")[0];
+
+    let INPUT = element.querySelector(".INPUT__INPUT");
+    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+
+    INPUT.addEventListener('input', function () {
+        // If the input is invalid, add the INVALID class
+        if (INPUT.value.trim() == '') {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else if (!INPUT.checkValidity()) {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else {
+            // If the input is valid, remove the INVALID class
+            ValidInput(INPUT, PLACEHOLDER);
+        }
+
+    });
+});
+
+document.getElementsByClassName("CONTROLS__RESET")[0].addEventListener("click", ResetInput);
+function ResetInput() {
+    let INPUTS = getQueryAll('.INPUT__BOX');
+
+    INPUTS.forEach((element) => {
+        let INPUT = element.querySelector(".INPUT__INPUT");
+        let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+        INPUT.classList.remove("INVALID_BORDER");
+        PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+        INPUT.classList.remove("VALID_BORDER");
+        PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+    });
+}
+
+
+let form = document.getElementById("taskPopUpForm");
+
+form.addEventListener("submit", function (event) {
+
+    let Today = new Date().toISOString().split("T")[0];
+    let Duedate = document.getElementById("due_date").value;
+
+
+    if (Duedate <= Today) {
+        alert("Duedate must be set in the future (no more than 1/1/2040)");
+        event.preventDefault();
+        return;
+    }
+
+});
+
+function ValidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.remove("INVALID_BORDER");
+    INPUT.classList.add("VALID_BORDER");
+    if (PLACEHOLDER != "") {
+        PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+        PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+    }
+}
+
+function InvalidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.add("INVALID_BORDER");
+    INPUT.classList.remove("VALID_BORDER");
+    if (PLACEHOLDER != "") {
+        PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+        PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+    }
+}
+
+
+// populate combo box for select member/ leader
+let teamName = getQueryParam("team");
+fetch(`CommunityFetchTeamMembers.php?team=${encodeURIComponent(teamName)}`) // Fetch members from PHP
+    .then(response => response.json())
+    .then(data => {
+        let dropdown = document.getElementById("assigned_to");
+        data.forEach(member => {
+            let option = document.createElement("option");
+            option.value = member.id; // Assuming 'id' is the unique identifier
+            option.textContent = member.name; // Assuming 'name' is the member's name
+            dropdown.appendChild(option);
+        });
+    })
+    .catch(error => console.error("Error fetching team members:", error));
+
+// add data into database (use AJAX)
+document.getElementById("taskPopUpForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    let formData = new FormData(this);
+
+    fetch(`CommunityAddTask.php?team=${encodeURIComponent(teamName)}`, {
+        method: "POST",
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert("Task added successfully!");
+                location.reload(); // Reload page to update task list
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+});
+
+
+
+// remove task 
+const removeTaskBtn = document.getElementById("removeTaskBtn");
+const taskList = document.getElementById("taskList");
+
+let isRemoving = false;
+
+// Click "Remove Task" to highlight tasks
+removeTaskBtn.addEventListener("click", function () {
+    isRemoving = !isRemoving;
+    document.querySelectorAll(".REMOVE__OVERLAY").forEach(overlay => {
+        if (isRemoving) {
+            overlay.classList.add("REMOVE__OVERLAY__SHOW");
+            overlay.classList.remove("REMOVE__OVERLAY__HIDE");
+        } else {
+            overlay.classList.add("REMOVE__OVERLAY__HIDE");
+            overlay.classList.remove("REMOVE__OVERLAY__SHOW");
+        }
+        console.log("Overlay classList:", overlay.classList, "Remove Mode:", isRemoving);
+    });
+});
+
+
+// Click a task to delete it
+taskList.addEventListener("click", function (event) {
+    const taskElement = event.target.closest(".TASK_ITEM");
+    if (isRemoving && taskElement) {
+
+        const taskId = taskElement.dataset.taskId;
+
+
+        fetch("CommunityDeleteTask.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `task_id=${taskId}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    taskElement.remove();
+                } else {
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+});
+
+
+// responsive
+
+document.querySelector(".RESPONSIVE__MEMBER_BUTTON").addEventListener("click", function () {
+    let MemberList = document.querySelector(".COMMUNITY1__MEMBER");
+    let MemberListIcon = document.querySelector(".RESPONSIVE__SHOW_ICON");
+
+    MemberList.classList.toggle("SHOW__MEMBER");
+    if (MemberList.classList.contains("SHOW__MEMBER")) {
+        MemberListIcon.innerHTML = "keyboard_double_arrow_right";
+    } else {
+        MemberListIcon.innerHTML = "keyboard_double_arrow_left";
+    }
+});
+
