@@ -23,6 +23,7 @@ if (!isset($_COOKIE['UID'])) {
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
     <link rel="stylesheet" href="Responsive.css">
+    <!-- Custom fixes for Todo functionality -->
 </head>
 
 <body>
@@ -219,12 +220,15 @@ if (!isset($_COOKIE['UID'])) {
         <h2>Add a New Group</h2>
         <button id="closeGroupAdd">&times;</button>
         <form id="groupForm" action="TodoBackend.php" method="POST">
-            <input type="text" id="groupName" name="GROUPNAME" value="" placeholder="Enter group name" required>
+            <input type="text" id="groupName" name="groupName" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>
         </form>
     </div>
+    <div class="Hiddenlayer" style="display: none;"></div>
     <script src="Registered.js" defer></script>
     <script src="Todo.js" defer></script>
+    <script src="button-fix.js" defer></script>
+    <script src="drag-fix.js" defer></script>
 </body>
 
 </html>
