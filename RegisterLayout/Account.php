@@ -320,10 +320,10 @@ if (!isset($_COOKIE['UID'])) {
                 <div>
                     <h3 style="text-align: center; margin-top: 5rem;">Change Theme</h3>
                     <article class="ACCOUNT__THEME">
-                        <button class="SETTING__BUTTON" style="background-color: #3b3b3b; color: white;" onclick="changeTheme('default')">Default</button>
-                        <button class="SETTING__BUTTON" style="background-color: #7A3E1D; color: white;" onclick="changeTheme('theme_earth')">Earth</button>
-                        <button class="SETTING__BUTTON" style="background-color: #8BE9FD; color: black;" onclick="changeTheme('theme_neon')">Neon</button>
-                        <button class="SETTING__BUTTON" style="background-color: #52796F; color: white;" onclick="changeTheme('theme_forest')">Forest</button>
+                        <button class="SETTING__BUTTON CLICKABLE" style="background-color: #3b3b3b; color: white;" onclick="changeTheme('default')">Default</button>
+                        <button class="SETTING__BUTTON CLICKABLE" style="background-color: #7A3E1D; color: white;" onclick="changeTheme('theme_earth')">Earth</button>
+                        <button class="SETTING__BUTTON CLICKABLE" style="background-color: #8BE9FD; color: black;" onclick="changeTheme('theme_neon')">Neon</button>
+                        <button class="SETTING__BUTTON CLICKABLE" style="background-color: #52796F; color: white;" onclick="changeTheme('theme_forest')">Forest</button>
                     </article>
                 </div>
             </div>
