@@ -63,25 +63,25 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
-function checkMemberExists(memberId, callback) {
-    fetch(`CommunityCheckMember.php?member_id=${encodeURIComponent(memberId)}`)
+function checkMemberExists(memberName, callback) {
+    fetch(`CommunityCheckMember.php?member_name=${encodeURIComponent(memberName)}`)
         .then(response => response.json())
         .then(data => callback(data.exists)) // Call the callback function with true/false
         .catch(error => console.error("Error:", error));
 }
 
 function addMember() {
-    let memberId = prompt("Enter member ID:");
+    let memberName = prompt("Enter member name:");
     let teamName = getQueryParam("team");
 
-    if (!memberId) {
-        alert("Member ID is required!");
+    if (!memberName) {
+        alert("Member name is required!");
         return;
     }
 
-    checkMemberExists(memberId, function (exists) {
+    checkMemberExists(memberName, function (exists) {
         if (!exists) {
-            alert("Member ID does not exist!");
+            alert("Member does not exist!");
             return;
         }
 
@@ -89,7 +89,7 @@ function addMember() {
         fetch("CommunityAddMember.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `team_name=${encodeURIComponent(teamName)}&member_id=${memberId}&leader_id=1`
+            body: `team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
         })
             .then(response => response.text())
             .then(data => {
@@ -102,14 +102,14 @@ function addMember() {
 
 
 function removeMember() {
-    let memberId = prompt("Enter member ID:");
+    let memberName = prompt("Enter member name:");
     let teamName = getQueryParam("team");
 
-    if (teamName && memberId) {
+    if (teamName && memberName) {
         fetch("CommunityRemoveMember.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `team_name=${teamName}&member_id=${memberId}`
+            body: `team_name=${teamName}&member_name=${memberName}`
         })
             .then(response => response.text())
             .then(data => {
@@ -286,27 +286,60 @@ removeTaskBtn.addEventListener("click", function () {
 
 
 // Click a task to delete it
-taskList.addEventListener("click", function (event) {
-    const taskElement = event.target.closest(".TASK_ITEM");
-    if (isRemoving && taskElement) {
+if (taskList) {
+    taskList.addEventListener("click", function (event) {
+        const taskElement = event.target.closest(".TASK_ITEM");
+        if (isRemoving && taskElement) {
 
-        const taskId = taskElement.dataset.taskId;
+            const taskId = taskElement.dataset.taskId;
 
 
-        fetch("CommunityDeleteTask.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `task_id=${taskId}`
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    taskElement.remove();
-                } else {
-                    alert("Error: " + data.message);
-                }
+            fetch("CommunityDeleteTask.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `task_id=${taskId}`
             })
-            .catch(error => console.error("Error:", error));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        taskElement.remove();
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    });
+}
+
+// delete team
+const deleteButton = document.getElementById("deleteTeam");
+
+deleteButton.addEventListener("click", function (event) {
+    event.preventDefault(); // Prevent default link behavior
+
+    // Show confirmation popup
+    let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
+
+    if (confirmDelete) {
+        // Get team name & ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamName = urlParams.get("team");
+
+        if (teamName) {
+            // Send delete request to PHP
+            fetch("CommunityDeleteTeam.php?team=" + encodeURIComponent(teamName), {
+                method: "GET"
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data); // Show response from server
+                    window.location.href = "Homepage.php"; // Redirect after deletion
+                })
+                .catch(error => console.error("Error deleting team:", error));
+        } else {
+            alert("Error: Team name not found!");
+        }
     }
 });
 

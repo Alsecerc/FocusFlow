@@ -87,6 +87,92 @@ function markNotificationsAsRead() {
         .catch(error => console.error("Error:", error));
 }
 
+// create new team
+let ToggleNewComms = document.querySelector(".NAV__TITLE__ADD");
+
+if (ToggleNewComms) {
+    ToggleNewComms.addEventListener('click', function() {
+        let NEW__TEAM__SURVEY = document.querySelector(".NEW__TEAM__SURVEY");
+        NEW__TEAM__SURVEY.classList.toggle("NEW__TEAM__SURVEY_SHOW");
+    });
+}
+
+let INPUTSB = getQueryAll('.INPUT__BOX__SIDEBAR');
+
+INPUTSB.forEach((element) => {
+    let INPUT = element.querySelector(".INPUT__INPUT__SB");
+    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+
+    INPUT.addEventListener('input', function () {
+        // If the input is invalid, add the INVALID class
+        if (INPUT.value.trim() == '') {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else if (!INPUT.checkValidity()) {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else {
+            // If the input is valid, remove the INVALID class
+            ValidInput(INPUT, PLACEHOLDER);
+        }
+    });
+});
+
+
+
+let resetButton = document.querySelector(".TEAM__RESET");
+if (resetButton) {
+    resetButton.addEventListener('click', function () {
+        let INPUTSB = getQueryAll('.INPUT__BOX__SIDEBAR');
+
+        INPUTSB.forEach((element) => {
+            let INPUT = element.querySelector(".INPUT__INPUT__SB");
+            let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+            PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+            INPUT.classList.remove("INVALID_BORDER");
+            PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+            INPUT.classList.remove("VALID_BORDER");
+        });
+    })
+}
+
+
+
+
+function ValidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.remove("INVALID_BORDER");
+    INPUT.classList.add("VALID_BORDER");
+    if (PLACEHOLDER != "") {
+        PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+        PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+    }
+}
+
+function InvalidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.add("INVALID_BORDER");
+    INPUT.classList.remove("VALID_BORDER");
+    if (PLACEHOLDER != "") {
+        PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+        PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+    }
+}
+
+
+// TODO: Goals noti
+
+// Function to check reminders
+function sendGoalReminder() {
+    fetch("GoalReminder.php")
+        .then(response => response.text())
+        .then(data => console.log("Goal Reminder Triggered:", data))
+        .catch(error => console.error("Error:", error));
+}
+
+// Run checkReminders every minute
+setInterval(sendGoalReminder, 300000);
+
+sendGoalReminder();
+
+
+
 
 
 

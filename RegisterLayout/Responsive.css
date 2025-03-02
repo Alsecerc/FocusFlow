@@ -1,14 +1,8 @@
 /* Phone */
 @media (max-width: 468px) {
 
-    html {
-        width: 100%;
-        height: 100%;
-    }
-
-    header {
-        min-width: 722px;
-        font-size: 1.5rem;
+    .ENTER__MESSAGE {
+        min-width: 300px;
     }
 
     .HEADER__SEARCH {
@@ -22,15 +16,69 @@
         left: -800px;
     }
 
+    .HEADER__RIGHT, .HEADER__LEFT, .HEADER__SEARCH {
+        margin: 0 10px;
+    }
+
+    .HEADER__MENU_BUTTON {
+        width: 40px;  /* Smaller button size */
+        height: 40px;
+    }
+
+    .HEADER__MENU_ICON,
+    .HEADER__MENU_ICON::before,
+    .HEADER__MENU_ICON::after {
+        width: 30px; /* Reduce the width */
+        height: 4px;  /* Reduce thickness */
+    }
+
+    .HEADER__MENU_ICON::after {
+        transform: translate(-15px, -10px); /* Adjust spacing */
+    }
+
+    .HEADER__MENU_ICON::before {
+        transform: translate(-15px, 10px); /* Adjust spacing */
+    }
+
+    /* Adjust animations for smaller icons */
+    @keyframes ExpansionDown {
+        100% {
+            transform: translateX(-15px) rotate(45deg);
+        }
+    }
+
+    @keyframes ExpansionUp {
+        100% {
+            transform: translateX(-15px) rotate(-45deg);
+        }
+    }
+
+    @keyframes RevExpansionDown {
+        100% {
+            transform: translateX(-15px) rotate(0deg) translateY(10px);
+        }
+    }
+
+    @keyframes RevExpansionUp {
+        100% {
+            transform: translateX(-15px) rotate(0deg) translateY(-10px);
+        }
+    }
+
     .SIDEBAR_SHOW {
         left: 0;
     }
 
+    .HEADER__TITLE,
     .SIDEBAR,
     .HEADER__ICON,
     .HEADER__UL__ICON>span,
     .SIDEBAR__ITEM>span {
-        font-size: 2rem;
+        font-size: 1rem;
+    }
+
+    .HEADER__LEFT {
+        min-width: fit-content;
     }
 
     /* TODO: CALENDAR PAGE */
@@ -115,19 +163,85 @@
     .COMMUNITY__HEADER__TITLE {
         transform: translateY(30px);
     }
+
+/* Account setting */
+    
+
+    /* DM page */
+    .DMLIST__SIDEBAR {
+        font-size: 0.8rem;
+    }
+
+    .DM__LIST__UL {
+        margin: 0;
+    }
+
+    .DM__LIST__PERSON {
+        width: fit-content;
+    }
+
+    .DM__LIST__PERSON>a {
+        white-space: nowrap;
+    }
+
+    .PROFILE_ICON {
+        font-size: 3rem;
+    }
+
+    .PROFILE_CAM {
+        font-size: 2rem;
+    }
+
+
+    .DM__MAIN {
+        grid-template-columns: 1fr;
+        /* Only show main chat */
+    }
+
+    .DMLIST__SIDEBAR {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-150%);
+
+        transition: all 0.3s ease-in-out;
+
+        width: 250px;
+        height: 100vh;
+        background: var(--COLOR-DARK3);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .DMLIST__SIDEBAR.hide {
+        transform: translateX(-150%);
+    }
+
+    .DMLIST__SIDEBAR.show {
+        transform: translateX(0);
+
+        z-index: 1000;
+    }
+
+    .SIDEBAR__CLOSE {
+        position: absolute;
+    }
+
+    .ENTER__MESSAGE {
+        min-width: fit-content;
+    }
+
+}
+
+/* hides when then sidebar has not enough space */
+@media (max-width:700px) {
+    .HEADER__SEARCH {
+        display: none;
+    }
 }
 
 /* Tablet */
 @media (min-width: 468px) and (max-width: 1024px) {
-    html {
-        min-width: 725px;
-        height: 100vh;
-    }
-
-    header {
-        min-width: 722px;
-    }
-
+    
     .SIDEBAR {
         min-height: 100%;
     }
@@ -195,6 +309,69 @@
     }
 
 
+    /* DM page */
+    .DMLIST__SIDEBAR {
+        font-size: 0.8rem;
+    }
+
+    .DM__LIST__UL {
+        margin: 0;
+    }
+
+    .DM__LIST__PERSON {
+        width: fit-content;
+    }
+
+    .DM__LIST__PERSON>a {
+        white-space: nowrap;
+    }
+
+    .PROFILE_ICON {
+        font-size: 3rem;
+    }
+
+    .PROFILE_CAM {
+        font-size: 2rem;
+    }
+
+
+    .DM__MAIN {
+        grid-template-columns: 1fr;
+        /* Only show main chat */
+    }
+
+    .DMLIST__SIDEBAR {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-150%);
+
+        transition: all 0.3s ease-in-out;
+
+        width: 250px;
+        height: 100vh;
+        background: var(--COLOR-DARK3);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .DMLIST__SIDEBAR.hide {
+        transform: translateX(-150%);
+    }
+
+    .DMLIST__SIDEBAR.show {
+        transform: translateX(0);
+
+        z-index: 1000;
+    }
+
+    .SIDEBAR__CLOSE {
+        position: absolute;
+    }
+
+    .ENTER__MESSAGE {
+        min-width: 18rem;
+    }
+
 }
 
 /* Desktop */
@@ -208,6 +385,16 @@
     }
 
     .RESPONSIVE__MEMBER_BUTTON {
+        display: none;
+    }
+
+
+    /* DM page */
+    .DM__TOGGLE {
+        display: none;
+    }
+
+    .SIDEBAR__CLOSE {
         display: none;
     }
 }

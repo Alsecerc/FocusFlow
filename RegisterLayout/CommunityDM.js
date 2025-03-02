@@ -23,31 +23,41 @@ function sendMSG(event) {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            let conversationSection = document.querySelector(".DMPAGE__CONVERSATION");
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                let conversationSection = document.querySelector(".DMPAGE__CONVERSATION");
 
-            let newMessage = document.createElement("div");
-            newMessage.classList.add("CONVERSATION", "SENT"); 
-            newMessage.textContent = messageText; 
+                let newMessage = document.createElement("div");
+                newMessage.classList.add("CONVERSATION", "SENT");
+                newMessage.textContent = messageText;
 
-            conversationSection.appendChild(newMessage);
-            conversationSection.scrollTop = conversationSection.scrollHeight; // Auto-scroll
+                conversationSection.appendChild(newMessage);
+                conversationSection.scrollTop = conversationSection.scrollHeight; // Auto-scroll
 
-            messageInput.value = ""; // Clear input field
-        } else {
-            alert("Error: " + data.message); // Show error message
-        }
-    })
-    .catch(error => console.error("Error:", error));
+                messageInput.value = ""; // Clear input field
+            } else {
+                alert("Error: " + data.message); // Show error message
+            }
+        })
+        .catch(error => console.error("Error:", error));
 }
 
 let EnterMessage = document.querySelector(".ENTER__MESSAGE");
 if (EnterMessage) {
-    EnterMessage.addEventListener("keypress", function(event) {
+    EnterMessage.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             sendMSG(event);
         }
     });
 }
+
+// for toggle member list sidebar
+
+document.getElementById("toggleDMList").addEventListener("click", function () {
+    document.querySelector(".DMLIST__SIDEBAR").classList.add("show");
+});
+
+document.querySelector(".SIDEBAR__CLOSE").addEventListener('click', function () {
+    document.querySelector(".DMLIST__SIDEBAR").classList.remove("show");
+});

@@ -3,7 +3,23 @@ include "conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $team_name = $_POST['team_name'];
-    $member_id = $_POST['member_id'];
+    $memberName = $_POST['member_name'];
+
+    // Query to find the member ID based on the provided name
+    $sql = "SELECT id FROM users WHERE name = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("s", $memberName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $member_id = $row['id'];
+    } else {
+        die("Error: Member not found!");
+    }
+
+    $stmt->close();
+
     $leader_id = $_POST['leader_id']; // Assuming leader ID is known
 
     // Check if the member already exists in the team
@@ -31,6 +47,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $stmt->close();
         $_conn->close();
-    }    
+    }
 }
-?>
