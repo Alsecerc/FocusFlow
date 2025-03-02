@@ -115,12 +115,36 @@ while ($row = $result_categories->fetch_assoc()) {
 }
 
 $colors = [
-    '#4285F4', '#EA4335', '#FBBC05', '#34A853', '#FF6D01', 
-    '#46BDC6', '#7B1FA2', '#0097A7', '#D81B60', '#5D4037',
-    '#8E44AD', '#3498DB', '#1ABC9C', '#F39C12', '#C0392B', 
-    '#27AE60', '#2980B9', '#D35400', '#2C3E50', '#E74C3C',
-    '#9B59B6', '#16A085', '#F1C40F', '#BDC3C7', '#34495E',
-    '#E67E22', '#95A5A6', '#7F8C8D', '#2ECC71', '#A93226'
+    '#4285F4',
+    '#EA4335',
+    '#FBBC05',
+    '#34A853',
+    '#FF6D01',
+    '#46BDC6',
+    '#7B1FA2',
+    '#0097A7',
+    '#D81B60',
+    '#5D4037',
+    '#8E44AD',
+    '#3498DB',
+    '#1ABC9C',
+    '#F39C12',
+    '#C0392B',
+    '#27AE60',
+    '#2980B9',
+    '#D35400',
+    '#2C3E50',
+    '#E74C3C',
+    '#9B59B6',
+    '#16A085',
+    '#F1C40F',
+    '#BDC3C7',
+    '#34495E',
+    '#E67E22',
+    '#95A5A6',
+    '#7F8C8D',
+    '#2ECC71',
+    '#A93226'
 ];
 ?>
 
@@ -139,156 +163,157 @@ $colors = [
     <link rel="stylesheet" href="Responsive.css">
 </head>
 <style>
-        :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #166088;
-            --accent-color: #4caf50;
-            --text-color: #333;
-            --background-color: #f5f7fa;
-            --card-bg: #ffffff;
-            --border-radius: 10px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
+    :root {
+        --primary-color: #4a6fa5;
+        --secondary-color: #166088;
+        --accent-color: #4caf50;
+        --text-color: #333;
+        --background-color: #f5f7fa;
+        --card-bg: #ffffff;
+        --border-radius: 10px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
 
-        .dashboard {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    .dashboard {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-        .dashboard-header {
-            margin-bottom: 30px;
-        }
+    .dashboard-header {
+        margin-bottom: 30px;
+    }
 
-        .dashboard-header h1 {
-            color: var(--primary-color);
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
+    .dashboard-header h1 {
+        color: var(--primary-color);
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
 
-        .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
 
-        .stat-card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
-        }
+    .stat-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease;
+    }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
 
-        .stat-card h2 {
-            font-size: 16px;
-            color: var(--secondary-color);
-            margin-bottom: 15px;
-        }
+    .stat-card h2 {
+        font-size: 16px;
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+    }
 
-        .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
+    .stat-value {
+        font-size: 36px;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
 
-        .stat-change {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-        }
+    .stat-change {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+    }
 
-        .positive {
-            color: var(--accent-color);
-        }
+    .positive {
+        color: var(--accent-color);
+    }
 
-        .negative {
-            color: #f44336;
-        }
+    .negative {
+        color: #f44336;
+    }
 
-        .chart-container {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
+    .chart-container {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+    }
 
-        .progress-bar {
-            height: 10px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
+    .progress-bar {
+        height: 10px;
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
 
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--accent-color);
-            border-radius: 5px;
-            transition: width 0.5s ease-in-out;
-        }
+    .progress-bar-fill {
+        height: 100%;
+        background-color: var(--accent-color);
+        border-radius: 5px;
+        transition: width 0.5s ease-in-out;
+    }
 
-        .time-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 14px;
-            color: #666;
-        }
+    .time-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 14px;
+        color: #666;
+    }
 
-        #taskCategories {
-            height: 300px;
-            position: relative;
-        }
+    #taskCategories {
+        height: 300px;
+        position: relative;
+    }
 
-        .pie-chart {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto;
-        }
+    .pie-chart {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin: 0 auto;
+    }
 
-        .pie-segment {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            clip: rect(0px, 100px, 200px, 0px);
-            transform: rotate(0deg);
-        }
+    .pie-segment {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        clip: rect(0px, 100px, 200px, 0px);
+        transform: rotate(0deg);
+    }
 
-        .chart-legend {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
+    .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
 
-        .legend-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-        }
-    </style>
+    .legend-color {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+    }
+</style>
+
 <body>
 <header>
         <div class="HEADER__LEFT">
@@ -320,29 +345,40 @@ $colors = [
                             </span>
                         </a>
                     </li>
-                    <li class="HEADER__ITEM" style="position: relative;user-select:none;cursor:pointer;">
+
+                    <?php
+                    $userID = $_COOKIE['UID'];
+
+                    // Check if there are any unread notifications for this user
+                    $sql = "SELECT COUNT(*) AS unread_count FROM notifications WHERE user_id = $userID AND status = 'unread'";
+                    $result = $_conn->query($sql);
+                    $row = $result->fetch_assoc();
+                    $hasUnread = $row['unread_count'] > 0; // True if there are unread notifications
+                    ?>
+
+                    <li class="HEADER__ITEM" style="position: relative; user-select: none; cursor: pointer;">
                         <div class="HEADER__UL__ICON" id="notiButton">
-                            <span class="material-icons">
-                                notifications
+                            <span class="material-icons" id="notiIcon">
+                                <?= $hasUnread ? 'notifications_active' : 'notifications' ?>
                             </span>
                         </div>
                         <?php
                         $userID = $_COOKIE['UID'];
-                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
+                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY status ASC, created_at DESC";
                         $result = $_conn->query($sql);
                         ?>
 
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default; display:none;">
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="height: 300px; overflow-y: auto; cursor:default; display:none;">
                             <?php if ($result->num_rows > 0): ?>
                                 <ul id="notificationList">
                                     <?php while ($row = $result->fetch_assoc()): ?>
                                         <?php if ($row['type'] == 'system'): ?>
-                                            <li class="NOTI__ITEM">
+                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?>">
                                                 📢 System Notification: <?= $row['notification_message'] ?>
                                                 <small> (<?= $row['created_at'] ?>)</small>
                                             </li>
                                         <?php else: ?>
-                                            <li class="NOTI__ITEM NOTI__ITEM__MSG">
+                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?> NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
                                                 $result2 = $_conn->query($sql2);
@@ -413,7 +449,7 @@ $colors = [
                         <a href="Goal.php" class="SIDEBAR__ITEM">
                             <span class="material-icons">
                                 track_changes
-                                </span>Goals
+                            </span>Goals
                         </a>
                     </li>
                 </ul>
@@ -459,7 +495,7 @@ $colors = [
                     </li>
                     <li>
                         <a href="CommunityDMPage?receiver_id=4&name=Sarah+Lee" class="SIDEBAR__ITEM COMMUNITY__ITEM" onclick="openChat('Person 2')">
-                        Sarah Lee
+                            Sarah Lee
                             <button class="material-icons">more_horiz</button>
                         </a>
                     </li>
@@ -509,81 +545,81 @@ $colors = [
     </div>
     <script src="Registered.js" defer></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const categoryData = <?php 
-            $categoryData = [];
-            foreach ($categories as $index => $category) {
-                $percentage = ($total_category_tasks > 0) ? round(($category['task_count'] / $total_category_tasks) * 100) : 0;
-                $colorIndex = $index % count($colors);
-                $categoryData[] = [
-                    'name' => $category['category'] ? $category['category'] : 'Uncategorized',
-                    'value' => $percentage,
-                    'count' => $category['task_count'],
-                    'color' => $colors[$colorIndex]
-                ];
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryData = <?php
+                                    $categoryData = [];
+                                    foreach ($categories as $index => $category) {
+                                        $percentage = ($total_category_tasks > 0) ? round(($category['task_count'] / $total_category_tasks) * 100) : 0;
+                                        $colorIndex = $index % count($colors);
+                                        $categoryData[] = [
+                                            'name' => $category['category'] ? $category['category'] : 'Uncategorized',
+                                            'value' => $percentage,
+                                            'count' => $category['task_count'],
+                                            'color' => $colors[$colorIndex]
+                                        ];
+                                    }
+                                    echo json_encode($categoryData);
+                                    ?>;
+
+            // Create pie chart
+            if (categoryData.length > 0) {
+                createPieChart(categoryData);
+            } else {
+                document.getElementById('pieChart').innerHTML = '<p>No task data available</p>';
             }
-            echo json_encode($categoryData);
-        ?>;
 
-        // Create pie chart
-        if (categoryData.length > 0) {
-            createPieChart(categoryData);
-        } else {
-            document.getElementById('pieChart').innerHTML = '<p>No task data available</p>';
-        }
+            function createPieChart(data) {
+                const pieChart = document.getElementById('pieChart');
+                const chartLegend = document.getElementById('chartLegend');
 
-        function createPieChart(data) {
-            const pieChart = document.getElementById('pieChart');
-            const chartLegend = document.getElementById('chartLegend');
-            
-            // Clear existing content
-            pieChart.innerHTML = '';
-            chartLegend.innerHTML = '';
-            
-            let startAngle = 0;
-            
-            // Create pie segments
-            data.forEach((category, index) => {
-                const angle = (category.value / 100) * 360;
-                const endAngle = startAngle + angle;
-                
-                // Create a pie segment
-                const segment = document.createElement('div');
-                segment.className = 'pie-segment';
-                segment.style.clip = `rect(0px, 200px, 200px, 100px)`;
-                segment.style.backgroundColor = category.color;
-                segment.style.transform = `rotate(${startAngle}deg)`;
-                
-                if (angle > 180) {
-                    const segment2 = document.createElement('div');
-                    segment2.className = 'pie-segment';
-                    segment2.style.clip = `rect(0px, 100px, 200px, 0px)`;
-                    segment2.style.backgroundColor = category.color;
-                    segment2.style.transform = `rotate(${startAngle + 180}deg)`;
-                    pieChart.appendChild(segment2);
-                }
-                
-                pieChart.appendChild(segment);
-                
-                // Create legend item
-                const legendItem = document.createElement('div');
-                legendItem.className = 'legend-item';
-                
-                const colorBox = document.createElement('div');
-                colorBox.className = 'legend-color';
-                colorBox.style.backgroundColor = category.color;
-                
-                const label = document.createElement('span');
-                label.textContent = `${category.name}: ${category.value}% (${category.count})`;
-                
-                legendItem.appendChild(colorBox);
-                legendItem.appendChild(label);
-                chartLegend.appendChild(legendItem);
-                
-                startAngle = endAngle;
-            });
-        }
-    });
+                // Clear existing content
+                pieChart.innerHTML = '';
+                chartLegend.innerHTML = '';
+
+                let startAngle = 0;
+
+                // Create pie segments
+                data.forEach((category, index) => {
+                    const angle = (category.value / 100) * 360;
+                    const endAngle = startAngle + angle;
+
+                    // Create a pie segment
+                    const segment = document.createElement('div');
+                    segment.className = 'pie-segment';
+                    segment.style.clip = `rect(0px, 200px, 200px, 100px)`;
+                    segment.style.backgroundColor = category.color;
+                    segment.style.transform = `rotate(${startAngle}deg)`;
+
+                    if (angle > 180) {
+                        const segment2 = document.createElement('div');
+                        segment2.className = 'pie-segment';
+                        segment2.style.clip = `rect(0px, 100px, 200px, 0px)`;
+                        segment2.style.backgroundColor = category.color;
+                        segment2.style.transform = `rotate(${startAngle + 180}deg)`;
+                        pieChart.appendChild(segment2);
+                    }
+
+                    pieChart.appendChild(segment);
+
+                    // Create legend item
+                    const legendItem = document.createElement('div');
+                    legendItem.className = 'legend-item';
+
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color';
+                    colorBox.style.backgroundColor = category.color;
+
+                    const label = document.createElement('span');
+                    label.textContent = `${category.name}: ${category.value}% (${category.count})`;
+
+                    legendItem.appendChild(colorBox);
+                    legendItem.appendChild(label);
+                    chartLegend.appendChild(legendItem);
+
+                    startAngle = endAngle;
+                });
+            }
+        });
     </script>
 </body>
 

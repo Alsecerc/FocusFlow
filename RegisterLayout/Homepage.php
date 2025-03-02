@@ -56,29 +56,40 @@ if (!isset($_COOKIE['UID'])) {
                             </span>
                         </a>
                     </li>
-                    <li class="HEADER__ITEM" style="position: relative;user-select:none;cursor:pointer;">
+
+                    <?php
+                    $userID = $_COOKIE['UID'];
+
+                    // Check if there are any unread notifications for this user
+                    $sql = "SELECT COUNT(*) AS unread_count FROM notifications WHERE user_id = $userID AND status = 'unread'";
+                    $result = $_conn->query($sql);
+                    $row = $result->fetch_assoc();
+                    $hasUnread = $row['unread_count'] > 0; // True if there are unread notifications
+                    ?>
+
+                    <li class="HEADER__ITEM" style="position: relative; user-select: none; cursor: pointer;">
                         <div class="HEADER__UL__ICON" id="notiButton">
-                            <span class="material-icons">
-                                notifications
+                            <span class="material-icons" id="notiIcon">
+                                <?= $hasUnread ? 'notifications_active' : 'notifications' ?>
                             </span>
                         </div>
                         <?php
                         $userID = $_COOKIE['UID'];
-                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
+                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY status ASC, created_at DESC";
                         $result = $_conn->query($sql);
                         ?>
 
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default; display:none;">
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="height: 300px; overflow-y: auto; cursor:default; display:none;">
                             <?php if ($result->num_rows > 0): ?>
                                 <ul id="notificationList">
                                     <?php while ($row = $result->fetch_assoc()): ?>
                                         <?php if ($row['type'] == 'system'): ?>
-                                            <li class="NOTI__ITEM">
+                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?>">
                                                 📢 System Notification: <?= $row['notification_message'] ?>
                                                 <small> (<?= $row['created_at'] ?>)</small>
                                             </li>
                                         <?php else: ?>
-                                            <li class="NOTI__ITEM NOTI__ITEM__MSG">
+                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?> NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
                                                 $result2 = $_conn->query($sql2);
@@ -184,7 +195,30 @@ if (!isset($_COOKIE['UID'])) {
             ?>
 
             <nav class="SIDEBAR__NAV COMMUNITY">
-                <h4 class="NAV_TITLE">Community</h4>
+                <div class="NAV_TITLE">
+                    <h4>Community</h4>
+
+                    <button class="NAV__TITLE__ADD CLICKABLE">
+                        <span class="material-icons">
+                            add_circle
+                        </span>
+                    </button>
+
+                    <div class="NEW__TEAM__SURVEY ">
+                        <h4>Create New Team</h4>
+                        <form action="1AddTeam.php" method="POST" style="display:flex; flex-direction:column; gap:1rem; align-items:start;">
+                            <label class="INPUT__BOX__SIDEBAR">
+                                <input type="text" name="team_name" id="team_name" class="INPUT__INPUT__SB" required>
+                                <span class="INPUT__PLACEHOLDER">Team Name : </span>
+                            </label>
+                            <div style="display:flex; justify-content:space-between; width: 100%;">
+                                <button type="submit" class="TEAM__CREATE CLICKABLE">Create Team</button>
+                                <button type="reset" class="TEAM__RESET CLICKABLE">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
                 <ul>
                     <?php
                     if ($result->num_rows > 0) {
@@ -207,6 +241,7 @@ if (!isset($_COOKIE['UID'])) {
     </main>
     <script src="Registered.js" defer></script>
     <script src="Homepage.js" defer></script>
+
 </body>
 
 </html>

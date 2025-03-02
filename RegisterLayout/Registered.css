@@ -15,8 +15,15 @@ MOBILE: 468
     box-sizing: border-box;
     scroll-behavior: smooth;
     scroll-margin-top: 100px;
-    /* margin: 0;
-    padding: 0; */
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 img {
@@ -40,20 +47,14 @@ a:is(:hover, :focus, :active) {
     color: var(--COLOR-ACCENT3);
 }
 
-html {
-    height: 100%;
-}
-
 body {
     overflow-x: hidden;
 
     display: grid;
     grid-template-rows: 80px 1fr;
-    flex-direction: column;
 
     background-color: var(--COLOR-ACCENT4);
 
-    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -570,7 +571,16 @@ header {
     margin-bottom: var(--MARGIN);
 }
 
+.READ>*,
+.READ {
+    font-weight: 350;
+    color: rgba(0, 0, 0, 0.289);
+}
 
+.UNREAD {
+    font-weight: 350;
+    color: rgba(0, 0, 0, 0.289);
+}
 
 
 /* MENU ICON STYLE */
@@ -746,14 +756,55 @@ header {
     background-color: var(--COLOR-DARK1);
 }
 
+
 .NAV_TITLE {
-    padding: var(--PADDING-TB) 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
+.NAV__TITLE__ADD,
+.NAV__TITLE__REMOVE {
+    cursor: pointer;
+}
+
 
 .COMMUNITY__ITEM {
     justify-content: space-between;
 }
 
+/* new team survey */
+.NEW__TEAM__SURVEY {
+    transition: all 0.5s ease;
+
+    display: block;
+
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, 500%);
+
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+    background-color: var(--COLOR-LIGHT1);
+    color: var(--COLOR-DARK2);
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    box-shadow: var(--SHADOW-WHITEBG);
+}
+
+.NEW__TEAM__SURVEY_SHOW {
+    transform: translate(-50%, -50%);
+
+}
+
+.TEAM__CREATE {
+    border-radius: var(--BORDER-RD-CONTACT);
+    color: var(--COLOR-LIGHT1);
+    background-color: var(--COLOR-DARK2);
+    padding: var(--PADDING-TB) var(--PADDING-LR);
+}
 
 
 
@@ -1284,11 +1335,11 @@ header {
 }
 
 .HEADER-HIGHLIGHT {
-    background-color: var(--COLOR-ACCENT1);
+    background-color: var(--COLOR-ACCENT2);
 }
 
 .DAY_NUM-HIGHLIGHT {
-    background-color: var(--COLOR-ACCENT2);
+    background-color: var(--COLOR-ACCENT3);
 }
 
 
@@ -1340,10 +1391,9 @@ header {
 
 .EVENT {
     position: absolute;
-    z-index: 1;
 
-    background-color: var(--COLOR-ACCENT1);
-    color: var(--COLOR-LIGHT1);
+    background-color: var(--COLOR-LIGHT3);
+    color: var(--COLOR-DARK3);
 
     border-radius: var(--BORDER-RD-CONTACT);
 
@@ -1352,14 +1402,6 @@ header {
     justify-content: center;
 
     cursor: pointer;
-
-}
-
-.EVENT__NAME {
-    padding: 1rem;
-    text-wrap: nowrap;
-
-
 
 }
 
@@ -1566,10 +1608,12 @@ header {
     gap: 2rem;
 }
 
-.INPUT__BOX {
+.INPUT__BOX,
+.INPUT__BOX__SIDEBAR {
     position: relative;
 }
 
+.INPUT__INPUT__SB,
 .INPUT__INPUT {
     min-width: 150px;
     padding: 15px 30px;
@@ -1595,6 +1639,7 @@ header {
 
 
 /* INPUT BOX DESIGN */
+.INPUT__INPUT__SB:focus,
 .INPUT__INPUT:focus {
     outline: none;
     box-shadow: var(--SHADOW-WHITEBG);
@@ -1619,6 +1664,7 @@ header {
 }
 
 /* + to find sibling selector */
+.INPUT__INPUT__SB:focus+.INPUT__PLACEHOLDER,
 .INPUT__INPUT:focus+.INPUT__PLACEHOLDER,
 .AUTOFOCUS {
     color: var(--COLOR-DARK3);
@@ -1713,18 +1759,17 @@ header {
     width: 100%;
 }
 
-.timer {
-    display: inline-block;
-    padding: 10px;
-    width: 600px;
-    box-sizing: border-box;
-}
+
 
 .MAIN__TIMER {
     width: 20rem;
     height: 20rem;
     border-radius: 50%;
-    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     margin: 0 auto;
     position: relative;
     /* To help with positioning */
@@ -1778,7 +1823,7 @@ header {
 }
 
 .button {
-    background-color: #2e325a;
+    background-color: var(--COLOR-DARK3);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1790,16 +1835,24 @@ header {
 
 .button.active,
 .button:hover {
-    background-color: #020323;
+    background-color: var(--COLOR-ACCENT2);
 }
 
 .buttons {
     margin-top: 20px;
 }
 
+
+#start {
+    background-color: var(--COLOR-GREEN);
+}
+
+#stop {
+    background-color: var(--COLOR-RED);
+}
+
 #start,
 #stop {
-    background-color: #2e325a;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1827,34 +1880,6 @@ header {
     border-radius: 1rem;
 }
 
-.adjust-buttons {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-    gap: 10px;
-}
-
-.adjust-btn {
-    background-color: #2e325a;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-.adjust-btn:hover {
-    background-color: #020323;
-}
-
-.timer {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-}
-
 /* Timer Layout */
 .timer-wrapper {
     display: flex;
@@ -1880,7 +1905,7 @@ header {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: radial-gradient(circle, #1a1d4d, #000);
+    background: radial-gradient(circle, var(--COLOR-ACCENT2), var(--COLOR-DARK1));
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     font-size: 2rem;
     font-weight: bold;
@@ -1888,7 +1913,7 @@ header {
 
 /* Plus & Minus Buttons */
 .adjust-btn {
-    background-color: #2e325a;
+    background-color: var(--COLOR-DARK2);
     color: white;
     border: none;
     padding: 10px 15px;
@@ -1900,7 +1925,7 @@ header {
 }
 
 .adjust-btn:hover {
-    background-color: #020323;
+    background-color: var(--COLOR-DARK1);
     transform: scale(1.1);
 }
 
@@ -1919,6 +1944,10 @@ header {
     width: 100%;
 }
 
+.PROFILE__PIC__CONT>.material-icons {
+    color: var(--COLOR-DARK3);
+}
+
 .PROFILE__PIC__CONT {
     display: flex;
     flex-direction: column;
@@ -1928,17 +1957,7 @@ header {
     gap: 1rem;
 }
 
-.PROFILE__PIC {
-    /* This ensures the image fills the container while keeping the aspect ratio. */
-    object-fit: cover;
-    background-color: var(--COLOR-ACCENT4);
-    border-radius: 99px;
-}
 
-.PROFILE__SEC {
-    display: flex;
-    justify-content: space-around;
-}
 
 .PROFILE__CHANGE,
 .PROFILE__SAVE,
@@ -1955,6 +1974,8 @@ header {
 
 .PROFILE__DETAILS {
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 
     gap: 1rem;
@@ -1973,10 +1994,28 @@ header {
 
 
 .PROFILE__LOGOUT_B {
-    background-color: var(--COLOR-DARK3);
+    background-color: var(--COLOR-RED);
     margin: 0 auto;
 
 }
+
+.ACCOUNT__THEME {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ACCOUNT__THEME >button {
+    width: fit-content;
+    height: fit-content;
+}
+
+
+
+
+
 
 
 /* Page: Community DM page */
@@ -2023,11 +2062,27 @@ header {
 .DMPage {
     width: 100%;
     height: 100%;
+    /* Full viewport height */
+
+    display: flex;
+    flex-direction: column;
+    /* Stacks child elements vertically */
 
     overflow-y: hidden;
+}
 
-    display: grid;
-    grid-template-rows: 100px 1fr 75px;
+.DMPAGE__HEADER {
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.DMPAGE__CONVERSATION {
+    flex: 1;
+}
+
+.DMPAGE__MESSAGE {
+    height: 75px;
+    flex-shrink: 0;
 }
 
 /* HEADER SECTION */
@@ -2097,8 +2152,10 @@ header {
     align-items: center;
     justify-content: center;
     gap: 1rem;
+}
 
-    overflow-y: auto;
+.DMPAGE__MESSAGE>form {
+    margin: 0;
 }
 
 .ENTER__MESSAGE {
@@ -2477,6 +2534,20 @@ header {
     gap: 1rem;
 }
 
+p.MEMBER {
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    gap: 1rem;
+}
+
+p.MEMBER:hover {
+    background-color: transparent;
+}
+
 .MEMBER {
     gap: 1rem;
 
@@ -2670,7 +2741,6 @@ header {
 }
 
 .GOAL__BAR {
-    width: 100%;
     background-color: var(--COLOR-DARK3);
 
     padding: 0.4rem;

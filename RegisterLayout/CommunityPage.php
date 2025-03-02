@@ -15,7 +15,7 @@ if (!isset($_COOKIE['UID'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Community</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -26,7 +26,7 @@ if (!isset($_COOKIE['UID'])) {
 </head>
 
 <body>
-    <header>
+<header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -56,29 +56,40 @@ if (!isset($_COOKIE['UID'])) {
                             </span>
                         </a>
                     </li>
-                    <li class="HEADER__ITEM" style="position: relative;user-select:none;cursor:pointer;">
+
+                    <?php
+                    $userID = $_COOKIE['UID'];
+
+                    // Check if there are any unread notifications for this user
+                    $sql = "SELECT COUNT(*) AS unread_count FROM notifications WHERE user_id = $userID AND status = 'unread'";
+                    $result = $_conn->query($sql);
+                    $row = $result->fetch_assoc();
+                    $hasUnread = $row['unread_count'] > 0; // True if there are unread notifications
+                    ?>
+
+                    <li class="HEADER__ITEM" style="position: relative; user-select: none; cursor: pointer;">
                         <div class="HEADER__UL__ICON" id="notiButton">
-                            <span class="material-icons">
-                                notifications
+                            <span class="material-icons" id="notiIcon">
+                                <?= $hasUnread ? 'notifications_active' : 'notifications' ?>
                             </span>
                         </div>
                         <?php
                         $userID = $_COOKIE['UID'];
-                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
+                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY status ASC, created_at DESC";
                         $result = $_conn->query($sql);
                         ?>
 
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default; display:none;">
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="height: 300px; overflow-y: auto; cursor:default; display:none;">
                             <?php if ($result->num_rows > 0): ?>
                                 <ul id="notificationList">
                                     <?php while ($row = $result->fetch_assoc()): ?>
                                         <?php if ($row['type'] == 'system'): ?>
-                                            <li class="NOTI__ITEM">
+                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?>">
                                                 📢 System Notification: <?= $row['notification_message'] ?>
                                                 <small> (<?= $row['created_at'] ?>)</small>
                                             </li>
                                         <?php else: ?>
-                                            <li class="NOTI__ITEM NOTI__ITEM__MSG">
+                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?> NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
                                                 $result2 = $_conn->query($sql2);
@@ -319,6 +330,14 @@ if (!isset($_COOKIE['UID'])) {
                             </div>
                         </div>
                     </div>
+
+                    <div>
+                        <p class="COMMUNITY__HEADER__TITLE">Remove Team</p>
+                        <!-- Add Task Button -->
+                        <a href="#" class="HEADER__UL__ICON" id="deleteTeam">
+                            <span class="material-icons">delete_forever</span>
+                        </a>
+                    </div>
                 </div>
             </section>
 
@@ -429,7 +448,6 @@ do_disturb_on
 
 
                     $stmt->close();
-                    $_conn->close();
                     ?>
                 </div>
             </section>
@@ -450,9 +468,32 @@ do_disturb_on
                             <span class="material-icons">person_add</span>
                         </button>
 
-                        <button class="HEADER__UL__ICON CLICKABLE" onclick="removeMember()">
-                            <span class="material-icons">person_remove</span>
-                        </button>
+
+                        <!-- check if user is leader then hides if he is not -->
+                        <?php
+
+                        $teamName = $_GET['team']; // Get team name from URL
+                        $currentUserID = isset($_COOKIE['UID']) ? $_COOKIE['UID'] : null;
+
+                        // Fetch leader_id for this team
+                        $sql = "SELECT leader_id FROM team WHERE team_name = ?";
+                        $stmt = $_conn->prepare($sql);
+                        $stmt->bind_param("s", $teamName);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $leaderID = $row['leader_id'];
+
+                        $stmt->close();
+                        ?>
+
+                        <?php if ($currentUserID == $leaderID): ?>
+                            <button class="HEADER__UL__ICON CLICKABLE" onclick="removeMember()">
+                                <span class="material-icons">person_remove</span>
+                            </button>
+                        <?php endif; ?>
+
+
 
                     </div>
                     <h3>Leader</h3>
@@ -495,7 +536,7 @@ do_disturb_on
                                 if ($currentUserID == $leaderID) {
                                     echo "<p class='LEADER'><span class='material-icons'>account_circle</span>$leaderName (You)</p>";
                                 } else {
-                                    echo "<li class='MEMBER'><a href='CommunityDMPage.php?receiver_id=" . urlencode($leaderID) . "&name=" . urlencode($leaderName) . "'><span class='material-icons'>boy</span>$leaderName</a></li>";
+                                    echo "<li class='MEMBER'><a href='CommunityDMPage.php?receiver_id=" . urlencode($leaderID) . "&name=" . urlencode($leaderName) . "'><span class='material-icons'>person</span>$leaderName</a></li>";
                                 }
                             }
 
@@ -519,9 +560,11 @@ do_disturb_on
                     $teamName = $_GET['team'];
 
                     // Prepare the first query securely
-                    $sql = "SELECT * FROM team WHERE team_name = ?";
+                    $sql = "SELECT id, name FROM users WHERE id IN (
+                          SELECT member_id FROM team WHERE team_name = ?
+                      ) AND id != ?";
                     $stmt = $_conn->prepare($sql);
-                    $stmt->bind_param("s", $teamName);
+                    $stmt->bind_param("si", $teamName, $leaderID);
                     $stmt->execute();
                     $result = $stmt->get_result();
 
@@ -529,36 +572,14 @@ do_disturb_on
                         echo "<p>Error loading members: " . htmlspecialchars($_conn->error) . "</p>";
                     } else {
                         echo '<ul class="MEMBER_LIST">';
-                        while ($row = $result->fetch_assoc()) {
-                            $memberID = $row['member_id']; // Assuming 'member_id' is the correct column
-
-                            // Securely fetch user details using prepared statements
-                            $sql2 = "SELECT * FROM users WHERE id = ?";
-                            $stmt2 = $_conn->prepare($sql2);
-                            $stmt2->bind_param("i", $memberID);
-                            $stmt2->execute();
-                            $result2 = $stmt2->get_result();
-
-                            if ($row2 = $result2->fetch_assoc()) {
-                                $username = htmlspecialchars($row2['name']); // Prevent XSS
-
-                                if ($username == $_COOKIE['USERNAME']) {
-                                    echo "<li class='MEMBER'>
-                                    <a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($username) . "' class='memberName'>
-                                        <span class='material-icons'>account_circle</span>
-                                        <p>$username</p>
-                                    </a>
-                                  </li>";
-                                } else {
-                                    echo "<li class='MEMBER'>
-                                    <a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($username) . "' class='memberName'>
-                                        <span class='material-icons'>boy</span>
-                                        <p>$username</p>
-                                    </a>
-                                  </li>";
-                                }
+                        while ($memberRow = $result->fetch_assoc()) {
+                            $memberID = $memberRow['id'];
+                            $memberName = htmlspecialchars($memberRow['name']);
+                            if ($memberID == $user_id) {
+                                echo "<p class='MEMBER'><span class='material-icons'>account_circle</span>$memberName (You)</p>";
+                            } else {
+                                echo "<li class='MEMBER'><a href='CommunityDMPage.php?receiver_id=" . urlencode($memberID) . "&name=" . urlencode($memberName) . "'><span class='material-icons'>person</span>$memberName</a></li>";
                             }
-                            $stmt2->close();
                         }
                         echo '</ul>';
                     }

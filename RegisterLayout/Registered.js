@@ -33,18 +33,145 @@ MENU_BUTTON.addEventListener('click', function () {
     SIDEBAR.classList.toggle("SIDEBAR_SHOW");
 });
 
-let NOTI__BUTTON = document.querySelector("#notiButton");
-if (NOTI__BUTTON) {
-    NOTI__BUTTON.addEventListener("click", function () {
-        let popup = document.getElementById("notificationPopup");
+// let NOTI__BUTTON = document.querySelector("#notiButton");
+// if (NOTI__BUTTON) {
+//     NOTI__BUTTON.addEventListener("click", function () {
+//         let popup = document.getElementById("notificationPopup");
 
-        if (popup.style.display === "none" || popup.style.display === "") {
-            popup.style.display = "block";
-        } else {
-            popup.style.display = "none";
+//         if (popup.style.display === "none" || popup.style.display === "") {
+//             popup.style.display = "block";
+//         } else {
+//             popup.style.display = "none";
+//         }
+//     });
+// }
+
+let = openNoti = false
+
+document.getElementById("notiButton").addEventListener("click", function () {
+    let notificationPopup = document.getElementById("notificationPopup");
+
+    // Toggle visibility
+    if (notificationPopup.style.display === "none" || notificationPopup.style.display === "") {
+        notificationPopup.style.display = "block";
+
+        // if there is unread message 
+        if (document.querySelector(".NOTI__ITEM.UNREAD")) {
+            // trigger to mark message read when close
+            openNoti = true;
         }
+
+    } else {
+        notificationPopup.style.display = "none";
+
+        if (openNoti) {
+            markNotificationsAsRead();
+            openNoti = false;
+        }
+    }
+});
+
+function markNotificationsAsRead() {
+    fetch("1Notification.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+        .then(response => response.text())
+        .then(data => {
+            if (data === "success") {
+                console.log("Notifications marked as read");
+            } else {
+                console.error("Failed to update notifications");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+}
+
+// create new team
+let ToggleNewComms = document.querySelector(".NAV__TITLE__ADD");
+
+if (ToggleNewComms) {
+    ToggleNewComms.addEventListener('click', function() {
+        let NEW__TEAM__SURVEY = document.querySelector(".NEW__TEAM__SURVEY");
+        NEW__TEAM__SURVEY.classList.toggle("NEW__TEAM__SURVEY_SHOW");
     });
 }
+
+let INPUTSB = getQueryAll('.INPUT__BOX__SIDEBAR');
+
+INPUTSB.forEach((element) => {
+    let INPUT = element.querySelector(".INPUT__INPUT__SB");
+    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+
+    INPUT.addEventListener('input', function () {
+        // If the input is invalid, add the INVALID class
+        if (INPUT.value.trim() == '') {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else if (!INPUT.checkValidity()) {
+            InvalidInput(INPUT, PLACEHOLDER);
+        } else {
+            // If the input is valid, remove the INVALID class
+            ValidInput(INPUT, PLACEHOLDER);
+        }
+    });
+});
+
+
+
+let resetButton = document.querySelector(".TEAM__RESET");
+if (resetButton) {
+    resetButton.addEventListener('click', function () {
+        let INPUTSB = getQueryAll('.INPUT__BOX__SIDEBAR');
+
+        INPUTSB.forEach((element) => {
+            let INPUT = element.querySelector(".INPUT__INPUT__SB");
+            let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
+            PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+            INPUT.classList.remove("INVALID_BORDER");
+            PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+            INPUT.classList.remove("VALID_BORDER");
+        });
+    })
+}
+
+
+
+
+function ValidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.remove("INVALID_BORDER");
+    INPUT.classList.add("VALID_BORDER");
+    if (PLACEHOLDER != "") {
+        PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
+        PLACEHOLDER.classList.add("VALID_PLACEHOLDER");
+    }
+}
+
+function InvalidInput(INPUT, PLACEHOLDER) {
+    INPUT.classList.add("INVALID_BORDER");
+    INPUT.classList.remove("VALID_BORDER");
+    if (PLACEHOLDER != "") {
+        PLACEHOLDER.classList.add("INVALID_PLACEHOLDER");
+        PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
+    }
+}
+
+
+// TODO: Goals noti
+
+// Function to check reminders
+function sendGoalReminder() {
+    fetch("GoalReminder.php")
+        .then(response => response.text())
+        .then(data => console.log("Goal Reminder Triggered:", data))
+        .catch(error => console.error("Error:", error));
+}
+
+// Run checkReminders every minute
+setInterval(sendGoalReminder, 300000);
+
+sendGoalReminder();
+
+
 
 
 
@@ -500,7 +627,7 @@ function searchFunction() {
                         let assignmentText = item.assignment_type === "assigned_to_me"
                             ? `(Task assigned to you in ${item.name})`
                             : `(You assigned this task in ${item.name})`;
-                    
+
                         resultList += `<li onclick="redirectToTeam('${item.id}','${item.name}')">
                                         <span class="material-icons">groups</span>
                                         <div class='RESULT__GROUP_TASK'>
@@ -509,7 +636,7 @@ function searchFunction() {
                                         </div>
                                       </li>`;
                     }
-                     else if (item.type === "goal") {
+                    else if (item.type === "goal") {
                         resultList += `<li onclick="redirectToGoal()"><span class="material-icons">track_changes</span> Goal : ${item.name}</li>`;
                     }
                 });
@@ -528,7 +655,7 @@ function redirectToPage(pageLink) {
     window.location.href = pageLink;
 }
 
-function redirectToDM(memberId,memberName) {
+function redirectToDM(memberId, memberName) {
     window.location.href = `CommunityDMPage.php?receiver_id=${memberId}&name=${memberName}`;
 }
 

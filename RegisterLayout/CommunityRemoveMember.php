@@ -3,7 +3,23 @@ include "conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $team_name = $_POST['team_name'];
-    $member_id = $_POST['member_id'];
+    $memberName = $_POST['member_name'];
+
+    // Query to find the member ID based on the provided name
+    $sql = "SELECT id FROM users WHERE name = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("s", $memberName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $member_id = $row['id'];
+    } else {
+        die("Error: Member not found!");
+    }
+
+    $stmt->close();
+
 
     $_conn->begin_transaction(); // Start transaction
 
@@ -30,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt3->close();
 
         $_conn->commit(); // Commit transaction
-        echo "Member, assigned tasks, and assigned-by tasks removed successfully!";
+        echo "$memberName has been removed!";
     } catch (Exception $e) {
         $_conn->rollback(); // Rollback transaction in case of an error
         echo "Error removing member and tasks: " . $e->getMessage();
@@ -38,4 +54,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $_conn->close();
 }
-?>

@@ -2,11 +2,6 @@
 session_start();
 include 'conn.php';
 
-if (!isset($_COOKIE['UID'])) {
-    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
-    exit();
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -39,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="loginandsignupstyle.css">
+    <link rel="stylesheet" href="loginandsignup.css">
 </head>
 <body>
     <div class="container">
@@ -90,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="right-section">
             <h1>FocusFlow</h1>
             <h2>Sign up</h2>
-            <h3>Already have an account? <a href="Signin.php" class="signin-link">Sign in</a></h3>
+            <h3>Already have an account? <a href="Login.php" class="signin-link">Sign in</a></h3>
 
             <!-- Progress Bar(1,2,3) -->
             <div class="progress-bar">

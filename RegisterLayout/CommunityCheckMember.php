@@ -1,16 +1,16 @@
 <?php
 include "conn.php";
 
-if (!isset($_GET['member_id']) || empty($_GET['member_id'])) {
+if (!isset($_GET['member_name']) || empty($_GET['member_name'])) {
     echo json_encode(["exists" => false]);
     exit;
 }
 
-$member_id = $_GET['member_id'];
+$member_name = $_GET['member_name'];
 
-$sql = "SELECT id FROM users WHERE id = ?";
+$sql = "SELECT id FROM users WHERE name = ?";
 $stmt = $_conn->prepare($sql);
-$stmt->bind_param("i", $member_id);
+$stmt->bind_param("i", $member_name);
 $stmt->execute();
 $stmt->store_result();
 
