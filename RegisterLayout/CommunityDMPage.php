@@ -128,7 +128,7 @@ echo "</script>";
             </nav>
         </div>
     </header>
-    <main  style="overflow-y: auto;">
+    <main style="overflow-y: auto;">
         <!-- temp SIDEBAR_SHOW -->
         <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
@@ -203,7 +203,7 @@ echo "</script>";
         </div>
 
 
-        <div class="DM__MAIN" >
+        <div class="DM__MAIN">
 
             <div class="DMLIST__SIDEBAR">
                 <?php
@@ -233,7 +233,11 @@ echo "</script>";
                         <?php
                         if ($result2->num_rows > 0) {
                             while ($row = $result2->fetch_assoc()) {
-                                echo "<li class='DM__LIST__PERSON'><span class='material-icons'>perm_identity</span><a href='CommunityDMPage.php?receiver_id=" . $row['id'] . "&name=" . urlencode($row['name']) . "'>" . htmlspecialchars($row['name']) . "</a></li>";
+                                if ($row['id'] == $_COOKIE['UID']) {
+                                    echo "<li class='DM__LIST__PERSON'><span class='material-icons'>perm_identity</span><a href='CommunityDMPage.php?receiver_id=" . $row['id'] . "&name=" . urlencode($row['name']) . "'> (You) </a></li>";
+                                } else {
+                                    echo "<li class='DM__LIST__PERSON'><span class='material-icons'>perm_identity</span><a href='CommunityDMPage.php?receiver_id=" . $row['id'] . "&name=" . urlencode($row['name']) . "'>" . htmlspecialchars($row['name']) . "</a></li>";
+                                }
                             }
                         } else {
                             echo "<li>No messages found</li>";

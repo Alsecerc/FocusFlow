@@ -236,7 +236,7 @@ if (!isset($_COOKIE['UID'])) {
 
                         <label class="INPUT__BOX">
                             <input type="date" name="end_date" id="end_date" class="INPUT__INPUT" min="2020-01-01" max="2030-01-01" required>
-                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="end_date_ph">Starting Date : </span>
+                            <span class="INPUT__PLACEHOLDER AUTOFOCUS" id="end_date_ph">Ending Date : </span>
                         </label>
 
                         <label class="INPUT__BOX">
@@ -316,11 +316,6 @@ if (!isset($_COOKIE['UID'])) {
                             <span style="margin: 0 1rem;">Week</span>
                             <button class="Header__Button SelectView" id="right"><span class="material-icons Header__Wording">arrow_right</span></button>
                         </div>
-                        <!-- <div class="BUTTON__CONTAINER">
-                        <button onclick="togglePeriod('week')" id="weekButton" class="CALENDAR__HEADER__BUTTON">W</button>
-                        <button onclick="togglePeriod('month')" id="monthButton" class="CALENDAR__HEADER__BUTTON">M</button>
-                        <button onclick="togglePeriod('year')" id="yearButton" class="CALENDAR__HEADER__BUTTON">Y</button>
-                    </div> -->
                     </div>
                 </div>
 

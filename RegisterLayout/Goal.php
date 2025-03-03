@@ -25,7 +25,7 @@ if (!isset($_COOKIE['UID'])) {
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -205,6 +205,12 @@ if (!isset($_COOKIE['UID'])) {
                 <div>
                     <button class="GOAL__SET" onclick="togglePopup()">Add Goal</button>
                     <button class="GOAL__SET" onclick="toggleProgressPopup()">Update Goal</button>
+                    <script>
+                        function toggleProgressPopup() {
+                            let form = document.getElementById("progressForm");
+                            form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+                        }
+                    </script>
                 </div>
             </div>
             <div class="GOAL__INPUT" style="display: none;">
@@ -272,7 +278,8 @@ if (!isset($_COOKIE['UID'])) {
 
                 <?php if (!empty($goals)): ?>
                     <?php foreach ($goals as $goal): ?>
-                        <div class="GOAL__CARD">
+                        <?php $goalClass = (htmlspecialchars($goal['status']) === 'completed') ? 'COMP' : ((htmlspecialchars($goal['status']) === 'in-progress') ? 'PROG' : 'DUE'); ?>
+                        <div class="GOAL__CARD <?php echo $goalClass ?> ">
                             <h3 class="GOAL__TITLE"><?= htmlspecialchars($goal['goal_title']) ?></h3>
                             <p><strong>Goal ID:</strong> <?= htmlspecialchars($goal['goal_id']) ?></p>
                             <p><strong>Type:</strong> <?= htmlspecialchars($goal['goal_type']) ?></p>
