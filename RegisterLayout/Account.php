@@ -1,9 +1,10 @@
 <?php
 include "conn.php";
 session_start();
+include "AccountVerify.php";
 
-if (!isset($_COOKIE['UID'])) {
-    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+if (!verifyUser($_conn)){
+    header("Location: Login.php");
     exit();
 }
 
@@ -216,13 +217,13 @@ if (!isset($_COOKIE['UID'])) {
 
                         $name = $_COOKIE['USERNAME'];
                         $email = $_COOKIE['EMAIL'];
-                        $password = $_COOKIE['PASSWORD'];
+                        // $password = $_COOKIE['PASSWORD'];
                         $type = $_COOKIE['USERTYPE'];
 
                         $user = [
                             "name" => $name,
                             "email" => $email,
-                            "password" => $password,
+                            "password" => null,
                             "type" => $type
                         ];
 
@@ -274,10 +275,12 @@ if (!isset($_COOKIE['UID'])) {
                         </form>
 
                         <script>
-                            const storedPassword = "<?php echo $_COOKIE['PASSWORD']; ?>"; // Embed PHP variable safely
+                            // Properly escape the password to avoid JavaScript syntax errors
+                            const storedPassword = "<?php echo addslashes($_COOKIE['PASSWORD']); ?>";
 
                             function resetField() {
-                                let INPUTS = getQueryAll('.INPUT__BOX');
+                                // Fix: Replace getQueryAll with document.querySelectorAll
+                                let INPUTS = document.querySelectorAll('.INPUT__BOX');
                                 INPUTS.forEach((element) => {
                                     let INPUT = element.querySelector(".INPUT__INPUT");
                                     let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
@@ -324,17 +327,3 @@ if (!isset($_COOKIE['UID'])) {
                         <button class="SETTING__BUTTON CLICKABLE" style="background-color: #7A3E1D; color: white;" onclick="changeTheme('theme_earth')">Earth</button>
                         <button class="SETTING__BUTTON CLICKABLE" style="background-color: #8BE9FD; color: black;" onclick="changeTheme('theme_neon')">Neon</button>
                         <button class="SETTING__BUTTON CLICKABLE" style="background-color: #52796F; color: white;" onclick="changeTheme('theme_forest')">Forest</button>
-                    </article>
-                </div>
-            </div>
-
-        </article>
-
-    </main>
-
-
-    <script src="Registered.js" defer></script>
-    <script src="Account.js" defer></script>
-</body>
-
-</html>

@@ -3,6 +3,7 @@ session_start();
 include 'conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    echo "POST request received";
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -22,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Error: " . $sql . "<br>" . $_conn-> error;
     }
     $_conn->close();
+}else{
+    echo "No POST request received";
 }
 ?>
 
@@ -110,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="form-step">
-                    <input type="number" id="age" name="age" placeholder="Age" required>
+                    <input type="number" id="age" name="age" placeholder="Age" required min="0" max="100">
                     <div id="ageError" class="error"></div>
                     <div class="gender-group">
                         <label class="gender-label">Gender:</label>
@@ -162,6 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
         </div>
     </div>
-    <script src="loginandsignupstyle.css" defer></script>
+    <script src="loginandsignup.js" defer></script>
 </body>
 </html>

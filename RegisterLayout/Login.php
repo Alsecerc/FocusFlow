@@ -1,8 +1,8 @@
 <?php
 session_start();
 include 'conn.php';
-
-if (isset($_COOKIE['UID'])) {
+include "AccountVerify.php";
+if (verifyUser($_conn)) {
     header("Location: Homepage.php");
     exit();
 }else{

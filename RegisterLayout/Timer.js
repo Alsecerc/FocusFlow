@@ -138,16 +138,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
         function addTime() {
             addButton.addEventListener("click", () => {
                 const TIMER__ID = document.getElementById(CurrentTimer());
+                console.log(TIMER__ID.textContent);
                 console.log(`Adding time to: ${TIMER__ID.id}`);
 
                 let [minutes, seconds] = TIMER__ID.textContent.split(":").map(Number);
+                console.log(minutes, seconds);
 
-                if (minutes < 60) {
+                if(minutes < 60){
                     minutes++;
                 } else {
                     console.log("Minutes cannot be more than 60");
                 }
-
+                
+                
                 updateGlobalTime(TIMER__ID, minutes, seconds);
             });
         }
@@ -155,11 +158,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
         function minusTime() {
             minusButton.addEventListener("click", () => {
                 const TIMER__ID = document.getElementById(CurrentTimer());
+                
                 console.log(`Removing time from: ${TIMER__ID.id}`);
 
                 let [minutes, seconds] = TIMER__ID.textContent.split(":").map(Number);
 
-                if (minutes > 0) {
+                if(minutes > 0){
                     minutes--;
                 } else {
                     console.log("Time cannot be negative");

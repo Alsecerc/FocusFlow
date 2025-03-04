@@ -1,0 +1,14 @@
+POST data: Array
+(
+    [username] => sigma
+    [email] => lola@gmail.com
+    [password] => 1234567@T
+    [confirmPassword] => 1234567@T
+    [age] => 21
+    [gender] => male
+    [productivity_goals] => Task Management
+    [preferred_hours] => 10am - 6pm
+    [purpose] => School/Education
+)
+
+Form name field: NOT SET

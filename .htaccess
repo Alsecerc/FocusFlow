@@ -1,23 +1,36 @@
-RewriteEngine On
+# Custom error pages
+ErrorDocument 404 /RWD_assignment/FocusFlow/Landing_Page/404.php
 
-# Set base directory (if your project is inside 'RWD_ASSIGNMENT/FocusFlow')
-RewriteBase /RWD_ASSIGNMENT/FocusFlow/
+# Prevent directory listing
+Options -Indexes
 
-# 🚫 Block access to Landing_Page/Features
-# RewriteRule ^Landing_Page/Features$ - [F,L]
+# Enable URL rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Use proper case in RewriteBase - this is CRITICAL (was using RWD_ASSIGNMENT with uppercase)
+    RewriteBase /RWD_assignment/FocusFlow/
+    
+    # First rule: Serve existing files and directories directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Second rule: Handle clean URLs (without .php extension)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.+)$ $1.php [L]
+    
+    # Third rule: Redirect homepage requests to the Landing_Page directory
+    RewriteRule ^$ Landing_Page/Homepage.php [L]
+    
+    # Last rule: If nothing else matched and file doesn't exist, go to 404
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ Landing_Page/404.php [L]
+</IfModule>
 
-# ✅ Allow requests without .php (your other rules remain unchanged)
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.+)$ $1.php [L]
-
-# 🔄 Redirect users from .php URLs to clean URLs while keeping subdirectories
-# allow POST
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{THE_REQUEST} "\s/([^?\s]+)\.php"
-RewriteRule ^(.+)\.php$ /%1 [R=301,L]
-
-
-# if enter wrong path user will be redirect to the 404 page
-ErrorDocument 404 http://localhost/RWD_assignment/FocusFlow/Landing_Page/404
-ErrorDocument 404 http://localhost:8081/RWD_assignment/FocusFlow/Landing_Page/404
+# Disable redirect rules that may cause conflicts
+# RewriteCond %{REQUEST_METHOD} !POST
+# RewriteCond %{THE_REQUEST} "\s/([^?\s]+)\.php"
+# RewriteRule ^(.+)\.php$ /%1 [R=301,L]

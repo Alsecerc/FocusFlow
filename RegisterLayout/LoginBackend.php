@@ -1,65 +1,65 @@
 <?php
 session_start();
+error_reporting(E_ALL); // Enable full error reporting for debugging
+ini_set('display_errors', 1);
 
 include 'conn.php';
+include 'AccountVerify.php'; // Include the verification system
 
-$username1 = $_POST['username'] ?? "";
-$password1 = $_POST['password'] ?? "";
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($testName) && isset($testPass)) {
+    $username = mysqli_real_escape_string($_conn, $_POST['username'] ?? "");
+    $password = mysqli_real_escape_string($_conn, $_POST['password'] ?? "");
 
-    // Get the form data securely using mysqli_real_escape_string
-    $username = mysqli_real_escape_string($_conn, $username1);
-    $password = mysqli_real_escape_string($_conn, $password1);
+    // First check if the username exists
+    $sqlName = "SELECT * FROM users WHERE name = ?";
+    $stmt = mysqli_prepare($_conn, $sqlName);
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $resultName = mysqli_stmt_get_result($stmt);
 
-    // SQL query to check for matching username and password
-    $sql = "SELECT * FROM users WHERE name='" . $username . "' AND password='" . $password . "' ";
-    $result = mysqli_query($_conn, $sql);
-
-
-    // Check if the query returned any results
-    if (mysqli_num_rows($result) <= 0) {
-        // If no results, check if the username or password is incorrect
-        $sqlName = "SELECT * FROM users WHERE name ='" . $username . "'";
-        $sqlPass = "SELECT * FROM users WHERE password ='" . $password . "' ";
-        $resultName = mysqli_query($_conn, $sqlName);
-        $resultPass = mysqli_query($_conn, $sqlPass);
-
-        if (mysqli_num_rows($resultName) >= 1) {
-            die("<script>alert('Password details are incorrect');window.location.href='Login.php';</script>");
-        } else if (mysqli_num_rows($resultPass) >= 1) {
-            die("<script>alert('Username details are incorrect');window.location.href='Login.php';</script>");
+    if (mysqli_num_rows($resultName) >= 1) {
+        // Username exists, fetch the user data
+        $user = mysqli_fetch_assoc($resultName);
+        $storedPassword = $user['password'];
+        
+        // Check if password matches
+        if (verifyPassword($password, $storedPassword)) {
+            // Store user data in session variables
+            $_SESSION['userID'] = $user['id'];
+            $_SESSION['userName'] = $user['name'];
+            $_SESSION['userEmail'] = $user['email'];
+            $_SESSION['usertype'] = $user['usertype'];
+            
+            // IMPORTANT: Create the auth session first, before any redirects
+            $authResult = createAuthSession($user['id'], $_conn);
+            
+            if ($authResult) {
+                // Only redirect after cookies are set
+                echo "<script>alert('Welcome back, {$user['name']}!'); window.location.href='Homepage.php';</script>";
+                exit();
+            } else {
+                die("<script>alert('Failed to create authentication session. Please try again.');window.location.href='Login.php';</script>");
+            }
         } else {
-            die("<script>alert('Both details are incorrect');window.location.href='Login.php';</script>");
+            // Password is incorrect
+            die("<script>alert('Password is incorrect');window.location.href='Login.php';</script>");
         }
     } else {
-        // If username and password match, set session variables
-        if ($rows = mysqli_fetch_array($result)) {
-
-            // Store user data in session variables
-            $_SESSION['userID'] = $rows['id'];
-            $_SESSION['userName'] = $rows['name'];
-            $_SESSION['userEmail'] = $rows['email'];
-            $_SESSION['userPassword'] = $rows['password'];
-            $_SESSION['usertype'] = $rows['usertype'];
-
-            $username = $_SESSION['userName'];
-            //  '/' means available across whole website
-            // set for 1 day
-            setcookie("UID", $rows['id'], time() + 86400, '/');
-            setcookie("USERNAME", $rows['name'], time() + 86400, '/');
-            setcookie("EMAIL", $rows['email'], time() + 86400, '/');
-            setcookie("PASSWORD", $rows['password'], time() + 86400, '/');
-            setcookie("USERTYPE", $rows['usertype'], time() + 86400, '/');
-
-            if (isset($_COOKIE["UID"])){
-                echo "<script>alert('Welcome back, $username!');</script>";
-
-            }else{
-                echo "<script>window.location.href='Homepage.php';</script>";
-
-            }
-        }
+        // Username not found
+        die("<script>alert('Username not found');window.location.href='Login.php';</script>");
     }
 }
+
+// Password verification function
+function verifyPassword($inputPassword, $storedHash) {
+    // Handle both hashed and non-hashed passwords
+    if (substr($storedHash, 0, 1) === '$') {
+        // Password is already hashed
+        return password_verify($inputPassword, $storedHash);
+    } else {
+        // Legacy password (not hashed)
+        return $inputPassword === $storedHash;
+    }
+}
+?>

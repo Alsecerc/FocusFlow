@@ -2,7 +2,7 @@
 include "conn.php";
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
-$username = mysqli_real_escape_string($_conn, $_POST['name']);
+$username = mysqli_real_escape_string($_conn, $_POST['username']);
 $email = mysqli_real_escape_string($_conn, $_POST['email']);
 $password = mysqli_real_escape_string($_conn, $_POST['password']);
 $confirmPassword = mysqli_real_escape_string($_conn, $_POST['confirmPassword']);
@@ -25,7 +25,8 @@ if ($password === $confirmPassword) {
     }
 
     // Proceed with inserting the new user if they don’t exist
-    $sql = "INSERT INTO users (name, email, password, last_Login) VALUES ('$username', '$email', '$password', '$lastLogin')";
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);// Hash the password
+    $sql = "INSERT INTO users (name, email, password, last_Login) VALUES ('$username', '$email', '$hashedPassword', '$lastLogin')";
     if (mysqli_query($_conn, $sql)) {
         // Account successfully registered
         die("<script>alert('Account has been registered successfully.');window.location.href='Login.php';</script>");

@@ -3,8 +3,9 @@
 include "conn.php";
 session_start();
 
-if (!isset($_COOKIE['UID'])) {
-    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+include "AccountVerify.php";
+if (!verifyUser($_conn)) {
+    header("Location: Landing_Page/Homepage.php");
     exit();
 }
 
@@ -23,7 +24,10 @@ if (!isset($_COOKIE['UID'])) {
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
     <link rel="stylesheet" href="Responsive.css">
-    <!-- Custom fixes for Todo functionality -->
+    <link rel="stylesheet" href="../css/task-status.css">
+    <link rel="stylesheet" href="../css/drag-helpers.css">
+    <link rel="stylesheet" href="../css/todo-forms.css">
+    <link rel="stylesheet" href="status-fix.css">
 </head>
 
 <body>
@@ -59,40 +63,29 @@ if (!isset($_COOKIE['UID'])) {
                             </span>
                         </a>
                     </li>
-
-                    <?php
-                    $userID = $_COOKIE['UID'];
-
-                    // Check if there are any unread notifications for this user
-                    $sql = "SELECT COUNT(*) AS unread_count FROM notifications WHERE user_id = $userID AND status = 'unread'";
-                    $result = $_conn->query($sql);
-                    $row = $result->fetch_assoc();
-                    $hasUnread = $row['unread_count'] > 0; // True if there are unread notifications
-                    ?>
-
-                    <li class="HEADER__ITEM" style="position: relative; user-select: none; cursor: pointer;">
+                    <li class="HEADER__ITEM" style="position: relative;user-select:none;cursor:pointer;">
                         <div class="HEADER__UL__ICON" id="notiButton">
-                            <span class="material-icons" id="notiIcon">
-                                <?= $hasUnread ? 'notifications_active' : 'notifications' ?>
+                            <span class="material-icons">
+                                notifications
                             </span>
                         </div>
                         <?php
                         $userID = $_COOKIE['UID'];
-                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY status ASC, created_at DESC";
+                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY created_at DESC";
                         $result = $_conn->query($sql);
                         ?>
 
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="height: 300px; overflow-y: auto; cursor:default; display:none;">
+                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="overflow-y: auto; cursor:default; display:none;">
                             <?php if ($result->num_rows > 0): ?>
                                 <ul id="notificationList">
                                     <?php while ($row = $result->fetch_assoc()): ?>
                                         <?php if ($row['type'] == 'system'): ?>
-                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?>">
+                                            <li class="NOTI__ITEM">
                                                 📢 System Notification: <?= $row['notification_message'] ?>
                                                 <small> (<?= $row['created_at'] ?>)</small>
                                             </li>
                                         <?php else: ?>
-                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?> NOTI__ITEM__MSG">
+                                            <li class="NOTI__ITEM NOTI__ITEM__MSG">
                                                 <?php
                                                 $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
                                                 $result2 = $_conn->query($sql2);
@@ -129,6 +122,7 @@ if (!isset($_COOKIE['UID'])) {
             </nav>
         </div>
     </header>
+
     <main>
         <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
@@ -230,11 +224,20 @@ if (!isset($_COOKIE['UID'])) {
         <h2>Add a New Group</h2>
         <button id="closeGroupAdd">&times;</button>
         <form id="groupForm" action="TodoBackend.php" method="POST">
-            <input type="text" id="groupName" name="groupName" placeholder="Enter group name" required>
+            <input type="text" id="groupName" name="GROUPNAME" value="" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>
         </form>
     </div>
-    <div class="Hiddenlayer" style="display: none;"></div>
+    <div class="TODO__GROUP__ADD" style="display: none;">
+  <h2>Add New Group</h2>
+  <button id="closeGroupAdd">x</button>
+  <form id="groupForm" method="post">
+    <input type="text" id="groupName" name="groupName" placeholder="Enter group name" required>
+    <button type="submit">Create Group</button>
+  </form>
+</div>
+
+<div class="Hiddenlayer" style="display: none;"></div>
     <script src="Registered.js" defer></script>
     <script src="Todo.js" defer></script>
     <script src="button-fix.js" defer></script>

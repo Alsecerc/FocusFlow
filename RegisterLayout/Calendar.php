@@ -1,9 +1,9 @@
 <?php
 include "conn.php";
 session_start();
-
-if (!isset($_COOKIE['UID'])) {
-    echo "<script>alert('Please Log In/ Create an account');window.location.href='../Landing_Page/Homepage.php'</script>";
+include "AccountVerify.php";
+if (!verifyUser($_conn)) {
+    header("Location: Landing_Page/Homepage.php");
     exit();
 }
 

@@ -105,30 +105,11 @@ class FormValidator {
     }
 
     setupValidation() {
-        const passwordInput = document.getElementById('password');
-        passwordInput.addEventListener('input', () => this.validatePassword(passwordInput));
-
-        const confirmPasswordInput = document.querySelector('input[name="confirmPassword"]');
-
-        confirmPasswordInput.addEventListener('input', () => {
-            this.validateConfirmPassword(passwordInput, confirmPasswordInput);
-        });
-        
-        passwordInput.addEventListener('input', () => {
-            if (confirmPasswordInput.value) {
-                this.validateConfirmPassword(passwordInput, confirmPasswordInput);
-            }
-        });
-
-        const emailInput = document.getElementById('email');
-        emailInput.addEventListener('input', () => this.validateEmail(emailInput));
-
         const ageInput = document.getElementById('age');
         ageInput.addEventListener('input', () => this.validateAge(ageInput));
 
         const timeInput = document.getElementById('preferred_hours');
         timeInput.addEventListener('blur', () => this.validateTime(timeInput));
-
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (this.validateAllFields()) {
@@ -136,6 +117,7 @@ class FormValidator {
             }
 
             let formData = new FormData(this);
+            console.log(formData);
             fetch('LoginBackend.php',{
                 method: 'POST',
                 body: formData
@@ -153,6 +135,7 @@ class FormValidator {
         this.nextButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
+                console.log(this.currentStep);
                 if (this.validateStep(this.currentStep)) {
                     this.goToNextStep();
                 }
@@ -165,6 +148,27 @@ class FormValidator {
             step.classList.toggle('active', index === stepIndex);
         });
         this.updateProgress();
+    }
+
+    validateUsername(input) {   
+        const username = input.value;     
+        const errorDiv = document.getElementById('usernameError');
+        const usernameRegex = /^[a-zA-Z0-9]{6,12}$/.test(username);
+
+        let errorMessage = [];
+        if (username.length < 6 || username.length > 12) errorMessage.push("Username must be 6-12 characters long");
+        if (!usernameRegex) errorMessage.push("Username must contain only letters and numbers");
+
+        if (errorMessage.length > 0) {
+            errorDiv.textContent = errorMessage.join(', ');
+            errorDiv.style.display = 'block';
+            input.classList.add('invalid');
+            return false;
+        }
+        errorDiv.style.display = 'none';
+        input.classList.remove('invalid');
+        return true;
+
     }
 
     validatePassword(input) {
@@ -230,6 +234,11 @@ class FormValidator {
         const errorDiv = document.getElementById('ageError');
 
         if (isNaN(value) || value < 16 || value > 100) {
+            if (value < 0){
+                input.value = 0;
+            }else if (value > 100){
+                input.value = 100;
+            }
             errorDiv.textContent = "Please enter a valid age (16-100)";
             errorDiv.style.display = 'block';
             input.classList.add('invalid');
@@ -286,10 +295,14 @@ class FormValidator {
         let isValid = true;
 
         if (stepIndex === 0) {
+            const username = document.getElementById('username');
+            console.log(username.value);
             const password = document.getElementById('password');
             const email = document.getElementById('email');
-            
+            const passwordconfirm = document.querySelector('[name="confirmPassword"]');
+            if (!this.validateUsername(username)) isValid = false;
             if (!this.validatePassword(password)) isValid = false;
+            if (!this.validateConfirmPassword(password, passwordconfirm)) isValid = false;
             if (!this.validateEmail(email)) isValid = false;
         } else if (stepIndex === 1) {
             const age = document.getElementById('age');
