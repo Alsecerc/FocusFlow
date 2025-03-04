@@ -69,20 +69,15 @@ fetch("Account.php") // Fetch JSON data from PHP file
 
 document.getElementById("profile_name").textContent = User.name;
 document.getElementById("profile_email").textContent = User.email;
-const maskedPassword = "*".repeat(User.password.length); // Convert to ******
-document.getElementById("profile_password").textContent = maskedPassword;
 
 
 let form = document.getElementsByClassName("PROFILE__DETAILS")[0];
 
 form.addEventListener('submit', function () {
     fetch("Account.php") // Fetch JSON data from PHP file
-
+    console.log(User.name);
     document.getElementById("profile_name").textContent = User.name;
     document.getElementById("profile_email").textContent = User.email;
-    const maskedPassword = "*".repeat(User.password.length); // Convert to ******
-    document.getElementById("profile_password").textContent = maskedPassword;
-
 });
 
 
