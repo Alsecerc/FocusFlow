@@ -1,263 +1,420 @@
 <?php 
     session_start();
     include "conn.php";
+    
+    // Set timezone to Asia/Kuala_Lumpur
+    date_default_timezone_set('Asia/Kuala_Lumpur');
+    
+    if (!isset($_COOKIE['UID'])) {
+        header("Location: ../index.php"); // Redirect if not logged in
+        exit;
+    }
+    
     $userId = $_COOKIE['UID'];
-    // update data to database
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    //     if (isset($_POST['GROUPNAMECHOICE']) && isset($_POST['USERTASK'])){ // update when submit task form
-    //         $groupchoice = $_POST['GROUPNAMECHOICE'][0];
-    //         $taskContent = $_POST['USERTASK'];
-    //         $groupchoice = htmlspecialchars($groupchoice, ENT_QUOTES, 'UTF-8');
-    //         $taskContent = htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8');
-    //         $taskTitle = $groupchoice[0];
-    //         $taskDesc = $taskContent;
-    //         $startDate = date('Y-m-d');
-    //         $start_time = date('H:i:s');
-    //         $endTime = (isset($_POST['END__TIME']) && !empty($_POST['END__TIME'])) ? $_POST['END__TIME'] : date('H:i:s', strtotime('+1 hour'));  // add 1 hour by default
-    //         $sql = "INSERT INTO tasks (task_title, task_desc, start_date, start_time, end_time, user_id) VALUES (?, ?, ?, ?, ?, ?)";
-            
-    //         if (rowExistance($userId, $groupchoice, $_conn)){
-    //             sqlInsertion($_conn, $sql, 'sssssi', $taskTitle, $taskDesc, $startDate, $start_time, $endTime, $userId);
-    //         }else{
-    //             echo"Row does not exists";
-    //             $_conn->close();
-    //         }
     
-    //         echo "user id:". $userId. "<br>";
-    //         echo "Selected Group: " . $groupchoice . "<br>";
-    //         echo "Task Content: " . $taskContent . "<br>";
-
-    //     }else if (isset($_POST['GROUPNAME'])) {
-    //         // update when submit group form
-    //         date_default_timezone_set('Asia/Kuala_Lumpur');
-
-    //         $taskTitle = $_POST['GROUPNAME'];
-    //         $taskTitle = htmlspecialchars($taskTitle, ENT_QUOTES, 'UTF-8');
-
-    //         $sql = "INSERT INTO tasks (task_title, user_id) VALUES (?, ?)";
-
-    //         sqlInsertion($_conn, $sql, 'si',$taskTitle, $userId);
-
-    //         echo "Group name: " . $taskTitle . "<br>";
-    //     }
-    //     else{
-    //         echo "missing form data";
-    //     }
-    // }else{
-    //     echo "Request method:" . $_SERVER['REQUEST_METHOD']. "<br>";
-    // }
+    // Start processing API requests
+    processRequests();
     
-    SendfinalDate();
-    function SendfinalDate(){
+    function processRequests() {
         global $_conn;
+        global $userId;
+        
+        // Enable error reporting for debugging
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
+        
+        // Set content type to JSON for all responses
         header("Content-Type: application/json");
-    
-        // Start output buffering
+        
+        // Start output buffering to ensure clean JSON output
         ob_start();
+        
+        // Get JSON data from request
         $data = json_decode(file_get_contents("php://input"), true);
-        // Check request method
-        // echo $data;
+        
+        // Handle GET requests
         if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['type'])) {
-            $type = $_GET['type'];  // Fetch 'type' from URL
+            $type = $_GET['type'];
+            
             if (!$type) {
                 ob_clean();
                 echo json_encode(["error" => "No type specified"]);
                 exit;
-            }else{
+            } else {
                 $response = [];
-
-                $finalDate = 2121;
-
-                $finalTime = 1221;
-        
-                // Choose data based on type
+                
                 switch ($type) {
-                    case "users":
-                        $response = ["users" => ["Alice", "Bob", "Charlie"]];
-                        break;
-                    case "products":
-                        $response = ["products" => ["Laptop", "Phone", "Tablet"]];
-                        break;
                     case "FinalDate":
-                        $finalDate = "Date";
-                        $finalTime = "Time";
-
-                        $response = ["Date" => [$finalDate], "Time" => [$finalTime]];
+                        $response = ["Date" => ["Date"], "Time" => ["Time"]];
                         break;
                     
                     default:
                         $response = ["error" => "Invalid request"];
                 }
                 
-                // Clean output and return JSON
                 ob_clean();
                 echo json_encode($response);
                 exit;
             }
-
         } 
+        // Handle POST requests
         else if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            
             if (!$data || !isset($data['type'])) {
                 ob_clean();
-                echo json_encode(["error" => "No data received"]);
+                echo json_encode(["status" => "error", "error" => "No data received"]);
                 exit;
-            }else{
+            } else {
+                $response = [];
                 
                 switch ($data['type']){
-                    case "fetch_task":
-                        
-                        if (!isset($data['Category'], $data['title'], $data['Content'])){
-                            ob_clean();
-                            echo json_encode(["error" => "Missing task title or content"]);
-                            exit;
-                        }else{
-                            $Cate = $data['Category'];
-                            $title = $data['title'];
-                            $Content = $data['Content'];
-                            $function = $data['function'];
-
-                            // set the value to global variable for later use
-                            $_GET['Task_Cate'] = $Cate;
-                            $_GET['Task_Title'] = $title;
-                            $_GET['Task_Content'] = $Content;
-                            $_GET['Task_Function'] = $function;
-
-                            $response = [
-                                "message" => "Task updated successfully",
-                                "function" => $function,
-                                "Category" => $Cate,
-                                "Title" => $title,
-                                "Content" => $Content,
-                                ];
-                        }
-                        break;
-
-                    case "update_task":
-                        echo $data['type'];
-                        // Handle task update
-                        if (!isset($data['cate'], $data['title'], $data['content'], $data['time'], $data['date'])) {
-                            $response = ["error" => "Missing task data"];
+                    case "create_group":
+                        // Check if the group_name is provided
+                        if (!isset($data['group_name']) || empty($data['group_name'])) {
+                            $response = ["status" => "error", "error" => "Group name is required"];
                         } else {
-                            $category = $data['cate'];
-                            $title = $data['title'];
-                            $content = $data['content'];
-                            $time = $data['time'];
-                            $date = $data['date'];
-                
-                            // Process data (e.g., insert into database)
-                            $response = [
-                                "message" => "Task updated successfully",
-                                "Category" => $category,
-                                "Title" => $title,
-                                "Content" => $content,
-                                "FinalTime" => $time,
-                                "FinalDate" => $date
-                            ];
-
+                            $groupName = htmlspecialchars($data['group_name'], ENT_QUOTES, 'UTF-8');
+                            
+                            // Insert the group into the database as a task with only the title
+                            $sql = "INSERT INTO tasks (task_title, user_id) VALUES (?, ?)";
+                            $stmt = $_conn->prepare($sql);
+                            
+                            if (!$stmt) {
+                                $response = ["status" => "error", "error" => "Database error: " . $_conn->error];
+                            } else {
+                                $stmt->bind_param("si", $groupName, $userId);
+                                
+                                if ($stmt->execute()) {
+                                    $response = [
+                                        "status" => "success", 
+                                        "data" => ["group_name" => $groupName]
+                                    ];
+                                } else {
+                                    $response = ["status" => "error", "error" => "Failed to create group: " . $stmt->error];
+                                }
+                                $stmt->close();
+                            }
                         }
                         break;
-                    
+                        
+                    case "create_task":
+                        // Check if all required fields are provided
+                        if (!isset($data['category'], $data['title'], $data['content'])) {
+                            $response = ["status" => "error", "error" => "Missing required task data"];
+                        } else {
+                            $category = htmlspecialchars($data['category'], ENT_QUOTES, 'UTF-8');
+                            $title = htmlspecialchars($data['title'], ENT_QUOTES, 'UTF-8');
+                            $content = htmlspecialchars($data['content'], ENT_QUOTES, 'UTF-8');
+                            
+                            // Calculate deadline based on timer values
+                            $days = isset($data['timer']['days']) ? (int)$data['timer']['days'] : 0;
+                            $hours = isset($data['timer']['hours']) ? (int)$data['timer']['hours'] : 0;
+                            $minutes = isset($data['timer']['minutes']) ? (int)$data['timer']['minutes'] : 0;
+                            $seconds = isset($data['timer']['seconds']) ? (int)$data['timer']['seconds'] : 0;
+                            
+                            // Calculate end date and time
+                            $now = new DateTime();
+                            $deadline = clone $now;
+                            $deadline->modify("+{$days} days +{$hours} hours +{$minutes} minutes +{$seconds} seconds");
+                            
+                            $endDate = $deadline->format('Y-m-d');
+                            $endTime = $deadline->format('H:i:s');
+                            
+                            // Insert the task into the database
+                            $sql = "INSERT INTO tasks (task_title, task_desc, start_date, start_time, end_date, end_time, user_id, category, status) 
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'incomplete')";
+                            
+                            $stmt = $_conn->prepare($sql);
+                            
+                            if (!$stmt) {
+                                $response = ["status" => "error", "error" => "Database error: " . $_conn->error];
+                            } else {
+                                $startDate = date('Y-m-d');
+                                $startTime = date('H:i:s');
+                                
+                                $stmt->bind_param("ssssssss", $title, $content, $startDate, $startTime, $endDate, $endTime, $userId, $category);
+                                
+                                if ($stmt->execute()) {
+                                    $taskId = $stmt->insert_id;
+                                    $response = [
+                                        "status" => "success", 
+                                        "data" => [
+                                            "id" => $taskId,
+                                            "category" => $category,
+                                            "title" => $title,
+                                            "description" => $content,
+                                            "start_date" => $startDate,
+                                            "start_time" => $startTime,
+                                            "end_date" => $endDate,
+                                            "end_time" => $endTime,
+                                            "status" => "incomplete"
+                                        ]
+                                    ];
+                                } else {
+                                    $response = ["status" => "error", "error" => "Failed to create task: " . $stmt->error];
+                                }
+                                $stmt->close();
+                            }
+                        }
+                        break;
+                        
+                    case "update_task_status":
+                        // Check required data
+                        if (!isset($data['task_id']) || !isset($data['status'])) {
+                            $response = ["status" => "error", "error" => "Missing task_id or status parameter"];
+                            break;
+                        }
+
+                        // Get and validate parameters
+                        $taskId = (int)$data['task_id'];
+                        $newStatus = strtolower(htmlspecialchars($data['status'], ENT_QUOTES, 'UTF-8'));
+                        
+                        // Validate status
+                        $validStatuses = ['complete', 'incomplete', 'timeout'];
+                        if (!in_array($newStatus, $validStatuses)) {
+                            $response = ["status" => "error", "error" => "Invalid status value"];
+                            break;
+                        }
+                        
+                        // First verify if this is an actual task (has description)
+                        $checkSql = "SELECT task_desc FROM tasks WHERE id = ? AND user_id = ?";
+                        $checkStmt = $_conn->prepare($checkSql);
+                        $checkStmt->bind_param("ii", $taskId, $userId);
+                        $checkStmt->execute();
+                        $checkResult = $checkStmt->get_result();
+                        $taskData = $checkResult->fetch_assoc();
+                        $checkStmt->close();
+                        
+                        if (!$taskData || empty($taskData['task_desc'])) {
+                            $response = [
+                                "status" => "error", 
+                                "error" => "Cannot update status for categories/groups - only tasks"
+                            ];
+                            break;
+                        }
+                        
+                        // Direct SQL update - most reliable approach
+                        $updateSql = "UPDATE tasks SET status = '$newStatus' WHERE id = $taskId AND user_id = $userId";
+                        if ($_conn->query($updateSql)) {
+                            $response = [
+                                "status" => "success",
+                                "data" => [
+                                    "task_id" => $taskId,
+                                    "new_status" => $newStatus
+                                ]
+                            ];
+                        } else {
+                            $response = ["status" => "error", "error" => "Database update failed: " . $_conn->error];
+                        }
+                        break;
+                        
+                    case "move_task":
+                        if (!isset($data['task_id']) || !isset($data['newCategory'])) {
+                            $response = ["status" => "error", "error" => "Missing task_id or newCategory parameter"];
+                            break;
+                        }
+                        
+                        $taskId = (int)$data['task_id'];
+                        $newCategory = htmlspecialchars($data['newCategory'], ENT_QUOTES, 'UTF-8');
+                        $oldCategory = isset($data['oldCategory']) ? htmlspecialchars($data['oldCategory'], ENT_QUOTES, 'UTF-8') : null;
+                        
+                        // Update category
+                        $sql = "UPDATE tasks SET category = ? WHERE id = ? AND user_id = ?";
+                        $stmt = $_conn->prepare($sql);
+                        if (!$stmt) {
+                            $response = ["status" => "error", "error" => "Database error: " . $_conn->error];
+                            break;
+                        }
+                        
+                        $stmt->bind_param("sii", $newCategory, $taskId, $userId);
+                        
+                        if ($stmt->execute()) {
+                            // Check if the old category is now empty (if old category known)
+                            $categoryNowEmpty = false;
+                            if ($oldCategory) {
+                                $checkSql = "SELECT COUNT(*) as count FROM tasks WHERE category = ? AND user_id = ? AND task_desc IS NOT NULL";
+                                $checkStmt = $_conn->prepare($checkSql);
+                                $checkStmt->bind_param("si", $oldCategory, $userId);
+                                $checkStmt->execute();
+                                $result = $checkStmt->get_result();
+                                $row = $result->fetch_assoc();
+                                $categoryNowEmpty = ($row['count'] == 0);
+                                $checkStmt->close();
+                            }
+                            
+                            $response = [
+                                "status" => "success",
+                                "data" => [
+                                    "task_id" => $taskId,
+                                    "newCategory" => $newCategory,
+                                    "categoryNowEmpty" => $categoryNowEmpty
+                                ]
+                            ];
+                        } else {
+                            $response = ["status" => "error", "error" => "Failed to move task: " . $stmt->error];
+                        }
+                        $stmt->close();
+                        break;
+                        
+                    case "delete_task":
+                        if (!isset($data['task_id'])) {
+                            $response = ["status" => "error", "error" => "Missing task_id parameter"];
+                            break;
+                        }
+                        
+                        $taskId = (int)$data['task_id'];
+                        
+                        // Get category before deletion to check if it will be empty
+                        $checkSql = "SELECT category FROM tasks WHERE id = ? AND user_id = ?";
+                        $checkStmt = $_conn->prepare($checkSql);
+                        $checkStmt->bind_param("ii", $taskId, $userId);
+                        $checkStmt->execute();
+                        $result = $checkStmt->get_result();
+                        $category = null;
+                        if ($row = $result->fetch_assoc()) {
+                            $category = $row['category'];
+                        }
+                        $checkStmt->close();
+                        
+                        // Delete the task
+                        $sql = "DELETE FROM tasks WHERE id = ? AND user_id = ?";
+                        $stmt = $_conn->prepare($sql);
+                        $stmt->bind_param("ii", $taskId, $userId);
+                        
+                        if ($stmt->execute()) {
+                            // Check if the category is now empty
+                            $categoryNowEmpty = false;
+                            if ($category) {
+                                $countSql = "SELECT COUNT(*) as count FROM tasks WHERE category = ? AND user_id = ? AND task_desc IS NOT NULL";
+                                $countStmt = $_conn->prepare($countSql);
+                                $countStmt->bind_param("si", $category, $userId);
+                                $countStmt->execute();
+                                $countResult = $countStmt->get_result();
+                                $countRow = $countResult->fetch_assoc();
+                                $categoryNowEmpty = ($countRow['count'] == 0);
+                                $countStmt->close();
+                            }
+                            
+                            $response = [
+                                "status" => "success",
+                                "data" => [
+                                    "categoryNowEmpty" => $categoryNowEmpty
+                                ]
+                            ];
+                        } else {
+                            $response = ["status" => "error", "error" => "Failed to delete task: " . $stmt->error];
+                        }
+                        $stmt->close();
+                        break;
+
                     case "fetch_group_and_task":
+                        // Get all tasks for the current user
                         $sql = "SELECT * FROM tasks WHERE user_id = ?";
                         $stmt = $_conn->prepare($sql);
                         $stmt->bind_param("i", $userId);
                         $stmt->execute();
                         $result = $stmt->get_result();
-                        $tasks = $result->fetch_all(MYSQLI_ASSOC);
+                        $allTasks = $result->fetch_all(MYSQLI_ASSOC);
                         $stmt->close();
-                        $response = ["tasks" => $tasks];
+                        
+                        // First pass: identify all top-level categories (tasks without descriptions)
+                        $categories = [];
+                        foreach ($allTasks as $task) {
+                            // If this is a category entry (no task_desc)
+                            if (empty($task['task_desc'])) {
+                                $categories[$task['task_title']] = [
+                                    'group' => $task['task_title'],
+                                    'tasks' => []
+                                ];
+                            }
+                        }
+                        
+                        // Second pass: add tasks to their categories
+                        foreach ($allTasks as $task) {
+                            if (!empty($task['task_desc'])) {
+                                $groupName = !empty($task['category']) ? $task['category'] : 'Uncategorized';
+                                
+                                // If category doesn't exist yet, create it
+                                if (!isset($categories[$groupName])) {
+                                    $categories[$groupName] = [
+                                        'group' => $groupName,
+                                        'tasks' => []
+                                    ];
+                                }
+                                
+                                // Add the task to its category
+                                $categories[$groupName]['tasks'][] = [
+                                    'id' => $task['id'],
+                                    'title' => $task['task_title'],
+                                    'description' => $task['task_desc'],
+                                    'status' => strtolower($task['status'] ?: 'incomplete'),
+                                    'start_date' => $task['start_date'],
+                                    'start_time' => $task['start_time'],
+                                    'end_date' => $task['end_date'],
+                                    'end_time' => $task['end_time']
+                                ];
+                            }
+                        }
+                        
+                        $response = [
+                            "status" => "success",
+                            "data" => array_values($categories)
+                        ];
                         break;
+
+                    case "delete_group":
+                        // Validate required fields
+                        if (!isset($data['group_name'])) {
+                            $response = ["status" => "error", "error" => "Group name is required"];
+                            break;
+                        }
+                        
+                        $groupName = htmlspecialchars($data['group_name'], ENT_QUOTES, 'UTF-8');
+                        
+                        try {
+                            // Begin transaction for safety
+                            $_conn->begin_transaction();
+                            
+                            // Delete all tasks in the group
+                            $deleteTasksQuery = "DELETE FROM tasks WHERE category = ? AND user_id = ? AND task_desc IS NOT NULL";
+                            $stmt = $_conn->prepare($deleteTasksQuery);
+                            $stmt->bind_param('si', $groupName, $userId);
+                            $stmt->execute();
+                            
+                            // Delete the group itself (which is a task entry with that title)
+                            $deleteGroupQuery = "DELETE FROM tasks WHERE task_title = ? AND user_id = ? AND (task_desc IS NULL OR task_desc = '')";
+                            $stmt = $_conn->prepare($deleteGroupQuery);
+                            $stmt->bind_param('si', $groupName, $userId);
+                            
+                            if ($stmt->execute()) {
+                                // Commit transaction
+                                $_conn->commit();
+                                $response = ["status" => "success"];
+                            } else {
+                                // Rollback on error
+                                $_conn->rollback();
+                                $response = ["status" => "error", "error" => "Failed to delete group: " . $_conn->error];
+                            }
+                        } catch (Exception $e) {
+                            // Rollback on exception
+                            if ($_conn->ping()) {
+                                $_conn->rollback();
+                            }
+                            $response = ["status" => "error", "error" => "Database error: " . $e->getMessage()];
+                        }
+                        break;
+                        
                     default:
-                        $response = ["error" => "Invalid request"];
+                        $response = ["status" => "error", "error" => "Invalid request type: " . $data['type']];
                 }
+                
                 ob_clean();
                 echo json_encode($response);
                 exit;
-
             }
-        }
-        
-    }
-
-    // function UpdateThedeadlineOftask(){
-
-
-    //     if ($data) {
-    //         $category = $data['cate'];
-    //         $title = $data['title'];
-    //         $content = $data['content'];
-    //         $time = $data['time'];
-    //         $date = $data['date'];
-    
-    //         // Now you can insert into the database
-    //         echo "Task received: $title in category $category";
-    //     } else {
-    //         echo "No data received.";
-    //     }
-    // }
-
-    /**
-     * Inserts data into the database using a prepared statement.
-     *
-     * @param mysqli $conn The MySQLi connection object.
-     * @param string $sql The SQL query with placeholders.
-     * @param string $types A string of types corresponding to the placeholders (e.g., "sssi").
-     * @param mixed ...$params The values to bind to the placeholders.
-     *
-     * @return void
-     */
-    function sqlInsertion($DataBaseConn, $sql, $types, ...$params): void{
-        $stmt = $DataBaseConn->prepare($sql);
-    
-        if(!$stmt){
-            die("prepare failed: ". $DataBaseConn->error);
-        }
-
-        $bindParams = [];
-        $bindParams[] = $types;
-        // You need to bind by reference, so loop through params
-
-        if (empty($params)) {
-            echo "No parameters provided.";
-            return;
-        }
-        
-        foreach ($params as $key => $value) {
-            $bindParams[] = &$params[$key];
-        }
-    
-        // Bind parameters using call_user_func_array
-        call_user_func_array([$stmt, 'bind_param'], $bindParams);
-
-        if($stmt->execute()){
-            echo "<alert>'executed'</alert>";
-        }else{
-            echo " failed to execute";
-        }
-        $stmt->close();
-        $DataBaseConn->close();
-    }
-
-    function rowExistance ($user_id, $GroupName, $DataBaseConn): bool{
-        $sql = "SELECT 1 FROM tasks WHERE user_id = ? AND task_title = ?";
-
-        $STMT = $DataBaseConn->prepare($sql);
-        if(!$STMT){
-            die("prepare failed: ". $DataBaseConn->error);
-        }
-        $STMT->bind_param('is', $user_id, $GroupName);
-        $STMT->execute();
-        $STMT->store_result();
-
-        if($STMT->num_rows > 0){
-            $STMT->close();
-            return true;
-        }else{
-            $STMT->close();
-            return false;
+        } else {
+            ob_clean();
+            echo json_encode(["status" => "error", "error" => "Invalid request method"]);
+            exit;
         }
     }
 ?>
