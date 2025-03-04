@@ -2654,7 +2654,7 @@ p.MEMBER:hover {
 }
 
 
-/* Page : Goal Setting */
+/* Page : Goal page */
 .GOAL__MAIN {
     padding: 2rem 3rem;
 }
@@ -2685,7 +2685,7 @@ p.MEMBER:hover {
     gap: 2rem 1rem;
 }
 
-#progressForm {
+#progressForm, #removalForm {
     border-radius: var(--BORDER-RD-CONTACT);
 
     position: fixed;

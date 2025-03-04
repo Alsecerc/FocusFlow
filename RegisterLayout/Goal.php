@@ -243,9 +243,15 @@ if (!isset($_COOKIE['UID'])) {
                 <div>
                     <button class="GOAL__SET" onclick="togglePopup()">Add Goal</button>
                     <button class="GOAL__SET" onclick="toggleProgressPopup()">Update Goal</button>
+                    <button class="GOAL__SET" onclick="toggleRemovalPopup()">Remove Goal</button>
                     <script>
                         function toggleProgressPopup() {
                             let form = document.getElementById("progressForm");
+                            form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+                        }
+
+                        function toggleRemovalPopup() {
+                            let form = document.getElementById("removalForm");
                             form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
                         }
                     </script>
@@ -385,6 +391,15 @@ if (!isset($_COOKIE['UID'])) {
                     }
                 }
                 ?>
+            </div>
+            <div id="removalForm" style="display: none;">
+                <form action="GoalRemove.php" id="goalUpdateForm" method="POST">
+                    <h3>Enter Goal ID to remove</h3>
+                    <label>Goal ID:</label>
+                    <input type="number" name="goal_id" required>
+
+                    <button type="submit" class="GOAL__SET UPDATE__GOAL">Update Progress</button>
+                </form>
             </div>
         </article>
     </main>

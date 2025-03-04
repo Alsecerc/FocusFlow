@@ -132,7 +132,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => console.log("Overdue tasks check:", data))
             .catch(error => console.error("Error updating tasks:", error));
-        console.log("ga")
     }
 
 
