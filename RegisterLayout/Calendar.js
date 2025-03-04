@@ -395,7 +395,7 @@ function RenderTask() {
                     taskInfo.innerHTML = `
                             <h3 class="TASK__TITLE" style='text-align:center;'>${task['task_title']}</h3>
                                 <p class="TASK__DESC" ><strong>Description</strong><br> ${task['task_desc']}</p>
-                                <p class="TASK__START" ><strong>Start Date:</strong> ${task['start_date']}</p>
+                                <p class="TASK__START" ><strong>Start Date:</strong> ${task['start_date']} - ${task['end_date']}</p>
                                 <p class="TASK__END" ><strong>Time:</strong> ${task['start_time']} - ${task['end_time']}</p>
                                 <p class="TASK__CREATED" >
                                 <strong>Created At:</strong> ${task['created_at']} <br>
@@ -437,45 +437,47 @@ close
         }, 100);
 
     }, 0)
+    
+    setTimeout(() => {
+        let allTasks = Array.from(document.getElementsByClassName("EVENT"));
+    
+        // loop for all task
+        allTasks.forEach(taskElement => {
+            let taskInfo = taskElement.querySelector(".EVENT_INFO");
+            let closeButton = taskInfo.querySelector(".CLOSE");
+            let taskId = taskElement.getAttribute("data-task-id");
+            let ChangeStatus = taskElement.querySelector(".STATUS");
+            let DeleteTask = taskElement.querySelector(".DELETE");
+    
+    
+            taskElement.addEventListener("click", function (event) {
+                taskElement.querySelectorAll(".EVENT_INFO").forEach(info => {
+                    console.log(info)
+                    if (info !== taskInfo) {
+                        info.classList.remove("EVENTINFO_SHOW");
+                    } else {
+                        taskInfo.classList.add("EVENTINFO_SHOW");
+                        taskInfo.classList.add("FRONT");
+                    }
+                });
+            });
+    
+            // Close button functionality
+            closeButton.addEventListener("click", function (event) {
+                this.closest(".EVENT_INFO").classList.remove("EVENTINFO_SHOW");
+                event.stopPropagation();  // Prevent event from triggering the task click event
+            });
+    
+            DeleteTask.addEventListener("click", function () {
+                sendData(taskId);
+            });
+    
+        });
+    }, 100);
 }
 
-setTimeout(() => {
-    let allTasks = Array.from(document.getElementsByClassName("EVENT"));
-
-    // loop for all task
-    allTasks.forEach(taskElement => {
-        let taskInfo = taskElement.querySelector(".EVENT_INFO");
-        let closeButton = taskInfo.querySelector(".CLOSE");
-        let taskId = taskElement.getAttribute("data-task-id");
-        let ChangeStatus = taskElement.querySelector(".STATUS");
-        let DeleteTask = taskElement.querySelector(".DELETE");
-
-
-        taskElement.addEventListener("click", function (event) {
-            taskElement.querySelectorAll(".EVENT_INFO").forEach(info => {
-                if (info !== taskInfo) {
-                    info.classList.remove("EVENTINFO_SHOW");
-                } else {
-                    taskInfo.classList.add("EVENTINFO_SHOW");
-                    taskInfo.classList.add("FRONT");
-                }
-            });
-        });
-
-        // Close button functionality
-        closeButton.addEventListener("click", function (event) {
-            this.closest(".EVENT_INFO").classList.remove("EVENTINFO_SHOW");
-            event.stopPropagation();  // Prevent event from triggering the task click event
-        });
-
-        DeleteTask.addEventListener("click", function () {
-            sendData(taskId);
-        });
-
-    });
-}, 100);
-
 function sendData(taskId) {
+    console.log(taskId)
     fetch("CalendarDeleteTask.php", {
         method: "POST",
         headers: {

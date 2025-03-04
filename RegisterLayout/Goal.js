@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let today = new Date().toISOString().split("T")[0];
     document.getElementById("start_time").setAttribute("min", today);
     document.getElementById("end_time").setAttribute("min", today);
-    document.getElementById("end_time").setAttribute("min", today);
 
     let reminderInput = document.getElementById("reminder_time");
 
@@ -36,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    let INPUTS = getQueryAll('.INPUT__BOX');
+    let INPUTS = document.querySelectorAll('.INPUT__BOX');
     let StartTime = null;
     let EndTime = null;
 
@@ -126,14 +125,19 @@ document.addEventListener("DOMContentLoaded", function () {
         PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
     }
 
+    // check for overdue goal
 
-
-    function toggleProgressPopup() {
-        let form = document.getElementById("progressForm");
-        if (form.style.display === "none" || form.style.display === "") {
-            form.style.display = "block";
-        } else {
-            form.style.display = "none";
-        }
+    function updateOverdueTasks() {
+        fetch("GoalStatusRegUpdate.php")
+            .then(response => response.text())
+            .then(data => console.log("Overdue tasks check:", data))
+            .catch(error => console.error("Error updating tasks:", error));
     }
+
+
+    updateOverdueTasks();
+
+// run every 5 mins
+    setInterval(updateOverdueTasks, 300000);
+
 });

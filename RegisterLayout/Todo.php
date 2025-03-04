@@ -124,49 +124,62 @@ if (!verifyUser($_conn)) {
     </header>
 
     <main>
-        <div class="SIDEBAR" style="overflow-y: auto;">
+    <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
                         <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">home</span>Dashboard
+                            <span class="material-icons">
+                                home
+                            </span>Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">timer</span>Focus Timer
+                            <span class="material-icons">
+                                timer
+                            </span>Focus Timer
                         </a>
                     </li>
                     <li>
                         <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">task_alt</span>To Do
+                            <span class="material-icons">
+                                task_alt
+                            </span>To Do
                         </a>
                     </li>
                     <li>
                         <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">event</span>Calendar
+                            <span class="material-icons">
+                                event
+                            </span>Calendar
                         </a>
                     </li>
                     <li>
                         <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">analytics</span>Analytics
+                            <span class="material-icons">
+                                analytics
+                            </span>Analytics
                         </a>
                     </li>
                     <li>
                         <a href="Goal.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">track_changes</span>Goals
+                            <span class="material-icons">
+                                track_changes
+                            </span>Goals
                         </a>
                     </li>
                     <li>
                         <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">chat</span>Direct Message
+                            <span class="material-icons">
+                                chat
+                            </span>Direct Message
                         </a>
                     </li>
                 </ul>
             </nav>
-
             <?php
-            $loggedInUserID = $_COOKIE['UID']; // Assuming user ID is stored in a cookie
+            $loggedInUserID = $_COOKIE['UID']; // Assuming you store the logged-in user ID in a cookie
 
             $sql = "SELECT id, team_name FROM team 
             WHERE leader_id = ? OR member_id = ? 
@@ -178,22 +191,47 @@ if (!verifyUser($_conn)) {
             ?>
 
             <nav class="SIDEBAR__NAV COMMUNITY">
-                <h4 class="NAV_TITLE">Community</h4>
+                <div class="NAV_TITLE">
+                    <h4>Community</h4>
+
+                    <button class="NAV__TITLE__ADD CLICKABLE">
+                        <span class="material-icons">
+                            add_circle
+                        </span>
+                    </button>
+
+                    <div class="NEW__TEAM__SURVEY ">
+                        <h4>Create New Team</h4>
+                        <form action="1AddTeam.php" method="POST" style="display:flex; flex-direction:column; gap:1rem; align-items:start;">
+                            <label class="INPUT__BOX__SIDEBAR">
+                                <input type="text" name="team_name" id="team_name" class="INPUT__INPUT__SB" required>
+                                <span class="INPUT__PLACEHOLDER">Team Name : </span>
+                            </label>
+                            <div style="display:flex; justify-content:space-between; width: 100%;">
+                                <button type="submit" class="TEAM__CREATE CLICKABLE">Create Team</button>
+                                <button type="reset" class="TEAM__RESET CLICKABLE">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
                 <ul>
-                    <?php if ($result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <li>
-                                <a href="CommunityPage.php?team_id=<?= urlencode($row['id']) ?>&team=<?= urlencode($row['team_name']) ?>"
-                                    class="SIDEBAR__ITEM COMMUNITY__ITEM">
-                                    <?= htmlspecialchars($row['team_name']) ?>
-                                </a>
-                            </li>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <li>No teams found</li>
-                    <?php endif; ?>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo '<li>
+        <a href="CommunityPage.php?team_id=' . urlencode($row['id']) . '&team=' . urlencode($row['team_name']) . '" class="SIDEBAR__ITEM COMMUNITY__ITEM">
+            ' . htmlspecialchars($row['team_name']) . '
+        </a>
+      </li>';
+                        }
+                    } else {
+                        echo '<li>No teams found</li>';
+                    }
+                    ?>
                 </ul>
             </nav>
+
         </div>
 
 
