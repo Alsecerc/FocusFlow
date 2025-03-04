@@ -3,7 +3,7 @@ include "conn.php";
 session_start();
 include "AccountVerify.php";
 
-if (!verifyUser($_conn)){
+if (!verifyUser($_conn)) {
     header("Location: Login.php");
     exit();
 }
@@ -217,13 +217,11 @@ if (!verifyUser($_conn)){
 
                         $name = $_COOKIE['USERNAME'];
                         $email = $_COOKIE['EMAIL'];
-                        // $password = $_COOKIE['PASSWORD'];
                         $type = $_COOKIE['USERTYPE'];
 
                         $user = [
                             "name" => $name,
                             "email" => $email,
-                            "password" => null,
                             "type" => $type
                         ];
 
@@ -257,6 +255,7 @@ if (!verifyUser($_conn)){
                                 <label class="INPUT__BOX">
                                     <input type="password" name="password" class="INPUT__INPUT" minlength="8"
                                         pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                                        placeholder="********"
                                         title="Must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character.">
                                     <span class="INPUT__PLACEHOLDER" id="profile_password"></span>
                                 </label>
@@ -266,7 +265,7 @@ if (!verifyUser($_conn)){
                                 <p>Confirm Current Password</p>
                                 <label class="INPUT__BOX">
                                     <input type="password" id="current_password" class="INPUT__INPUT" required>
-                                    <span class="INPUT__PLACEHOLDER">Enter current password</span>
+                                    <span class="INPUT__PLACEHOLDER" id="accPassword">Enter current password</span>
                                 </label>
                             </div>
 
@@ -327,3 +326,16 @@ if (!verifyUser($_conn)){
                         <button class="SETTING__BUTTON CLICKABLE" style="background-color: #7A3E1D; color: white;" onclick="changeTheme('theme_earth')">Earth</button>
                         <button class="SETTING__BUTTON CLICKABLE" style="background-color: #8BE9FD; color: black;" onclick="changeTheme('theme_neon')">Neon</button>
                         <button class="SETTING__BUTTON CLICKABLE" style="background-color: #52796F; color: white;" onclick="changeTheme('theme_forest')">Forest</button>
+                </div>
+            </div>
+
+        </article>
+
+    </main>
+
+
+    <script src="Registered.js" defer></script>
+    <script src="Account.js" defer></script>
+</body>
+
+</html>
