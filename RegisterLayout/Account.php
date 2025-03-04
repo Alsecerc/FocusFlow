@@ -219,7 +219,6 @@ if (!verifyUser($_conn)) {
                         $email = $_COOKIE['EMAIL'];
                         $type = $_COOKIE['USERTYPE'];
 
-
                         $user = [
                             "name" => $name,
                             "email" => $email,
@@ -252,10 +251,21 @@ if (!verifyUser($_conn)) {
                             </div>
 
                             <div>
+                                <p>Password</p>
+                                <label class="INPUT__BOX">
+                                    <input type="password" name="password" class="INPUT__INPUT" minlength="8"
+                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                                        placeholder="********"
+                                        title="Must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character.">
+                                    <span class="INPUT__PLACEHOLDER" id="profile_password"></span>
+                                </label>
+                            </div>
+
+                            <div>
                                 <p>Confirm Current Password</p>
                                 <label class="INPUT__BOX">
                                     <input type="password" id="current_password" class="INPUT__INPUT" required>
-                                    <span class="INPUT__PLACEHOLDER">Enter current password</span>
+                                    <span class="INPUT__PLACEHOLDER" id="accPassword">Enter current password</span>
                                 </label>
                             </div>
 
