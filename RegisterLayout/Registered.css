@@ -912,6 +912,35 @@ header {
     padding-right: 40px !important; /* Make room for toggle button */
 }
 
+.TODO__TASK__CONTENT > span,
+.TODO__TASK__HEAD > h4 {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+
+.TODO__TASK__HEAD {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.TODO__TASK__CONTENT:hover > span,
+.TODO__TASK__HEAD:hover > h4 {
+    animation: scrollText 5s linear infinite;
+}
+
+@keyframes scrollText {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+
 .TODO__GROUP__ADD,
 .TODO__TASK__ADD {
     position: fixed;

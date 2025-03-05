@@ -179,7 +179,7 @@ function createNewGroup(groupName) {
     // Create delete button
     const deleteButton = document.createElement('button');
     deleteButton.className = 'group-delete-btn';
-    deleteButton.innerHTML = '🗑️';
+    deleteButton.innerHTML = "<span class='material-icons'> delete </span>";
     deleteButton.title = 'Delete Group';
     deleteButton.style.background = 'none';
     deleteButton.style.border = 'none';
@@ -523,12 +523,19 @@ function createTask(taskData) {
         taskHead.appendChild(timer);
     }
     
-    // Create task content
-    const taskContent = document.createElement('div');
-    taskContent.className = 'TODO__TASK__CONTENT';
-    taskContent.textContent = taskData.description;
-    taskContent.dataset.category = taskData.category;
-    taskContent.dataset.title = taskData.title;
+   // Create task content
+const taskContent = document.createElement('div');
+taskContent.className = 'TODO__TASK__CONTENT';
+taskContent.dataset.category = taskData.category;
+taskContent.dataset.title = taskData.title;
+
+// Create a span for text content
+const taskText = document.createElement('span');
+taskText.textContent = taskData.description;
+
+// Append the span to the div
+taskContent.appendChild(taskText);
+
     
     // Create task footer
     const taskFoot = document.createElement('div');
@@ -580,7 +587,7 @@ function createTask(taskData) {
     // Add delete button
     const deleteButton = document.createElement('button');
     deleteButton.className = 'task-delete';
-    deleteButton.innerHTML = '🗑️';
+    deleteButton.innerHTML = "<span class='material-icons'> delete </span>";
     deleteButton.title = 'Delete Task';
     deleteButton.addEventListener('click', function() {
         if (confirm(`Are you sure you want to delete "${taskData.title}"?`)) {
@@ -623,10 +630,17 @@ function toggleTaskStatus(button, task, taskData) {
     let currentStatus = (button.dataset.status || 'incomplete').toLowerCase();
     let newStatus;
     
+    // Check if the task is expired
+    const taskTimerElement = task.querySelector('.task-countdown');
+    const isExpired = taskTimerElement && 
+                      taskTimerElement.textContent === 'Expired';
+    
+    // Determine new status based on current status and expiration
     if (currentStatus === 'incomplete') {
         newStatus = 'complete';
     } else if (currentStatus === 'complete') {
-        newStatus = 'incomplete';
+        // If the task is expired, toggle to timeout instead of incomplete
+        newStatus = isExpired ? 'timeout' : 'incomplete';
     } else if (currentStatus === 'timeout') {
         newStatus = 'complete';
     } else {
@@ -846,6 +860,12 @@ function handleDrop(e) {
     const originalCategory = originalDragParent.id;
     const targetCategory = targetCard.id;
     
+    // Remove the empty placeholder if it exists in the target card
+    const emptyPlaceholder = targetCard.querySelector('.empty-category-placeholder');
+    if (emptyPlaceholder) {
+        emptyPlaceholder.remove();
+    }
+    
     if (originalCategory === targetCategory) {
         // Just reposition within same category
         insertTaskAtDropPosition(e, draggedTask, targetCard);
@@ -982,7 +1002,7 @@ function updateTaskCountdown(timerElement) {
     const now = new Date();
     let diff = endDateTime - now;
     
-    // Handle expired tasks
+    // Handle expired tasks - keep this code unchanged
     if (diff <= 0) {
         timerElement.textContent = 'Expired';
         timerElement.classList.add('time-expired');
@@ -991,6 +1011,7 @@ function updateTaskCountdown(timerElement) {
         if (task && !task.classList.contains('task-complete')) {
             // Mark task as timed out in UI
             task.classList.add('task-timeout');
+            task.style.backgroundColor = '#f8d7da'; // Make sure we set the red color
             
             // Get task ID and update status in database
             const taskId = task.dataset.taskId;
