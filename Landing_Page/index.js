@@ -73,6 +73,10 @@ NAV_CONTAINER.addEventListener("click", function (event) {
 //     });
 // });
 
+function toggleSidebar() {
+    document.querySelector(".SIDEBAR").classList.toggle("active");
+}
+
 document.addEventListener('click', function (event) {
     if (!event.target.closest(".HEADER__LIST")) {
         document.querySelectorAll(".HEADER__DROPDOWN").forEach((box) => {

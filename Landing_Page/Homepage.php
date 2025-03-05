@@ -11,18 +11,25 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="Responsive.css">
 </head>
 
 <body>
     <header>
         <div class="HEADER__LEFT">
+            <!--For phone size  -->
+            <!-- Hamburger Menu Icon -->
+            <div class="MENU_ICON" onclick="toggleSidebar()">
+                <span class="material-icons">menu</span>
+            </div>
+
             <a href="Homepage.php">
                 <h1 class="HEADER__TITLE CLICKABLE">F<span class="material-symbols-outlined HEADER__ICON">
                         schedule
                     </span>cusFlow
                 </h1>
             </a>
-            <nav>
+            <!-- <nav>
                 <ul class="HEADER__LIST">
                     <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="FEATURES">Features
                         <span class="material-symbols-outlined ARROW">
@@ -56,7 +63,61 @@
                         <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>
                     </div>
                 </ul>
+            </nav> -->
+
+
+            <!-- For phone sized -->
+            <!-- Sidebar Navigation -->
+            <nav class="SIDEBAR">
+                <ul class="HEADER__LIST">
+                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="FEATURES">Features
+                        <span class="material-symbols-outlined ARROW">
+                            arrow_drop_down
+                        </span>
+                        <div class="HEADER__DROPDOWN" id="FEATURES">
+                            <a class="DROPDOWN__ITEM" href="Features.php#pomodoro">Pomodoro Timer</a>
+                            <a class="DROPDOWN__ITEM" href="Features.php#task">Task Management</a>
+                            <a class="DROPDOWN__ITEM" href="Features.php#collaboration">Team Features</a>
+                            <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
+                        </div>
+                    </li>
+
+
+                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN">Plans & Pricing
+                        <span class="material-symbols-outlined ARROW">
+                            arrow_drop_down
+                        </span>
+                    </li>
+                    <div class="HEADER__DROPDOWN" id="PLAN">
+                        <a class="DROPDOWN__ITEM" href="Plans.php">View Plan</a>
+                    </div>
+
+                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT">Contact Us
+                        <span class="material-symbols-outlined ARROW">
+                            arrow_drop_down
+                        </span>
+                    </li>
+                    <div class="HEADER__DROPDOWN" id="CONTACT">
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#contactus">Customer Service</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#FAQ">FAQ</a>
+                        <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>
+                    </div>
+
+
+                    <div class="CTA__GROUP SB">
+                        <div class="HEADER__LOGIN CTA">
+                            <a href="../RegisterLayout/Login.php">LOGIN</a>
+                        </div>
+                        <div class="HEADER__SIGNUP CTA">
+                            <a href="../RegisterLayout/Signup.php">SIGN UP</a>
+                        </div>
+                    </div>
+                </ul>
+
+
             </nav>
+
+
         </div>
         <div class="CTA__GROUP">
             <div class="HEADER__LOGIN CTA">

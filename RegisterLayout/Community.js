@@ -270,20 +270,22 @@ const taskList = document.getElementById("taskList");
 let isRemoving = false;
 
 // Click "Remove Task" to highlight tasks
-removeTaskBtn.addEventListener("click", function () {
-    isRemoving = !isRemoving;
-    document.querySelectorAll(".REMOVE__OVERLAY").forEach(overlay => {
-        if (isRemoving) {
-            overlay.classList.add("REMOVE__OVERLAY__SHOW");
-            overlay.classList.remove("REMOVE__OVERLAY__HIDE");
-        } else {
-            overlay.classList.add("REMOVE__OVERLAY__HIDE");
-            overlay.classList.remove("REMOVE__OVERLAY__SHOW");
-        }
-        console.log("Overlay classList:", overlay.classList, "Remove Mode:", isRemoving);
+if (removeTaskBtn) {
+    removeTaskBtn.addEventListener("click", function () {
+        isRemoving = !isRemoving;
+        document.querySelectorAll(".REMOVE__OVERLAY").forEach(overlay => {
+            if (isRemoving) {
+                overlay.classList.add("REMOVE__OVERLAY__SHOW");
+                overlay.classList.remove("REMOVE__OVERLAY__HIDE");
+            } else {
+                overlay.classList.add("REMOVE__OVERLAY__HIDE");
+                overlay.classList.remove("REMOVE__OVERLAY__SHOW");
+            }
+            console.log("Overlay classList:", overlay.classList, "Remove Mode:", isRemoving);
+        });
     });
-});
 
+}
 
 // Click a task to delete it
 if (taskList) {
