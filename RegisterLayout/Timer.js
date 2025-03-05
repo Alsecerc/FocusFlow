@@ -10,11 +10,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let session = document.getElementById("pomodoro-session");
         let shortBreak = document.getElementById("short-break");
         let longBreak = document.getElementById("long-break");
-
+        
         let startBtn = document.getElementById("start");
         let stopBtn = document.getElementById("stop");
         let addButton = document.getElementById("plus-btn");
         let minusButton = document.getElementById("minus-btn");
+        let addsecondButton = document.getElementById("plus-btn-second");
+        let minussecondButton = document.getElementById("minus-btn-second");
 
         let intervalId = null;
         let isFirstUpdate = true;
@@ -135,38 +137,71 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
         }
 
-        function addTime() {
-            addButton.addEventListener("click", () => {
+        function addTime(ButtonType, timeType) {
+            ButtonType.addEventListener("click", () => {
                 const TIMER__ID = document.getElementById(CurrentTimer());
                 console.log(TIMER__ID.textContent);
                 console.log(`Adding time to: ${TIMER__ID.id}`);
 
                 let [minutes, seconds] = TIMER__ID.textContent.split(":").map(Number);
                 console.log(minutes, seconds);
+                if (timeType === "min") {
+                    
+                    if(minutes < 60){
+                        minutes++;
+                        if (minutes === 60) {
+                            minutes = 59;
+                            seconds = 59;
+                        }
+                    } else {
+                        console.log("Minutes cannot be more than 60");
+                    }
+                } else if (timeType === "sec") {
+                    if(minutes === 60){
+                        console.log("cannot add seconds when minutes is 60");
+                    }else{
+                        if(seconds < 59){
+                            seconds++;
+                        } else {
+                            minutes++;
+                            seconds = 0;
+                            if (minutes === 60) {
+                                minutes = 59;
+                                seconds = 59;
+                            }
+                        }
+                    }
 
-                if(minutes < 60){
-                    minutes++;
-                } else {
-                    console.log("Minutes cannot be more than 60");
                 }
-                
                 
                 updateGlobalTime(TIMER__ID, minutes, seconds);
             });
         }
 
-        function minusTime() {
-            minusButton.addEventListener("click", () => {
+        function minusTime(ButtonType, timeType) {
+            ButtonType.addEventListener("click", () => {
                 const TIMER__ID = document.getElementById(CurrentTimer());
                 
                 console.log(`Removing time from: ${TIMER__ID.id}`);
 
                 let [minutes, seconds] = TIMER__ID.textContent.split(":").map(Number);
-
-                if(minutes > 0){
-                    minutes--;
-                } else {
-                    console.log("Time cannot be negative");
+                if (timeType === "min") {
+                    if(minutes > 0){
+                        minutes--;
+                    }
+                    else {
+                        console.log("Time cannot be negative");
+                    }
+                } else if (timeType === "sec") {
+                    if(seconds > 0){
+                        seconds--;
+                    }else if (seconds === 0 && minutes === 0) {
+                        console.log("Time cannot be negative");
+                    }
+                    else {
+                        minutes--;
+                        seconds = 59;
+                    }
                 }
 
                 updateGlobalTime(TIMER__ID, minutes, seconds);
@@ -198,12 +233,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
         function timerTypeSelection() {
             document.querySelector(".button-container").addEventListener("click", (event) => {
                 if (event.target.id === session.id) {
+                    session.style.backgroundColor = "rgb(0, 128, 0)"; // green colour
+                    shortBreak.style.backgroundColor = "#2F3E46";
+                    longBreak.style.backgroundColor = "#2F3E46";
                     display_none_other(pomodoro);
                     console.log("Switched to Pomodoro timer");
                 } else if (event.target.id === shortBreak.id) {
+                    shortBreak.style.backgroundColor = "rgb(0, 128, 0)"; // green colour";";
+                    session.style.backgroundColor = "#2F3E46";
+                    longBreak.style.backgroundColor = "#2F3E46";
                     display_none_other(short);
                     console.log("Switched to Short Break timer");
                 } else if (event.target.id === longBreak.id) {
+                    longBreak.style.backgroundColor = "rgb(0, 128, 0)"; // green colour";";
+                    session.style.backgroundColor = "#2F3E46";
+                    shortBreak.style.backgroundColor = "#2F3E46";
                     display_none_other(long);
                     console.log("Switched to Long Break timer");
                 }
@@ -214,13 +258,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
 
         // Initialize everything
+        session.style.backgroundColor = "rgb(0, 128, 0)"; // green colour
         ShowDefaultTimer();
         startBtn.disabled = false;
         stopBtn.disabled = true;
         StartButton();
         StopButton();
-        addTime();
-        minusTime();
+        addTime(addButton, "min");
+        addTime(addsecondButton, "sec");
+        minusTime(minusButton, "min");
+        minusTime(minussecondButton, "sec");
         timerTypeSelection();
     }
 });

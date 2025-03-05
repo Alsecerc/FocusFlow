@@ -200,6 +200,7 @@ function logoutUser() {
     
     // Clear session data
     $_SESSION = array();
+    session_unset();
     session_destroy();
     
     // Clear cookies

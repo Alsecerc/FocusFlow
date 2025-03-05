@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['userID'] = $user['id'];
             $_SESSION['userName'] = $user['name'];
             $_SESSION['userEmail'] = $user['email'];
-            $_SESSION['usertype'] = $user['usertype'];
+            $_SESSION['usertype'] = $user['usertype'];                                                              
             
             // IMPORTANT: Create the auth session first, before any redirects
             $authResult = createAuthSession($user['id'], $_conn);

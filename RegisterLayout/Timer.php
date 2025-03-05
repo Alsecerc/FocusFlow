@@ -263,6 +263,12 @@ if (!verifyUser($_conn)) {
                             <h1 class="time"><span id="short-timer"></span></h1>
                             <h1 class="time"><span id="long-timer"></span></h1>
                         </div>
+
+                        <div class="adjust-buttons">
+                            <h6 style="margin:0;">SEC</h6>
+                            <button id="plus-btn-second" class="adjust-btn">+</button>
+                            <button id="minus-btn-second" class="adjust-btn">−</button>
+                        </div>
                     </div>
                 </main>
 

@@ -1,0 +1,185 @@
+/* Styles for text overflow handling */
+.text-overflow {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;  /* Default state hides overflow */
+    cursor: pointer;
+    position: relative;
+}
+
+/* Two different hover behaviors */
+/* Option 1: Expand text on hover */
+.TODO__TASK__HEAD h4.text-overflow:hover,
+.TODO__TASK__CONTENT span.text-overflow:hover {
+    overflow: visible;
+    white-space: normal;
+    word-wrap: break-word;
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+    padding: 2px 4px;
+    transition: all 0.2s ease;
+}
+
+/* Option 2: Add scrollable version */
+.text-overflow-scroll {
+    max-height: 100px; /* Set maximum height */
+    overflow-y: auto !important; /* Enable vertical scrolling */
+    white-space: normal !important; /* Allow text to wrap */
+    padding-right: 5px; /* Space for scrollbar */
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+/* Add new class for text wrapping mode */
+.text-overflow-wrap {
+    white-space: normal !important; /* Allow text to wrap */
+    word-wrap: break-word !important; /* Break long words if needed */
+    overflow-wrap: break-word !important; /* Modern version */
+    max-height: none !important; /* Remove height constraint */
+    overflow: visible !important; /* Allow content to expand */
+    line-height: 1.4; /* Better readability for wrapped text */
+    height: auto !important; /* Let height adjust to content */
+}
+
+/* Style task titles */
+.TODO__TASK__HEAD h4 {
+    margin: 0;
+    padding: 5px 0;
+    font-size: 16px;
+    max-width: 100%;
+    transition: all 0.2s ease;
+}
+
+/* Style task content */
+.TODO__TASK__CONTENT span {
+    display: block;
+    max-width: 100%;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+/* Adjust task content styling to accommodate wrapping text */
+.TODO__TASK__CONTENT {
+    background-color: #f4f4f4;
+    color: #333;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 6px;
+    line-height: 1.5;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    
+    /* Changed overflow behavior to allow expansion */
+    height: auto;
+    min-height: 20px;
+    max-height: none;
+    transition: all 0.2s ease;
+}
+
+/* Make tasks adjust height to accommodate wrapped content */
+.TODO__TASK {
+    background: white;
+    color: black;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 16px;
+    cursor: grab;
+    position: relative !important;
+    padding-right: 40px !important; /* Make room for toggle button */
+    height: auto; /* Allow height to adjust */
+    transition: all 0.2s ease;
+}
+
+/* Style scrollbar for webkit browsers */
+.text-overflow-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.text-overflow-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.text-overflow-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.text-overflow-scroll::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Task Details Modal Styling - These apply only to the task details modal */
+.task-details-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 500px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 2000;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Additional styles for task title in details modal */
+.task-details-modal h2 {
+    /* Existing styles */
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    
+    /* New styles for title overflow */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+    line-height: 1.3;
+    max-width: 100%;
+    padding-right: 25px; /* Make room for close button */
+    text-align: left;
+}
+
+.task-description-container {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 5px 0 15px;
+    line-height: 1.5;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.task-description-text {
+    margin: 0;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+    text-align: left;
+    height: auto !important;
+    line-height: 1.5;
+}
+
+.close-task-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-task-modal:hover {
+    color: #333;
+}

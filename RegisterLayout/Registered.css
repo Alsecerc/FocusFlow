@@ -914,11 +914,11 @@ header {
 
 .TODO__TASK__CONTENT > span,
 .TODO__TASK__HEAD > h4 {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
+    display: inline-block;         /* Makes the element behave like a block but remains inline */
+    white-space: nowrap;           /* Prevents text from wrapping to the next line */
+    position: relative;            /* Allows relative positioning for animation */
 }
+
 
 .TODO__TASK__HEAD {
     overflow: hidden;
@@ -926,10 +926,11 @@ header {
     flex-direction: column;
 }
 
-.TODO__TASK__CONTENT:hover > span,
-.TODO__TASK__HEAD:hover > h4 {
+.TODO__TASK__CONTENT:hover > span.overflowed,
+.TODO__TASK__HEAD:hover > h4.overflowed {
     animation: scrollText 5s linear infinite;
 }
+
 
 @keyframes scrollText {
     from {
@@ -939,7 +940,6 @@ header {
         transform: translateX(-100%);
     }
 }
-
 
 .TODO__GROUP__ADD,
 .TODO__TASK__ADD {
@@ -1219,8 +1219,6 @@ header {
     position: relative !important;
     padding-right: 40px !important; /* Make room for toggle button */
 }
-
-
 
 /* PAGE: Calendar Page */
 
@@ -1778,6 +1776,18 @@ header {
 
 /* PAGE: Promodo Timer Page */
 
+#pomodoro-session{
+    background-color: var(--COLOR-DARK3);
+}
+
+#short-break-session{
+    background-color: var(--COLOR-ACCENT1);
+}
+
+#long-break-session{
+    background-color: var(--COLOR-ACCENT2);
+}
+
 .TIMER__BODY {
     background-color: var(--COLOR-ACCENT4);
     color: var(--COLOR-DARK3);
@@ -1930,6 +1940,7 @@ header {
 }
 
 /* Timer Design */
+
 .timer-display {
     width: 220px;
     height: 220px;
@@ -1960,13 +1971,6 @@ header {
     background-color: var(--COLOR-DARK1);
     transform: scale(1.1);
 }
-
-/* Start & Stop Buttons */
-.buttons {
-    margin-top: 20px;
-}
-
-
 
 /* Page: account setting */
 

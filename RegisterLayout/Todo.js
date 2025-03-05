@@ -612,10 +612,151 @@ taskContent.appendChild(taskText);
     const groupBody = groupCard.querySelector('.TODO__BODY');
     if (groupBody) {
         groupBody.appendChild(task);
+        
+        // Apply text overflow after rendering
+        setTimeout(() => {
+            const taskTitle = task.querySelector('.TODO__TASK__HEAD h4');
+            const taskContent = task.querySelector('.TODO__TASK__CONTENT span');
+            
+            // Set initial styles for overflow detection
+            if (taskTitle) {
+                taskTitle.style.maxWidth = '100%';
+                taskTitle.style.display = 'block';
+                textOverflow(taskTitle, false); // Use ellipsis for titles
+            }
+            
+            if (taskContent) {
+                taskContent.style.maxWidth = '100%';
+                taskContent.style.display = 'block';
+                textOverflow(taskContent, true); // Use wrapping for descriptions (changed from scrolling)
+                
+                // Make task content clickable to show details
+                taskContent.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Task clicked, showing details for:', taskData.title);
+                    displayTaskDetails(taskData);
+                });
+            }
+        }, 100); // Short delay to ensure DOM is fully rendered
     }
     
     // Start the countdown timer
     updateTaskCountdown(task.querySelector('.task-countdown'));
+}
+
+function displayTaskDetails(taskData) {
+    console.log('Displaying task details for:', taskData.title);
+    
+    // Get overlay
+    const overlay = document.querySelector('.Hiddenlayer');
+    if (!overlay) {
+        console.error('Overlay element not found');
+        return;
+    }
+    
+    // Show overlay
+    overlay.style.display = 'block';
+    
+    // Remove any existing task details modal
+    const existingModal = document.querySelector('.task-details-modal');
+    if (existingModal) existingModal.remove();
+    
+    // Create task details modal with inline styles for visibility
+    const taskDetails = document.createElement('div');
+    taskDetails.className = 'task-details-modal';
+    
+    // Apply inline styles to ensure visibility
+    Object.assign(taskDetails.style, {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '80%',
+        maxWidth: '500px',
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+        zIndex: '2000',
+        maxHeight: '80vh',
+        overflowY: 'auto'
+    });
+    
+    // Create task content with inline styles
+    // Apply word-wrap to title to handle long text
+    let taskContentHTML = `
+        <h2 style="margin-top:0;color:#333;border-bottom:2px solid #eee;padding-bottom:10px;
+                   word-wrap:break-word;overflow-wrap:break-word;white-space:normal;
+                   line-height:1.3;max-width:100%;padding-right:25px;text-align:left;">
+            ${taskData.title || 'Task Details'}
+        </h2>
+        <p style="margin:10px 0;"><strong>Category:</strong> ${taskData.category || 'Uncategorized'}</p>
+        <p style="margin:10px 0;"><strong>Status:</strong> ${taskData.status || 'Pending'}</p>
+    `;
+    
+    // Add deadline if available
+    if (taskData.end_date) {
+        taskContentHTML += `
+            <p style="margin:10px 0;"><strong>Deadline:</strong> 
+                ${taskData.end_date} ${taskData.end_time || ''}
+            </p>
+        `;
+    }
+    
+    // Add description in a styled box with text wrapping
+    taskContentHTML += `
+        <p style="margin:10px 0;"><strong>Description:</strong></p>
+        <div class="task-description-container" style="background-color:#f9f9f9;
+                  border:1px solid #eee;
+                  border-radius:4px;
+                  padding:12px;
+                  margin:5px 0 15px;
+                  line-height:1.5;
+                  max-height:200px;
+                  overflow-y:auto;">
+            <p class="task-description-text" style="margin:0;
+                     white-space:normal;
+                     word-wrap:break-word;
+                     overflow-wrap:break-word;
+                     overflow:visible;
+                     text-align:left;">
+                ${taskData.description || 'No description provided'}
+            </p>
+        </div>
+    `;
+    
+    // Add close button with inline styles
+    taskContentHTML += `
+        <button class="close-task-modal" style="position:absolute;top:10px;right:10px;
+                font-size:24px;background:none;border:none;cursor:pointer;color:#aaa;">
+            &times;
+        </button>
+    `;
+    
+    // Set the HTML content
+    taskDetails.innerHTML = taskContentHTML;
+    
+    // Add the modal to the document
+    document.body.appendChild(taskDetails);
+    
+    // Add click handler to close button
+    const closeButton = taskDetails.querySelector('.close-task-modal');
+    if (closeButton) {
+        closeButton.addEventListener('click', function() {
+            overlay.style.display = 'none';
+            taskDetails.remove();
+        });
+    }
+    
+    // Also close when clicking on the overlay
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            overlay.style.display = 'none';
+            taskDetails.remove();
+        }
+    });
+    
+    console.log('Task details modal created and displayed');
 }
 
 // Function to toggle task status
@@ -687,35 +828,140 @@ function toggleTaskStatus(button, task, taskData) {
     });
 }
 
-// Update task status in UI
+// Add this function that's missing from your code
 function updateTaskStatusUI(button, newStatus) {
-    if (!newStatus) return;
+    const taskElement = button.closest('.TODO__TASK');
+    if (!taskElement) return;
     
-    const task = button.closest('.TODO__TASK');
-    if (!task) return;
-    
-    // Update button dataset
+    // Update button state
     button.dataset.status = newStatus;
     
-    // Remove existing status classes
-    task.classList.remove('task-complete', 'task-incomplete', 'task-timeout');
+    // Update task class and background
+    taskElement.classList.remove('task-complete', 'task-incomplete', 'task-timeout');
     
-    // Set new status class and appearance
-    task.classList.add(`task-${newStatus}`);
-    
-    if (newStatus === 'complete') {
-        button.textContent = '✓';
-        button.title = 'Mark as Incomplete';
-        task.style.backgroundColor = '#d4edda'; // Green
-    } else if (newStatus === 'incomplete') {
-        button.textContent = '○';
-        button.title = 'Mark as Complete';
-        task.style.backgroundColor = '#fff3cd'; // Yellow
-    } else if (newStatus === 'timeout') {
-        button.textContent = '⏱';
-        button.title = 'Mark as Complete';
-        task.style.backgroundColor = '#f8d7da'; // Red
+    // Update based on new status
+    switch(newStatus) {
+        case 'complete':
+            button.textContent = '✓';
+            button.title = 'Mark as Incomplete';
+            taskElement.classList.add('task-complete');
+            taskElement.style.backgroundColor = '#d4edda'; // Green background
+            
+            // If there's a timer, update it to show completed
+            const timer = taskElement.querySelector('.task-countdown');
+            if (timer) {
+                timer.textContent = 'Completed';
+                timer.classList.remove('time-warning', 'time-urgent', 'time-expired');
+            }
+            break;
+            
+        case 'timeout':
+            button.textContent = '⏱';
+            button.title = 'Mark as Complete';
+            taskElement.classList.add('task-timeout');
+            taskElement.style.backgroundColor = '#f8d7da'; // Red background
+            break;
+            
+        default: // incomplete
+            button.textContent = '○';
+            button.title = 'Mark as Complete';
+            taskElement.classList.add('task-incomplete');
+            taskElement.style.backgroundColor = '#fff3cd'; // Yellow background
+            break;
     }
+    
+    console.log(`Task status updated to: ${newStatus}`);
+}
+
+// Modified text overflow function to wrap text down instead of horizontal scroll
+function textOverflow(element, allowWrapping = false) {
+    if (!element) return;
+    
+    // Force recalculation of element dimensions
+    void element.offsetWidth;
+    
+    // Check for overflow (text content)
+    const isOverflowing = element.scrollWidth > element.clientWidth;
+    
+    console.log('Element:', element.textContent.substring(0, 20), 
+                'ScrollWidth:', element.scrollWidth, 
+                'ClientWidth:', element.clientWidth, 
+                'Overflowing:', isOverflowing);
+    
+    // Apply appropriate styles based on preference
+    if (isOverflowing) {
+        // Add title attribute to show full text on hover regardless of style
+        if (!element.title && element.textContent) {
+            element.title = element.textContent.trim();
+        }
+        
+        if (allowWrapping) {
+            // Configure for wrapping behavior - text flows down
+            element.style.whiteSpace = 'normal';         // Allow text to wrap
+            element.style.wordWrap = 'break-word';       // Break long words if needed
+            element.style.overflowWrap = 'break-word';   // Modern version of word-wrap
+            element.style.overflow = 'visible';          // Allow content to expand
+            element.style.maxHeight = 'none';            // Remove height restriction
+            element.classList.add('text-overflow-wrap');
+            
+            // Remove other classes if they exist
+            element.classList.remove('text-overflow', 'text-overflow-scroll');
+        } else {
+            // Standard ellipsis behavior (for titles that should stay compact)
+            element.style.textOverflow = 'ellipsis';
+            element.style.whiteSpace = 'nowrap';
+            element.style.overflow = 'hidden';
+            element.classList.add('text-overflow');
+            
+            // Add click handler to toggle wrapping view
+            if (!element.hasClickHandler) {
+                element.hasClickHandler = true;
+                element.addEventListener('click', function(e) {
+                    // Toggle between ellipsis and wrapping modes
+                    if (element.classList.contains('text-overflow')) {
+                        // Switch to wrapping mode
+                        element.classList.remove('text-overflow');
+                        element.style.whiteSpace = 'normal';
+                        element.style.wordWrap = 'break-word';
+                        element.style.overflow = 'visible';
+                        element.classList.add('text-overflow-wrap');
+                    } else {
+                        // Switch back to ellipsis mode
+                        element.classList.remove('text-overflow-wrap');
+                        element.style.whiteSpace = 'nowrap';
+                        element.style.overflow = 'hidden';
+                        element.classList.add('text-overflow');
+                    }
+                    e.stopPropagation(); // Prevent other click handlers
+                });
+            }
+        }
+        
+        return true;
+    } else {
+        // Remove overflow styles if not needed
+        element.classList.remove('text-overflow', 'text-overflow-scroll', 'text-overflow-wrap');
+        return false;
+    }
+}
+
+// Add a window resize handler to recheck overflow when the window size changes
+window.addEventListener('resize', debounce(() => {
+    console.log('Rechecking text overflow after resize');
+    document.querySelectorAll('.TODO__TASK__HEAD h4, .TODO__TASK__CONTENT span').forEach(element => {
+        textOverflow(element);
+    });
+}, 250)); // Debounce to avoid excessive recalculations
+
+// Debounce function to limit how often a function is called
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
 }
 
 // Function to load groups and tasks from the database
@@ -1044,13 +1290,16 @@ function updateTaskCountdown(timerElement) {
         return;
     }
     
-    // Calculate time components
+    // Calculate time components - FIX THE MINUTES CALCULATION HERE
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     diff -= days * (1000 * 60 * 60 * 24);
+    
     const hours = Math.floor(diff / (1000 * 60 * 60));
     diff -= hours * (1000 * 60 * 60);
-    const minutes = Math.floor(diff / (1000 * 60));
+    
+    const minutes = Math.floor(diff / (1000 * 60)); // FIXED: Proper calculation for minutes
     diff -= minutes * (1000 * 60);
+    
     const seconds = Math.floor(diff / 1000);
     
     // Build timer text
