@@ -252,6 +252,7 @@ if (!verifyUser($_conn)) {
                     <div class="timer-wrapper">
                         <!-- Plus and Minus Buttons (Stacked) -->
                         <div class="adjust-buttons">
+                            <h6 style="margin:0;">MIN</h6>
                             <button id="plus-btn" class="adjust-btn">+</button>
                             <button id="minus-btn" class="adjust-btn">−</button>
                         </div>

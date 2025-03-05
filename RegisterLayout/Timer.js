@@ -21,11 +21,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let POMODORO__TIMES = 0;
         const LONG__BREAK__TIMES = 4;
 
-        let pomodoro_minutes = 0;
-        let pomodoro_seconds = 5;
-        let short_break_minutes = 0;
-        let short_break_seconds = 5;
-        let long_break_minutes = 15;
+        let pomodoro_minutes = 15;
+        let pomodoro_seconds = 0;
+        let short_break_minutes = 5;
+        let short_break_seconds = 0;
+        let long_break_minutes = 10;
         let long_break_seconds = 0;
 
         function ShowDefaultTimer() {
