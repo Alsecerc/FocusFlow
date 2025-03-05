@@ -1,0 +1,62 @@
+@media (max-width: 468px) {
+    .MENU_ICON {
+        display: block;
+
+        position: absolute;
+        left: 10px;
+    }
+
+    header {
+        justify-content: center;
+    }
+
+    .CTA__GROUP {
+        display: none;
+    }
+
+    .CTA__GROUP.SB {
+        display: block;
+    }
+
+    .FOOTER {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .BACK_TO_TOP {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .BENEFIT__CONTAINER {
+        margin: 0;
+    }
+
+    .BENEFIT__CONTAINER__CARD {
+        min-width: 300px;
+    }
+
+    .BENEFIT__BACK,
+    .BENEFIT__TITLE {
+        font-size: 0.7rem;
+    }
+
+    .BENEFIT__IMAGE {
+        width: 35%;
+    }
+
+    .WELCOME__CONTAINER {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+
+        margin: 0;
+    }
+}
+
+@media (min-width: 468px) and (max-width: 1024px) {
+
+    .FOOTER {
+        flex-direction: column;
+        align-items: start;
+    }
+}

@@ -1,6 +1,5 @@
 /* Phone */
 @media (max-width: 468px) {
-
     .ENTER__MESSAGE {
         min-width: 300px;
     }
@@ -16,28 +15,35 @@
         left: -800px;
     }
 
-    .HEADER__RIGHT, .HEADER__LEFT, .HEADER__SEARCH {
+    .HEADER__RIGHT,
+    .HEADER__LEFT,
+    .HEADER__SEARCH {
         margin: 0 10px;
     }
 
     .HEADER__MENU_BUTTON {
-        width: 40px;  /* Smaller button size */
+        width: 40px;
+        /* Smaller button size */
         height: 40px;
     }
 
     .HEADER__MENU_ICON,
     .HEADER__MENU_ICON::before,
     .HEADER__MENU_ICON::after {
-        width: 30px; /* Reduce the width */
-        height: 4px;  /* Reduce thickness */
+        width: 30px;
+        /* Reduce the width */
+        height: 4px;
+        /* Reduce thickness */
     }
 
     .HEADER__MENU_ICON::after {
-        transform: translate(-15px, -10px); /* Adjust spacing */
+        transform: translate(-15px, -10px);
+        /* Adjust spacing */
     }
 
     .HEADER__MENU_ICON::before {
-        transform: translate(-15px, 10px); /* Adjust spacing */
+        transform: translate(-15px, 10px);
+        /* Adjust spacing */
     }
 
     /* Adjust animations for smaller icons */
@@ -110,8 +116,16 @@
 
 
     /* Community page */
+    .TASK__CONTAINER {
+        margin-right: 5%;
+        height: 100vh;
+
+        overflow-y: auto;
+    }
+
     .COMMUNITY1__MAIN {
-        padding-right: 30px;
+        padding-right: 2rem;
+        height: 100%;
     }
 
     .COMMUNITY1 {
@@ -124,20 +138,82 @@
         overflow-x: hidden;
     }
 
+    .COMMUNITY1__HEADER {
+        flex-direction: column;
+        min-height: 100px;
+    }
+
+    .COMMUNITY1__HEADER>h1 {
+        margin: 1rem;
+    }
+
+    .COMMUNITY1__HEADER__RIGHT>div {
+        min-width: 50px;
+        position: relative;
+    }
+
+    .DISPLAY__ICON>div {
+        flex-direction: row-reverse;
+    }
+
+    .COMMUNITY__HEADER__TITLE {
+        white-space: nowrap;
+        position: absolute;
+        width: fit-content;
+        top: 100%;
+        color: var(--COLOR-DARK3);
+    }
+
+    .DISPLAY__TITLE {
+        display: flex;
+        align-items: center;
+    }
+
+    .DISPLAY__ICON {
+        flex-direction: column;
+        align-items: start;
+        gap: 0;
+    }
+
+    .MEMBER__MANAGE {
+        margin-top: 1rem;
+    }
+
     .COMMUNITY1__MEMBER {
-        padding-left: calc(var(--PADDING-LR) + 50px);
+        padding: 0;
 
         position: absolute;
         top: 0;
         right: 0;
 
-        transform: translateX(430px);
+        transform: translateX(88%);
 
-        min-height: 100%;
-        min-width: 400px;
+        height: 100%;
+        min-width: 100vw;
 
         box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
         transition: all 0.5s ease-in-out;
+    }
+
+    .LEADER__CONTAINER,
+    .MEMBER__CONTAINER {
+        padding-left: 5rem;
+    }
+
+    .CM__POPUP__TITLE {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
+    .CM__POPUP__FORM {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 80%;
+    }
+
+    .FileLink {
+        font-size: 0.6rem;
     }
 
     .SHOW__MEMBER {
@@ -152,6 +228,7 @@
         cursor: pointer;
     }
 
+
     .DISPLAY__ICON {
         margin-right: 30px;
     }
@@ -164,8 +241,8 @@
         transform: translateY(30px);
     }
 
-/* Account setting */
-    
+    /* Account setting */
+
 
     /* DM page */
     .DMLIST__SIDEBAR {
@@ -241,7 +318,7 @@
 
 /* Tablet */
 @media (min-width: 468px) and (max-width: 1024px) {
-    
+
     .SIDEBAR {
         min-height: 100%;
     }
@@ -277,19 +354,28 @@
     }
 
     .COMMUNITY1__MEMBER {
-        padding-left: calc(var(--PADDING-LR) + 24px);
+        padding: 0;
 
         position: absolute;
         top: 0;
         right: 0;
 
-        transform: translateX(425px);
+        transform: translateX(88%);
 
         height: 100%;
-        min-width: 400px;
+        min-width: 100vw;
 
         box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
         transition: all 0.5s ease-in-out;
+    }
+
+    .TASK__CONTAINER__TITLE {
+        flex-direction: row;
+    }
+
+    .LEADER__CONTAINER,
+    .MEMBER__CONTAINER {
+        padding-left: 5rem;
     }
 
     .SHOW__MEMBER {
@@ -304,8 +390,34 @@
         cursor: pointer;
     }
 
+    .COMMUNITY1__HEADER {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .COMMUNITY1__HEADER>h1 {
+        margin: 0;
+    }
+
     .DISPLAY__ICON {
         margin-right: 30px;
+    }
+
+    .COMMUNITY1__HEADER__RIGHT>div {
+        min-width: 50px;
+        position: relative;
+    }
+
+    .DISPLAY__ICON>div {
+        flex-direction: row-reverse;
+    }
+
+    .COMMUNITY__HEADER__TITLE {
+        white-space: nowrap;
+        position: absolute;
+        width: fit-content;
+        top: 100%;
+        color: var(--COLOR-DARK3);
     }
 
 
