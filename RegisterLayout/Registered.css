@@ -925,9 +925,6 @@ header {
     position: relative;
 }
 
-.TODO__TASK__HEAD>h4 {
-    margin-top: 0;
-}
 
 .TODO__TASK__HEAD {
     overflow: hidden;
@@ -940,6 +937,7 @@ header {
     animation: scrollText 7s linear infinite;
 }
 
+
 @keyframes scrollText {
     from {
         transform: translateX(calc(100% - 198px));
@@ -949,7 +947,6 @@ header {
         transform: translateX(calc(-100% - 198px));
     }
 }
-
 
 .TODO__GROUP__ADD,
 .TODO__TASK__ADD {
@@ -1260,8 +1257,6 @@ header {
     padding-right: 40px !important;
     /* Make room for toggle button */
 }
-
-
 
 /* PAGE: Calendar Page */
 
@@ -1819,6 +1814,18 @@ header {
 
 /* PAGE: Promodo Timer Page */
 
+#pomodoro-session{
+    background-color: var(--COLOR-DARK3);
+}
+
+#short-break-session{
+    background-color: var(--COLOR-ACCENT1);
+}
+
+#long-break-session{
+    background-color: var(--COLOR-ACCENT2);
+}
+
 .TIMER__BODY {
     background-color: var(--COLOR-ACCENT4);
     color: var(--COLOR-DARK3);
@@ -1976,6 +1983,7 @@ header {
 }
 
 /* Timer Design */
+
 .timer-display {
     width: 220px;
     height: 220px;
@@ -2006,13 +2014,6 @@ header {
     background-color: var(--COLOR-DARK1);
     transform: scale(1.1);
 }
-
-/* Start & Stop Buttons */
-.buttons {
-    margin-top: 20px;
-}
-
-
 
 /* Page: account setting */
 
