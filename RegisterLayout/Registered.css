@@ -858,7 +858,7 @@ header {
     border-radius: var(--BORDER-RD-CONTACT);
     margin: var(--MARGIN);
 
-    height: 70vh;
+    height: 65vh;
     padding: var(--PADDING-TB);
 
     display: flex;
@@ -866,7 +866,7 @@ header {
     /* Prevent wrapping */
     overflow-x: auto;
     /* Enable horizontal scrolling */
-    overflow-y: hidden;
+    overflow-y: auto;
     /* Prevent vertical stretching */
     white-space: nowrap;
     align-items: flex-start;
@@ -915,37 +915,6 @@ header {
     position: relative !important;
     padding-right: 40px !important;
     /* Make room for toggle button */
-}
-
-.TODO__TASK__CONTENT>span,
-.TODO__TASK__HEAD>h4 {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-}
-
-
-.TODO__TASK__HEAD {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.TODO__TASK__CONTENT:hover>span,
-.TODO__TASK__HEAD:hover>h4 {
-    animation: scrollText 7s linear infinite;
-}
-
-
-@keyframes scrollText {
-    from {
-        transform: translateX(calc(100% - 198px));
-    }
-
-    to {
-        transform: translateX(calc(-100% - 198px));
-    }
 }
 
 .TODO__GROUP__ADD,
