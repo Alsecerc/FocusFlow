@@ -892,6 +892,10 @@ header {
     cursor: grab;
 }
 
+.TODO__CARD .material-icons {
+    color: var(--COLOR-DARK3);
+}
+
 .TODO__CARD_HEADER {
     border-bottom: 2px solid var(--COLOR-ACCENT1);
     cursor: pointer;
@@ -909,15 +913,20 @@ header {
     font-size: 16px;
     cursor: grab;
     position: relative !important;
-    padding-right: 40px !important; /* Make room for toggle button */
+    padding-right: 40px !important;
+    /* Make room for toggle button */
 }
 
-.TODO__TASK__CONTENT > span,
-.TODO__TASK__HEAD > h4 {
+.TODO__TASK__CONTENT>span,
+.TODO__TASK__HEAD>h4 {
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     position: relative;
+}
+
+.TODO__TASK__HEAD>h4 {
+    margin-top: 0;
 }
 
 .TODO__TASK__HEAD {
@@ -926,17 +935,18 @@ header {
     flex-direction: column;
 }
 
-.TODO__TASK__CONTENT:hover > span,
-.TODO__TASK__HEAD:hover > h4 {
-    animation: scrollText 5s linear infinite;
+.TODO__TASK__CONTENT:hover>span,
+.TODO__TASK__HEAD:hover>h4 {
+    animation: scrollText 7s linear infinite;
 }
 
 @keyframes scrollText {
     from {
-        transform: translateX(100%);
+        transform: translateX(calc(100% - 198px));
     }
+
     to {
-        transform: translateX(-100%);
+        transform: translateX(calc(-100% - 198px));
     }
 }
 
@@ -947,7 +957,8 @@ header {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1001; /* Higher than overlay */
+    z-index: 1001;
+    /* Higher than overlay */
     background-color: white;
     padding: 20px;
     border-radius: 8px;
@@ -968,7 +979,8 @@ header {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000; /* High z-index but lower than forms */
+    z-index: 1000;
+    /* High z-index but lower than forms */
 }
 
 #groupForm {
@@ -1064,7 +1076,8 @@ header {
 /* Status toggle z-index */
 .status-toggle {
     position: relative;
-    z-index: 100; /* Lower than forms and overlay */
+    z-index: 100;
+    /* Lower than forms and overlay */
 }
 
 /* Make sure dragged items appear above regular items but below forms */
@@ -1086,7 +1099,7 @@ header {
 .TODO__TASK__ADD select,
 .TODO__TASK__ADD textarea {
     pointer-events: auto !important;
-} 
+}
 
 .is-dragging {
     scale: 1.05;
@@ -1146,6 +1159,17 @@ header {
     right: 10px;
 }
 
+.TODO__TASK__FOOT {
+    margin-top: var(--MARGIN);
+}
+
+.task-delete {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 0;
+}
+
 .timer-inputs {
     display: flex;
     gap: 10px;
@@ -1177,12 +1201,11 @@ header {
 .status-toggle {
     position: absolute !important;
     right: 10px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+    top: 10px !important;
     width: 24px !important;
     height: 24px !important;
     background: #f0f0f0 !important;
-    border: 1px solid #ccc !important;
+    border: 3px solid #ccc !important;
     border-radius: 50% !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1192,32 +1215,50 @@ header {
     font-size: 16px !important;
     font-weight: bold !important;
     z-index: 10 !important;
-    box-shadow: 0 0 3px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3) !important;
 }
+
+
 
 /* Style for different status icons */
 .task-complete .status-toggle {
     background-color: rgba(76, 175, 80, 0.2) !important;
-    color: #4CAF50 !important;
-    border-color: #4CAF50 !important;
+    color: var(--COLOR-GREEN-LIGHT) !important;
+    border-color: var(--COLOR-GREEN) !important;
+}
+
+.status-toggle .material-icons {
+    font-size: 0.9rem;
+}
+
+.task-timeout .status-toggle .material-icons {
+    color: rgb(149, 0, 0);
+}
+
+.task-incomplete .status-toggle .material-icons {
+    color: rgb(146, 149, 0);
+}
+
+.task-complete .status-toggle .material-icons {
+    color: rgb(0, 149, 15);
 }
 
 .task-incomplete .status-toggle {
     background-color: rgba(255, 193, 7, 0.2) !important;
-    color: #FFC107 !important;
-    border-color: #FFC107 !important;
+    color: var(--COLOR-YELLOW-LIGHT) !important;
+    border-color: var(--COLOR-YELLOW) !important;
 }
 
 .task-timeout .status-toggle {
-    background-color: rgba(244, 67, 54, 0.2) !important;
-    color: #F44336 !important;
-    border-color: #F44336 !important;
+    background-color: var(--COLOR-RED-LIGHT) !important;
+    border-color: var(--COLOR-RED) !important;
 }
 
 /* Ensure task elements have proper positioning for the icons */
 .TODO__TASK {
     position: relative !important;
-    padding-right: 40px !important; /* Make room for toggle button */
+    padding-right: 40px !important;
+    /* Make room for toggle button */
 }
 
 
@@ -1833,9 +1874,13 @@ header {
 }
 
 .time {
+    margin: 0;
     font-size: 4rem !important;
-    /* Adjusts timer size */
-    margin: 20px auto;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* Hides inactive timers */
@@ -1845,6 +1890,7 @@ header {
 
 .timer-display.active {
     display: block;
+    position: relative;
 }
 
 /* Buttons */
@@ -2039,7 +2085,7 @@ header {
     gap: 1rem;
 }
 
-.ACCOUNT__THEME >button {
+.ACCOUNT__THEME>button {
     width: fit-content;
     height: fit-content;
 }
@@ -2542,6 +2588,8 @@ header {
     background-color: var(--COLOR-DARK2);
 
     padding: var(--PADDING-TB) var(--PADDING-LR);
+
+    overflow-y: auto;
 }
 
 .MEMBER__MANAGE {
@@ -2714,7 +2762,8 @@ p.MEMBER:hover {
     gap: 2rem 1rem;
 }
 
-#progressForm, #removalForm {
+#progressForm,
+#removalForm {
     border-radius: var(--BORDER-RD-CONTACT);
 
     position: fixed;
@@ -2774,9 +2823,11 @@ p.MEMBER:hover {
 .GOAL__CARD.COMP {
     background-color: var(--COLOR-GREEN-LIGHT);
 }
+
 .GOAL__CARD.PROG {
     background-color: var(--COLOR-YELLOW-LIGHT);
 }
+
 .GOAL__CARD.DUE {
     background-color: var(--COLOR-RED-LIGHT);
 }

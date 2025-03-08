@@ -551,17 +551,17 @@ taskContent.appendChild(taskText);
     
     // Set appropriate icon and class based on status
     if (taskData.status === 'complete') {
-        statusToggle.textContent = '✓';
+        statusToggle.innerHTML = "<span class='material-icons TODO_STATUS_ICON'>check_circle</span>";
         statusToggle.title = 'Mark as Incomplete';
         task.classList.add('task-complete');
         task.style.backgroundColor = '#d4edda'; // Green background
     } else if (taskData.status === 'timeout') {
-        statusToggle.textContent = '⏱';
+        statusToggle.innerHTML = "<span class='material-icons TODO_STATUS_ICON'>timer</span>";
         statusToggle.title = 'Mark as Complete';
         task.classList.add('task-timeout');
         task.style.backgroundColor = '#f8d7da'; // Red background
     } else {
-        statusToggle.textContent = '○';
+        statusToggle.innerHTML = "<span class='material-icons TODO_STATUS_ICON'>pending</span>";
         statusToggle.title = 'Mark as Complete';
         task.classList.add('task-incomplete');
         task.style.backgroundColor = '#fff3cd'; // Yellow background
@@ -673,8 +673,8 @@ function toggleTaskStatus(button, task, taskData) {
         } else {
             alert('Error updating status: ' + (data.error || 'Unknown error'));
             // Reset button
-            button.textContent = currentStatus === 'complete' ? '✓' : 
-                                (currentStatus === 'timeout' ? '⏱' : '○');
+            button.innerHTML = currentStatus === 'complete' ? "<span class='material-icons TODO_STATUS_ICON'>check_circle</span>" : 
+                                (currentStatus === 'timeout' ? "<span class='material-icons TODO_STATUS_ICON'>timer</span>" : "<span class='material-icons TODO_STATUS_ICON'>pending</span>");
         }
     })
     .catch(error => {
@@ -682,8 +682,8 @@ function toggleTaskStatus(button, task, taskData) {
         console.error('Error:', error);
         alert('Failed to update status. Please try again.');
         // Reset button
-        button.textContent = currentStatus === 'complete' ? '✓' : 
-                            (currentStatus === 'timeout' ? '⏱' : '○');
+        button.innerHTML = currentStatus === 'complete' ? "<span class='material-icons TODO_STATUS_ICON'>check_circle</span>" : 
+                            (currentStatus === 'timeout' ? "<span class='material-icons TODO_STATUS_ICON'>timer</span>" : "<span class='material-icons TODO_STATUS_ICON'>pending</span>");
     });
 }
 
@@ -704,15 +704,15 @@ function updateTaskStatusUI(button, newStatus) {
     task.classList.add(`task-${newStatus}`);
     
     if (newStatus === 'complete') {
-        button.textContent = '✓';
+        button.innerHTML = "<span class='material-icons TODO_STATUS_ICON'>check_circle</span>";
         button.title = 'Mark as Incomplete';
         task.style.backgroundColor = '#d4edda'; // Green
     } else if (newStatus === 'incomplete') {
-        button.textContent = '○';
+        button.innerHTML = "<span class='material-icons TODO_STATUS_ICON'>pending</span>";
         button.title = 'Mark as Complete';
         task.style.backgroundColor = '#fff3cd'; // Yellow
     } else if (newStatus === 'timeout') {
-        button.textContent = '⏱';
+        button.innerHTML = "<span class='material-icons TODO_STATUS_ICON'>timer</span>";
         button.title = 'Mark as Complete';
         task.style.backgroundColor = '#f8d7da'; // Red
     }
@@ -1033,7 +1033,7 @@ function updateTaskCountdown(timerElement) {
                 .then(data => {
                     if (data.status === 'success' && statusButton) {
                         statusButton.dataset.status = 'timeout';
-                        statusButton.textContent = '⏱';
+                        statusButton.innerHTML = "<span class='material-icons'>timer</span>";
                         statusButton.title = 'Mark as Complete';
                     }
                 })

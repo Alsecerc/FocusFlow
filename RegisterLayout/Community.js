@@ -149,6 +149,10 @@ document.getElementById("openTaskForm").addEventListener("click", function () {
     document.getElementById("taskPopUp").classList.toggle("ADD_TASK__SURVEY_SHOW");
 });
 
+document.getElementsByClassName("CONTROLS__CLOSE")[0].addEventListener("click", function() {
+    document.getElementById("taskPopUp").classList.remove("ADD_TASK__SURVEY_SHOW");
+});
+
 // Pop up survey validation
 let INPUTS = getQueryAll('.INPUT__BOX');
 

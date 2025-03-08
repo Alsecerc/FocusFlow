@@ -117,7 +117,7 @@
 
     /* Community page */
     .TASK__CONTAINER {
-        margin-right: 5%;
+        margin-right: 10px;
         height: 100vh;
 
         overflow-y: auto;
@@ -186,7 +186,7 @@
         top: 0;
         right: 0;
 
-        transform: translateX(88%);
+        transform: translateX(calc(100% - 50px));
 
         height: 100%;
         min-width: 100vw;
@@ -307,6 +307,19 @@
         min-width: fit-content;
     }
 
+    /* Todo */
+    .TODO__HEADER {
+        flex-direction: column;
+    }
+
+    .TODO__CONTAINER {
+     justify-content: center;
+    }
+
+    .TODO__CARD {
+        margin: 0;
+    }
+
 }
 
 /* hides when then sidebar has not enough space */
@@ -350,7 +363,7 @@
         grid-template-rows: 100px 1fr;
         grid-template-columns: 1fr;
 
-        overflow-x: hidden;
+        overflow: hidden;
     }
 
     .COMMUNITY1__MEMBER {
@@ -360,13 +373,18 @@
         top: 0;
         right: 0;
 
-        transform: translateX(88%);
+        transform: translateX(calc(100% - 50px));
 
-        height: 100%;
+        height: 100vh;
+
         min-width: 100vw;
 
         box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
         transition: all 0.5s ease-in-out;
+    }
+
+    .TASK__CONTAINER {
+        margin-right: 10px;
     }
 
     .TASK__CONTAINER__TITLE {
