@@ -12,8 +12,9 @@
 <body class="CM__POPUP">
 
     <h2 class="CM__POPUP__TITLE"><?php echo $_GET['team'] ?> : Upload a File</h2>
-    <form class="CM__POPUP__FORM" action="CommunityUploadBackend.php" method="POST" enctype="multipart/form-data">
+    <form class="CM__POPUP__FORM" action="CommunityBackend.php" method="POST" enctype="multipart/form-data">
         <!-- send team name to back end -->
+        <input type="hidden" name="action" value="UploadFile">
         <input type="hidden" name="team_name" value="<?php echo htmlspecialchars($_GET['team']); ?>">
         <input class="CM__POPUP__INPUT" type="file" name="file" required>
         <button type="submit" name="upload" class="CM__POPUP__BUTTON">Upload</button>

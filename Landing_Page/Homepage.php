@@ -29,9 +29,9 @@
                     </span>cusFlow
                 </h1>
             </a>
-            <!-- <nav>
-                <ul class="HEADER__LIST">
-                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="FEATURES">Features
+            <nav>
+                <ul class="HEADER__LIST original">
+                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="FEATURES" data-short="Feat">Features
                         <span class="material-symbols-outlined ARROW">
                             arrow_drop_down
                         </span>
@@ -43,7 +43,7 @@
                         <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
                     </div>
 
-                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN">Plans & Pricing
+                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN" data-short="Plan">Plans & Pricing
                         <span class="material-symbols-outlined ARROW">
                             arrow_drop_down
                         </span>
@@ -52,7 +52,7 @@
                         <a class="DROPDOWN__ITEM" href="Plans.php">View Plan</a>
                     </div>
 
-                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT">Contact Us
+                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT" data-short="Help">Contact Us
                         <span class="material-symbols-outlined ARROW">
                             arrow_drop_down
                         </span>
@@ -63,41 +63,26 @@
                         <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>
                     </div>
                 </ul>
-            </nav> -->
+            </nav>
 
 
             <!-- For phone sized -->
             <!-- Sidebar Navigation -->
             <nav class="SIDEBAR">
                 <ul class="HEADER__LIST">
-                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="FEATURES">Features
-                        <span class="material-symbols-outlined ARROW">
-                            arrow_drop_down
-                        </span>
-                        <div class="HEADER__DROPDOWN" id="FEATURES">
-                            <a class="DROPDOWN__ITEM" href="Features.php#pomodoro">Pomodoro Timer</a>
-                            <a class="DROPDOWN__ITEM" href="Features.php#task">Task Management</a>
-                            <a class="DROPDOWN__ITEM" href="Features.php#collaboration">Team Features</a>
-                            <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
-                        </div>
-                    </li>
 
+                    <div class="HEADER__DROPDOWN SB" id="FEATURES">
+                        <a class="DROPDOWN__ITEM" href="Features.php#pomodoro">Pomodoro Timer</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#task">Task Management</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#collaboration">Team Features</a>
+                        <a class="DROPDOWN__ITEM" href="Features.php#analytic">Analytics</a>
+                    </div>
 
-                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="PLAN">Plans & Pricing
-                        <span class="material-symbols-outlined ARROW">
-                            arrow_drop_down
-                        </span>
-                    </li>
-                    <div class="HEADER__DROPDOWN" id="PLAN">
+                    <div class="HEADER__DROPDOWN SB" id="PLAN">
                         <a class="DROPDOWN__ITEM" href="Plans.php">View Plan</a>
                     </div>
 
-                    <li class="HEADER__DROPDOWN_MENU CLICKABLE" id="CONTACT">Contact Us
-                        <span class="material-symbols-outlined ARROW">
-                            arrow_drop_down
-                        </span>
-                    </li>
-                    <div class="HEADER__DROPDOWN" id="CONTACT">
+                    <div class="HEADER__DROPDOWN SB" id="CONTACT">
                         <a class="DROPDOWN__ITEM" href="GetHelp.php#contactus">Customer Service</a>
                         <a class="DROPDOWN__ITEM" href="GetHelp.php#FAQ">FAQ</a>
                         <a class="DROPDOWN__ITEM" href="GetHelp.php#feedback">Feedback</a>

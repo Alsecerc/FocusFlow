@@ -63,10 +63,15 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+
 function checkMemberExists(memberName, callback) {
-    fetch(`CommunityCheckMember.php?member_name=${encodeURIComponent(memberName)}`)
+    fetch("CommunityBackend.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `action=CheckMember&member_name=${encodeURIComponent(memberName)}`
+    })
         .then(response => response.json())
-        .then(data => callback(data.exists)) // Call the callback function with true/false
+        .then(data => callback(data.exists))
         .catch(error => console.error("Error:", error));
 }
 
@@ -86,10 +91,10 @@ function addMember() {
         }
 
         // Proceed with adding the member
-        fetch("CommunityAddMember.php", {
+        fetch("CommunityBackend.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
+            body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
         })
             .then(response => response.text())
             .then(data => {
@@ -106,10 +111,10 @@ function removeMember() {
     let teamName = getQueryParam("team");
 
     if (teamName && memberName) {
-        fetch("CommunityRemoveMember.php", {
+        fetch("CommunityBackend.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `team_name=${teamName}&member_name=${memberName}`
+            body: `action=RemoveMember&team_name=${teamName}&member_name=${memberName}`
         })
             .then(response => response.text())
             .then(data => {
@@ -128,10 +133,10 @@ function toggleDropdown(button) {
 }
 
 function updateStatus(taskID, newStatus) {
-    fetch('CommunityUpdateTaskStatus.php', {
+    fetch('CommunityBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `task_id=${taskID}&status=${newStatus}`
+        body: `action=UpdateTask&task_id=${taskID}&status=${newStatus}`
     })
         .then(response => response.text())
         .then(data => {
@@ -149,7 +154,7 @@ document.getElementById("openTaskForm").addEventListener("click", function () {
     document.getElementById("taskPopUp").classList.toggle("ADD_TASK__SURVEY_SHOW");
 });
 
-document.getElementsByClassName("CONTROLS__CLOSE")[0].addEventListener("click", function() {
+document.getElementsByClassName("CONTROLS__CLOSE")[0].addEventListener("click", function () {
     document.getElementById("taskPopUp").classList.remove("ADD_TASK__SURVEY_SHOW");
 });
 
@@ -243,13 +248,14 @@ fetch(`CommunityFetchTeamMembers.php?team=${encodeURIComponent(teamName)}`) // F
     })
     .catch(error => console.error("Error fetching team members:", error));
 
+
 // add data into database (use AJAX)
 document.getElementById("taskPopUpForm").addEventListener("submit", function (event) {
     event.preventDefault(); // Prevent default form submission
 
     let formData = new FormData(this);
 
-    fetch(`CommunityAddTask.php?team=${encodeURIComponent(teamName)}`, {
+    fetch(`CommunityBackend.php?team=${encodeURIComponent(teamName)}`, {
         method: "POST",
         body: formData,
     })
@@ -300,10 +306,10 @@ if (taskList) {
             const taskId = taskElement.dataset.taskId;
 
 
-            fetch("CommunityDeleteTask.php", {
+            fetch("CommunityBackend.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `task_id=${taskId}`
+                body: `action=DeleteTask&task_id=${taskId}`
             })
                 .then(response => response.json())
                 .then(data => {
@@ -321,33 +327,39 @@ if (taskList) {
 // delete team
 const deleteButton = document.getElementById("deleteTeam");
 
-deleteButton.addEventListener("click", function (event) {
-    event.preventDefault(); // Prevent default link behavior
+if (deleteButton) {
+    deleteButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default link behavior
 
-    // Show confirmation popup
-    let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
+        // Show confirmation popup
+        let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
 
-    if (confirmDelete) {
-        // Get team name & ID from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const teamName = urlParams.get("team");
+        if (confirmDelete) {
+            // Get team name & ID from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const teamName = urlParams.get("team");
 
-        if (teamName) {
-            // Send delete request to PHP
-            fetch("CommunityDeleteTeam.php?team=" + encodeURIComponent(teamName), {
-                method: "GET"
-            })
-                .then(response => response.text())
-                .then(data => {
-                    alert(data); // Show response from server
-                    window.location.href = "Homepage.php"; // Redirect after deletion
+            if (teamName) {
+                // Send delete request to PHP
+                fetch("CommunityBackend.php", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=DeleteTeam&team=${encodeURIComponent(teamName)}`
                 })
-                .catch(error => console.error("Error deleting team:", error));
-        } else {
-            alert("Error: Team name not found!");
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data); // Show response from server
+                        window.location.href = "Homepage.php"; // Redirect to homepage after deletion
+                    })
+            } else {
+                alert("Error: Team name not found!");
+            }
         }
-    }
-});
+    });
+}
+
 
 
 // responsive

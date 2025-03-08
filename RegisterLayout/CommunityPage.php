@@ -180,6 +180,7 @@ if (!isset($_COOKIE['UID'])) {
                             </span>Direct Message
                         </a>
                     </li>
+
                 </ul>
             </nav>
             <?php
@@ -259,8 +260,8 @@ if (!isset($_COOKIE['UID'])) {
                         <!-- the add task survey -->
                         <div id="taskPopUp" class="ADD_TASK__SURVEY">
                             <h4>Add New Task</h4>
-                            <form action=" CommunityAddTask.php" method="POST" id="taskPopUpForm" class="POP_UP__FORM">
-
+                            <form id="taskPopUpForm" class="POP_UP__FORM">
+                                <input type="hidden" name="action" value="AddTask">
 
                                 <!-- Task Name -->
                                 <label class="INPUT__BOX">
