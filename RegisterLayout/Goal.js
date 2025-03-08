@@ -128,7 +128,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // check for overdue goal
 
     function updateOverdueTasks() {
-        fetch("GoalStatusRegUpdate.php")
+        fetch("GoalBackend.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "action=Update"
+        })
             .then(response => response.text())
             .then(data => console.log("Overdue tasks check:", data))
             .catch(error => console.error("Error updating tasks:", error));
@@ -137,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateOverdueTasks();
 
-// run every 5 mins
+    // run every 5 mins
     setInterval(updateOverdueTasks, 300000);
 
 });

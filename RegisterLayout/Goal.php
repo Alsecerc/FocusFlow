@@ -128,7 +128,7 @@ if (!verifyUser($_conn)) {
     </header>
 
     <main>
-    <div class="SIDEBAR" style="overflow-y: auto;">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -260,7 +260,8 @@ if (!verifyUser($_conn)) {
             </div>
             <div class="GOAL__INPUT" style="display: none;">
                 <h4>Set your goal</h4>
-                <form action="GoalAdd.php" method="POST" class="GOAL__FORM">
+                <form action="GoalBackend.php" method="POST" class="GOAL__FORM">
+                    <input type="hidden" name="action" value="Add">
 
                     <label class="INPUT__BOX">
                         <input type="text" name="goal_title" class="INPUT__INPUT" required>
@@ -394,9 +395,10 @@ if (!verifyUser($_conn)) {
                 ?>
             </div>
             <div id="removalForm" style="display: none;">
-                <form action="GoalRemove.php" id="goalUpdateForm" method="POST">
+                <form action="GoalBackend.php" id="goalUpdateForm" method="POST">
                     <h3>Enter Goal ID to remove</h3>
                     <label>Goal ID:</label>
+                    <input type="hidden" name="action" value="Remove">
                     <input type="number" name="goal_id" required>
 
                     <button type="submit" class="GOAL__SET UPDATE__GOAL">Update Progress</button>
