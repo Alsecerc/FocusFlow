@@ -160,7 +160,7 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 
 // Function to check reminders
 function sendGoalReminder() {
-    fetch("GoalReminder.php")
+    fetch("GoalBackend.php?action=Reminder")
         .then(response => response.text())
         .then(data => console.log("Goal Reminder Triggered:", data))
         .catch(error => console.error("Error:", error));

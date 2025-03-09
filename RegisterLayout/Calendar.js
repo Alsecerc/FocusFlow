@@ -17,10 +17,10 @@ function toggleDropdown(button) {
 }
 
 function updateUserTaskStatus(taskID, newStatus) {
-    fetch('CalendarUpdateTask.php', {
+    fetch('CalendarBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `task_id=${taskID}&status=${newStatus}`
+        body: `action=Update&task_id=${taskID}&status=${newStatus}`
     })
         .then(response => response.text())
         .then(data => {
@@ -34,10 +34,10 @@ function updateUserTaskStatus(taskID, newStatus) {
 
 // change status if task is later then current date
 function checkOverdueTasks() {
-    fetch('CalendarUpdateTask.php', {
+    fetch('CalendarBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: ''
+        body: 'action=Update'
     })
         .then(response => response.text())
         .then(data => {
@@ -437,10 +437,10 @@ close
         }, 100);
 
     }, 0)
-    
+
     setTimeout(() => {
         let allTasks = Array.from(document.getElementsByClassName("EVENT"));
-    
+
         // loop for all task
         allTasks.forEach(taskElement => {
             let taskInfo = taskElement.querySelector(".EVENT_INFO");
@@ -448,8 +448,8 @@ close
             let taskId = taskElement.getAttribute("data-task-id");
             let ChangeStatus = taskElement.querySelector(".STATUS");
             let DeleteTask = taskElement.querySelector(".DELETE");
-    
-    
+
+
             taskElement.addEventListener("click", function (event) {
                 taskElement.querySelectorAll(".EVENT_INFO").forEach(info => {
                     console.log(info)
@@ -461,29 +461,29 @@ close
                     }
                 });
             });
-    
+
             // Close button functionality
             closeButton.addEventListener("click", function (event) {
                 this.closest(".EVENT_INFO").classList.remove("EVENTINFO_SHOW");
                 event.stopPropagation();  // Prevent event from triggering the task click event
             });
-    
+
             DeleteTask.addEventListener("click", function () {
                 sendData(taskId);
             });
-    
+
         });
     }, 100);
 }
 
 function sendData(taskId) {
     console.log(taskId)
-    fetch("CalendarDeleteTask.php", {
+    fetch("CalendarBackend.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: `task_id=${encodeURIComponent(taskId)}}`
+        body: `action=Delete&task_id=${encodeURIComponent(taskId)}}`
     })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
@@ -679,17 +679,34 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 
 
 // Pop up category select
-fetch("CalendarFetchCat.php") // Fetch categories from PHP
-    .then(response => response.json())
+fetch("CalendarBackend.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "action=Category"
+})
+    .then(response => response.json()) // Parse response as JSON
     .then(data => {
+        if (!data.success) {
+            console.error("Error:", data.message);
+            return;
+        }
+
         let dropdown = document.getElementById("task_group");
-        data.forEach(category => {
-            let option = document.createElement("option");
-            option.value = category;
-            option.textContent = category;
-            dropdown.appendChild(option);
-        });
-    });
+        dropdown.innerHTML = ""; // Clear existing options
+
+        if (data.categories.length > 0) {
+            data.categories.forEach(category => {
+                let option = document.createElement("option");
+                option.value = category;
+                option.textContent = category;
+                dropdown.appendChild(option);
+            });
+        } else {
+            console.warn("No categories found.");
+        }
+    })
+    .catch(error => console.error("Fetch error:", error));
+
 
 let dropdown = document.getElementById("task_group");
 let newCategoryInput = document.getElementById("new_category");

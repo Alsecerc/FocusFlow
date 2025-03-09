@@ -25,7 +25,7 @@ if (!verifyUser($_conn)) {
 </head>
 
 <body>
-<header>
+    <header>
         <div class="HEADER__LEFT">
             <button class="HEADER__MENU_BUTTON">
                 <div class="HEADER__MENU_ICON"></div>
@@ -127,7 +127,7 @@ if (!verifyUser($_conn)) {
     </header>
 
     <main class="CALENDAR__MAIN">
-    <div class="SIDEBAR" style="overflow-y: auto;">
+        <div class="SIDEBAR" style="overflow-y: auto;">
             <nav class="SIDEBAR__NAV">
                 <ul>
                     <li>
@@ -244,7 +244,9 @@ if (!verifyUser($_conn)) {
                 <div class="OVERLAY"></div>
                 <div class="POP_UP__CONTENT">
                     <h2>Create Task</h2>
-                    <form action="CalendarAddTask.php" method="POST" id="popUpForm">
+                    <form action="CalendarBackend.php" method="POST" id="popUpForm">
+
+                        <input type="hidden" name="action" value="Add">
 
                         <label class="INPUT__BOX" style="display: flex;">
                             <span class="INPUT__PLACEHOLDER AUTOFOCUS">Task Category : </span>

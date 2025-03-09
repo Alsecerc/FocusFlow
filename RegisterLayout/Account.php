@@ -264,7 +264,7 @@ if (!verifyUser($_conn)) {
                             <div>
                                 <p>Confirm Current Password</p>
                                 <label class="INPUT__BOX">
-                                    <input type="password" id="current_password" class="INPUT__INPUT" required>
+                                    <input type="password" id="current_password" name="current_password" class="INPUT__INPUT" required>
                                     <span class="INPUT__PLACEHOLDER" id="accPassword">Enter current password</span>
                                 </label>
                             </div>
@@ -272,46 +272,6 @@ if (!verifyUser($_conn)) {
                             <button type="submit" class="PROFILE__SAVE">Save Changes</button>
                             <button type="reset" class="PROFILE__SAVE" onclick="resetField()">Reset</button>
                         </form>
-
-                        <script>
-                            // Properly escape the password to avoid JavaScript syntax errors
-                            const storedPassword = "<?php echo addslashes($_COOKIE['PASSWORD']); ?>";
-
-                            function resetField() {
-                                // Fix: Replace getQueryAll with document.querySelectorAll
-                                let INPUTS = document.querySelectorAll('.INPUT__BOX');
-                                INPUTS.forEach((element) => {
-                                    let INPUT = element.querySelector(".INPUT__INPUT");
-                                    let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
-                                    INPUT.classList.remove("INVALID_BORDER");
-                                    PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
-                                    INPUT.classList.remove("VALID_BORDER");
-                                    PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
-                                });
-                            }
-
-                            function verifyPassword() {
-                                const currentPassword = document.getElementById("current_password").value;
-
-                                console.log("Entered:", currentPassword, "Stored:", storedPassword);
-
-                                if (currentPassword !== storedPassword) {
-                                    alert("Incorrect password! Please enter the correct password to proceed.");
-
-                                    // Clear all input fields
-                                    document.querySelector("input[name='username']").value = "";
-                                    document.querySelector("input[name='email']").value = "";
-                                    document.querySelector("input[name='password']").value = "";
-                                    document.getElementById("current_password").value = "";
-
-                                    resetField();
-                                    return false;
-                                }
-
-                                resetField();
-                                return true;
-                            }
-                        </script>
                     </div>
                     <div class="PROFILE__LOGOUT">
                         <a class="PROFILE__LOGOUT_B" href="AccountLogOutBackend.php">Log Out</a>
