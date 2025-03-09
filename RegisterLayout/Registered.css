@@ -176,7 +176,7 @@ button {
     --COLOR-ACCENT1: #50FA7B;
     --COLOR-ACCENT2: #FFB86C;
     --COLOR-ACCENT3: #8BE9FD;
-    --COLOR-ACCENT4: #FF5555;
+    --COLOR-ACCENT4: #ffa7a7;
     --COLOR-RED: #FF5555;
     --COLOR-YELLOW: #F1FA8C;
     --COLOR-GREEN: #50FA7B;
@@ -195,7 +195,7 @@ button {
     --COLOR-ACCENT1: #CAD2C5;
     --COLOR-ACCENT2: #A4C3B2;
     --COLOR-ACCENT3: #7AA899;
-    --COLOR-ACCENT4: #576F72;
+    --COLOR-ACCENT4: #a4b5b7;
     --COLOR-RED: #A23E48;
     --COLOR-YELLOW: #E9C46A;
     --COLOR-GREEN: #2A9D8F;
@@ -1659,6 +1659,10 @@ header {
 
     border: none;
     border-radius: var(--BORDER-RD-CONTACT);
+}
+
+.PROFILE__DETAILS .INPUT__INPUT {
+    width: 100%;
 }
 
 #add_category {
