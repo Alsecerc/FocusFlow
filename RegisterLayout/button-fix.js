@@ -190,6 +190,7 @@ function hideGroupForm() {
     }
 }
 
+// Fix the fetch URL in submitGroupForm function
 function submitGroupForm() {
     const groupNameInput = document.getElementById('groupName');
     if (!groupNameInput || !groupNameInput.value.trim()) {
@@ -205,8 +206,8 @@ function submitGroupForm() {
         return;
     }
     
-    // Create group in the database
-    fetch('TodoBackend.php', {
+    // Use absolute path to ensure the backend file is found
+    fetch('/RWD_assignment/FocusFlow/RegisterLayout/Todo/TodoBackend.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -287,7 +288,7 @@ function submitTaskForm() {
     }
     
     // Create task in the database
-    fetch('TodoBackend.php', {
+    fetch('/RWD_assignment/FocusFlow/RegisterLayout/Todo/TodoBackend.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -326,4 +327,4 @@ function submitTaskForm() {
         console.error('Error creating task:', error);
         alert('Failed to create task. Please try again.');
     });
-} 
+}

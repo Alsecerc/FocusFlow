@@ -1,9 +1,134 @@
 <?php
 
 session_start();
-include 'conn.php';
-include 'AccountVerify.php';
+include "conn.php";
+
+include "Accountverify.php";
 requireAuthentication($_conn);
+
+$userID = $_COOKIE['UID'];
+
+// Fetch total tasks completed
+$sql = "SELECT COUNT(*) as total_completed FROM tasks WHERE user_id = ? AND status = 'Complete'";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$totalCompleted = $row['total_completed'];
+
+$startOfWeek = date("Y-m-d", strtotime('monday this week'));
+$endOfWeek = date("Y-m-d", strtotime('sunday this week'));
+$sql = "SELECT COUNT(*) as completed_this_week FROM tasks WHERE user_id = ? AND status = 'Complete' AND DATE(start_date) BETWEEN ? AND ?";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
+$stmt->execute();
+$result = $stmt->get_result();
+$completedTasksRow = $result->fetch_assoc();
+
+$sql = "SELECT COUNT(*) as total_tasks_this_week FROM tasks WHERE user_id = ? AND DATE(start_date) BETWEEN ? AND ?";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
+$stmt->execute();
+$result = $stmt->get_result();
+$totalTasksRow = $result->fetch_assoc();
+
+$totalTasksThisWeek = $totalTasksRow['total_tasks_this_week'];
+$completedThisWeek = $completedTasksRow['completed_this_week'];
+
+// Fetch total focus hours
+$sql = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, start_time, end_time))) as total_time_spent FROM tasks WHERE user_id = ? AND status = 'Complete'";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$totalTimeSpent = $row['total_time_spent'];
+
+// Fetch tasks for the current month
+$currentMonth = date('m');
+$currentYear = date('Y');
+$sql = "SELECT * FROM tasks WHERE user_id = ? AND MONTH(start_date) = ? AND YEAR(start_date) = ?";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iii", $userID, $currentMonth, $currentYear);
+$stmt->execute();
+$result = $stmt->get_result();
+$tasks = [];
+while ($row = $result->fetch_assoc()) {
+    $tasks[] = $row;
+}
+
+$sql = "SELECT DATE(start_date) as day, COUNT(*) as count 
+        FROM tasks 
+        WHERE user_id = ? 
+        AND start_date BETWEEN ? AND ? 
+        AND status = 'Complete'
+        GROUP BY DATE(start_date)";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
+$stmt->execute();
+$taskResults = $stmt->get_result();
+
+// Get messages sent per day this week
+$sql = "SELECT DATE(sent_at) as day, COUNT(*) as count 
+        FROM message
+        WHERE sender_id = ? 
+        AND DATE(sent_at) BETWEEN ? AND ?
+        GROUP BY DATE(sent_at)";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
+$stmt->execute();
+$messageResults = $stmt->get_result();
+
+// Get team tasks completed per day this week
+$sql = "SELECT DATE(assigned_at) as day, COUNT(*) as count 
+        FROM group_tasks 
+        WHERE (assigned_by = ? OR assigned_to = ?)
+        AND assigned_at BETWEEN ? AND ?
+        AND status = 'completed'
+        GROUP BY DATE(assigned_at)";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iiss", $userID, $userID, $startOfWeek, $endOfWeek);
+$stmt->execute();
+$teamTaskResults = $stmt->get_result();
+
+// Initialize arrays for the week
+$weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+$tasksPerDay = array_fill(0, 7, 0);
+$messagesPerDay = array_fill(0, 7, 0);
+$teamTasksPerDay = array_fill(0, 7, 0);
+
+// Fill tasks data
+while ($row = $taskResults->fetch_assoc()) {
+    $dayOfWeek = date('w', strtotime($row['day']));
+    $tasksPerDay[$dayOfWeek] = $row['count'];
+}
+
+// Fill messages data
+while ($row = $messageResults->fetch_assoc()) {
+    $dayOfWeek = date('w', strtotime($row['day']));
+    $messagesPerDay[$dayOfWeek] = $row['count'];
+}
+
+// Fill team tasks data
+while ($row = $teamTaskResults->fetch_assoc()) {
+    $dayOfWeek = date('w', strtotime($row['day']));
+    $teamTasksPerDay[$dayOfWeek] = $row['count'];
+}
+
+// Fetch tasks with due dates for the current month
+$sql = "SELECT DATE(end_date) as due_date, status FROM tasks WHERE user_id = ? AND MONTH(end_date) = ? AND YEAR(end_date) = ?";
+$stmt = $_conn->prepare($sql);
+$stmt->bind_param("iii", $userID, $currentMonth, $currentYear);
+$stmt->execute();
+$result = $stmt->get_result();
+$tasksDueDates = [];
+while ($row = $result->fetch_assoc()) {
+    $tasksDueDates[] = [
+        'due_date' => $row['due_date'],
+        'status' => $row['status']
+    ];
+}
 
 ?>
 
@@ -17,228 +142,693 @@ requireAuthentication($_conn);
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
+    <link rel="icon" href="img/SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
     <link rel="stylesheet" href="Responsive.css">
+    <style>
+        header {
+            position: relative; /* Change from fixed/sticky to relative */
+            width: 100%;
+            z-index: 100;
+        }
+
+        .dashboard {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: #f7f7f7;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .metric-card__value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card__label {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .week-badge {
+            background: white;
+            color: #333;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .calendar {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; 
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .calendar-day-label {
+            font-weight: 500;
+            color: #4a5568;
+            padding: 0.5rem;
+        }
+
+        .calendar-date {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .calendar-date:hover {
+            background: #f3f4f6;
+        }
+
+        .calendar-date.current {
+            background: #4a5568;
+            color: white;
+        }
+
+        .group-tasks-container {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .group-tasks-title {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .group-tasks-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .group-tasks-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .group-tasks-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .group-tasks-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .task-card {
+            background: #4a5568;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-card__heading {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .task-card__subheading {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .task-card__avatars {
+            display: flex;
+        }
+
+        .task-card__avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            margin-left: -8px;
+            border: 2px solid #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4a5568;
+            font-size: 0.875rem;
+        }
+
+        .task-card__status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-card__status.completed {
+            background: #10B981;
+            color: white;
+        }
+
+        .task-card__status:hover {
+            transform: scale(1.1);
+        }
+
+        header .icons{
+            display: flex;
+        }
+        header .icons span{
+            height: 38px;
+            width: 38px;
+            margin: 0 1px;
+            cursor: pointer;
+            color: #878787;
+            text-align: center;
+            line-height: 38px;
+            font-size: 1.9rem;
+            user-select: none;
+            border-radius: 50%;
+        }
+        .icons span:last-child{
+            margin-right: -10px;
+        }
+        header .icons span:hover{
+            background: #f2f2f2;
+        }
+        header .current-date{
+            font-size: 1.45rem;
+            font-weight: 500;
+        }
+
+        .calendar-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .calendar-container .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .calendar-header .current-date {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .calendar-header .icons {
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .calendar .weeks,
+        .calendar .days {
+            display: contents;
+        }
+
+        .weeks li,
+        .days li {
+            list-style-type: none;
+            text-align: center;
+            padding: 5px;
+            font-size: 1em;
+        }
+
+        .days li {
+            cursor: pointer;
+        }
+
+        .days li:hover {
+            background-color: #ececec;
+        }
+
+        .days .today {
+            background-color: #ffeb3b;
+        }
+
+        .wrapper header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        }
+
+        .days li.has-task {
+            background-color: #ffeb3b;
+            border-radius: 50%;
+        }
+
+        .days li.has-task:hover {
+            background-color: #ffd700;
+        }
+        
+        .days li.overdue {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        .days li.overdue:hover {
+            background-color: #ff1a1a;
+        }
+
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #taskList {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    #taskList li {
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #viewCalendarButton {
+        background-color: #4a5568;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    #viewCalendarButton:hover {
+        background-color: #3b4a5a;
+    }
+    
+    </style>
 </head>
 
 <body>
-    <header>
-        <div class="HEADER__LEFT">
-            <button class="HEADER__MENU_BUTTON">
-                <div class="HEADER__MENU_ICON"></div>
-            </button>
-            <a href="Homepage.php">
-                <h1 class="HEADER__TITLE">F<span class="material-symbols-outlined HEADER__ICON">
-                        schedule
-                    </span>cusFlow
-                </h1>
-            </a>
-        </div>
-
-        <div class="HEADER__SEARCH">
-            <span class="material-icons SEARCH_ICON">search</span>
-            <input type="text" id="searchInput" class="HEADER__SEARCH_INPUT" placeholder="Search..." onkeyup="searchFunction()" autocomplete="off">
-            <div id="searchResults" class="SEARCH_RESULTS"></div>
-        </div>
-
-
-        <div class="HEADER__RIGHT">
-            <nav>
-                <ul class="HEADER__UL">
-                    <li class="HEADER__ITEM">
-                        <a href="../Landing_Page/GetHelp.php" target="_blank" class="HEADER__UL__ICON">
-                            <span class="material-icons">
-                                support_agent
-                            </span>
-                        </a>
-                    </li>
-
-                    <?php
-                    $userID = $_COOKIE['UID'];
-
-                    // Check if there are any unread notifications for this user
-                    $sql = "SELECT COUNT(*) AS unread_count FROM notifications WHERE user_id = $userID AND status = 'unread'";
-                    $result = $_conn->query($sql);
-                    $row = $result->fetch_assoc();
-                    $hasUnread = $row['unread_count'] > 0; // True if there are unread notifications
-                    ?>
-
-                    <li class="HEADER__ITEM" style="position: relative; user-select: none; cursor: pointer;">
-                        <div class="HEADER__UL__ICON" id="notiButton">
-                            <span class="material-icons" id="notiIcon">
-                                <?= $hasUnread ? 'notifications_active' : 'notifications' ?>
-                            </span>
-                        </div>
-                        <?php
-                        $userID = $_COOKIE['UID'];
-                        $sql = "SELECT * FROM notifications WHERE user_id = $userID ORDER BY status ASC, created_at DESC";
-                        $result = $_conn->query($sql);
-                        ?>
-
-                        <div class="NOTIFICATION__POPUP" id="notificationPopup" style="height: 300px; overflow-y: auto; cursor:default; display:none;">
-                            <?php if ($result->num_rows > 0): ?>
-                                <ul id="notificationList">
-                                    <?php while ($row = $result->fetch_assoc()): ?>
-                                        <?php if ($row['type'] == 'system'): ?>
-                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?>">
-                                                📢 System Notification: <?= $row['notification_message'] ?>
-                                                <small> (<?= $row['created_at'] ?>)</small>
-                                            </li>
-                                        <?php else: ?>
-                                            <li class="NOTI__ITEM <?= strtolower($row['status']) == 'unread' ? 'UNREAD' : 'READ' ?> NOTI__ITEM__MSG">
-                                                <?php
-                                                $sql2 = "SELECT * FROM users WHERE id = " . $row['sender_id'];
-                                                $result2 = $_conn->query($sql2);
-                                                $sender = $result2->fetch_assoc();
-
-                                                if ($result2->num_rows > 0) {
-                                                ?>
-                                                    <a href="CommunityDMPage?receiver_id=<?= $row['sender_id'] ?>&name=<?= urlencode($sender['name']) ?>" class="NOTI__LINK">
-                                                        🗨️ <?= $row['notification_message'] ?>
-                                                        <small> (<?= $row['created_at'] ?>)</small>
-                                                    </a>
-                                                <?php
-                                                }
-                                                ?>
-                                            </li>
-                                        <?php endif; ?>
-                                    <?php endwhile; ?>
-                                </ul>
-                            <?php else: ?>
-                                <p id="noNotifications">No new notifications</p>
-                            <?php endif; ?>
-                        </div>
-
-
-                    </li>
-                    <li class="HEADER__ITEM">
-                        <a href="Account.php" class="HEADER__UL__ICON">
-                            <span class="material-icons">
-                                account_circle
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
+    <?php
+    include "header.php";
+    ?>
     <main>
-        <div class="SIDEBAR" style="overflow-y: auto;">
-            <nav class="SIDEBAR__NAV">
-                <ul>
-                    <li>
-                        <a href="Homepage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                home
-                            </span>Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Timer.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                timer
-                            </span>Focus Timer
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Todo.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                task_alt
-                            </span>To Do
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Calendar.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                event
-                            </span>Calendar
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Analytic.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                analytics
-                            </span>Analytics
-                        </a>
-                    </li>
-                    <li>
-                        <a href="Goal.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                track_changes
-                            </span>Goals
-                        </a>
-                    </li>
-                    <li>
-                        <a href="CommunityDMPage.php" class="SIDEBAR__ITEM">
-                            <span class="material-icons">
-                                chat
-                            </span>Direct Message
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <?php
-            $loggedInUserID = $_COOKIE['UID']; // Assuming you store the logged-in user ID in a cookie
-
-            $sql = "SELECT id, team_name FROM team 
-            WHERE leader_id = ? OR member_id = ? 
-            GROUP BY team_name";
-            $stmt = $_conn->prepare($sql);
-            $stmt->bind_param("ii", $loggedInUserID, $loggedInUserID);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            ?>
-
-            <nav class="SIDEBAR__NAV COMMUNITY">
-                <div class="NAV_TITLE">
-                    <h4>Community</h4>
-
-                    <button class="NAV__TITLE__ADD CLICKABLE">
-                        <span class="material-icons">
-                            add_circle
-                        </span>
-                    </button>
-
-                    <div class="NEW__TEAM__SURVEY ">
-                        <h4>Create New Team</h4>
-                        <form action="1AddTeam.php" method="POST" style="display:flex; flex-direction:column; gap:1rem; align-items:start;">
-                            <label class="INPUT__BOX__SIDEBAR">
-                                <input type="text" name="team_name" id="team_name" class="INPUT__INPUT__SB" required>
-                                <span class="INPUT__PLACEHOLDER">Team Name : </span>
-                            </label>
-                            <div style="display:flex; justify-content:space-between; width: 100%;">
-                                <button type="submit" class="TEAM__CREATE CLICKABLE">Create Team</button>
-                                <button type="reset" class="TEAM__RESET CLICKABLE">Reset</button>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-                <ul>
-                    <?php
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo '<li>
-        <a href="CommunityPage.php?team_id=' . urlencode($row['id']) . '&team=' . urlencode($row['team_name']) . '" class="SIDEBAR__ITEM COMMUNITY__ITEM">
-            ' . htmlspecialchars($row['team_name']) . '
-        </a>
-      </li>';
-                        }
-                    } else {
-                        echo '<li>No teams found</li>';
-                    }
-                    ?>
-                </ul>
-            </nav>
-
-        </div>
+        <!-- temp SIDEBAR_SHOW -->
+    <?php
+    include "sidebar.php";
+    ?>
 
     </main>
-    <script src="Registered.js" defer></script>
-    <script src="Homepage.js" defer></script>
+    <div class="dashboard">
+        <div class="main-content">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-card__value" id="total-tasks-completed"><?php echo $totalCompleted; ?></div>
+                    <div class="metric-card__label">Total Tasks Completed</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-card__value" id="weekly-tasks-completed"><?php echo $completedThisWeek . '/' . $totalTasksThisWeek; ?></div>
+                    <div class="metric-card__label">Tasks Completed <span class="week-badge">This Week</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-card__value" id="total-focus-hours"><?php echo $totalTimeSpent; ?></div>
+                    <div class="metric-card__label">Total Focus Hours</div>
+                </div>
+            </div>
 
+            <div class="chart-container">
+                <canvas id="productivityChart"></canvas>
+            </div>
+        </div>
+        
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Tasks for <span id="modalDate"></span></h2>
+                <ul id="taskList"></ul>
+                <button id="viewCalendarButton">View in Calendar</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="wrapper">
+                <header>
+                    <p class="current-date"></p>
+                    <div class="icons">
+                        <span id="prev" class="material-symbols-rounded">&lt</span>
+                        <span id="next" class="material-symbols-rounded">&gt</span>
+                    </div>
+                </header>
+                <div class="calendar">
+                    <ul class="weeks">
+                        <li>Sun</li>
+                        <li>Mon</li>
+                        <li>Tue</li>
+                        <li>Wed</li>
+                        <li>Thu</li>
+                        <li>Fri</li>
+                        <li>Sat</li>
+                    </ul>
+                    <ul class="days"></ul>
+                </div>
+            </div>
+
+            <div class="group-tasks-container">
+                <h3 class="group-tasks-title">Group Tasks</h3>
+                <div class="group-tasks-list">
+                    <?php
+                    // Fetch group tasks for the current user (either assigned to or by them)
+                        $sql = "SELECT DISTINCT gt.*, 
+                        t.team_name,
+                        u1.name as assigned_by_name,
+                        u1.id as assigned_by_id,
+                        u2.name as assigned_to_name,
+                        u2.id as assigned_to_id
+                        FROM group_tasks gt
+                        JOIN team t ON gt.team_name = t.team_name
+                        JOIN users u1 ON gt.assigned_by = u1.id
+                        JOIN users u2 ON gt.assigned_to = u2.id
+                        WHERE gt.assigned_by = ? OR gt.assigned_to = ?
+                        ORDER BY gt.assigned_at ASC";
+                    
+                    $stmt = $_conn->prepare($sql);
+                    if (!$stmt) {
+                        echo $_conn->error;
+                    }
+                    $stmt->bind_param("ii", $userID, $userID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    
+                    while($task = $result->fetch_assoc()):
+                    ?>
+                        <div class="task-card" data-task-id="<?php echo $task['id']; ?>">
+                            <div class="task-content">
+                                <div class="task-card__heading"><?php echo htmlspecialchars($task['task_name']); ?></div>
+                                <div class="task-card__subheading">
+                                    <?php echo htmlspecialchars($task['team_name']); ?> • 
+                                    Due: <?php echo date('M d', strtotime($task['due_date'])); ?>
+                                </div>
+                            </div>
+                            <div class="task-meta">
+                                <div class="task-card__avatars">
+                                    <div class="task-card__avatar" title="<?php echo htmlspecialchars($task['assigned_by_name']); ?>">
+                                        <?php echo strtoupper(substr($task['assigned_by_name'], 0, 1)); ?>
+                                    </div>
+                                    <div class="task-card__avatar" title="<?php echo htmlspecialchars($task['assigned_to_name']); ?>">
+                                        <?php echo strtoupper(substr($task['assigned_to_name'], 0, 1)); ?>
+                                    </div>
+                                </div>
+                                <div class="task-card__status <?php echo $task['status'] === 'completed' ? 'completed' : ''; ?>"
+                                    onclick="updateTaskStatus(<?php echo $task['id']; ?>)">
+                                    ✓
+                                </div>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+
+    <script src="Registered.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const tasksDueDates = <?php echo json_encode($tasksDueDates); ?>;
+        const ctx = document.getElementById('productivityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                datasets: [{
+                    label: 'Tasks Completed',
+                    data: <?php echo json_encode($tasksPerDay); ?>,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }, {
+                    label: 'Messages Sent',
+                    data: <?php echo json_encode($messagesPerDay); ?>,
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }, {
+                    label: 'Team Tasks Completed',
+                    data: <?php echo json_encode($teamTasksPerDay); ?>,
+                    borderColor: 'rgb(54, 162, 235)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Weekly Activity Overview'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateTaskStatus(taskId) {
+            const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+            const statusButton = taskCard.querySelector('.task-card__status');
+            
+            statusButton.classList.toggle('completed');
+            
+            // Send AJAX request to update status
+            fetch('updateGroupTaskStatus.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `task_id=${taskId}&status=${statusButton.classList.contains('completed') ? 'completed' : 'pending'}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    // Revert the visual change if update failed
+                    statusButton.classList.toggle('completed');
+                    alert('Failed to update task status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Revert the visual change if request failed
+                statusButton.classList.toggle('completed');
+                alert('Failed to update task status');
+            });
+        }
+
+        const daysTag = document.querySelector(".days"),
+            currentDate = document.querySelector(".current-date"),
+            prevNextIcon = document.querySelectorAll(".icons span"),
+            taskModal = document.getElementById("taskModal"),
+            modalContent = document.querySelector(".modal-content"),
+            closeModal = document.querySelector(".close"),
+            modalDate = document.getElementById("modalDate"),
+            taskList = document.getElementById("taskList"),
+            viewCalendarButton = document.getElementById("viewCalendarButton");
+
+        let date = new Date(),
+            currYear = date.getFullYear(),
+            currMonth = date.getMonth();
+        const months = ["January", "February", "March", "April", "May", "June", "July",
+            "August", "September", "October", "November", "December"];
+
+        const renderCalendar = () => {
+            let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
+                lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
+                lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
+                lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
+            let liTag = "";
+            for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
+                liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+            }
+            for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
+                // adding active class to li if the current day, month, and year matched
+                let isToday = i === date.getDate() && currMonth === new Date().getMonth()
+                    && currYear === new Date().getFullYear() ? "active" : "";
+
+                // Check if the current day has a task due
+                let task = tasksDueDates.find(task => task.due_date === `${currYear}-${String(currMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`);
+                let hasTask = task ? "has-task" : "";
+                let isOverdue = task && task.status !== 'completed' && new Date(task.due_date) < new Date() ? "overdue" : "";
+
+                liTag += `<li class="${isToday} ${hasTask} ${isOverdue}" data-date="${currYear}-${String(currMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}">${i}</li>`;
+            }
+            for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
+                liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
+            }
+            currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
+            daysTag.innerHTML = liTag;
+
+            // Add event listeners to days
+            document.querySelectorAll(".days li").forEach(day => {
+                day.addEventListener("click", (e) => {
+                    const date = e.target.getAttribute("data-date");
+                    showTasksForDate(date);
+                });
+            });
+        }
+
+        const showTasksForDate = (date) => {
+            const tasksForDate = tasksDueDates.filter(task => task.due_date === date);
+            modalDate.innerText = date;
+            taskList.innerHTML = tasksForDate.map(task => `<li>${task.status === 'completed' ? '✓' : '✗'} ${task.due_date}</li>`).join('');
+            taskModal.style.display = "block";
+        }
+
+        closeModal.onclick = () => {
+            taskModal.style.display = "none";
+        }
+
+        window.onclick = (event) => {
+            if (event.target == taskModal) {
+                taskModal.style.display = "none";
+            }
+        }
+
+        viewCalendarButton.onclick = () => {
+            window.location.href = "Calendar.php";
+        }
+
+        renderCalendar();
+        prevNextIcon.forEach(icon => {
+            icon.addEventListener("click", () => {
+                currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
+                if (currMonth < 0 || currMonth > 11) {
+                    date = new Date(currYear, currMonth, new Date().getDate());
+                    currYear = date.getFullYear();
+                    currMonth = date.getMonth();
+                } else {
+                    date = new Date();
+                }
+                renderCalendar();
+            });
+        });
+    </script>
 </body>
 
 </html>

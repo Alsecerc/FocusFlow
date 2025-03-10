@@ -1,14 +1,8 @@
 <?php
+include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/conn.php";
 session_start();
-include 'conn.php';
-include "AccountVerify.php";
-if (verifyUser($_conn)) {
-    header("Location: Homepage.php");
-    exit();
-}else{
-    echo "doesnt have userid";
-}
-
+include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/AccountVerify.php";
+// requireAuthentication($_conn);
 
 ?>
 
@@ -33,28 +27,28 @@ if (verifyUser($_conn)) {
                     <h3 class="slide-title">Focus on your task</h3>
                     <h2 class="slide-subtitle">Track your productivity seamlessly</h2>
                     <div class="image-placeholder">
-                        <img src="test.png" alt="Productivity">
+                        <img src="" alt="Productivity">
                     </div>
                 </div>
                 <div class="carousel-slide">
                     <h3 class="slide-title">Manage your time</h3>
                     <h2 class="slide-subtitle">Set goals and achieve them</h2>
                     <div class="image-placeholder">
-                        <img src="test.png" alt="Time Management">
+                        <img src="undraw_computer-files_7dj6.svg" alt="Time Management">
                     </div>
                 </div>
                 <div class="carousel-slide">
                     <h3 class="slide-title">Stay organized</h3>
                     <h2 class="slide-subtitle">Keep your workflow structured</h2>
                     <div class="image-placeholder">
-                        <img src="test.png" alt="Organization">
+                        <img src="undraw_computer-files_7dj6.svg" alt="Organization">
                     </div>
                 </div>
                 <div class="carousel-slide">
                     <h3 class="slide-title">Track Progress</h3>
                     <h2 class="slide-subtitle">Monitor your improvements</h2>
                     <div class="image-placeholder">
-                    <img src="test.png" alt="Progress">
+                    <img src="undraw_computer-files_7dj6.svg" alt="Progress">
                     </div>
                 </div>
             </div>
@@ -78,6 +72,7 @@ if (verifyUser($_conn)) {
                     <div id="usernameError" class="error"></div>
                     <input type="password" id="password" name="password" placeholder="Password" required>
                     <div id="passwordError" class="error"></div>
+                    <a href="ForgotPasswordPage/ForgotPassword.php">Forgot password?</a>
                     <button type="submit">Submit</button>
                 </div>
             </form>

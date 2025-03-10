@@ -178,7 +178,7 @@ echo "</script>";
         </div>
     </main>
     <script src="Registered.js" defer></script>
-    <script src="Communication/Message.js" defer></script>
+    <script src="CommunityDM.js" defer></script>
 </body>
 
 </html>

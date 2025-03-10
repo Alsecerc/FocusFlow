@@ -1,5 +1,3 @@
-
-
 function getID(element) {
     return document.getElementById(element);
 }
@@ -160,10 +158,27 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 
 // Function to check reminders
 function sendGoalReminder() {
-    fetch("GoalReminder.php")
-        .then(response => response.text())
-        .then(data => console.log("Goal Reminder Triggered:", data))
-        .catch(error => console.error("Error:", error));
+    fetch('GoalReminder.php', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Goal Reminder Success:', data);
+        // Process the data here
+    })
+    .catch(error => {
+        console.error('Goal Reminder Error:', error);
+        // Handle the error appropriately
+    });
 }
 
 // Run checkReminders every minute

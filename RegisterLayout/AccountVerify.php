@@ -193,6 +193,7 @@ function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.
  * Log out the current user
  */
 function logoutUser() {
+    echo "Logging out...";
     // Start the session if it's not already started
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
@@ -211,7 +212,7 @@ function logoutUser() {
     setcookie("USERTYPE", "", time() - 3600, '/');
     
     // Redirect to homepage
-    header("Location: ../Landing_Page/Homepage.php");
+    header("Location: /RWD_assignment/FocusFlow/Landing_Page/Homepage.php");
     exit();
 }
 
@@ -261,6 +262,8 @@ function refreshAuthTokenIfNeeded($conn) {
 
 // Run token refresh check on every page load
 if (isset($_COOKIE['UID']) && session_status() !== PHP_SESSION_NONE) {
+    // Using the correct connection variable
+    global $_conn;
     refreshAuthTokenIfNeeded($_conn);
 }
 
