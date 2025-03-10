@@ -9,9 +9,9 @@ MOBILE: 468
 */
 
 /* ==========RESET========== */
-*:not(html),
-* ::before:not(html),
-* ::after:not(html) {
+*,
+* ::before,
+* ::after {
     box-sizing: border-box;
     scroll-behavior: smooth;
     scroll-margin-top: 100px;

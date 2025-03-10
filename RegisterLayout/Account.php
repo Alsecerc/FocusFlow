@@ -41,7 +41,6 @@ requireAuthentication($_conn);
                     <div>
                         <?php
                         include "conn.php";
-
                         $userID = $_COOKIE['UID'];
 
                         $name = $_COOKIE['USERNAME'];
