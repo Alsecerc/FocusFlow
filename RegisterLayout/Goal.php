@@ -192,6 +192,7 @@ requireAuthentication($_conn);
                     <h3>Enter Goal ID to remove</h3>
                     <label>Goal ID:</label>
                     <input type="hidden" name="action" value="Remove">
+                    <input type="hidden" name="action" value="Remove">
                     <input type="number" name="goal_id" required>
 
                     <button type="submit" class="GOAL__SET UPDATE__GOAL">Update Progress</button>

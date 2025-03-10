@@ -53,6 +53,8 @@ requireAuthentication($_conn);
                             <h4>Add New Task</h4>
                             <form id="taskPopUpForm" class="POP_UP__FORM">
                                 <input type="hidden" name="action" value="AddTask">
+                            <form id="taskPopUpForm" class="POP_UP__FORM">
+                                <input type="hidden" name="action" value="AddTask">
 
                                 <!-- Task Name -->
                                 <label class="INPUT__BOX">
@@ -160,6 +162,17 @@ requireAuthentication($_conn);
                             </div>
                         </div>
                     </div>
+
+
+                    <?php if ($isLeader): ?>
+                        <div>
+                            <p class="COMMUNITY__HEADER__TITLE">Remove Team</p>
+                            <!-- Add Task Button -->
+                            <a href="#" class="HEADER__UL__ICON" id="deleteTeam">
+                                <span class="material-icons">delete_forever</span>
+                            </a>
+                        </div>
+                    <?php endif; ?>
 
 
                     <?php if ($isLeader): ?>

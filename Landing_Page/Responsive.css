@@ -15,7 +15,7 @@
     }
 
     .CTA__GROUP.SB {
-        display: block;
+        display: flex;
     }
 
     .FOOTER {
@@ -51,9 +51,73 @@
 
         margin: 0;
     }
+
+    .HEADER__DROPDOWN.SB {
+        background-color: transparent;
+        position: inherit;
+
+        box-shadow: none;
+        flex-direction: column;
+        opacity: 1;
+
+
+    }
+
+    .REVIEW__CARD__PROFILE {
+        width: 5rem;
+        height: 5rem;
+    }
+
+    .HEADER__LIST.original {
+        display: none;
+    }
 }
 
 @media (min-width: 468px) and (max-width: 1024px) {
+
+    .HEADER__TITLE {
+        font-size: 1.4rem;
+    }
+
+    .HEADER__ICON {
+        font-size: 1rem;
+    }
+
+    .HEADER__LEFT {
+        gap: 1rem;
+    }
+
+    .HEADER__LIST {
+        gap: 1rem;
+    }
+
+
+    .HEADER__DROPDOWN_MENU {
+        visibility: hidden;
+        position: relative;
+    }
+
+    .HEADER__DROPDOWN_MENU::after {
+        content: attr(data-short);
+        /* Use the custom attribute */
+        visibility: visible;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .HEADER__DROPDOWN_MENU span {
+        display: none;
+        /* Hide arrow to save space */
+    }
+
+    .CTA {
+        margin: 0;
+        margin-right: 1rem;
+        font-size: 0.7rem;
+    }
+
 
     .FOOTER {
         flex-direction: column;

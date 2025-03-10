@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateOverdueTasks();
 
     // run every 5 mins
+    // run every 5 mins
     setInterval(updateOverdueTasks, 300000);
 
 });

@@ -2,7 +2,18 @@
 include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/conn.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_COOKIE['UID'])) {
+        echo "<script>alert('User not authenticated. Please log in.'); window.location.href='Account.php';</script>";
+        exit();
+    }
+
     $userID = $_COOKIE['UID'];
+
+    // Ensure userID is a valid number
+    if (!is_numeric($userID)) {
+        echo "<script>alert('Invalid user ID.'); window.location.href='Account.php';</script>";
+        exit();
+    }
 
     // Fetch user details from the database
     $sql = "SELECT name, email, password FROM users WHERE id = ?";
@@ -11,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
     $userData = $result->fetch_assoc();
+    $stmt->close();
 
     if ($userData) {
         $currentPassword = $userData['password'];
@@ -25,23 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newPassword = !empty(trim($_POST['password'])) ? mysqli_real_escape_string($_conn, trim($_POST['password'])) : $currentPassword; // Use DB password if no new password is provided
     }
 
-    // Ensure userID is a number
-    if (!is_numeric($userID)) {
-        die("Invalid user ID.");
-    }
+    // Check if new name and email were entered, else keep old values
+    $newName = !empty($newName) ? mysqli_real_escape_string($_conn, $newName) : $userData['name'];
+    $newEmail = !empty($newEmail) ? mysqli_real_escape_string($_conn, $newEmail) : $userData['email'];
 
-    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+    // If a new password is provided, hash it; otherwise, keep the old one
+    $hashedPassword = (!empty($newPassword)) ? password_hash($newPassword, PASSWORD_DEFAULT) : $currentPasswordHash;
 
-    // Fix SQL statement
-    $sql = "UPDATE users SET 
-            name = '$newName',
-            email = '$newEmail',
-            password = '$hashedPassword'
-            WHERE id = $userID";
+    // Prepare the SQL statement to update the database
+    $sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("sssi", $newName, $newEmail, $hashedPassword, $userID);
 
-    // Execute the query and check for errors
-    if (mysqli_query($_conn, $sql)) {
-        // Set cookies BEFORE any output
+    if ($stmt->execute()) {
+        // Update cookies with the new name and email
         setcookie("USERNAME", $newName, time() + (86400 * 30), "/");
         setcookie("EMAIL", $newEmail, time() + (86400 * 30), "/");
 
@@ -51,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         exit();
     } else {
-        echo "Error updating profile: " . mysqli_error($_conn);
+        echo "<script>alert('Error updating profile. Please try again.'); window.location.href='Account.php';</script>";
+        exit();
     }
+
+    $stmt->close();
 }

@@ -57,6 +57,7 @@ function getQueryParam(param) {
 }
 
 
+
 function checkMemberExists(memberName, callback) {
     fetch("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php", {
         method: "POST",
@@ -64,6 +65,7 @@ function checkMemberExists(memberName, callback) {
         body: `action=CheckMember&member_name=${encodeURIComponent(memberName)}`
     })
         .then(response => response.json())
+        .then(data => callback(data.exists))
         .then(data => callback(data.exists))
         .catch(error => console.error("Error:", error));
 }
@@ -88,6 +90,7 @@ function addMember() {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
+            body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
         })
             .then(response => response.text())
             .then(data => {
@@ -107,6 +110,7 @@ function removeMember() {
         fetch("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `action=RemoveMember&team_name=${teamName}&member_name=${memberName}`
             body: `action=RemoveMember&team_name=${teamName}&member_name=${memberName}`
         })
             .then(response => response.text())
@@ -130,6 +134,7 @@ function updateStatus(taskID, newStatus) {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `action=UpdateTask&task_id=${taskID}&status=${newStatus}`
+        body: `action=UpdateTask&task_id=${taskID}&status=${newStatus}`
     })
         .then(response => response.text())
         .then(data => {
@@ -145,6 +150,10 @@ function updateStatus(taskID, newStatus) {
 // add task pop up
 document.getElementById("openTaskForm").addEventListener("click", function () {
     document.getElementById("taskPopUp").classList.toggle("ADD_TASK__SURVEY_SHOW");
+});
+
+document.getElementsByClassName("CONTROLS__CLOSE")[0].addEventListener("click", function () {
+    document.getElementById("taskPopUp").classList.remove("ADD_TASK__SURVEY_SHOW");
 });
 
 document.getElementsByClassName("CONTROLS__CLOSE")[0].addEventListener("click", function () {
@@ -242,6 +251,7 @@ fetch(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/Communit
     .catch(error => console.error("Error fetching team members:", error));
 
 
+
 // add data into database (use AJAX)
 document.getElementById("taskPopUpForm").addEventListener("submit", function (event) {
     event.preventDefault(); // Prevent default form submission
@@ -303,6 +313,7 @@ if (taskList) {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: `action=DeleteTask&task_id=${taskId}`
+                body: `action=DeleteTask&task_id=${taskId}`
             })
                 .then(response => response.json())
                 .then(data => {
@@ -323,10 +334,19 @@ const deleteButton = document.getElementById("deleteTeam");
 if (deleteButton) {
     deleteButton.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent default link behavior
+if (deleteButton) {
+    deleteButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default link behavior
 
         // Show confirmation popup
         let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
+        // Show confirmation popup
+        let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
 
+        if (confirmDelete) {
+            // Get team name & ID from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const teamName = urlParams.get("team");
         if (confirmDelete) {
             // Get team name & ID from the URL
             const urlParams = new URLSearchParams(window.location.search);
