@@ -38,6 +38,10 @@ requireAuthentication($_conn);
                         <span class="material-icons">add</span>
                         Create Group
                     </button>
+                    <button id="addContactBtn" class="add-contact-btn">
+                        <span class="material-icons">add</span>
+                        Add Contact
+                    </button>
                 </div>
                 <div class="communication-tabs">
                     <button class="tab-button active" data-tab="direct">Direct Messages</button>
@@ -47,13 +51,13 @@ requireAuthentication($_conn);
             
             <div class="communication-content">
                 <!-- Left panel for contacts and groups -->
-                <div class="contacts-panel">
+                <div class="contacts-panel DirectMessages">
                     <div class="search-box">
                         <span class="material-icons">search</span>
                         <input type="text" placeholder="Search contacts or groups...">
                     </div>
                     
-                    <div class="contacts-list">
+                    <div class="contacts-list DirectMessages">
                         <!-- Contacts will be dynamically loaded here -->
                         <div class="contact-item">
                             <div class="contact-avatar">
@@ -77,6 +81,14 @@ requireAuthentication($_conn);
                             <div class="contact-time">10:45</div>
                         </div>
                         
+                    </div>
+                </div>
+                <div class="contacts-panel group hidden">
+                    <div class="search-box">
+                        <span class="material-icons">search</span>
+                        <input type="text" placeholder="Search contacts or groups...">
+                    </div>
+                    <div class="contacts-list group">
                     </div>
                 </div>
                 

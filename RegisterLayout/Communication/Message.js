@@ -1,4 +1,3 @@
-
 // const pc = new RTCPeerConnection(configuration);
 // const dataChannel = pc.createDataChannel("chat");
 
@@ -15,8 +14,14 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Existing tab functionality
+	const createContactBtn = document.getElementById('addContactBtn');
+	const messagepanel = document.querySelectorAll('.contacts-panel');
     const tabButtons = document.querySelectorAll('.tab-button');
     const createGroupBtn = document.getElementById('createGroupBtn');
+	const contactsPanelGroup = document.querySelector('.contacts-panel.group');
+	const contactsPanelDM = document.querySelector('.contacts-panel.DirectMessages');
+
+	console.log('Message Panel:', messagepanel);
     
     tabButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -26,32 +31,42 @@ document.addEventListener('DOMContentLoaded', function() {
             const tabType = this.dataset.tab;
             // Show/hide create group button based on active tab
             if (tabType === 'groups') {
+				createContactBtn.style.display = 'none';
                 createGroupBtn.style.display = 'flex';
-
+				contactsPanelGroup.classList.remove('hidden');
+				contactsPanelDM.classList.add('hidden');
             } else {
+				createContactBtn.style.display = 'flex';
                 createGroupBtn.style.display = 'none';
+				contactsPanelGroup.classList.add('hidden');
+				contactsPanelDM.classList.remove('hidden');
 
             }
         });
     });
-    
+	
+	loadDefaultPage();
+	setTimeout(function() {
+		
+		addEventListenerToMessage();
+        // Remove duplicate function calls
+        setupSendButton();
+    }, 500);
+
     // Initially hide the button if not on groups tab
-    if (!document.querySelector('.tab-button[data-tab="groups"]').classList.contains('active')) {
-        createGroupBtn.style.display = 'none';
-    }
+    if (!document.querySelector('.contacts-panel.group').classList.contains('hidden')) {// this 
+    }else{
+		createGroupBtn.style.display = 'none';
+	}
     createGroupBtn.addEventListener('click', function() {
       GroupForm();
     });
 
-    // Call loadDefaultPage to load the groups and add event listeners after they're loaded
-    loadDefaultPage();
-    
-    // Add a small delay to ensure the contact items have been added to the DOM
-    setTimeout(function() {
-        addEventListenerToMessage();
-        // Remove duplicate function calls
-        setupSendButton();
-    }, 500);
+	createContactBtn.addEventListener('click', function() {
+	  DirectMessageForm();
+	});
+
+
 });
 
 function GroupForm() { 
@@ -106,8 +121,6 @@ function GroupForm() {
 	GroupSubmit.className = 'group-submit';
 	GroupSubmit.id = 'group-submit';
 
-	
-	
 	// Add form event handler
 	GroupSubmit.addEventListener('click', function() {
 		// Form validation
@@ -238,7 +251,8 @@ function createGroup(GroupData) {
 }
 
 function loadDefaultPage() {
-    // Fix: Add Type parameter to URL instead of in fetch options
+	// Create the group communication list
+	GroupCommunicationList();
     fetch('/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetDataLoadDefaultPage', {
         method: 'GET',
         headers: {
@@ -258,6 +272,7 @@ function loadDefaultPage() {
         if (data && typeof data === 'object') {
             // Loop through the group objects and render each one
             Object.values(data).forEach(group => {
+				
                 renderGroups(group);
             });
         } else {
@@ -297,12 +312,21 @@ function GetTime(){
 	return (date.toLocaleString('en-US', options));
 }
 
+function GroupCommunicationList(){
+	let contactpanel = document.createElement('div');
+	contactpanel.className = 'contacts-panel group hidden';
+
+}
+
 //GroupData must have name, message, members, time
 function renderGroups(GroupData) {
 
+	// Clear existing content
+	let contactpanel = document.querySelector('.contacts-panel.group');
+	let contactlist = document.querySelector('.contacts-list.group');
 	// Create the group item
 	let Group = document.createElement('div');
-	Group.className = 'contact-item group';
+	Group.className = 'contact-item';
 	Group.id = GroupData.id;
 	Group.dataset.groupName = GroupData.name;
 
@@ -337,8 +361,10 @@ function renderGroups(GroupData) {
 	}
 	Group.appendChild(groupDate);
 
-	let contactlist = document.querySelector('.contacts-list');
+	
 	contactlist.appendChild(Group);
+	contactpanel.appendChild(contactlist);
+
 
 	// Add event listener to the newly created group
     Group.addEventListener('click', function() {
@@ -347,8 +373,9 @@ function renderGroups(GroupData) {
         this.classList.add('active');
         
     });
-
+	
 	console.log('Group added:', GroupData.name);
+	
 }
 
 // To parse cookies into an object:
@@ -382,8 +409,8 @@ function currentDateTime() {
 	return (date.toLocaleString('en-US', options));
 }
 
-// display time when the page is loaded
-function DateAndTimeDisplay(lastTime){
+function DisplayHourMin(lastTime){
+	const oneDayMs = 24 * 60 * 60 * 1000; // 86400000 ms
 	const date = new Date();
 	const options = {
 		timeZone: 'Asia/Kuala_Lumpur', // Specify desired timezone
@@ -402,8 +429,38 @@ function DateAndTimeDisplay(lastTime){
 	const timeDifference = currentTimestamp - newtimeStamp;
 
 	console.log("Current Time:",currentTime);
+	console.log("CUrrent time stamp",currentTimestamp);
 	console.log("Time Diff:",timeDifference);
-	if (timeDifference > 300000){
+	if (timeDifference > oneDayMs){
+		return "yesterday";
+	}else {
+		return lastTime.split(" ")[1].slice(0,5);
+	}
+}
+
+// display time when the page is loaded
+function DateAndTimeDisplay(lastTime){
+	const oneDayMs = 24 * 60 * 60 * 1000; // 86400000 ms
+	const date = new Date();
+	const options = {
+		timeZone: 'Asia/Kuala_Lumpur', // Specify desired timezone
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+		hour12: false
+	};
+	let newTime = formatDate(lastTime);
+	let newtimeStamp = getTimestamp(newTime);
+	const currentTime = date.toLocaleString('en-US', options);
+	const currentTimestamp = new Date(currentTime).getTime();
+	const timeDifference = currentTimestamp - newtimeStamp;
+
+	console.log("CUrrent time stamp",currentTimestamp, "Current Time:",newtimeStamp);
+	console.log("Time Diff:",timeDifference);
+	if (timeDifference > oneDayMs){
 		return "yesterday";
 	}else {
 		return lastTime.split(" ")[1];
@@ -557,6 +614,9 @@ function renderMessagePage(MessagePageData){
 		messageContent.appendChild(messageDiv);
 	});
 
+	// Add this at the end of the function after all messages are rendered
+    setTimeout(scrollToBottom, 100); // Small delay to ensure messages are rendered properly
+
 	// Message input area
 	let messageInput = document.createElement('div');
 	messageInput.className = 'message-input';
@@ -623,10 +683,26 @@ function sendMessageToServer(messageData) {
 	});
 }
 
+/**
+ * Adds click event listeners to all contact items in the contacts list.
+ * When a contact is clicked, it:
+ * 1. Highlights the selected contact by adding 'active' class
+ * 2. If the contact item has an ID (represents a group):
+ *    - Fetches message information from server via AJAX
+ *    - Renders the message page with real data from the server
+ * 3. If the contact has no ID:
+ *    - Renders the message page with mock conversation data
+ * 
+ * The function manages the UI state by removing the 'active' class from all contacts
+ * and applying it only to the selected contact.
+ * 
+ * @returns {void}
+ */
 function addEventListenerToMessage() {
     // Select all contact items inside the contacts-list
-    const contactItems = document.querySelectorAll('.contacts-list .contact-item');
-    
+    const contactItems = document.querySelectorAll('.contacts-list.group .contact-item');
+	console.log('Contact Items:', document.querySelector('.contacts-list.group'));
+
     contactItems.forEach(item => {
         item.addEventListener('click', function() {
 			const name = this.querySelector('h4').textContent;
@@ -688,9 +764,6 @@ function addEventListenerToMessage() {
             
             // Render message page for the selected contact/group
 			// name, message, messageType, membersRole, time, id, role, description, status
-
-
-
         });
     });
     
@@ -752,59 +825,90 @@ function appendMessageToChat(messageData) {
 	messageDiv.appendChild(senderProfile);
 	messageDiv.appendChild(contentWrapper);
 	messageContent.appendChild(messageDiv);
+
+	// Scroll to bottom after adding the new message
+    scrollToBottom();
 }
 
 function setupSendButton() {
     console.log("Setting up send button");
-    
-    // Use event delegation to ensure this works even after DOM changes
-    document.addEventListener('click', function(e) {
-        if(e.target && e.target.classList.contains('send-button') || 
-           (e.target.parentElement && e.target.parentElement.classList.contains('send-button'))) {
-            
-            const sendButton = e.target.classList.contains('send-button') ? 
-                              e.target : e.target.parentElement;
-            const messageInput = document.querySelector('.message-input input');
-            
-            if (!messageInput) {
-                console.error('Message input not found');
-                return;
-            }
-            
-            const message = messageInput.value.trim();
-            if (!message) return;
-            
-            // Find the active group/contact
-            const activeItem = document.querySelector('.contact-item.active');
-            if (!activeItem) {
-                console.error('No active conversation selected');
-                return;
-            }
 
-			appendMessageToChat({
-				sender: 'You',
-				content: message,
-				time: currentDateTime(),
-				type: 'sent'
-			})
-            console.log('Active item:', activeItem);
-            
-            const messageData = {
-                message: message,
-                GroupID: activeItem.id || 0,
-                messageType: 'TEXT',
-            };
-            
-            console.log('Sending message data:', messageData);
-            sendMessageToServer(messageData);
-            
-            // Clear input field after sending
-            messageInput.value = '';
+    // Common function to process the send action
+    function processSendAction() {
+        const messageInput = document.querySelector('.message-input input');
+        if (!messageInput) {
+            console.error('Message input not found');
+            return;
+        }
+        
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Find the active group/contact
+        const activeItem = document.querySelector('.contact-item.active');
+        if (!activeItem) {
+            console.error('No active conversation selected');
+            return;
+        }
+        
+        // Append message to chat UI
+        appendMessageToChat({
+            sender: 'You',
+            content: message,
+            time: currentDateTime(),
+            type: 'sent'
+        });
+        console.log('Active item:', activeItem);
+        
+        // Prepare message data
+        const messageData = {
+            message: message,
+            GroupID: activeItem.id || 0,
+            messageType: 'TEXT',
+        };
+        
+        console.log('Sending message data:', messageData);
+        sendMessageToServer(messageData);
+        
+        // Clear the input field after sending
+        messageInput.value = '';
+    }
+
+    // Keydown listener for Enter key on the send button
+    document.addEventListener('keydown', function(e) {
+		if (
+			e.key === 'Enter' && 
+			(e.target.classList.contains('input') || 
+			(e.target.parentElement && e.target.parentElement.classList.contains('message-input')))
+		) {
+			e.preventDefault();
+			processSendAction();
+		}
+		
+    });
+    
+    // Click listener using event delegation for the send button
+    document.addEventListener('click', function(e) {
+		console.log('Send Button:', e.target);
+        if (
+            (e.target && e.target.classList.contains('send-button')) ||
+            (e.target.parentElement && e.target.parentElement.classList.contains('send-button'))
+        ) {
+            processSendAction();
         }
     });
 }
 
 
+/**
+ * Scrolls the message content area to the bottom
+ */
+function scrollToBottom() {
+    const messageContent = document.querySelector('.message-content');
+    if (messageContent) {
+        messageContent.scrollTop = messageContent.scrollHeight;
+    }
+}
 
 function SaveMessageIntoArray(messageData){
 	let messageArray = [];
@@ -814,7 +918,7 @@ function SaveMessageIntoArray(messageData){
 			let NewMessageData = {
 				sender: "You",
 				content: messageData[i].message,
-				time: DateAndTimeDisplay(messageData[i].timestamp),
+				time: DisplayHourMin(messageData[i].timestamp),
 				type: "sent",
 				messageStatus: messageData[i].messageStatus
 			};
@@ -824,7 +928,7 @@ function SaveMessageIntoArray(messageData){
 			let NewMessageData = {
 				sender: messageData[i].username,
 				content: messageData[i].message,
-				time: DateAndTimeDisplay(messageData[i].timestamp),
+				time: DisplayHourMin(messageData[i].timestamp),
 				type: "received",
 				messageStatus: messageData[i].messageStatus
 			};
@@ -832,4 +936,83 @@ function SaveMessageIntoArray(messageData){
 		}
 	}
 	return messageArray;
+}
+
+function DirectMessageForm() {
+	// Create overlay for the modal
+	const overlay = document.createElement('div');
+	overlay.className = 'DM-form-overlay';
+	overlay.id = 'DM-form-overlay';
+	
+	// Create the form container
+	const GroupForm = document.createElement('div');
+	GroupForm.className = 'DM-form';
+	GroupForm.id = 'DM-form';
+	
+	// Add title
+	const title = document.createElement('h3');
+	title.textContent = 'Create a New Direct Message';
+	GroupForm.appendChild(title);
+	
+	// Close button
+	const closeButton = document.createElement('button');
+	closeButton.className = 'close-form';
+	closeButton.innerHTML = '&times;'; // × symbol
+	closeButton.addEventListener('click', () => {
+		document.body.removeChild(overlay);
+	});
+	GroupForm.appendChild(closeButton);
+	
+	// Group name input
+	const GroupName = document.createElement('input');
+	GroupName.type = 'text';
+	GroupName.placeholder = 'Recipient Name';
+	GroupName.className = 'user-name';
+	GroupName.id = 'user-name';
+
+	// Group description input
+	const GroupDesc = document.createElement('input');
+	GroupDesc.type = 'text';
+	GroupDesc.placeholder = 'Message';
+	GroupDesc.className = 'group-desc';
+	GroupDesc.id = 'group-desc';
+
+	// Create button
+	const GroupSubmit = document.createElement('button');
+	GroupSubmit.textContent = 'Send Message';
+	GroupSubmit.className = 'group-submit';
+	GroupSubmit.id = 'group-submit';
+
+	// Add form event handler
+	GroupSubmit.addEventListener('click', function() {
+		// Form validation
+		if (!GroupName.value.trim()) {
+		alert('Please enter a recipient name');
+		return;
+		}
+		if (!GroupDesc.value.trim()) {
+		alert('Please enter a message');
+		return;
+		}
+		let recipient = GroupName.value.trim();
+		let message = GroupDesc.value.trim();
+		let sender = getCookieValue('username');
+		let time = GetTime();
+		let messageType = 'TEXT';
+		let messageStatus = 'SENT';
+		let messageData = {
+			recipient: recipient,
+			message: message,
+			sender: sender,
+			time: time,
+			messageType: messageType,
+			messageStatus: messageStatus
+		}
+		sendDirectMessage(messageData);
+		// Create the group
+		// Close the modal after submission
+		document.body.removeChild(overlay);
+	});
+
+	// Add all elements to the form
 }

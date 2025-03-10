@@ -624,7 +624,7 @@ while ($row = $result->fetch_assoc()) {
                         JOIN users u1 ON gt.assigned_by = u1.id
                         JOIN users u2 ON gt.assigned_to = u2.id
                         WHERE gt.assigned_by = ? OR gt.assigned_to = ?
-                        ORDER BY gt.assigned_at ASC";
+                        ORDER BY gt.due_date ASC";
                     
                     $stmt = $_conn->prepare($sql);
                     if (!$stmt) {
