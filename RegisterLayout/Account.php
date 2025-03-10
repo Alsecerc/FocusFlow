@@ -212,7 +212,7 @@ if (!verifyUser($_conn)) {
                     </div>
                     <div>
                         <?php
-                        include "conn.php"; // Database connection file
+                        include "conn.php";
                         $userID = $_COOKIE['UID'];
 
                         $name = $_COOKIE['USERNAME'];

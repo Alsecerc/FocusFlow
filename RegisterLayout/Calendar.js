@@ -119,9 +119,6 @@ window.onload = function () {
         DayOffset = previousMonthDays + DayOffset;
     }
 
-
-
-
     DAYNUM_LIST.forEach((Item) => {
         let totalDaysInMonth = new Date(year, MonthOffset + 1, 0).getDate();
         // find out date of month
