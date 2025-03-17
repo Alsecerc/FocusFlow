@@ -59,28 +59,6 @@ requireAuthentication($_conn);
                     
                     <div class="contacts-list DirectMessages">
                         <!-- Contacts will be dynamically loaded here -->
-                        <div class="contact-item">
-                            <div class="contact-avatar">
-                                <span class="material-icons">account_circle</span>
-                            </div>
-                            <div class="contact-info">
-                                <h4>John Doe</h4>
-                                <p>Last message preview...</p>
-                            </div>
-                            <div class="contact-time">12:30</div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <div class="contact-avatar">
-                                <span class="material-icons">account_circle</span>
-                            </div>
-                            <div class="contact-info">
-                                <h4>Jane Smith</h4>
-                                <p>Last message preview...</p>
-                            </div>
-                            <div class="contact-time">10:45</div>
-                        </div>
-                        
                     </div>
                 </div>
                 <div class="contacts-panel group hidden">

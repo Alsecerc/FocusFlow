@@ -272,6 +272,7 @@
 
 .message.received {
     align-self: flex-start;
+    
 }
 
 .message.sent {
@@ -423,7 +424,8 @@
 }
 
 /* Group Form Modal Styles */
-.group-form-overlay {
+.group-form-overlay,
+.DM-form-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -436,7 +438,8 @@
     z-index: 1000;
 }
 
-.group-form {
+.group-form,
+.DM-form {
     position: relative;
     background-color: white;
     padding: 30px;
@@ -449,14 +452,16 @@
     gap: 15px;
 }
 
-.group-form h3 {
+.group-form h3,
+.DM-form h3 {
     margin: 0 0 15px 0;
     color: #333;
     font-size: 1.3rem;
     text-align: center;
 }
 
-.group-form input {
+.group-form input,
+.DM-form input {
     width: 100%;
     padding: 12px 15px;
     border-radius: 8px;
@@ -466,11 +471,13 @@
     transition: border-color 0.2s;
 }
 
-.group-form input:focus {
+.group-form input:focus,
+.DM-form input:focus {
     border-color: #5e72e4;
 }
 
-.group-form button {
+.group-form button,
+.DM-form button {
     background-color: #5e72e4;
     color: white;
     border: none;
@@ -482,7 +489,8 @@
     transition: background-color 0.2s;
 }
 
-.group-form button:hover {
+.group-form button:hover,
+.DM-form button:hover {
     background-color: #4c5dcb;
 }
 
@@ -501,6 +509,108 @@
 .hidden{
     display: none;
 }
+
+/* Friend Suggestion Pop-up Styles */
+.friend-suggestion-popup {
+    background-color: #f0f4ff;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #5e72e4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.3s ease-in-out;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.friend-suggestion-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.friend-suggestion-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: #5e72e4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.friend-suggestion-info {
+    flex: 1;
+}
+
+.friend-suggestion-info h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.friend-suggestion-info p {
+    margin: 2px 0 0 0;
+    font-size: 0.85rem;
+    color: #667085;
+}
+
+.friend-suggestion-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.add-friend-btn {
+    background-color: #5e72e4;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.add-friend-btn:hover {
+    background-color: #4c5dcb;
+}
+
+.dismiss-suggestion-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #667085;
+}
+
+.dismiss-suggestion-btn:hover {
+    background-color: #ebeef2;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .communication-content {

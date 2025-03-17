@@ -63,7 +63,10 @@ function createAuthSession($userId, $conn) {
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
-        
+
+        if (isset($_COOKIE['UID'])){
+            $userId = $_COOKIE['UID'];
+        }
         // Set legacy cookies for backward compatibility
         // Get user data for legacy cookies
         $sql = "SELECT name, email, usertype FROM users WHERE id = ?";
@@ -73,9 +76,9 @@ function createAuthSession($userId, $conn) {
         $result = $stmt->get_result();
         
         if ($user = $result->fetch_assoc()) {
-            setcookie("USERNAME", $user['name'], time() + 86400, '/');
-            setcookie("EMAIL", $user['email'], time() + 86400, '/');
-            setcookie("USERTYPE", $user['usertype'], time() + 86400, '/');
+            setcookie("USERNAME", $user['name'], time() + 86400 * 30, '/');
+            setcookie("EMAIL", $user['email'], time() + 86400 * 30, '/');
+            setcookie("USERTYPE", $user['usertype'], time() + 86400 * 30, '/');
         }
         
         return true;

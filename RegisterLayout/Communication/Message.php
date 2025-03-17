@@ -35,181 +35,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         switch ($Type) {
             case "createGroup":
-                try {
-                    // Get the raw POST data
-                    $json = file_get_contents('php://input');
-                    $groupData = json_decode($json, true);
-            
-                    // Check if JSON was valid
-                    if (json_last_error() !== JSON_ERROR_NONE) {
-                        throw new Exception('Invalid JSON: ' . json_last_error_msg());
-                    }
-                    
-                    // Validate required fields
-                    if (empty($groupData['name'])) {
-                        throw new Exception('Group name is required');
-                    }
-                    
-                    // Process the group data
-                    $groupName = $groupData['name'];
-                    $groupDescription = isset($groupData['description']) ? $groupData['description'] : '';
-                    $memberEmail = isset($groupData['members']) ? $groupData['members'] : '';
-                    $role = isset($groupData['role']) ? $groupData['role'] : 'member';
-                    
-                    // First check if this is the group creator (admin)
-                    if ($role === 'ADMIN') {
-                        $userId = isset($_COOKIE['UID']) ? $_COOKIE['UID'] : null;
-                        if (empty($userId)) {
-                            throw new Exception('User ID is required');
-                        }
-                        try {
-                            // Insert into groupusers table first and get the GroupID
-                            $stmt = $_conn->prepare("INSERT INTO groupusers (GroupName, GroupRole, UserID) VALUES (?, ?, ?)");
-                            if (!$stmt) {
-                                throw new Exception("Database error: " . $_conn->error);
-                            }
-                            
-                            $stmt->bind_param("ssi", $groupName, $role, $userId);
-                            $stmt->execute();
-                            
-                            if ($stmt->affected_rows === 0) {
-                                throw new Exception("Failed to create group");
-                            }
-                            
-                            // Get the GroupID that was just created
-                            $groupId = $_conn->insert_id;
-                            $stmt->close();
-                            
-                            // Now insert into groupchat with the GroupID
-                            $stmt = $_conn->prepare("INSERT INTO groupinfo (GroupDesc, GroupID) VALUES (?, ?)");
-                            if (!$stmt) {
-                                throw new Exception("Database error: " . $_conn->error);
-                            }
-                            
-                            $stmt->bind_param("si", $groupDescription, $groupId);
-                            $stmt->execute();
-                            
-                            if ($stmt->affected_rows === 0) {
-                                throw new Exception("Failed to create group chat");
-                            }
-                            $stmt->close();
-                            
-                            // Commit the transaction
-                            $_conn->commit();
-                            
-                            // Return success response
-                            $response = [
-                                'status' => 'success',
-                                'message' => 'Group created successfully',
-                                'data' => [
-                                    'name' => $groupName,
-                                    'description' => $groupDescription,
-                                    'member' => $memberEmail,
-                                    'role' => $role,
-                                    'groupId' => $groupId
-                                ]
-                            ];
-                            
-                            echo json_encode($response);
-                            
-                        } catch (Exception $e) {
-                            $_conn->rollback();
-                            throw $e;
-                        }
-                        
-                    } else {
-                        // This is a regular member being added to group
-                        // First check if the user exists
-                        $sql = "SELECT id FROM users WHERE Email = ?";
-                        $stmt = $_conn->prepare($sql);
-                        
-                        if (!$stmt) {
-                            throw new Exception("Database error: " . $_conn->error);
-                        }
-                        
-                        $stmt->bind_param("s", $memberEmail);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        
-                        if ($result->num_rows === 0) {
-                            // User doesn't exist - send a special response
-                            $stmt->close();
-                            http_response_code(202); // Accepted but not processed
-                            echo json_encode([
-                                'status' => 'warning',
-                                'message' => "User with email $memberEmail not found. An invitation will be sent when they register.",
-                                'data' => [
-                                    'name' => $groupName,
-                                    'email' => $memberEmail
-                                ]
-                            ]);
-                            exit;
-                        }
-                        
-                        $row = $result->fetch_assoc();
-                        $userId = $row['id'];
-                        $stmt->close();
-                        
-                        // Get the GroupID from the group name
-                        $stmt = $_conn->prepare("SELECT GroupID FROM groupusers WHERE GroupName = ? LIMIT 1");
-                        if (!$stmt) {
-                            throw new Exception("Database error: " . $_conn->error);
-                        }
-                        
-                        $stmt->bind_param("s", $groupName);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        
-                        if ($result->num_rows === 0) {
-                            $stmt->close();
-                            throw new Exception("Group does not exist");
-                        }
-                        
-                        $row = $result->fetch_assoc();
-                        $groupId = $row['GroupID'];
-                        $stmt->close();
-                        
-                        // Add the user to the group
-                        $stmt = $_conn->prepare("INSERT INTO groupusers (GroupID, GroupName, GroupRole, UserID) VALUES (?, ?, ?, ?)");
-                        if (!$stmt) {
-                            throw new Exception("Database error: " . $_conn->error);
-                        }
-                        
-                        $stmt->bind_param("issi", $groupId, $groupName, $role, $userId);
-                        $stmt->execute();
-                        
-                        if ($stmt->affected_rows === 0) {
-                            throw new Exception("Failed to add user to group");
-                        }
-                        $stmt->close();
-                        
-                        // Return success response
-                        $response = [
-                            'status' => 'success',
-                            'message' => 'User added to group successfully',
-                            'data' => [
-                                'name' => $groupName,
-                                'member' => $memberEmail,
-                                'role' => $role,
-                                'groupId' => $groupId
-                            ]
-                        ];
-                        
-                        echo json_encode($response);
-                    }
-                    
-                } catch (Exception $e) {
-                    // Return error response
-                    http_response_code(400);
-                    echo json_encode([
-                        'status' => 'error',
-                        'message' => $e->getMessage()
-                    ]);
-                }
+                $GroupName = $data['name'];
+                $GroupDesc = $data['description'];
+                $GroupMembers = $data['members'];
+                $ROLE = $data['role'] ?? 'MEMBER';
+
+                createGroup($GroupName, $GroupDesc, $GroupMembers, $ROLE);
                 break;
             case "sendMessageToServer":
                 sendMessageToServer($data);
                 break;
+
+            case "sendAddContact":
+                $email = $data['Email'];
+                if(empty($email)){
+                    throw new Exception("Email is required");
+                }
+                
+                AddUserNewToContactList($email);
+                break;
+            case "checkIfFriendInFriendContactList":
+                $email = $data['Email'];
+                if(empty($email)){
+                    throw new Exception("Email is required");
+                }
+                checkIfFriendInFriendContactList($email);
+                break;
+
+            case "sendUserMessageToServer":
+                $message = $data['message'];
+                $FriendID = $data['FriendID'];
+                $MessageType = $data['messageType'];
+                $Status = $data['status'];
+                sendUserMessageToServer($message, $FriendID, $MessageType, $Status);
+
+            case "SendFriendRequest":
+                $FriendID = $data['CurrentUserID'];
+                $status = $data['status'];
+
+            case "CreateDMContactListForUser":
+                CreateDMContactListForUser($user_id);
+                    
             default:
                 http_response_code(400);
                 echo json_encode([
@@ -231,21 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $Type = $_GET['Type'];
 
         switch ($Type) {
-            case "GetDataLoadDefaultPage":
-                // Check if UID cookie exists
-                if (isset($_COOKIE['UID'])) {
-                    $userId = $_COOKIE['UID'];
-                    $groups = getGroupData($userId);
-                    echo json_encode($groups);
-                } else {
-                    // Handle missing UID cookie
-                    http_response_code(401); // Unauthorized
-                    echo json_encode([
-                        'status' => 'error',
-                        'message' => 'User not authenticated. Please log in.'
-                    ]);
-                }
-                break;
             case "GetMessageInfo":
                 $GroupID = isset($_GET['GroupID']) ? $_GET['GroupID'] : null;
                 if (empty($GroupID)) {
@@ -259,6 +110,140 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = getMessageInfoForGroup($GroupID);
 
                 echo json_encode($response);
+                break;
+
+            case "GetGroupContactList":
+                getGroupData($user_id);
+
+            case "VerifyContactListExist":
+                if (CheckIfPersonContactListExist($_conn)) {
+                    echo json_encode([
+                        'status' => 'success',
+                        'message' => 'Contact list exists'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Contact list does not exist'
+                    ]);
+                }
+                break;
+            case "GetSuggestions":
+                $Email = isset($_GET['Email']) ? $_GET['Email'] : null;
+                if (empty($Email)) {
+                    http_response_code(400);
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Email is required'
+                    ]);
+                    exit;
+                }
+                $response = getListOfemail($Email);
+                if (empty($response)) {
+                    http_response_code(404);
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'No user found with that email'
+                    ]);
+                    exit;
+                }
+                echo json_encode($response);
+                break;
+            case "GetContactListForDM":
+                $ContactID = getContactListIdOfUser();
+                $GetAllTheUserInfoFromUSerID = Query("SELECT * FROM friends WHERE ContactId = ?", "i", $ContactID, "No Data Found", "array", "SELECT");
+                $finalData = [];
+                foreach ($GetAllTheUserInfoFromUSerID as $relation) {
+                    $friendData = [
+                        'ID' => $relation['id'],
+                        'friend_id' => $relation['friend_id'],
+                        'friendName' => "None",
+                        'created_at' => $relation['created_at'],
+                        'MessageText' => "Enter Something Here"
+                    ];
+                    $FriendName = Query("SELECT * FROM users WHERE id = ?", "i", $relation['friend_id'], "Username Not found", "single", "SELECT", true);
+                    if($FriendName){
+                        $friendData['friendName'] = $FriendName['name'];
+                    }
+                    $param = [$ContactID, $relation['friend_id']];
+                    $GetUserChatLog = Query("SELECT * FROM directmessage WHERE ContactListID = ? AND FriendID = ? ORDER BY DirectMessageID DESC LIMIT 1", "ii", $param, "No Data Found", "single", "SELECT", null);
+                    if(!empty($GetUserChatLog)){
+                        $friendData['MessageText'] = $GetUserChatLog['MessageText'];
+                        $friendData['created_at'] = $GetUserChatLog['CreatedTime'];
+                    }
+                    $finalData[] = $friendData;
+                }
+                if(empty($finalData)){
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'No data found'
+                    ]);
+                    exit;
+                }else{
+                    echo json_encode([
+                        'status' => 'success',
+                        'message' => $finalData
+                    ]);
+                    exit;
+                }
+
+            case "CheckEmail":
+                $email = isset($_GET['Email']) ? $_GET['Email'] : null;
+
+                if (!is_array($email)) {
+                    $email = explode(',', $email); // Convert "email1,email2" to an array
+                }
+
+                if (empty($email)) {
+                    http_response_code(400);
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Email is required'
+                    ]);
+                    exit;
+                }
+
+                foreach ($email as $key => $value) {
+                    $CheckEmailValid = Query("SELECT * FROM users WHERE email = ?", "s", trim($value), "Email not found", "bool", "SELECT");
+                
+                    $response[] = [
+                        'email' => $value,
+                        'status' => $CheckEmailValid ? 'success' : 'error',
+                        'message' => $CheckEmailValid ? 'Email found' : 'Email not found'
+                    ];
+                }
+                echo json_encode($response);
+                exit;
+            case "GetTheLastMessageAndTime":
+                GetTheLastMessageAndTime($user_id);
+
+            case "GetOnlyOneContactListForDM":
+                $FriendEmail = isset($_GET['Email']) ? $_GET['Email'] : null;
+                if (empty($FriendEmail)) {
+                    http_response_code(400);
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Email is required'
+                    ]);
+                    exit;
+                }
+                GetOnlyOneContactListForDM($FriendEmail);
+                break;
+
+            case "VerifyDMContactListExist":
+                VerifyDMContactListExist($user_id);
+            
+            case "GetMessageInfoForDM":
+                $FriendID = isset($_GET['FriendID']) ? $_GET['FriendID'] : null;
+                if (empty($FriendID)) {
+                    http_response_code(400);
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Email is required'
+                    ]);
+                    exit;
+                }
+                GetMessageInfoForDM($FriendID);
                 break;
             default:
                 http_response_code(400);
@@ -277,6 +262,233 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     // ...existing code for handling other request methods...
+}
+
+function sendUserMessageToServer($message, $FriendID, $MessageType, $Status){
+    global $user_id;
+    $ContactID = getContactListIdOfUser();
+    $FriendUserID = Query("SELECT friend_id FROM friends WHERE id = ? AND user_id = ? AND ContactId = ?", "iii", [$FriendID, $user_id, $ContactID], "Friend ID not found", "single", "SELECT", true);
+
+    $SendUserMessage = Query("INSERT INTO directmessage (ContactListID, SenderID, ReceiverID, MessageText, MessageType, FriendID, Status) VALUES (?, ?, ?, ?, ?, ?, ?)", "iiissis", [$ContactID, $user_id, $FriendUserID['friend_id'], $message, $MessageType, $FriendID, $Status], "Failed to send message", "none", "INSERT");
+    if($SendUserMessage){
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Message sent successfully'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to send message'
+        ]);
+        exit;
+    }
+}
+
+function GetMessageInfoForDM($FriendID){
+    global $user_id;
+    $ContactID = getContactListIdOfUser();
+    $param = [$ContactID, $FriendID];
+    $GetUserChatLog = Query("SELECT * FROM directmessage WHERE ContactListID = ? AND FriendID = ? ORDER BY DirectMessageID DESC", "ii", $param, "No Data Found", "array", "SELECT");
+    $finalData = [];
+    foreach ($GetUserChatLog as $value) {
+        $Friend_ID = Query("SELECT * FROM friends WHERE id = ? AND user_id = ? AND ContactId = ?", "iii", [$value['FriendID'], $user_id, $ContactID], "Friend ID not found", "single", "SELECT", true);
+        $finalData[] = [
+            'ID' => $value['DirectMessageID'],
+            'FriendID' => $value['FriendID'],
+            'SenderID' => $value['SenderID'],
+            'sender'=> UsernameFromID($value['SenderID']),
+            'ReceiverID' => $value['ReceiverID'],
+            'Receiver' => UsernameFromID($value['ReceiverID']),
+            'content' => $value['MessageText'],
+            'time' => $value['CreatedTime'],
+            'type' => $value['MessageType'],
+            'name' => UsernameFromID($Friend_ID['friend_id']),
+            'status'=> $Friend_ID['status'] ? $Friend_ID['status'] : 'error'
+
+        ];
+    }
+    
+    if(empty($finalData)){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'No data found'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'success',
+            'message' => $finalData
+        ]);
+        exit;
+    }
+}
+
+function GetOnlyOneContactListForDM($FriendEmail){
+    global $user_id;
+    $ContactID = getContactListIdOfUser();
+    $FriendID = getuserIdFromEmail($FriendEmail);
+    $GetOneUserInfoFromFriend = Query("SELECT * FROM friends WHERE ContactId = ? AND friend_id = ? AND user_id = ?", "iii", [$ContactID, $FriendID, $user_id], "No Data Found", "single", "SELECT");
+    $finalData = [];
+
+    $friendData = [
+        'ID' => $GetOneUserInfoFromFriend['id'],
+        'friend_id' => $GetOneUserInfoFromFriend['friend_id'],
+        'friendName' => "None",
+        'created_at' => $GetOneUserInfoFromFriend['created_at'],
+        'MessageText' => "Enter Something Here"
+    ];
+    $FriendName = Query("SELECT * FROM users WHERE id = ?", "i", $GetOneUserInfoFromFriend['friend_id'], "Username Not found", "single", "SELECT", true);
+    if($FriendName){
+        $friendData['friendName'] = $FriendName['name'];
+    }
+    $param = [$ContactID, $GetOneUserInfoFromFriend['friend_id']];
+    $GetUserChatLog = Query("SELECT * FROM directmessage WHERE ContactListID = ? AND FriendID = ? ORDER BY DirectMessageID DESC LIMIT 1", "ii", $param, "No Data Found", "single", "SELECT", null);
+    if(!empty($GetUserChatLog)){
+        $friendData['MessageText'] = $GetUserChatLog['MessageText'];
+        $friendData['created_at'] = $GetUserChatLog['CreatedTime'];
+    }
+    $finalData[] = $friendData;
+    
+    if(!empty($finalData)){
+        echo json_encode([
+            'status' => 'success',
+            'message' => $finalData
+        ]);
+        exit;
+    }
+}
+
+function checkIfFriendInFriendContactList($Email){
+    global $user_id;
+    // get contactID
+    $sqlGetContactID = "SELECT ContactID FROM contactlist WHERE UserID = ?";
+    $contactID = Query($sqlGetContactID, "i", $user_id, "Contact list not found", "single", "SELECT", true);
+
+    $sqlGetUserIdFromEmail = "SELECT id FROM users WHERE email = ?";
+    $userIdFromEmail = Query($sqlGetUserIdFromEmail, "s", $Email, "User not found", "single", "SELECT");
+
+    $CheckIfFriendExistInFriendContactList = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ? AND ContactId = ?";
+    $ArrayFriendExist = [$user_id, $userIdFromEmail['id'], $contactID['ContactID']];
+
+    $FriendExist = Query($CheckIfFriendExistInFriendContactList, "iii", $ArrayFriendExist, "Friend does not exist", "bool", "SELECT");
+
+    if (!$FriendExist) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Friend does not exist in friend table'
+        ]);
+        exit;
+    }
+
+    $sqlContactList = "SELECT * FROM contact WHERE user_id = ? AND contact_id = ? AND ContactListID = ?";
+    $ArrayContactList = [$user_id, $userIdFromEmail, $contactID];
+    
+    $ContactListExist = Query($sqlContactList, "iii", $ArrayContactList, "Contact does not exist", "bool", "SELECT");
+
+    if ($ContactListExist) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Friend already exists in Contact List'
+        ]);
+        exit;
+    }
+}
+
+function CreateDMContactListForUser($user_id){
+    global $_conn;
+    $CreateContactList = Query("INSERT INTO contactlist (UserID) VALUES (?)", "i", $user_id, "Failed to create contact list", "none", "INSERT");
+    if($CreateContactList){
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Contact list created successfully'
+        ]);
+        exit;
+    }
+}
+
+function SendFriendRequest($FriendID, $status){
+    global $_conn, $user_id;
+    $SendFriendrequest = Query("UPDATE friendrequest SET Status = ? WHERE friend_id = ? AND user_id = ?", "is", [$FriendID, $user_id, $status], "Failed to send friend request", "none", "INSERT");
+
+    if (!$SendFriendrequest) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to send friend request'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Friend request sent successfully'
+        ]);
+        exit;
+    }
+}
+
+function VerifyDMContactListExist($user_id){
+    global $_conn;
+    $CheckIfContactlistExist = Query("SELECT * FROM contactlist WHERE UserID = ?", "i", $user_id, "Contact list not found", "bool", "SELECT");
+    if($CheckIfContactlistExist){
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Contact list exists'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Contact list does not exist'
+        ]);
+        exit;
+    }
+}
+function GetTheLastMessageAndTime($user_id){
+    
+}
+
+function AddUserNewToContactList($Email){
+    global $user_id, $_conn;
+
+    $GetFriendID = "SELECT id FROM users WHERE email = ?";
+    $UserFriendID = Query($GetFriendID, "s", $Email, "Friend id not found", "single", "SELECT", true);
+
+    $sqlGetContactID = "SELECT ContactID FROM contactlist WHERE UserID = ?";
+    $contactListID = Query($sqlGetContactID, "i", $user_id, "Contact list not found", "single", "SELECT", true);
+
+    if(!$contactListID){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Contact list not found'
+        ]);
+        exit;
+    }
+
+    $AddUserIntoFriends = "INSERT INTO friends (user_id, friend_id, ContactId) VALUES (?, ?, ?)";
+    $AddUserIntoFriendsParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID']];
+    $AddUserIntoFriendsResult = Query($AddUserIntoFriends, "iii", $AddUserIntoFriendsParams, "Failed to add user to contact list", "none", "INSERT");
+    if(!$AddUserIntoFriendsResult){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to add user to friend list'
+        ]);
+        exit;
+    }
+
+    $SelectFriendID = "SELECT id FROM friends WHERE user_id = ? AND friend_id = ? AND ContactId = ?";
+    $SelectFriendIDParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID']];
+    $FriendID = Query($SelectFriendID, "iii", $SelectFriendIDParams, "Friend ID not found", "single", "SELECT", true);
+
+    $AddUserToContactList = "INSERT INTO contact (user_id, contact_id, ContactListID, FriendID) VALUES (?, ?, ?, ?)";
+    $AddUserToContactListParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID'], $FriendID['id']];
+    $AddUserToContactListResult = Query($AddUserToContactList, "iiii", $AddUserToContactListParams, "Failed to add user to contact list", "none", "INSERT");
+    if($AddUserToContactListResult){
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'User added to contact list successfully'
+        ]);
+        exit;
+    }
 }
 
 function getMessageInfoForGroup($groupId){
@@ -314,29 +526,47 @@ function UsernameFromID($userId){
 }
 
 function getGroupData($userId) {
-    global $_conn;
+    $GetGroupInfoID = Query("SELECT * FROM groupusers WHERE UserID = ?", "i", $userId, "No Group found", "array", "SELECT");
     
-    $sql = "SELECT * FROM groupusers WHERE UserID = ?";
-    $stmt = $_conn->prepare($sql);
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    $groups = [];
-    while ($row = $result->fetch_assoc()) {
-        $groups[] = [
-            'id' => $row['GroupID'],
-            'name' => $row['GroupName'],
-            'role' => $row['GroupRole'],
-            'Time' => $row['CreatedTime']
+    if(empty($GetGroupInfoID)){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'No data found'
+        ]);
+        exit;
+    }
+    $finalData = [];
+    foreach ($GetGroupInfoID as $value) {
+        $GroupID = isset($value['GroupInfoID']) ? $value['GroupInfoID'] : null;
+
+        $GroupInfo = Query("SELECT * FROM groupinfo WHERE id = ?", "i", $GroupID, "No Group found", "single", "SELECT", true);
+
+        $GroupMessages = Query("SELECT * FROM groupchat WHERE GroupID = ? ORDER BY CreatedTime DESC LIMIT 1", "i", $GroupID, "No Data Found", "single", "SELECT", null);
+
+        $finalData[] = [
+            'GroupID' => $GroupID,
+            'GroupName' => $value['GroupName'] ?? 'Unknown',
+            'GroupRole' => $value['GroupRole'] ?? 'Member',
+            'GroupDesc' => $GroupInfo['GroupDesc'] ?? 'No Description',
+            'GroupMessageSender' => $GroupMessages && isset($GroupMessages['user_id']) ? UsernameFromID($GroupMessages['user_id']) : "No Sender",
+            'GroupMessages' => $GroupMessages ? $GroupMessages['GroupMessage'] : "Enter Something Here",
+            'GroupMessageType' => $GroupMessages['GroupMessageType'] ?? "text",
+            'GroupMessageTime' => $GroupMessages ? $GroupMessages['CreatedTime'] : $GroupInfo['GroupCreatedTime']
         ];
     }
-    $stmt->close();
-    return $groups;
-}
-
-function JsonEnCode($response){
-    return json_encode($response);
+    if(empty($finalData)){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'No data found'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'success',
+            'message' => $finalData
+        ]);
+        exit;
+    }
 }
 
 function sendMessageToServer($messageData) {
@@ -398,4 +628,475 @@ function sendMessageToServer($messageData) {
         ]);
     }
 }
-?>
+
+function getListOfemail($email){
+    global $_conn;
+    $email = "%" . $email . "%";
+    $sql = "SELECT * FROM users WHERE email LIKE ? LIMIT 5";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = [];
+    while ($row = $result->fetch_assoc()) {
+        $rows[] = $row;
+    }
+    $stmt->close();
+    return $rows;
+}
+
+function getuserIdFromEmail($email){
+    global $_conn;
+    $sql = "SELECT id FROM users WHERE email = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row['id'];
+}
+
+/**
+ * Checks if the current user has any contacts in their contact list
+ *
+ * This function verifies whether the user identified by the 'UID' cookie
+ * has any entries in the contactlist table in the database.
+ *
+ * @global resource $_conn Database connection object
+ * @uses $_COOKIE['UID'] User ID stored in cookie
+ * 
+ * @return bool Returns true if the user has contacts, false otherwise
+ */
+function CheckIfPersonContactListExist($_conn){
+    $userID = $_COOKIE['UID'];
+    $sql = "SELECT * FROM contactlist WHERE UserID = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    if ($stmt->affected_rows === 0) {
+        return false;
+    }
+    $result = $stmt->get_result();
+    $stmt->close();
+    return $result->num_rows > 0;
+}
+
+/**
+ * Retrieves the contact list ID for the currently logged-in user.
+ * 
+ * This function queries the database to find the ContactID associated
+ * with the current user's ID (retrieved from the UID cookie).
+ * 
+ * @return int The ContactID from the contactlist table
+ * @throws Exception If no contact list ID is found or the query fails
+ * @global object $_conn Database connection object
+ * @uses $_COOKIE['UID'] The current user's ID from cookie
+ */
+function getContactListIdOfUser (){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $sql = "SELECT ContactID FROM contactlist WHERE UserID = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    if ($stmt->affected_rows === 0) {
+        $response = [
+            'status' => 'error',
+            'message' => 'Contact list not found'
+        ];
+        echo json_encode($response);
+        exit;
+    }
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row['ContactID'];
+}
+
+/**
+ * Adds a user to the current user's contact list based on their email address.
+ * 
+ * This function retrieves the current user's ID from cookies, gets their contact list ID,
+ * finds the target user's ID from the provided email, and then creates a connection
+ * between these users in the friends table.
+ * 
+ * @param string $email Email address of the user to add to the contact list
+ * @throws Exception If the user with the specified email is not found
+ * @throws Exception If the database operation to add the contact fails
+ * @global object $_conn Database connection object
+ * @uses getContactListIdOfUser() To retrieve the current user's contact list ID
+ * @uses getuserIdFromEmail() To retrieve a user ID based on their email
+ * @return void
+ */
+function AddPeoplewithEmailToContactlist($email){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $contactListID = getContactListIdOfUser();
+    $OtherPeopleID = getuserIdFromEmail($email);
+    
+    if (empty($OtherPeopleID)) {
+        throw new Exception("User with email $email not found");
+    }
+
+    $sql = "INSERT INTO friends (ContactId, user_id, friend_id) VALUES (?, ?, ?)";
+    $stmt = $_conn->prepare($sql);
+    
+    if (!$stmt) {
+        throw new Exception("Database error: " . $_conn->error);
+    }
+    
+    $stmt->bind_param("iii", $contactListID, $userID, $OtherPeopleID);
+    $stmt->execute();
+    
+    if ($stmt->affected_rows === 0) {
+        throw new Exception("Failed to add contact to contact list");
+    }
+    
+    $stmt->close();
+}
+
+/**
+ * Adds a contact to direct messages based on email address
+ * 
+ * This function establishes a direct messaging connection between the current user 
+ * and another user identified by their email address. It inserts a record into the 
+ * directmessage table with the appropriate relationship details.
+ * 
+ * @param string $email The email address of the user to add to direct messages
+ * @throws Exception If the user with the provided email is not found
+ * @throws Exception If the database operation to add the contact fails
+ * @global object $_conn Database connection object
+ * @return void
+ */
+function AddContactIDToDM($email){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $contactListID = getContactListIdOfUser();
+    $OtherPeopleID = getuserIdFromEmail($email);
+    
+    if (empty($OtherPeopleID)) {
+        throw new Exception("User with email $email not found");
+    }
+    
+    // First get the friendship ID from the friends table
+    $sql = "SELECT id FROM friends WHERE ContactId = ? AND user_id = ? AND friend_id = ?";
+    $stmt = $_conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Database error: " . $_conn->error);
+    }
+    
+    $stmt->bind_param("iii", $contactListID, $userID, $OtherPeopleID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        throw new Exception("Friendship record not found. Please add contact first.");
+    }
+    
+    $friendship = $result->fetch_assoc();
+    $friendshipId = $friendship['id'];
+    $stmt->close();
+    
+    // Now insert into directmessage using the friendship ID
+    $sql = "INSERT INTO directmessage (ContactListID, SenderID, ReceiverID) VALUES (?, ?, ?)";
+    $stmt = $_conn->prepare($sql);
+    
+    if (!$stmt) {
+        throw new Exception("Database error: " . $_conn->error);
+    }
+    
+    $stmt->bind_param("iii", $contactListID, $userID, $friendshipId);
+    $stmt->execute();
+    
+    if ($stmt->affected_rows === 0) {
+        throw new Exception("Failed to add contact to direct messages");
+    }
+    
+    $stmt->close();
+}
+
+/**
+ * Checks if a specified user exists in the current user's friends/contact list
+ *
+ * This function verifies if the user identified by the provided email address
+ * is already in the friends list of the currently logged-in user.
+ *
+ * @param string $email The email address of the potential friend to check
+ * @return bool Returns true if the friend exists in the contact list, false otherwise
+ * @global object $_conn Database connection object
+ * @uses $_COOKIE['UID'] Current user's ID from cookie
+ * @uses getuserIdFromEmail() Function to convert email to user ID
+ */
+function CheckIftheFriendExistInContactList($email){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $friendID = getuserIdFromEmail($email);
+    $sql = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("ii", $userID, $friendID);
+    $stmt->execute();
+    if ($stmt->affected_rows === 0) {
+        return false;
+    }
+    $result = $stmt->get_result();
+    $stmt->close();
+    return $result->num_rows > 0;
+}
+function gettheContactIDWithUserID(){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $sql = "SELECT ContactID FROM contactlist WHERE UserID = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row['ContactID'];
+}
+
+/**
+ * Retrieves all friends from the current user's contact list
+ * 
+ * This function fetches all friend IDs associated with the logged-in user's
+ * contact list from the database. It uses the user ID stored in cookies
+ * and the contact ID obtained through gettheContactIDWithUserID().
+ * 
+ * @global object $_conn Database connection object
+ * @uses $_COOKIE['UID'] Current user's ID
+ * @uses gettheContactIDWithUserID() Function to get the contact ID for the current user
+ * 
+ * @return array An array of associative arrays, each containing a friend_id
+ */
+function GetAlltheUserFromContactList(){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $userContactID = gettheContactIDWithUserID();
+    $sql = "SELECT friend_id FROM friends WHERE ContactId = ? AND user_id = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("ii", $userContactID,$userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = [];
+    while ($row = $result->fetch_assoc()) {
+        $rows[] = $row;
+    }
+    $stmt->close();
+    return $rows;
+}
+
+function SelectLastmessage($senderID){
+    global $_conn;
+    $userID = $_COOKIE['UID'];
+    $userContactID = gettheContactIDWithUserID();
+    $sql = "SELECT MessageText, CreatedTime, FriendID FROM directmessage WHERE ContactListID = ? AND SenderID = ? AND ReceiverID = ? AND FriendID = ? ORDER BY CreatedTime DESC LIMIT 1";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("iiii", $userContactID,$userID, $senderID);
+    $stmt->execute();
+    if ($stmt->affected_rows === 0) {
+        $stmt->close();
+        $sql = "SELECT friend_id, created_at FROM friends WHERE ContactId = ? AND user_id = ? AND friend_id = ?";
+        $stmt = $_conn->prepare($sql);
+        $stmt->bind_param("iii", $userContactID,$userID, $senderID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        $row['MessageText'] = "Enter Something to start the conversation";
+        return $row;
+    }
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row;
+}
+
+function createGroup($groupname, $groupDesc, $groupmembers, $ROLE){
+    global $user_id;
+    $CreatorEmail = $_COOKIE['EMAIL'];
+    if (!is_array($groupmembers)) {
+        $groupmembers = explode(',', $groupmembers); // Convert "email1,email2" to an array
+    }
+    
+    $timeStamp = time();
+    $uniqueGroupName = $groupname . "_" . $timeStamp;
+    
+    $InsertGroupInfo = Query("INSERT INTO groupinfo (GroupName, GroupDesc, GroupMemberNo) VALUES (?, ?, ?)", "ssi", [$uniqueGroupName, $groupDesc, 0], "Failed to create group", "none", "INSERT");
+    if (!$InsertGroupInfo){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to create group.'
+        ]);
+        exit;
+    }
+
+    // Get the ID of the newly created group
+    $NewCreateGroupInfoID = Query("SELECT id FROM groupinfo WHERE GroupName = ? ORDER BY GroupCreatedTime DESC LIMIT 1", "s", $uniqueGroupName, "Group not found", "single", "SELECT", true);
+
+    // Update the group member count
+    $GetGroupMemberNo = Query("SELECT GroupMemberNo FROM groupinfo WHERE id = ?", "i", $NewCreateGroupInfoID['id'], "Group not found", "single", "SELECT", true);
+
+    if (!$GetGroupMemberNo){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to get group member number.'
+        ]);
+        exit;
+    }
+
+    $GroupInfoID = Query("SELECT id FROM groupinfo WHERE GroupName = ?", "s", $uniqueGroupName, "Group not found", "single", "SELECT", true);
+
+    if (!$GroupInfoID){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to get group ID.'
+        ]);
+        exit;
+    }
+    $addedMembers = 0;
+    if (is_array($groupmembers)) {
+        foreach ($groupmembers as $member) {
+
+            $GetGroupMemberId = Query("SELECT id FROM users WHERE email = ?", "s", $member, "User not found", "single", "SELECT", true);
+        
+            $ROLE = ($member === $CreatorEmail) ? 'ADMIN' : 'MEMBER';
+            $InsertGroupUser = Query("INSERT INTO groupusers (GroupInfoID, GroupName, GroupRole, UserID) VALUES (?, ?, ?, ?)", "issi", [$GroupInfoID['id'], $uniqueGroupName, $ROLE, $GetGroupMemberId['id']], "Failed to add user to group", "none","INSERT");
+            if(!$InsertGroupUser){
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to add user to group.'
+                ]);
+                exit;
+            }else{
+                $addedMembers++;
+            }
+        }
+    }
+
+    if ($addedMembers > 0) {
+        Query("UPDATE groupinfo SET GroupMemberNo = (SELECT COUNT(*) FROM groupusers WHERE GroupInfoID = ?) WHERE id = ?", "ii", [$GroupInfoID['id'], $GroupInfoID['id']], "Cannot Update Group number", "None", "UPDATE");
+
+    }
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Group created successfully.'
+    ]);
+    exit;
+}
+/**
+ * Executes a prepared SQL statement with parameter binding and customizable error handling.
+ * 
+ * This function serves as a wrapper for database operations, handling SQL preparation, 
+ * parameter binding, execution, and result processing.
+ *
+ * @param string $sql The SQL query to execute
+ * @param string $type The types of parameters to bind (e.g., "s" for string, "i" for integer, etc.)
+ * @param mixed $params Either a single value or an array of values to bind to the prepared statement
+ * @param string $errorMessage Error message to display when no results found (defaults to "No data found")
+ * @param string $returnType Controls how results are returned:
+ *                          "array" - returns all rows as associative array
+ *                          "single" - returns a single row as associative array
+ *                          "none" - returns true on success
+ *                          "bool" - returns true if any rows found, false otherwise
+ * @param string $action SQL operation type: "SELECT", "INSERT", or "UPDATE"
+ * @param bool|null $Exit Controls error behavior:
+ *                          true - outputs JSON error response and exits
+ *                          false - outputs JSON error response and returns false
+ *                          null - returns false without JSON response
+ * 
+ * @return mixed Returns data based on $returnType parameter, or false on failure
+ * @throws Exception If database preparation fails
+ */
+function Query($sql, $type, $params, $errorMessage = "No data found", $returnType = "none", $action = "SELECT", $Exit = true){
+    global $_conn;
+    $stmt = $_conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Database error: " . $_conn->error);
+    }
+    
+    // Handle both array and individual parameters
+    if (is_array($params) && count($params) > 1) {
+        // This is a single array of parameters - extract values
+        $bindParams = array_values($params);
+        $stmt->bind_param($type, ...$bindParams);
+    } else {
+        // This is either a single value or already the right format
+        $stmt->bind_param($type, $params);
+    }
+
+    $stmt->execute();
+    
+    if($action === "SELECT"){
+        $result = $stmt->get_result();
+        // Only throw exceptions for no results if we're not doing a boolean check
+        if($result->num_rows === 0 && $returnType !== "bool" && $returnType !== "none"){
+            if (!empty($errorMessage)) {
+                if ($Exit) {
+                    $response = [
+                        'status' => 'warning',
+                        'message' => $errorMessage
+                    ]; 
+                    echo json_encode($response);
+                    exit;
+                }else if($Exit === null){
+                    return false;
+                } else {
+                    $response = [
+                        'status' => 'warning',
+                        'message' => $errorMessage
+                    ]; 
+                    echo json_encode($response);
+                    return false;
+                }
+            }
+        }
+        if ($returnType === "array") {
+            $rows = [];
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+            $stmt->close();
+            return $rows;
+        } else if($returnType === "single"){
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            return $row;
+        } else if ($returnType === "none") {
+            $stmt->close();
+            return true;
+        } else if ($returnType === "bool"){
+            $stmt->close();
+            return $result->num_rows > 0;
+        } else {
+            // Default case if an invalid return type is provided
+            $stmt->close();
+            return false;
+        }
+    }
+    if($action === "INSERT" || $action === "UPDATE"){
+        if ($stmt->affected_rows === 0) {
+            if (!empty($errorMessage)) {
+                if ($Exit) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => $errorMessage
+                    ]; 
+                    echo json_encode($response);
+                    exit;
+                }else if($Exit === null){
+                    return false;
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => $errorMessage
+                    ]; 
+                    echo json_encode($response);
+                    return false;
+                }
+            }
+        }
+        $stmt->close();
+        return true;
+    }
+}
