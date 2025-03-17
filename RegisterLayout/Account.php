@@ -45,12 +45,10 @@ requireAuthentication($_conn);
 
                         $name = $_COOKIE['USERNAME'];
                         $email = $_COOKIE['EMAIL'];
-                        $type = $_COOKIE['USERTYPE'];
 
                         $user = [
                             "name" => $name,
                             "email" => $email,
-                            "type" => $type
                         ];
 
 
