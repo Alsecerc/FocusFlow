@@ -135,7 +135,7 @@ requireAuthentication($_conn);
             mysqli_close($_conn);
             ?>
 
-            <h1 class="ARTICLE_TITLE">Calendar</h1>
+            <h1 class="CALENDAR_TITLE">Calendar</h1>
             <section class="CALENDAR">
                 <div class="CALENDAR__HEADER">
                     <h1 class="CALENDAR__TITLE" id="calendar__title1"><span id="MONTH"></span> <span id="YEAR"></span></h1>

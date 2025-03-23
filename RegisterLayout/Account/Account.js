@@ -65,7 +65,7 @@ INPUTS.forEach((element) => {
     });
 });
 
-fetch("/RWD_assignment/FocusFlow/RegisterLayout/Account/Account.php") // Fetch JSON data from PHP file
+fetch("../FocusFlow/RegisterLayout/Account/Account.js")
 
 document.getElementById("profile_name").textContent = User.name;
 document.getElementById("profile_email").textContent = User.email;
@@ -74,12 +74,80 @@ document.getElementById("profile_email").textContent = User.email;
 let form = document.getElementsByClassName("PROFILE__DETAILS")[0];
 
 form.addEventListener('submit', function () {
-    fetch("/RWD_assignment/FocusFlow/RegisterLayout/Account/Account.php") // Fetch JSON data from PHP file
+    fetch("../FocusFlow/RegisterLayout/Account.php")
     document.getElementById("profile_name").textContent = User.name;
     document.getElementById("profile_email").textContent = User.email;
 });
 
+document.querySelectorAll(".ACC__BUTTON").forEach(button => {
+    button.addEventListener("click", function () {
+        document.querySelectorAll(".ACCOUNT__SECTION").forEach(div => div.classList.remove("ACTIVE"));
 
+        const targetId = this.getAttribute("data-target");
+        document.getElementById(targetId).classList.add("ACTIVE");
+    });
+});
+
+document.querySelectorAll(".SETTING__BUTTON").forEach(button => {
+    button.addEventListener("click", function () {
+        setTimeout(() => {
+            var theme = document.querySelector("html").getAttribute("data-theme");
+            const radio = document.querySelector(`button[data-theme="default2"]`).querySelector('.ACCOUNT__RADIO');
+            const radio1 = document.querySelector(`button[data-theme="theme_earth2"]`).querySelector('.ACCOUNT__RADIO');
+            const radio2 = document.querySelector(`button[data-theme="theme_neon2"]`).querySelector('.ACCOUNT__RADIO');
+            const radio3 = document.querySelector(`button[data-theme="theme_forest2"]`).querySelector('.ACCOUNT__RADIO');
+
+            radio.innerHTML = "radio_button_unchecked"
+            radio1.innerHTML = "radio_button_unchecked"
+            radio2.innerHTML = "radio_button_unchecked"
+            radio3.innerHTML = "radio_button_unchecked"
+
+            switch (theme) {
+                case "theme_earth":
+                    radio1.innerHTML = "radio_button_checked"
+                    break;
+                case "theme_neon":
+                    radio2.innerHTML = "radio_button_checked"
+                    break;
+                case "theme_forest":
+                    radio3.innerHTML = "radio_button_checked"
+                    break;
+                default:
+                    radio.innerHTML = "radio_button_checked"
+            }
+        }, 100);
+    });
+});
+
+document.getElementsByClassName("ACCOUNT__SECTION")[0].classList.add("ACTIVE");
+
+setTimeout(() => {
+    var theme = document.querySelector("html").getAttribute("data-theme");
+    const radio = document.querySelector(`button[data-theme="default2"]`).querySelector('.ACCOUNT__RADIO');
+    const radio1 = document.querySelector(`button[data-theme="theme_earth2"]`).querySelector('.ACCOUNT__RADIO');
+    const radio2 = document.querySelector(`button[data-theme="theme_neon2"]`).querySelector('.ACCOUNT__RADIO');
+    const radio3 = document.querySelector(`button[data-theme="theme_forest2"]`).querySelector('.ACCOUNT__RADIO');
+
+    radio.innerHTML = "radio_button_unchecked"
+    radio1.innerHTML = "radio_button_unchecked"
+    radio2.innerHTML = "radio_button_unchecked"
+    radio3.innerHTML = "radio_button_unchecked"
+
+    switch (theme) {
+        case "theme_earth":
+            radio1.innerHTML = "radio_button_checked"
+            break;
+        case "theme_neon":
+            radio2.innerHTML = "radio_button_checked"
+            break;
+        case "theme_forest":
+            radio3.innerHTML = "radio_button_checked"
+            break;
+        default:
+            radio.innerHTML = "radio_button_checked"
+
+    }
+}, 100);
 
 
 

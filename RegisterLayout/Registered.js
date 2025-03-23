@@ -156,36 +156,6 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 
 // TODO: Goals noti
 
-// Function to check reminders
-function sendGoalReminder() {
-    fetch('GoalReminder.php', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Goal Reminder Success:', data);
-        // Process the data here
-    })
-    .catch(error => {
-        console.error('Goal Reminder Error:', error);
-        // Handle the error appropriately
-    });
-}
-
-// Run checkReminders every minute
-setInterval(sendGoalReminder, 300000);
-
-sendGoalReminder();
-
 // Settings page
 function changeTheme(theme) {
     if (theme === 'default') {

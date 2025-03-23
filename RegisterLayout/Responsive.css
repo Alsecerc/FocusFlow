@@ -1,5 +1,9 @@
 /* Phone */
 @media (max-width: 468px) {
+    .CONTAINER>div {
+        flex-direction: column;
+    }
+
     .ENTER__MESSAGE {
         min-width: 300px;
     }
@@ -313,13 +317,17 @@
     }
 
     .TODO__CONTAINER {
-     justify-content: center;
+        justify-content: center;
     }
 
     .TODO__CARD {
         margin: 0;
     }
 
+    /* account page */
+    .ACCOUNT__THEME {
+        flex-direction: column;
+    }
 }
 
 /* hides when then sidebar has not enough space */
@@ -331,6 +339,9 @@
 
 /* Tablet */
 @media (min-width: 468px) and (max-width: 1024px) {
+    .CONTAINER>div {
+        flex-direction: column;
+    }
 
     .SIDEBAR {
         min-height: 100%;
@@ -500,6 +511,11 @@
 
     .ENTER__MESSAGE {
         min-width: 18rem;
+    }
+
+    /* account page */
+    .ACCOUNT__THEME {
+        flex-direction: column;
     }
 
 }
