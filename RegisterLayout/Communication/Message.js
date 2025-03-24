@@ -914,7 +914,6 @@ function addEventListenerToMessage() {
         // Remove active class from all and add to clicked one
         allContacts.forEach(contact => contact.classList.remove('active'));
         contactItem.classList.add('active');
-                
         if (contactItem.id) {
             // Show loading indicator or placeholder
             const messagepanel = document.querySelector('.messages-panel');
@@ -954,20 +953,18 @@ function addEventListenerToMessage() {
 							status: 'Offline'
 						});
 						
-					} else {
+					} 
+					else {
 						const ContactName = contactItem.querySelector('h4').textContent;
 						const messageData = data.message;
 						console.log('Message Data Type:', messageData);
-							renderMessagePage({
-								name: ContactName,
-								messages: data.message,
-								status: 'Offline'
-							});
-
+						renderMessagePage({
+							name: ContactName,
+							messages: data.message,
+							status: 'Offline'
+						});
 					}
 				}
-                
-
             })
             .catch(error => {
                 console.error('DM Message Info error:', error);

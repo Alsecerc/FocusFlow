@@ -156,10 +156,20 @@ switch ($data["case"]) {
     case "sendUserMessageToServer":
         $message = $data['message'];
         $FriendID = $data['FriendID'];
-        $MessageType = $data['messageType'];
+        $MessageType = $data['MessageType'];
 
         sendUserMessageToServer($message, $FriendID, $MessageType);
         break;
+
+    case "AddUserNewToContactList":
+        $Email = $data['Email'];
+        AddUserNewToContactList($Email);
+        break;
+
+    case "GetContactListForDM":
+        GetContactListForDM();
+        break;
+
     default:
         echo json_encode([
             'status' => 'error',
@@ -168,49 +178,48 @@ switch ($data["case"]) {
         break;
 }
 
-function sendUserMessageToServer($message, $FriendID, $MessageType){
+function GetContactListForDM(){
     global $user_id;
     $ContactID = getContactListIdOfUser();
-    $FriendUserID = Query("SELECT friend_id FROM friends WHERE id = ? AND user_id = ? AND ContactId = ?", "iii", [$FriendID, $user_id,$ContactID], "Friend ID not found", "single", "SELECT", true);
+    $GetUserRelationShip = Query("SELECT * FROM contact WHERE ContactListID = ?", "i", $ContactID, "No Data Found", "array", "SELECT");
 
-    // echo json_encode([
-    //     'status' => 'success',
-    //     'message' => $FriendUserID
-    // ]);
-    // exit;
-    $SendUserMessage = Query("INSERT INTO directmessage (ContactListID, SenderID, ReceiverID, MessageText, MessageType, FriendID) VALUES (?, ?, ?, ?, ?, ?)", "iiissi", [$ContactID, $user_id, $FriendUserID['friend_id'], $message, $MessageType, $FriendID], "Failed to send message", "none", "INSERT");
-    if($SendUserMessage){
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Message sent successfully'
-        ]);
-        exit;
-    }else{
+    if(empty($GetUserRelationShip)){
         echo json_encode([
             'status' => 'error',
-            'message' => 'Failed to send message'
+            'message' => 'No data found'
         ]);
         exit;
     }
-}
 
-function GetMessageInfoForDM($FriendID){
-    global $user_id;
-    $ContactID = getContactListIdOfUser();
-    $param = [$ContactID, $FriendID];
-    $GetUserChatLog = Query("SELECT * FROM directmessage WHERE ContactListID = ? AND FriendID = ? ORDER BY DirectMessageID DESC", "ii", $param, "No Data Found", "array", "SELECT");
     $finalData = [];
-    foreach ($GetUserChatLog as $value) {
-        $finalData[] = [
-            'ID' => $value['DirectMessageID'],
-            'FriendID' => $value['FriendID'],
-            'SenderID' => $value['SenderID'],
-            'ReceiverID' => $value['ReceiverID'],
-            'MessageText' => $value['MessageText'],
-            'CreatedTime' => $value['CreatedTime'],
-            'CurrentUserName'=> UsernameFromID($value['SenderID']),
-            'type' => $value['MessageType']
+    foreach ($GetUserRelationShip as $relation) {
+        $friendData = [
+            'ID' => $relation['id'],
+            'friend_id' => $relation['contact_id'],
+            'friendName' => "None",
+            'created_at' => $relation['created_at'],
+            'MessageText' => "Enter Something Here"
         ];
+
+
+        $FriendName = Query("SELECT name FROM users WHERE id = ?", "i", $relation['contact_id'], "Username Not found", "single", "SELECT", true);
+        if($FriendName){
+            $friendData['friendName'] = $FriendName['name'];
+        }
+
+        $GetFriendID = Query("SELECT id FROM friends WHERE user_id = ? AND friend_id = ?", "ii", [$relation['contact_id'], $user_id], "Friend ID not found", "single", "SELECT", null);
+
+
+        if (!$GetFriendID) {
+            $GetFriendID = Query("SELECT id FROM friends WHERE user_id = ? AND friend_id = ?", "ii", [$user_id, $relation['contact_id']], "Friend ID not found", "single", "SELECT", true);
+        }
+
+        $GetUserChatLog = Query("SELECT * FROM directmessage WHERE FriendID = ? ORDER BY DirectMessageID DESC LIMIT 1", "i", $GetFriendID['id'], "No Data Found", "single", "SELECT", null);
+        if(!empty($GetUserChatLog)){
+            $friendData['MessageText'] = $GetUserChatLog['MessageText'];
+            $friendData['created_at'] = $GetUserChatLog['CreatedTime'];
+        }
+        $finalData[] = $friendData;
     }
     if(empty($finalData)){
         echo json_encode([
@@ -226,6 +235,134 @@ function GetMessageInfoForDM($FriendID){
         exit;
     }
 }
+
+function AddUserNewToContactList($Email){
+    global $user_id, $_conn;
+
+    $GetFriendID = "SELECT id FROM users WHERE email = ?";
+    $UserFriendID = Query($GetFriendID, "s", $Email, "Friend id not found", "single", "SELECT", true);
+
+    $sqlGetContactID = "SELECT ContactID FROM contactlist WHERE UserID = ?";
+    $contactListID = Query($sqlGetContactID, "i", $user_id, "Contact list not found", "single", "SELECT", true);
+
+    if(!$contactListID){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Contact list not found'
+        ]);
+        exit;
+    }
+
+    $AddUserIntoFriends = "INSERT INTO friends (user_id, friend_id) VALUES (?, ?)";
+    $AddUserIntoFriendsParams = [$user_id, $UserFriendID['id']];
+    $AddUserIntoFriendsResult = Query($AddUserIntoFriends, "ii", $AddUserIntoFriendsParams, "Failed to add user to contact list", "none", "INSERT");
+    if(!$AddUserIntoFriendsResult){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to add user to friend list'
+        ]);
+        exit;
+    }
+
+    $SelectFriendID = "SELECT id FROM friends WHERE user_id = ? AND friend_id = ?";
+    $SelectFriendIDParams = [$user_id, $UserFriendID['id']];
+    $FriendID = Query($SelectFriendID, "ii", $SelectFriendIDParams, "Friend ID not found", "single", "SELECT", true);
+
+    $AddUserToContactList = "INSERT INTO contact (user_id, contact_id, ContactListID, FriendID) VALUES (?, ?, ?, ?)";
+    $AddUserToContactListParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID'], $FriendID['id']];
+    $AddUserToContactListResult = Query($AddUserToContactList, "iiii", $AddUserToContactListParams, "Failed to add user to contact list", "none", "INSERT");
+    if($AddUserToContactListResult){
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'User added to contact list successfully'
+        ]);
+        exit;
+    }
+}
+
+function sendUserMessageToServer($message, $FriendID, $MessageType){
+    global $user_id;
+    $ContactID = getContactListIdOfUser();
+    $FriendUserID = Query("SELECT friend_id FROM friends WHERE user_id = ? AND friend_id = ?", "ii", [$FriendID, $user_id], "Friend ID not found", "single", "SELECT", null);
+
+    if(!$FriendUserID){
+        $FriendUserID = Query("SELECT friend_id FROM friends WHERE user_id = ? AND friend_id = ?", "ii", [$user_id, $FriendID], "Friend ID not found", "single", "SELECT", true);
+    }
+
+    $CheckContactIDExistForContactID = Query("SELECT * FROM contact WHERE user_id = ? AND contact_id = ? AND ContactListID = ?", "iii", [$user_id, $FriendUserID['friend_id'], $ContactID], "Contact ID not found", "bool", "SELECT", null);
+
+    if(!$CheckContactIDExistForContactID){
+        $CreateContactlist = Query("INSERT INTO contactlist (UserID) VALUES (?)", "i", [$FriendUserID['friend_id']], "Failed to create contact list", "none", "INSERT");
+
+    }
+
+    $CheckContactIDIncontact = Query("SELECT * FROM contact WHERE user_id = ? AND contact_id = ? AND ContactListID = ?", "iii", [$FriendUserID['friend_id'], $user_id, $ContactID], "Contact ID not found", "bool", "SELECT", null);
+
+    $GetContactIDFromFriend = Query("SELECT id FROM contact WHERE user_id = ? AND contact_id = ? AND ContactListID = ?", "iii", [$FriendUserID['friend_id'], $user_id, $ContactID], "Contact ID not found", "single", "SELECT", true);
+
+    if(!$CheckContactIDIncontact){
+        $CreateFriendRelation = Query("INSERT INTO friends (user_id, friend_id) VALUES (?, ?)", "ii", [$FriendUserID['friend_id'], $user_id], "Failed to create friend relation", "none", "INSERT");
+
+        $GetFriendIDFromFriend = Query("SELECT id FROM friends WHERE user_id = ? AND friend_id = ?", "ii", [$FriendUserID['friend_id'], $user_id], "Friend ID not found", "single", "SELECT", true);
+
+        $AddUserToContact = Query("INSERT INTO contact (user_id, contact_id, ContactListID, FriendID) VALUES (?, ?, ?, ?)", "iiii", [$FriendUserID['friend_id'], $user_id, $ContactID, $FriendID], "Failed to add user to contact list", "none", "INSERT");
+
+    }
+
+    $SendUserMessage = Query("INSERT INTO directmessage (SenderID, ReceiverID, MessageText, MessageType, FriendID, Status) VALUES (?, ?, ?, ?, ?, ?)", "iissis", [$user_id, $FriendUserID['friend_id'], $message, $MessageType, $FriendID, "Delivered"], "Failed to send message", "none", "INSERT");
+    if($SendUserMessage){
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Message sent successfully'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to send message'
+        ]);
+        exit;
+    }
+}
+function GetMessageInfoForDM($FriendID){
+    global $user_id;
+    $ContactID = getContactListIdOfUser();
+    $param = $FriendID;
+    $GetUserChatLog = Query("SELECT * FROM directmessage WHERE FriendID = ? ORDER BY DirectMessageID DESC", "i", $param, "No Data Found", "array", "SELECT");
+    $finalData = [];
+    foreach ($GetUserChatLog as $value) {
+        $Friend_ID = Query("SELECT * FROM friends WHERE id = ? AND user_id = ?", "ii", [$value['FriendID'], $user_id], "Friend ID not found", "single", "SELECT", true);
+        $finalData[] = [
+            'ID' => $value['DirectMessageID'],
+            'FriendID' => $value['FriendID'],
+            'SenderID' => $value['SenderID'],
+            'sender'=> UsernameFromID($value['SenderID']),
+            'ReceiverID' => $value['ReceiverID'],
+            'Receiver' => UsernameFromID($value['ReceiverID']),
+            'content' => $value['MessageText'],
+            'time' => $value['CreatedTime'],
+            'type' => $value['MessageType'],
+            'name' => UsernameFromID($Friend_ID['friend_id']),
+            'status'=> $Friend_ID['status'] ? $Friend_ID['status'] : 'error'
+
+        ];
+    }
+    
+    if(empty($finalData)){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'No data found'
+        ]);
+        exit;
+    }else{
+        echo json_encode([
+            'status' => 'success',
+            'message' => $finalData
+        ]);
+        exit;
+    }
+}
+
 
 
 function GetOnlyOneContactListForDM($FriendEmail){
@@ -351,51 +488,6 @@ function VerifyDMContactListExist($user_id){
         exit;
     }
 }
-
-function AddUserNewToContactList($Email){
-    global $user_id, $_conn;
-
-    $GetFriendID = "SELECT id FROM users WHERE email = ?";
-    $UserFriendID = Query($GetFriendID, "s", $Email, "Friend id not found", "single", "SELECT", true);
-
-    $sqlGetContactID = "SELECT ContactID FROM contactlist WHERE UserID = ?";
-    $contactListID = Query($sqlGetContactID, "i", $user_id, "Contact list not found", "single", "SELECT", true);
-
-    if(!$contactListID){
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Contact list not found'
-        ]);
-        exit;
-    }
-
-    $AddUserIntoFriends = "INSERT INTO friends (user_id, friend_id, ContactId) VALUES (?, ?, ?)";
-    $AddUserIntoFriendsParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID']];
-    $AddUserIntoFriendsResult = Query($AddUserIntoFriends, "iii", $AddUserIntoFriendsParams, "Failed to add user to contact list", "none", "INSERT");
-    if(!$AddUserIntoFriendsResult){
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Failed to add user to friend list'
-        ]);
-        exit;
-    }
-
-    $SelectFriendID = "SELECT id FROM friends WHERE user_id = ? AND friend_id = ? AND ContactId = ?";
-    $SelectFriendIDParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID']];
-    $FriendID = Query($SelectFriendID, "iii", $SelectFriendIDParams, "Friend ID not found", "single", "SELECT", true);
-
-    $AddUserToContactList = "INSERT INTO contact (user_id, contact_id, ContactListID, FriendID) VALUES (?, ?, ?, ?)";
-    $AddUserToContactListParams = [$user_id, $UserFriendID['id'], $contactListID['ContactID'], $FriendID['id']];
-    $AddUserToContactListResult = Query($AddUserToContactList, "iiii", $AddUserToContactListParams, "Failed to add user to contact list", "none", "INSERT");
-    if($AddUserToContactListResult){
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'User added to contact list successfully'
-        ]);
-        exit;
-    }
-}
-
 function createGroup($groupname, $groupDesc, $groupmembers, $ROLE){
     global $user_id;
     $CreatorEmail = $_COOKIE['EMAIL'];
