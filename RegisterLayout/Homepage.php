@@ -147,13 +147,14 @@ while ($row = $result->fetch_assoc()) {
     <link rel="stylesheet" href="Responsive.css">
     <style>
         header {
-            position: relative; /* Change from fixed/sticky to relative */
+            position: relative;
+            /* Change from fixed/sticky to relative */
             width: 100%;
             z-index: 100;
         }
 
         .dashboard {
-            padding: 2rem;
+            padding: 2rem 3rem;
             display: grid;
             grid-template-columns: 1fr 300px;
             gap: 2rem;
@@ -203,7 +204,7 @@ while ($row = $result->fetch_assoc()) {
             background: white;
             border-radius: 8px;
             padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .calendar-header {
@@ -230,7 +231,7 @@ while ($row = $result->fetch_assoc()) {
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; 
+            overflow: hidden;
         }
 
         .calendar-grid {
@@ -266,7 +267,7 @@ while ($row = $result->fetch_assoc()) {
             background: white;
             border-radius: 8px;
             padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .group-tasks-title {
@@ -374,10 +375,11 @@ while ($row = $result->fetch_assoc()) {
             transform: scale(1.1);
         }
 
-        header .icons{
+        header .icons {
             display: flex;
         }
-        header .icons span{
+
+        header .icons span {
             height: 38px;
             width: 38px;
             margin: 0 1px;
@@ -389,13 +391,16 @@ while ($row = $result->fetch_assoc()) {
             user-select: none;
             border-radius: 50%;
         }
-        .icons span:last-child{
+
+        .icons span:last-child {
             margin-right: -10px;
         }
-        header .icons span:hover{
+
+        header .icons span:hover {
             background: #f2f2f2;
         }
-        header .current-date{
+
+        header .current-date {
             font-size: 1.45rem;
             font-weight: 500;
         }
@@ -455,10 +460,10 @@ while ($row = $result->fetch_assoc()) {
             background-color: #ffeb3b;
         }
 
-        .wrapper header{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        .wrapper header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .days li.has-task {
@@ -469,7 +474,7 @@ while ($row = $result->fetch_assoc()) {
         .days li.has-task:hover {
             background-color: #ffd700;
         }
-        
+
         .days li.overdue {
             background-color: #ff4d4d;
             color: white;
@@ -480,66 +485,65 @@ while ($row = $result->fetch_assoc()) {
         }
 
         .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgb(0,0,0);
-        background-color: rgba(0,0,0,0.4);
-    }
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 8px;
-    }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
 
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    #taskList {
-        list-style-type: none;
-        padding: 0;
-    }
+        #taskList {
+            list-style-type: none;
+            padding: 0;
+        }
 
-    #taskList li {
-        padding: 8px 0;
-        border-bottom: 1px solid #ddd;
-    }
+        #taskList li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
 
-    #viewCalendarButton {
-        background-color: #4a5568;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-top: 20px;
-    }
+        #viewCalendarButton {
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
 
-    #viewCalendarButton:hover {
-        background-color: #3b4a5a;
-    }
-    
+        #viewCalendarButton:hover {
+            background-color: #3b4a5a;
+        }
     </style>
 </head>
 
@@ -549,70 +553,70 @@ while ($row = $result->fetch_assoc()) {
     ?>
     <main>
         <!-- temp SIDEBAR_SHOW -->
-    <?php
-    include "sidebar.php";
-    ?>
+        <?php
+        include "sidebar.php";
+        ?>
 
-    </main>
-    <div class="dashboard">
-        <div class="main-content">
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-card__value" id="total-tasks-completed"><?php echo $totalCompleted; ?></div>
-                    <div class="metric-card__label">Total Tasks Completed</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-card__value" id="weekly-tasks-completed"><?php echo $completedThisWeek . '/' . $totalTasksThisWeek; ?></div>
-                    <div class="metric-card__label">Tasks Completed <span class="week-badge">This Week</span></div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-card__value" id="total-focus-hours"><?php echo $totalTimeSpent; ?></div>
-                    <div class="metric-card__label">Total Focus Hours</div>
-                </div>
-            </div>
 
-            <div class="chart-container">
-                <canvas id="productivityChart"></canvas>
-            </div>
-        </div>
-        
-        <div id="taskModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Tasks for <span id="modalDate"></span></h2>
-                <ul id="taskList"></ul>
-                <button id="viewCalendarButton">View in Calendar</button>
-            </div>
-        </div>
-
-        <div class="sidebar">
-            <div class="wrapper">
-                <header>
-                    <p class="current-date"></p>
-                    <div class="icons">
-                        <span id="prev" class="material-symbols-rounded">&lt</span>
-                        <span id="next" class="material-symbols-rounded">&gt</span>
+        <div class="dashboard">
+            <div class="main-content">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-card__value" id="total-tasks-completed"><?php echo $totalCompleted; ?></div>
+                        <div class="metric-card__label">Total Tasks Completed</div>
                     </div>
-                </header>
-                <div class="calendar">
-                    <ul class="weeks">
-                        <li>Sun</li>
-                        <li>Mon</li>
-                        <li>Tue</li>
-                        <li>Wed</li>
-                        <li>Thu</li>
-                        <li>Fri</li>
-                        <li>Sat</li>
-                    </ul>
-                    <ul class="days"></ul>
+                    <div class="metric-card">
+                        <div class="metric-card__value" id="weekly-tasks-completed"><?php echo $completedThisWeek . '/' . $totalTasksThisWeek; ?></div>
+                        <div class="metric-card__label">Tasks Completed <span class="week-badge">This Week</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card__value" id="total-focus-hours"><?php echo $totalTimeSpent; ?></div>
+                        <div class="metric-card__label">Total Focus Hours</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="productivityChart"></canvas>
                 </div>
             </div>
 
-            <div class="group-tasks-container">
-                <h3 class="group-tasks-title">Group Tasks</h3>
-                <div class="group-tasks-list">
-                    <?php
-                    // Fetch group tasks for the current user (either assigned to or by them)
+            <div id="taskModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Tasks for <span id="modalDate"></span></h2>
+                    <ul id="taskList"></ul>
+                    <button id="viewCalendarButton">View in Calendar</button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="wrapper">
+                    <header>
+                        <p class="current-date"></p>
+                        <div class="icons">
+                            <span id="prev" class="material-symbols-rounded">&lt</span>
+                            <span id="next" class="material-symbols-rounded">&gt</span>
+                        </div>
+                    </header>
+                    <div class="calendar">
+                        <ul class="weeks">
+                            <li>Sun</li>
+                            <li>Mon</li>
+                            <li>Tue</li>
+                            <li>Wed</li>
+                            <li>Thu</li>
+                            <li>Fri</li>
+                            <li>Sat</li>
+                        </ul>
+                        <ul class="days"></ul>
+                    </div>
+                </div>
+
+                <div class="group-tasks-container">
+                    <h3 class="group-tasks-title">Group Tasks</h3>
+                    <div class="group-tasks-list">
+                        <?php
+                        // Fetch group tasks for the current user (either assigned to or by them)
                         $sql = "SELECT DISTINCT gt.*, 
                         t.team_name,
                         u1.name as assigned_by_name,
@@ -625,210 +629,212 @@ while ($row = $result->fetch_assoc()) {
                         JOIN users u2 ON gt.assigned_to = u2.id
                         WHERE gt.assigned_by = ? OR gt.assigned_to = ?
                         ORDER BY gt.due_date ASC";
-                    
-                    $stmt = $_conn->prepare($sql);
-                    if (!$stmt) {
-                        echo $_conn->error;
-                    }
-                    $stmt->bind_param("ii", $userID, $userID);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    
-                    while($task = $result->fetch_assoc()):
-                    ?>
-                        <div class="task-card" data-task-id="<?php echo $task['id']; ?>">
-                            <div class="task-content">
-                                <div class="task-card__heading"><?php echo htmlspecialchars($task['task_name']); ?></div>
-                                <div class="task-card__subheading">
-                                    <?php echo htmlspecialchars($task['team_name']); ?> • 
-                                    Due: <?php echo date('M d', strtotime($task['due_date'])); ?>
-                                </div>
-                            </div>
-                            <div class="task-meta">
-                                <div class="task-card__avatars">
-                                    <div class="task-card__avatar" title="<?php echo htmlspecialchars($task['assigned_by_name']); ?>">
-                                        <?php echo strtoupper(substr($task['assigned_by_name'], 0, 1)); ?>
-                                    </div>
-                                    <div class="task-card__avatar" title="<?php echo htmlspecialchars($task['assigned_to_name']); ?>">
-                                        <?php echo strtoupper(substr($task['assigned_to_name'], 0, 1)); ?>
-                                    </div>
-                                </div>
-                                <div class="task-card__status <?php echo $task['status'] === 'completed' ? 'completed' : ''; ?>"
-                                    onclick="updateTaskStatus(<?php echo $task['id']; ?>)">
-                                    ✓
-                                </div>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
 
-    <script src="Registered.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const tasksDueDates = <?php echo json_encode($tasksDueDates); ?>;
-        const ctx = document.getElementById('productivityChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                datasets: [{
-                    label: 'Tasks Completed',
-                    data: <?php echo json_encode($tasksPerDay); ?>,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }, {
-                    label: 'Messages Sent',
-                    data: <?php echo json_encode($messagesPerDay); ?>,
-                    borderColor: 'rgb(255, 99, 132)',
-                    tension: 0.1
-                }, {
-                    label: 'Team Tasks Completed',
-                    data: <?php echo json_encode($teamTasksPerDay); ?>,
-                    borderColor: 'rgb(54, 162, 235)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Weekly Activity Overview'
+                        $stmt = $_conn->prepare($sql);
+                        if (!$stmt) {
+                            echo $_conn->error;
+                        }
+                        $stmt->bind_param("ii", $userID, $userID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        while ($task = $result->fetch_assoc()):
+                        ?>
+                            <div class="task-card" data-task-id="<?php echo $task['id']; ?>">
+                                <div class="task-content">
+                                    <div class="task-card__heading"><?php echo htmlspecialchars($task['task_name']); ?></div>
+                                    <div class="task-card__subheading">
+                                        <?php echo htmlspecialchars($task['team_name']); ?> •
+                                        Due: <?php echo date('M d', strtotime($task['due_date'])); ?>
+                                    </div>
+                                </div>
+                                <div class="task-meta">
+                                    <div class="task-card__avatars">
+                                        <div class="task-card__avatar" title="<?php echo htmlspecialchars($task['assigned_by_name']); ?>">
+                                            <?php echo strtoupper(substr($task['assigned_by_name'], 0, 1)); ?>
+                                        </div>
+                                        <div class="task-card__avatar" title="<?php echo htmlspecialchars($task['assigned_to_name']); ?>">
+                                            <?php echo strtoupper(substr($task['assigned_to_name'], 0, 1)); ?>
+                                        </div>
+                                    </div>
+                                    <div class="task-card__status <?php echo $task['status'] === 'completed' ? 'completed' : ''; ?>"
+                                        onclick="updateTaskStatus(<?php echo $task['id']; ?>)">
+                                        ✓
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                </div>
+
+                <script src="Registered.js" defer></script>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    const tasksDueDates = <?php echo json_encode($tasksDueDates); ?>;
+                    const ctx = document.getElementById('productivityChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                            datasets: [{
+                                label: 'Tasks Completed',
+                                data: <?php echo json_encode($tasksPerDay); ?>,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            }, {
+                                label: 'Messages Sent',
+                                data: <?php echo json_encode($messagesPerDay); ?>,
+                                borderColor: 'rgb(255, 99, 132)',
+                                tension: 0.1
+                            }, {
+                                label: 'Team Tasks Completed',
+                                data: <?php echo json_encode($teamTasksPerDay); ?>,
+                                borderColor: 'rgb(54, 162, 235)',
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Weekly Activity Overview'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    function updateTaskStatus(taskId) {
+                        const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+                        const statusButton = taskCard.querySelector('.task-card__status');
+
+                        statusButton.classList.toggle('completed');
+
+                        // Send AJAX request to update status
+                        fetch('updateGroupTaskStatus.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: `task_id=${taskId}&status=${statusButton.classList.contains('completed') ? 'completed' : 'pending'}`
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    // Revert the visual change if update failed
+                                    statusButton.classList.toggle('completed');
+                                    alert('Failed to update task status');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                // Revert the visual change if request failed
+                                statusButton.classList.toggle('completed');
+                                alert('Failed to update task status');
+                            });
                     }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
+
+                    const daysTag = document.querySelector(".days"),
+                        currentDate = document.querySelector(".current-date"),
+                        prevNextIcon = document.querySelectorAll(".icons span"),
+                        taskModal = document.getElementById("taskModal"),
+                        modalContent = document.querySelector(".modal-content"),
+                        closeModal = document.querySelector(".close"),
+                        modalDate = document.getElementById("modalDate"),
+                        taskList = document.getElementById("taskList"),
+                        viewCalendarButton = document.getElementById("viewCalendarButton");
+
+                    let date = new Date(),
+                        currYear = date.getFullYear(),
+                        currMonth = date.getMonth();
+                    const months = ["January", "February", "March", "April", "May", "June", "July",
+                        "August", "September", "October", "November", "December"
+                    ];
+
+                    const renderCalendar = () => {
+                        let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
+                            lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
+                            lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
+                            lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
+                        let liTag = "";
+                        for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
+                            liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+                        }
+                        for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
+                            // adding active class to li if the current day, month, and year matched
+                            let isToday = i === date.getDate() && currMonth === new Date().getMonth() &&
+                                currYear === new Date().getFullYear() ? "active" : "";
+
+                            // Check if the current day has a task due
+                            let task = tasksDueDates.find(task => task.due_date === `${currYear}-${String(currMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`);
+                            let hasTask = task ? "has-task" : "";
+                            let isOverdue = task && task.status !== 'completed' && new Date(task.due_date) < new Date() ? "overdue" : "";
+
+                            liTag += `<li class="${isToday} ${hasTask} ${isOverdue}" data-date="${currYear}-${String(currMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}">${i}</li>`;
+                        }
+                        for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
+                            liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
+                        }
+                        currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
+                        daysTag.innerHTML = liTag;
+
+                        // Add event listeners to days
+                        document.querySelectorAll(".days li").forEach(day => {
+                            day.addEventListener("click", (e) => {
+                                const date = e.target.getAttribute("data-date");
+                                showTasksForDate(date);
+                            });
+                        });
+                    }
+
+                    const showTasksForDate = (date) => {
+                        const tasksForDate = tasksDueDates.filter(task => task.due_date === date);
+                        modalDate.innerText = date;
+                        taskList.innerHTML = tasksForDate.map(task => `<li>${task.status === 'completed' ? '✓' : '✗'} ${task.due_date}</li>`).join('');
+                        taskModal.style.display = "block";
+                    }
+
+                    closeModal.onclick = () => {
+                        taskModal.style.display = "none";
+                    }
+
+                    window.onclick = (event) => {
+                        if (event.target == taskModal) {
+                            taskModal.style.display = "none";
                         }
                     }
-                }
-            }
-        });
 
-        function updateTaskStatus(taskId) {
-            const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
-            const statusButton = taskCard.querySelector('.task-card__status');
-            
-            statusButton.classList.toggle('completed');
-            
-            // Send AJAX request to update status
-            fetch('updateGroupTaskStatus.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `task_id=${taskId}&status=${statusButton.classList.contains('completed') ? 'completed' : 'pending'}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    // Revert the visual change if update failed
-                    statusButton.classList.toggle('completed');
-                    alert('Failed to update task status');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Revert the visual change if request failed
-                statusButton.classList.toggle('completed');
-                alert('Failed to update task status');
-            });
-        }
+                    viewCalendarButton.onclick = () => {
+                        window.location.href = "Calendar.php";
+                    }
 
-        const daysTag = document.querySelector(".days"),
-            currentDate = document.querySelector(".current-date"),
-            prevNextIcon = document.querySelectorAll(".icons span"),
-            taskModal = document.getElementById("taskModal"),
-            modalContent = document.querySelector(".modal-content"),
-            closeModal = document.querySelector(".close"),
-            modalDate = document.getElementById("modalDate"),
-            taskList = document.getElementById("taskList"),
-            viewCalendarButton = document.getElementById("viewCalendarButton");
-
-        let date = new Date(),
-            currYear = date.getFullYear(),
-            currMonth = date.getMonth();
-        const months = ["January", "February", "March", "April", "May", "June", "July",
-            "August", "September", "October", "November", "December"];
-
-        const renderCalendar = () => {
-            let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
-                lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
-                lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
-                lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
-            let liTag = "";
-            for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
-                liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
-            }
-            for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
-                // adding active class to li if the current day, month, and year matched
-                let isToday = i === date.getDate() && currMonth === new Date().getMonth()
-                    && currYear === new Date().getFullYear() ? "active" : "";
-
-                // Check if the current day has a task due
-                let task = tasksDueDates.find(task => task.due_date === `${currYear}-${String(currMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`);
-                let hasTask = task ? "has-task" : "";
-                let isOverdue = task && task.status !== 'completed' && new Date(task.due_date) < new Date() ? "overdue" : "";
-
-                liTag += `<li class="${isToday} ${hasTask} ${isOverdue}" data-date="${currYear}-${String(currMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}">${i}</li>`;
-            }
-            for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
-                liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
-            }
-            currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
-            daysTag.innerHTML = liTag;
-
-            // Add event listeners to days
-            document.querySelectorAll(".days li").forEach(day => {
-                day.addEventListener("click", (e) => {
-                    const date = e.target.getAttribute("data-date");
-                    showTasksForDate(date);
-                });
-            });
-        }
-
-        const showTasksForDate = (date) => {
-            const tasksForDate = tasksDueDates.filter(task => task.due_date === date);
-            modalDate.innerText = date;
-            taskList.innerHTML = tasksForDate.map(task => `<li>${task.status === 'completed' ? '✓' : '✗'} ${task.due_date}</li>`).join('');
-            taskModal.style.display = "block";
-        }
-
-        closeModal.onclick = () => {
-            taskModal.style.display = "none";
-        }
-
-        window.onclick = (event) => {
-            if (event.target == taskModal) {
-                taskModal.style.display = "none";
-            }
-        }
-
-        viewCalendarButton.onclick = () => {
-            window.location.href = "Calendar.php";
-        }
-
-        renderCalendar();
-        prevNextIcon.forEach(icon => {
-            icon.addEventListener("click", () => {
-                currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
-                if (currMonth < 0 || currMonth > 11) {
-                    date = new Date(currYear, currMonth, new Date().getDate());
-                    currYear = date.getFullYear();
-                    currMonth = date.getMonth();
-                } else {
-                    date = new Date();
-                }
-                renderCalendar();
-            });
-        });
-    </script>
+                    renderCalendar();
+                    prevNextIcon.forEach(icon => {
+                        icon.addEventListener("click", () => {
+                            currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
+                            if (currMonth < 0 || currMonth > 11) {
+                                date = new Date(currYear, currMonth, new Date().getDate());
+                                currYear = date.getFullYear();
+                                currMonth = date.getMonth();
+                            } else {
+                                date = new Date();
+                            }
+                            renderCalendar();
+                        });
+                    });
+                </script>
+    </main>
 </body>
 
 </html>

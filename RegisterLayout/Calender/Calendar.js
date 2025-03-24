@@ -674,7 +674,7 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 
 
 // Pop up category select
-fetch("/RWD_assignment/FocusFlow/RegisterLayout/Calendar/CalendarFetchCat.php") // Fetch categories from PHP
+fetch("../RegisterLayout/Calendar/CalendarFetchCat.php") // Fetch categories from PHP
     .then(response => response.json())
     .then(data => {
         if (!data.success) {

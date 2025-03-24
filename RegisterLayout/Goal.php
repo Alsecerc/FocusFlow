@@ -32,7 +32,7 @@ requireAuthentication($_conn);
         ?>
 
         <article class="GOAL__MAIN">
-            <div style="display: flex; justify-content:space-between; align-items:center;">
+            <div class="GOAL__TITLE" style="display: flex; justify-content:space-between; align-items:center;">
                 <h2>Your Goals</h2>
                 <div>
                     <button class="GOAL__SET" onclick="togglePopup()">Add Goal</button>
