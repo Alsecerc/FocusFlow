@@ -20,15 +20,16 @@ document.getElementById("test").addEventListener("click", function() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            case: "GetMessageInfoForDM",  // Changed from "action" to "case" to match server expectation
+            case: "sendUserMessageToServer",  // Changed from "action" to "case" to match server expectation
             name: "test",
             description: "testing",
             members: ["poopie@gmail.com", 'janesmith@example.com', 'michaelbrown@example.com', 'test@gmail.com'],
             role: "MEMBER",
-            Email: "poopie@gmail.com",
-            FriendID: 1,
+            Email: "loltian8112@gmail.com",
+            FriendID: 21,
             message: "Hello, this is a test message.",
-            MessageType: "TEXT"
+            MessageType: "TEXT",
+            status: "None"
         })
     })
     .then(data => {
