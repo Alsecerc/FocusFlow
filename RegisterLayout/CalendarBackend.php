@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $stmt->close();
             } else {
+
                 // Update overdue tasks
                 $currentDate = date('Y-m-d');
                 $sql = "UPDATE tasks SET status = 'Timeout' WHERE end_date < ? AND (status != 'Timeout' AND status != 'Complete')";
