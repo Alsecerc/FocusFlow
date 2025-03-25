@@ -34,10 +34,12 @@ function updateUserTaskStatus(taskID, newStatus) {
 
 // change status if task is later then current date
 function checkOverdueTasks() {
-    fetch('/RWD_assignment/FocusFlow/RegisterLayout/Calendar/CalendarUpdateTask.php', {
+    fetch('../RegisterLayout/Calendar/CalendarBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=Update'
+        body: new URLSearchParams({
+            action: 'Update'
+        })
     })
         .then(response => response.text())
         .then(data => {
@@ -673,30 +675,30 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 }
 
 
-// Pop up category select
-fetch("../RegisterLayout/Calendar/CalendarFetchCat.php") // Fetch categories from PHP
-    .then(response => response.json())
-    .then(data => {
-        if (!data.success) {
-            console.error("Error:", data.message);
-            return;
-        }
+// // Pop up category select
+// fetch("../RegisterLayout/Calendar/CalendarFetchCat.php") // Fetch categories from PHP
+//     .then(response => response.json())
+//     .then(data => {
+//         if (!data.success) {
+//             console.error("Error:", data.message);
+//             return;
+//         }
 
-        let dropdown = document.getElementById("task_group");
-        dropdown.innerHTML = ""; // Clear existing options
+//         let dropdown = document.getElementById("task_group");
+//         dropdown.innerHTML = ""; // Clear existing options
 
-        if (data.categories.length > 0) {
-            data.categories.forEach(category => {
-                let option = document.createElement("option");
-                option.value = category;
-                option.textContent = category;
-                dropdown.appendChild(option);
-            });
-        } else {
-            console.warn("No categories found.");
-        }
-    })
-    .catch(error => console.error("Fetch error:", error));
+//         if (data.categories.length > 0) {
+//             data.categories.forEach(category => {
+//                 let option = document.createElement("option");
+//                 option.value = category;
+//                 option.textContent = category;
+//                 dropdown.appendChild(option);
+//             });
+//         } else {
+//             console.warn("No categories found.");
+//         }
+//     })
+//     .catch(error => console.error("Fetch error:", error));
 
 
 let dropdown = document.getElementById("task_group");
