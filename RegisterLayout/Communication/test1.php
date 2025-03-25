@@ -54,7 +54,7 @@ document.getElementById("test").addEventListener("click", function() {
         },
         body: JSON.stringify({
             case: "sendUserMessageToServer",  // Changed from "action" to "case" to match server expectation
-            name: "test",
+            name: "sigma",
             description: "testing",
             members: ["poopie@gmail.com", 'janesmith@example.com', 'michaelbrown@example.com', 'test@gmail.com'],
             role: "MEMBER",
