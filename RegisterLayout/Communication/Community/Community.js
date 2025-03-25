@@ -90,7 +90,6 @@ function addMember() {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
-            body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
         })
             .then(response => response.text())
             .then(data => {
@@ -110,7 +109,6 @@ function removeMember() {
         fetch("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `action=RemoveMember&team_name=${teamName}&member_name=${memberName}`
             body: `action=RemoveMember&team_name=${teamName}&member_name=${memberName}`
         })
             .then(response => response.text())
@@ -133,7 +131,6 @@ function updateStatus(taskID, newStatus) {
     fetch('/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `action=UpdateTask&task_id=${taskID}&status=${newStatus}`
         body: `action=UpdateTask&task_id=${taskID}&status=${newStatus}`
     })
         .then(response => response.text())
@@ -313,7 +310,6 @@ if (taskList) {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: `action=DeleteTask&task_id=${taskId}`
-                body: `action=DeleteTask&task_id=${taskId}`
             })
                 .then(response => response.json())
                 .then(data => {
@@ -334,58 +330,53 @@ const deleteButton = document.getElementById("deleteTeam");
 if (deleteButton) {
     deleteButton.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent default link behavior
-if (deleteButton) {
-    deleteButton.addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default link behavior
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function (event) {
+                event.preventDefault(); // Prevent default link behavior
 
-        // Show confirmation popup
-        let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
-        // Show confirmation popup
-        let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
+                // Show confirmation popup
+                let confirmDelete = confirm("Are you sure you want to delete this team? This action cannot be undone.");
 
-        if (confirmDelete) {
-            // Get team name & ID from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const teamName = urlParams.get("team");
-        if (confirmDelete) {
-            // Get team name & ID from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const teamName = urlParams.get("team");
+                if (confirmDelete) {
+                    // Get team name & ID from the URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const teamName = urlParams.get("team");
 
-            if (teamName) {
-                // Send delete request to PHP
-                fetch("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=DeleteTeam&team=${encodeURIComponent(teamName)}`
-                })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert(data); // Show response from server
-                        window.location.href = "Homepage.php"; // Redirect to homepage after deletion
-                    })
-            } else {
-                alert("Error: Team name not found!");
-            }
+                    if (teamName) {
+                        // Send delete request to PHP
+                        fetch("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `action=DeleteTeam&team=${encodeURIComponent(teamName)}`
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                alert(data); // Show response from server
+                                window.location.href = "Homepage.php"; // Redirect to homepage after deletion
+                            })
+                    } else {
+                        alert("Error: Team name not found!");
+                    }
+                }
+            });
         }
+
+
+
+        // responsive
+
+        document.querySelector(".RESPONSIVE__MEMBER_BUTTON").addEventListener("click", function () {
+            let MemberList = document.querySelector(".COMMUNITY1__MEMBER");
+            let MemberListIcon = document.querySelector(".RESPONSIVE__SHOW_ICON");
+
+            MemberList.classList.toggle("SHOW__MEMBER");
+            if (MemberList.classList.contains("SHOW__MEMBER")) {
+                MemberListIcon.innerHTML = "keyboard_double_arrow_right";
+            } else {
+                MemberListIcon.innerHTML = "keyboard_double_arrow_left";
+            }
+        });
     });
 }
-
-
-
-// responsive
-
-document.querySelector(".RESPONSIVE__MEMBER_BUTTON").addEventListener("click", function () {
-    let MemberList = document.querySelector(".COMMUNITY1__MEMBER");
-    let MemberListIcon = document.querySelector(".RESPONSIVE__SHOW_ICON");
-
-    MemberList.classList.toggle("SHOW__MEMBER");
-    if (MemberList.classList.contains("SHOW__MEMBER")) {
-        MemberListIcon.innerHTML = "keyboard_double_arrow_right";
-    } else {
-        MemberListIcon.innerHTML = "keyboard_double_arrow_left";
-    }
-});
-

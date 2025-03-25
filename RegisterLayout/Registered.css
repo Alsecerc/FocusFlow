@@ -634,6 +634,7 @@ header {
     top: 150%;
     left: 100%;
     transform: translateX(-70%);
+    z-index: 100000;
 
     padding: 1rem;
     box-shadow: var(--SHADOW-WHITEBG);
@@ -878,7 +879,6 @@ header {
 
     display: block;
 
-
     position: fixed;
     top: 50%;
     left: 50%;
@@ -893,6 +893,15 @@ header {
     box-shadow: var(--SHADOW-WHITEBG);
 }
 
+.NEW__TEAM__SURVEY > h3 {
+    margin: var(--MARGIN);
+}
+
+
+#createCommunityForm > * {
+    margin: var(--MARGIN);
+}
+
 .NEW__TEAM__SURVEY_SHOW {
     transform: translate(-50%, -50%);
 
@@ -905,6 +914,14 @@ header {
     padding: var(--PADDING-TB) var(--PADDING-LR);
 }
 
+.NEW__TEAM__BUTTON {
+
+    border-radius: var(--BORDER-RD-CONTACT);
+
+    color: var(--COLOR-LIGHT1);
+    background-color: var(--COLOR-DARK3);
+    padding: var(--PADDING-NORMAL);
+}
 
 
 
@@ -3230,6 +3247,8 @@ p.MEMBER:hover {
     border-radius: var(--BORDER-RD-CONTACT);
     padding: 20px;
     box-shadow: var(--COLOR-DARK2);
+
+    display: flex;
 }
 
 .progress-bar {

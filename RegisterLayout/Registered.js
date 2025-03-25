@@ -89,11 +89,21 @@ function markNotificationsAsRead() {
 let ToggleNewComms = document.querySelector(".NAV__TITLE__ADD");
 
 if (ToggleNewComms) {
-    ToggleNewComms.addEventListener('click', function() {
+    ToggleNewComms.addEventListener('click', function () {
         let NEW__TEAM__SURVEY = document.querySelector(".NEW__TEAM__SURVEY");
         NEW__TEAM__SURVEY.classList.toggle("NEW__TEAM__SURVEY_SHOW");
     });
 }
+
+let CloseNewComms = document.querySelector(".close");
+
+if (CloseNewComms) {
+    CloseNewComms.addEventListener('click', function () {
+        let NEW__TEAM__SURVEY = document.querySelector(".NEW__TEAM__SURVEY");
+        NEW__TEAM__SURVEY.classList.remove("NEW__TEAM__SURVEY_SHOW");
+    });
+}
+
 
 let INPUTSB = getQueryAll('.INPUT__BOX__SIDEBAR');
 
@@ -114,23 +124,23 @@ INPUTSB.forEach((element) => {
     });
 });
 
-
-
-let resetButton = document.querySelector(".TEAM__RESET");
-if (resetButton) {
-    resetButton.addEventListener('click', function () {
-        let INPUTSB = getQueryAll('.INPUT__BOX__SIDEBAR');
-
-        INPUTSB.forEach((element) => {
-            let INPUT = element.querySelector(".INPUT__INPUT__SB");
-            let PLACEHOLDER = element.querySelector(".INPUT__PLACEHOLDER");
-            PLACEHOLDER.classList.remove("INVALID_PLACEHOLDER");
-            INPUT.classList.remove("INVALID_BORDER");
-            PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
-            INPUT.classList.remove("VALID_BORDER");
-        });
+document.getElementById("createCommunityForm").onsubmit = function (event) {
+    event.preventDefault();
+    let communityName = document.getElementById("newteam").value;
+    fetch("RegisteredBackend.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "communityName=" + encodeURIComponent(communityName)
     })
-}
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); 
+            } else {
+                document.getElementById("errorMsg").textContent = data.message;
+            }
+        });
+};
 
 
 
@@ -152,6 +162,11 @@ function InvalidInput(INPUT, PLACEHOLDER) {
         PLACEHOLDER.classList.remove("VALID_PLACEHOLDER");
     }
 }
+
+
+
+
+
 
 
 // TODO: Goals noti

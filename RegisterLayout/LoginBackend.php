@@ -22,44 +22,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Username exists, fetch the user data
         $user = mysqli_fetch_assoc($resultName);
         $storedPassword = $user['password'];
-        
+
         // Check if password matches
         if (verifyPassword($password, $storedPassword)) {
             // Store user data in session variables
             $_SESSION['userID'] = $user['id'];
             $_SESSION['userName'] = $user['name'];
             $_SESSION['userEmail'] = $user['email'];
-            $_SESSION['usertype'] = $user['usertype'];                                                              
-            
-            // IMPORTANT: Create the auth session first, before any redirects
+            $_SESSION['usertype'] = $user['usertype'];
+
+
             $authResult = createAuthSession($user['id'], $_conn);
-            
+
             if ($authResult) {
-                // Only redirect after cookies are set
+                logLogin($_conn, $user['id'], true);
                 echo "<script>alert('Welcome back, {$user['name']}!'); window.location.href='Homepage.php';</script>";
                 exit();
             } else {
+                logLogin($_conn, $user['id'], false);
                 die("<script>alert('Failed to create authentication session. Please try again.');window.location.href='Login.php';</script>");
             }
         } else {
-            // Password is incorrect
+            logLogin($_conn, $user['id'], false);
             die("<script>alert('Password is incorrect');window.location.href='Login.php';</script>");
         }
     } else {
-        // Username not found
+        logLogin($_conn, null, false);
         die("<script>alert('Username not found');window.location.href='Login.php';</script>");
     }
 }
 
-// Password verification function
-function verifyPassword($inputPassword, $storedHash) {
-    // Handle both hashed and non-hashed passwords
-    if (substr($storedHash, 0, 1) === '$') {
-        // Password is already hashed
-        return password_verify($inputPassword, $storedHash);
-    } else {
-        // Legacy password (not hashed)
-        return $inputPassword === $storedHash;
-    }
-}
-?>
+

@@ -15,11 +15,7 @@
     <?php  include "../ModSidebar.php"; ?>
 
     <main>
-        <header>
-            <button class="HEADER__MENU_BUTTON">
-                <div class="HEADER__MENU_ICON"></div>
-            </button>
-        </header>
+
 
     </main>
 

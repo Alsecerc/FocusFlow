@@ -1,5 +1,6 @@
 <?php
 include "conn.php";
+include 'AccountVerify.php';
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
 $username = mysqli_real_escape_string($_conn, $_POST['username']);
@@ -28,7 +29,9 @@ if ($password === $confirmPassword) {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);// Hash the password
     $sql = "INSERT INTO users (name, email, password, last_Login) VALUES ('$username', '$email', '$hashedPassword', '$lastLogin')";
     if (mysqli_query($_conn, $sql)) {
-        // Account successfully registered
+        $userId = mysqli_insert_id($_conn);
+
+        logSignup($_conn, $userId, true);
         die("<script>alert('Account has been registered successfully.');window.location.href='Login.php';</script>");
     } else {
         // Query failed
