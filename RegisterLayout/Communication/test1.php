@@ -4,6 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Contact API</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #test {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #test:hover {
+            background-color: #555;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #444;
+            background-color: #1e1e1e;
+            border-radius: 4px;
+            color: #ddd;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
     <button id="test">Test</button>
@@ -26,7 +59,7 @@ document.getElementById("test").addEventListener("click", function() {
             members: ["poopie@gmail.com", 'janesmith@example.com', 'michaelbrown@example.com', 'test@gmail.com'],
             role: "MEMBER",
             Email: "loltian8112@gmail.com",
-            FriendID: 21,
+            FriendID: 1,
             message: "Hello, this is a test message.",
             MessageType: "TEXT",
             status: "None"
