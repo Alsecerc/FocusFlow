@@ -52,7 +52,13 @@
     ?>
 
     <nav class="SIDEBAR__NAV COMMUNITY">
-        <h4 class="NAV_TITLE">Community</h4>
+        <h4 class="NAV_TITLE" style="margin-top: 1rem;">Community
+            <button class="NAV__TITLE__ADD" style="display:flex; justify-content:center; align-items:center;">
+                <span class="material-icons">
+                    add_circle
+                </span>
+            </button>
+        </h4>
         <ul>
             <?php if ($result->num_rows > 0): ?>
                 <?php while ($row = $result->fetch_assoc()): ?>
@@ -68,4 +74,18 @@
             <?php endif; ?>
         </ul>
     </nav>
+</div>
+
+
+<div class="NEW__TEAM__SURVEY">
+    <span class="close">&times;</span>
+    <h3>Create New Community</h3>
+    <form id="createCommunityForm">
+        <label class="INPUT__BOX__SIDEBAR">
+            <input type="text" name="newteam" id="newteam" class="INPUT__INPUT__SB" required>
+            <span class="INPUT__PLACEHOLDER">Community Name</span>
+        </label>
+        <button type="submit" class="NEW__TEAM__BUTTON">Create</button>
+    </form>
+    <p id="errorMsg" style="color: red;"></p>
 </div>

@@ -4,6 +4,12 @@ session_start();
 include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/AccountVerify.php";
 // requireAuthentication($_conn);
 
+if (isset($_COOKIE['UID'])) {
+    $username = htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES, 'UTF-8'); 
+    echo "<script>alert('Welcome back, $username');window.location.href='Homepage.php'</script>";
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +21,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/Ac
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>Sign in</title>
+    <title>Log In</title>
     <link rel="stylesheet" href="loginandsignup.css">
 </head>
 <body>
@@ -63,7 +69,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/Ac
         <!-- Right Section -->
         <div class="right-section">
             <h1>FocusFlow</h1>
-            <h2>Sign in</h2>
+            <h2>Log In</h2>
             <h3>Don't have an account? <a href="Signup.php">Sign Up</a></h3>
 
             <form id="signinForm" action="LoginBackend.php" method="POST">

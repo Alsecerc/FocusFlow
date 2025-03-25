@@ -201,9 +201,13 @@ while ($row = $result->fetch_assoc()) {
         }
 
         .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+
             background: white;
             border-radius: 8px;
-            padding: 1.5rem;
+            /* padding: 1.5rem; */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
@@ -428,13 +432,6 @@ while ($row = $result->fetch_assoc()) {
             font-size: 1.5em;
         }
 
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            padding: 10px;
-        }
-
         .calendar .weeks,
         .calendar .days {
             display: contents;
@@ -464,6 +461,8 @@ while ($row = $result->fetch_assoc()) {
             display: flex;
             align-items: center;
             justify-content: space-between;
+
+            padding: 0 1rem;
         }
 
         .days li.has-task {
@@ -591,7 +590,7 @@ while ($row = $result->fetch_assoc()) {
 
             <div class="sidebar">
                 <div class="wrapper">
-                    <header>
+                    <header style="z-index:1;">
                         <p class="current-date"></p>
                         <div class="icons">
                             <span id="prev" class="material-symbols-rounded">&lt</span>
