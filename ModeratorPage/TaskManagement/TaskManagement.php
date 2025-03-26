@@ -47,7 +47,7 @@
                         $sql = "
                  SELECT DISTINCT
                      id, task_title AS task_name, task_desc AS task_description, 
-                     status, user_id AS assigned_by, NULL AS assigned_to, -- Ensure assigned_to is present
+                     status, user_id AS assigned_by, category AS assigned_to, -- Ensure assigned_to is present
                      end_date AS due_date, 
                      NULL AS completed_at, NULL AS team_name, NULL AS leader_id, NULL AS member_id
                  FROM tasks

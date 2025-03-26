@@ -52,26 +52,26 @@ function showTaskDetails(taskData) {
             // Group Task Layout
             taskHtml += `
                 <div class="TASK__DETAILS">
-                    <p><strong>Task Name:</strong> ${task.task_name}</p>
+                    <p>${task.task_name}</p>
                     <table class="DETAILS__TABLE">
                         <tr>
-                            <th>Description</th>
-                            <td>${task.task_description}</td>
+                            <th>Description : </th>
+                            <td class="TASK__INDI__DESC">${task.task_description}</td>
                         </tr>
-                        <tr>
-                            <th>Status</th>
+                        <tr class="TASK__INDI__STATUS">
+                            <th>Status : </th>
                             <td>${task.status}</td>
                         </tr>
                         <tr>
-                            <th>Team Name</th>
+                            <th>Team Name : </th>
                             <td>${task.team_name || "N/A"}</td>
                         </tr>
                         <tr>
-                            <th>Username</th>
+                            <th>Username : </th>
                             <td>${assignedBy}</td>
                         </tr>
                         <tr>
-                            <th>Due Date</th>
+                            <th>Due Date : </th>
                             <td>${task.due_date}</td>
                         </tr>
                     </table>
@@ -81,26 +81,27 @@ function showTaskDetails(taskData) {
             taskHtml += `<h3>Individual Task Details</h3>`;
             taskHtml += `
                 <div class="TASK__DETAILS">
-                    <p><strong>Task Name:</strong><br> ${task.task_name}</p>
+                    <p class="wrap-text"><br>${task.task_name}</p>
+                    
                     <table class="DETAILS__TABLE">
                         <tr>
-                            <th>Description</th>
-                            <td>${task.task_description}</td>
+                            <th>Category : </th>
+                            <td>${task.assigned_to}</td>
                         </tr>
                         <tr>
-                            <th>Status</th>
+                            <th>Description : </th>
+                            <td class="TASK__INDI__DESC">${task.task_description}</td>
+                        </tr>
+                        <tr class="TASK__INDI__STATUS">
+                            <th>Status : </th>
                             <td>${task.status}</td>
                         </tr>
                         <tr>
-                            <th>Assigned By</th>
+                            <th>Assigned By : </th>
                             <td>${assignedBy}</td>
                         </tr>
                         <tr>
-                            <th>Assigned To</th>
-                            <td>${assignedTo}</td>
-                        </tr>
-                        <tr>
-                            <th>Due Date</th>
+                            <th>Due Date : </th>
                             <td>${task.due_date}</td>
                         </tr>
                     </table>
@@ -109,7 +110,7 @@ function showTaskDetails(taskData) {
         }
 
         taskHtml += `
-        <div>
+        <div class="TASK__DETAILS__BUTTON">
         <button class="L-CLR">Update</button>
         <button class="L-RED">Delete</button>
         </div>
@@ -119,4 +120,39 @@ function showTaskDetails(taskData) {
 
     displayTaskDetails(taskData);
 }
+
+document.querySelectorAll(".TASK__TABLE tbody tr").forEach(row => {
+    row.addEventListener("click", function () {
+        const taskData = JSON.parse(this.getAttribute("data-task")); // Ensure data is passed
+        showTaskDetails(taskData);
+
+        // Delay styling to ensure the DOM is updated
+        setTimeout(() => {
+            const statusCell = document.querySelector(".TASK__INDI__STATUS td"); // Get updated status
+            if (!statusCell) return;
+
+            const statusText = statusCell.textContent.trim().toLowerCase();
+
+            // Remove previous classes
+            statusCell.classList.remove("status-warning", "status-info", "status-success", "status-error");
+
+            // Apply new class based on status
+            if (["pending", "in progress", "completed"].includes(statusText)) {
+                statusCell.classList.add("team-status");
+            } else if (["incomplete", "complete", "timeout"].includes(statusText)) {
+                statusCell.classList.add("individual-status");
+            }
+
+            // Additional color styling
+            if (statusText === "incomplete" || statusText === "in progress") {
+                statusCell.classList.add("L-YEL");
+            } else if (statusText === "completed" || statusText === "complete") {
+                statusCell.classList.add("L-GRE");
+            } else if (statusText === "pending" || statusText === "timeout") {
+                statusCell.classList.add("L-RED");
+            }
+        }, 50); // Small delay to allow DOM update
+    });
+});
+
 

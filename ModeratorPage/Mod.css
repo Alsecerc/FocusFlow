@@ -88,6 +88,20 @@ button {
     border: none;
 }
 
+th,
+td {
+    text-align: start;
+}
+
+td {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+th {
+    white-space: nowrap;
+}
+
 .material-icons {
     color: var(--COLOR-LIGHT1);
 }
@@ -334,10 +348,12 @@ button {
 
 .L-YEL {
     background-color: rgb(251, 250, 160);
+    color: var(--COLOR-DARK3);
 }
 
 .L-GRE {
     background-color: rgb(147, 253, 154);
+    color: var(--COLOR-DARK3);
 }
 
 .L-CLR {
@@ -346,6 +362,13 @@ button {
 
 .HEADER a {
     color: var(--COLOR-LIGHT1);
+}
+
+.wrap-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
 }
 
 /* Dashboard */
@@ -546,11 +569,24 @@ canvas {
 .TASK__TABLE {
     margin-top: 1rem;
     width: 100%;
+    height: 100%;
     border-collapse: collapse;
     font-size: 1rem;
     text-align: left;
     table-layout: fixed;
+
+    display: flex;
+    flex: 1;
     flex-grow: 1;
+    flex-direction: column;
+}
+
+.TASK__TABLE thead {
+    flex-shrink: 0;
+    /* Prevents header from shrinking */
+    display: table;
+    /* Keeps table structure */
+    width: 100%;
 }
 
 .TASK__TABLE thead tr,
@@ -566,7 +602,8 @@ canvas {
     max-height: 450px;
     overflow-x: hidden;
     overflow-y: auto;
-    /* flex-grow: 1; */
+
+    flex-grow: 1;
 }
 
 
@@ -626,18 +663,26 @@ canvas {
 }
 
 .TASK__DETAILS {
+    flex: 1;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    justify-content: center;
+
     z-index: 1;
     position: relative;
     color: var(--COLOR-LIGHT1);
     padding: var(--PADDING-TB) var(--PADDING-LR);
+
+    height: 100%;
+    width: 100%;
 }
 
 .TASK__DETAILS>p {
+    height: fit-content;
     font-size: 1.5rem;
     border-bottom: 2px solid var(--COLOR-LIGHT1);
+    margin-bottom: 2rem;
 }
 
 .TASK__DETAILS::before {
@@ -660,7 +705,28 @@ canvas {
     flex-direction: column;
 }
 
-th, 
-td {
-    text-align: start;
+
+.DETAILS__TABLE th,
+.DETAILS__TABLE td {
+    padding: 0.5rem 0.3rem;
 }
+
+.DETAILS__TABLE th {
+    white-space: nowrap;
+    text-align: left;
+    padding-right: 10px;
+    width: 1%;
+}
+
+.TASK__INDI__DESC {
+    max-height: 100px; 
+    overflow-y: auto;
+    display: block; 
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.TASK__DETAILS__BUTTON {
+    margin-top: var(--MARGIN);
+}
+
