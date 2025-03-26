@@ -28,6 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
             tabButtons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
             
+            // Clear all active contacts when switching tabs
+            document.querySelectorAll('.contact-item').forEach(contact => {
+                contact.classList.remove('active');
+            });
+            
             const tabType = this.dataset.tab;
             // Show/hide create group button based on active tab
             if (tabType === 'groups') {
@@ -35,12 +40,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 createGroupBtn.style.display = 'flex';
 				contactsPanelGroup.classList.remove('hidden');
 				contactsPanelDM.classList.add('hidden');
+                
+                // Clear the message panel when switching tabs
+                const messagepanel = document.querySelector('.messages-panel');
+                messagepanel.innerHTML = '<div class="select-conversation"><span>No conversation selected</span>Select a conversation from the sidebar to start messaging</div>';
             } else {
 				createContactBtn.style.display = 'flex';
                 createGroupBtn.style.display = 'none';
 				contactsPanelGroup.classList.add('hidden');
 				contactsPanelDM.classList.remove('hidden');
-
+                
+                // Clear the message panel when switching tabs
+                const messagepanel = document.querySelector('.messages-panel');
+                messagepanel.innerHTML = '<div class="select-conversation"><span>No conversation selected</span>Select a conversation from the sidebar to start messaging</div>';
             }
         });
     });
@@ -277,6 +289,7 @@ function validateEmail(email) {
 }
 
 function ContinousUpdatePage(){
+	// First fetch updates group contacts
 	fetchDataOrsendData("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetGroupContactList", {
 		method: 'GET',
 		headers: {
@@ -301,6 +314,46 @@ function ContinousUpdatePage(){
 	})
 	.catch(error => {
 		console.error('Contact List error:', error);
+	});
+
+	// Second fetch updates direct message contacts - fixed endpoint name
+	fetchDataOrsendData("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetContactListForDM", {
+		method: 'GET',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}
+	})
+	.then(data => {
+		console.log('Update contact DM list every second:', data);
+		if (data.status === 'success') {
+			const NewData = data.message;
+			console.log('New Data:', NewData);
+			// Updated property names to match API response
+			NewData.forEach(contact => {
+				EditDMContactList({
+					ContactID: contact.ID,
+					name: contact.friendName,
+					message: contact.MessageText,
+					time: contact.created_at
+				});
+			});
+		}
+	})
+	.catch(error => {
+		console.error('Contact List error:', error);
+	});
+}
+
+// Adding the missing EditDMContactList function
+function EditDMContactList(DMlistData){
+	const DMContactList = document.querySelectorAll('.contacts-list.DirectMessages .contact-item');
+	DMContactList.forEach(contact => {
+		if (contact.id === String(DMlistData.ContactID)) {
+			contact.querySelector('h4').textContent = DMlistData.name;
+			contact.querySelector('p').textContent = DMlistData.message;
+			contact.querySelector('.contact-time').textContent = DisplayHourMin(DMlistData.time);
+		}
 	});
 }
 
@@ -344,6 +397,10 @@ function loadDefaultPage() {
 	fetchGroupContactListFromServer();
 	// Fetch DM contact list from server
 	VerifyDMContactListExist();
+
+    // Set initial message panel state
+    const messagepanel = document.querySelector('.messages-panel');
+    messagepanel.innerHTML = '<div class="select-conversation"><span>Welcome to FocusFlow Chat</span>Select a conversation from the sidebar to start messaging</div>';
 }
 
 function createdTime() {
@@ -918,8 +975,7 @@ function addEventListenerToMessage() {
             // Show loading indicator or placeholder
             const messagepanel = document.querySelector('.messages-panel');
             messagepanel.innerHTML = '<div class="loading-messages">Loading messages...</div>';
-            
-            fetchDataOrsendData(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetMessageInfoForDM&FriendID=${contactItem.id}`, {
+            fetchDataOrsendData(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetMessageInfoForDM&Contact_ID=${contactItem.id}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -1320,6 +1376,28 @@ function renderDirectMessageContact(contactData) {
 	
 	// Add to contacts list
 	contactsList.appendChild(contactItem);
+	
+	// Add direct click handler to the new contact
+	contactItem.addEventListener('click', function() {
+		// Clear any active class from other contacts
+		document.querySelectorAll('.contacts-panel.DirectMessages .contact-item').forEach(item => {
+			item.classList.remove('active');
+		});
+		
+		// Add active class to this contact
+		this.classList.add('active');
+		
+		// Show loading indicator
+		const messagepanel = document.querySelector('.messages-panel');
+		messagepanel.innerHTML = '<div class="loading-messages">Loading messages...</div>';
+		
+		// Render empty conversation for brand new contacts
+		renderMessagePage({
+			name: contactData.name,
+			messages: [],
+			status: 'Online'
+		});
+	});
 }
 
 /**
@@ -1575,7 +1653,7 @@ function checkIfFriendInFriendContactList(recipientEmail, overlay, ErrorElement,
 			}
 		}				
 		else if (data.status === 'warning') {
-			if(data.message === 'Friend does not exist' || data.message === 'Contact does not exist'){
+			if(data.message === 'Friend does not exist' || data.message === 'Contact does not exist' || data.message === 'Contact list not found'){
 				console.log('Friend does not exist');
 				// Send the email to the server to add the contact
 				sendAddContact(recipientEmail, overlay);
@@ -1620,6 +1698,16 @@ function sendAddContact(recipientEmail, overlay){
 				suggestions.innerHTML = '';
 			}else{
 				GetDMContactList(recipientEmail);
+				
+				// Add a short delay to allow the contact to be added to the DOM
+				setTimeout(function() {
+					// Find and click the newly added contact
+					const allContacts = document.querySelectorAll('.contacts-panel.DirectMessages .contact-item');
+					const newContact = allContacts[allContacts.length - 1]; // Get the last added contact
+					if (newContact) {
+						newContact.click(); // Trigger click on the new contact
+					}
+				}, 300);
 			}
 			// Success case - no special handling needed
 			console.log('Success:', data);
@@ -1755,6 +1843,28 @@ function appendContactToContactList(contactData) {
 	
 	// Add to contacts list
 	contactsList.appendChild(contactItem);
+	
+	// Add direct click handler to the new contact
+	contactItem.addEventListener('click', function() {
+		// Clear any active class from other contacts
+		document.querySelectorAll('.contacts-panel.DirectMessages .contact-item').forEach(item => {
+			item.classList.remove('active');
+		});
+		
+		// Add active class to this contact
+		this.classList.add('active');
+		
+		// Show loading indicator
+		const messagepanel = document.querySelector('.messages-panel');
+		messagepanel.innerHTML = '<div class="loading-messages">Loading messages...</div>';
+		
+		// Render empty conversation for brand new contacts
+		renderMessagePage({
+			name: contactData.name,
+			messages: [],
+			status: 'Online'
+		});
+	});
 }
 
 function fetchGroupContactListFromServer(){
