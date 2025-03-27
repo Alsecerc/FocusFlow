@@ -147,37 +147,36 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $fileName = basename($file['name']);
             $fileType = $file['type'];
             $fileSize = $file['size'];
-            $targetDir = "uploads/"; // Folder to store files
-            $targetFilePath = $targetDir . $fileName;
+            $fileTmp = $file['tmp_name'];
             $teamName = isset($_POST['team_name']) ? $_POST['team_name'] : '';
 
-            // Ensure the folder exists
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0777, true);
+            // Set max file size (40MB)
+            $maxFileSize = 40 * 1024 * 1024;
+            if ($fileSize > $maxFileSize) {
+                echo "<script>alert('File size exceeds 40MB!'); window.history.back();</script>";
+                exit();
             }
+
+            // Read file content
+            $fileData = file_get_contents($fileTmp);
 
             $userID = $_COOKIE['UID'];
 
-            // Move file to the folder
-            if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-                // Insert file details into the database
-                $sql = "INSERT INTO files (user_id, team_name, file_name, file_type, file_size, file_path, uploaded_at) 
+            // Insert file details into the database
+            $sql = "INSERT INTO files (user_id, team_name, file_name, file_type, file_size, file_data, uploaded_at) 
                         VALUES (?, ?, ?, ?, ?, ?, NOW())";
-                $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("isssis", $userID, $teamName, $fileName, $fileType, $fileSize, $targetFilePath);
-                if ($stmt->execute()) {
-                    echo "<script>
-                                    alert('File uploaded successfully!');
-                                    window.parent.closePopup(); // Closes popup after success
-                                  </script>";
-                } else {
-                    echo "Database error: " . $stmt->error;
-                }
+            $stmt = $_conn->prepare($sql);
+            $stmt->bind_param("isssis", $userID, $teamName, $fileName, $fileType, $fileSize, $fileData);
+
+            if ($stmt->execute()) {
+                echo "<script>
+                            alert('File uploaded successfully!');
+                            window.parent.closePopup();
+                          </script>";
             } else {
-                echo "Failed to upload file.";
+                echo "Database error: " . $stmt->error;
             }
             break;
-
         case "AddTask":
             // Ensure UID cookie and team name exist
             if (!isset($_COOKIE['UID']) || !isset($_GET['team'])) {

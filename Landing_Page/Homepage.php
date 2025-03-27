@@ -17,8 +17,6 @@
 <body>
     <header>
         <div class="HEADER__LEFT">
-            <!--For phone size  -->
-            <!-- Hamburger Menu Icon -->
             <div class="MENU_ICON" onclick="toggleSidebar()">
                 <span class="material-icons">menu</span>
             </div>

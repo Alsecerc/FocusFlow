@@ -17,7 +17,7 @@
     <main class="DASH__MAIN">
         <h1>Moderator Dashboard</h1>
 
-        <section class="WIDGET__CONTAINER">
+        <section class="WIDGET__CONTAINER one">
             <div class="WIDGET one flex-col">
                 <h3 class="WIDGET__TITLE">Overall FocusFlow Stats</h3>
 
@@ -191,44 +191,57 @@
             <div class="WIDGET five flex-col" style="overflow-y: hidden;">
                 <h3 class="WIDGET__TITLE">File Uploads & Storage</h3>
 
-                <div class="flex-col" style="justify-content: space-around; flex-grow: 1; margin: 0 auto;">
-                    <div class="flex-row">
-                        <span class="material-icons">
-                            schedule
-                        </span>
-                        <div>
+                <div class="flex-row" style="justify-content: center; flex-grow: 1;">
+                    <div class="flex-col DASH__FILE__INFO" style="justify-content: space-around; flex-grow: 1; margin: 0 auto; align-items: center; gap:1rem;">
+                        <div class="flex-row">
+                            <span class="material-icons">
+                                star
+                            </span>
+                            <div>
+                                <h4>Top Uploaders</h4>
+                                <ul>
+                                    <?php while ($row = $top_uploaders_result->fetch_assoc()): ?>
+                                        <li><?php echo $row['name'] . " : " . $row['file_count'] . " files"; ?></li>
+                                    <?php endwhile; ?>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="flex-row">
+                            <span class="material-icons">
+                                folder
+                            </span>
+                            <div>
+                                <h4>Total Storage Used</h4>
+                                <p><?php echo $total_storage_mb; ?> MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="DASH__RECENT__UPLOAD">
+                        <div class="recent-header flex-row">
+                            <span class="material-icons">schedule</span>
                             <h4>Recent File Uploads</h4>
-                            <ul>
-                                <?php while ($row = $recent_files_result->fetch_assoc()): ?>
-                                    <li><strong>File : </strong><?php echo $row['file_name']; ?></li>
-                                    <li><strong>Uploaded By : </strong><?php  echo $row['username']; ?></li>
-                                    <li><strong>Uploaded On : </strong><?php echo $row['uploaded_at']; ?></li>
-                                <?php endwhile; ?>
-                            </ul>
                         </div>
-                    </div>
-
-                    <div class="flex-row">
-                        <span class="material-icons">
-                            star
-                        </span>
-                        <div>
-                            <h4>Top Uploaders</h4>
-                            <ul>
-                                <?php while ($row = $top_uploaders_result->fetch_assoc()): ?>
-                                    <li><?php echo $row['name'] . " : " . $row['file_count'] . " files"; ?></li>
-                                <?php endwhile; ?>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flex-row">
-                        <span class="material-icons">
-                            folder
-                        </span>
-                        <div>
-                            <h4>Total Storage Used</h4>
-                            <p><?php echo $total_storage_mb; ?> MB</p>
+                        <div class="recent-table-container">
+                            <table class="recent-table">
+                                <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Uploaded By</th>
+                                        <th>Uploaded On</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = $recent_files_result->fetch_assoc()): ?>
+                                        <tr>
+                                            <td><?php echo $row['file_name']; ?></td>
+                                            <td><?php echo $row['username']; ?></td>
+                                            <td><?php echo $row['uploaded_at']; ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

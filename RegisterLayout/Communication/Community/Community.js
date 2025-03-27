@@ -30,7 +30,7 @@ function openPopup() {
     const teamName = new URLSearchParams(window.location.search).get("team");
 
     // Open the upload page with team_id passed in URL
-    document.getElementById("popupIframe").src = "CommunityPageUpload?team_id=" + encodeURIComponent(teamID) + "&team=" + encodeURIComponent(teamName);
+    document.getElementById("popupIframe").src = "/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityPageUpload?team_id=" + encodeURIComponent(teamID) + "&team=" + encodeURIComponent(teamName);
     document.getElementById("popupOverlay").style.opacity = "1";
     document.getElementById("popupOverlay").style.zIndex = "1000";
 }
@@ -46,7 +46,7 @@ function openPopup1() {
     const teamName = new URLSearchParams(window.location.search).get("team");
 
     // Open the upload page with team_id passed in URL
-    document.getElementById("popupIframe").src = "CommunityPageView?team_id=" + encodeURIComponent(teamID) + "&team=" + encodeURIComponent(teamName);
+    document.getElementById("popupIframe").src = "/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityPageView?team_id=" + encodeURIComponent(teamID) + "&team=" + encodeURIComponent(teamName);
     document.getElementById("popupOverlay").style.opacity = "1";
     document.getElementById("popupOverlay").style.zIndex = "1000";
 }

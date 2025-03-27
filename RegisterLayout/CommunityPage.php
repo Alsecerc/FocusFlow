@@ -174,17 +174,6 @@ requireAuthentication($_conn);
                         </div>
                     <?php endif; ?>
 
-
-                    <?php if ($isLeader): ?>
-                        <div>
-                            <p class="COMMUNITY__HEADER__TITLE">Remove Team</p>
-                            <!-- Add Task Button -->
-                            <a href="#" class="HEADER__UL__ICON" id="deleteTeam">
-                                <span class="material-icons">delete_forever</span>
-                            </a>
-                        </div>
-                    <?php endif; ?>
-
                 </div>
             </section>
 

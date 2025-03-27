@@ -713,6 +713,21 @@ header {
     margin: 0 var(--MARGIN-CONTAINER-LR);
 }
 
+.FEATURE__CONTAINER.DISPLAY:nth-child(even) {
+    animation: APPEAR_LEFT linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 30%;
+}
+
+.FEATURE__CONTAINER.DISPLAY:nth-child(odd) {
+    animation: APPEAR_RIGHT linear;
+    /* animation is trigger base on element position in viewport */
+    animation-timeline: view();
+    /* entry 0 -> animation starts when entering vp at 0 */
+    /* animation completes when the element is 40% visible */
+    animation-range: entry 0 cover 30%;
+}
+
 .FEATURE__IMAGE {
     width: 400px;
     filter: drop-shadow(2px 10px 10px var(--COLOR-DARK1));
@@ -774,20 +789,7 @@ header {
     }
 }
 
-.FEATURE__CONTAINER.DISPLAY:nth-child(even) {
-    animation: APPEAR_LEFT linear;
-    animation-timeline: view();
-    animation-range: entry 0 cover 30%;
-}
 
-.FEATURE__CONTAINER.DISPLAY:nth-child(odd) {
-    animation: APPEAR_RIGHT linear;
-    /* animation is trigger base on element position in viewport */
-    animation-timeline: view();
-    /* entry 0 -> animation starts when entering vp at 0 */
-    /* animation completes when the element is 40% visible */
-    animation-range: entry 0 cover 30%;
-}
 
 .POMODORO__LINK {
     background-color: var(--COLOR-BLUE3);
