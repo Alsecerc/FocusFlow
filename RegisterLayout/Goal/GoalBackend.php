@@ -138,9 +138,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
                 $stmt->close();
                 $_conn->close();
-
+                
                 // ✅ Redirect to clear $_POST data
-                echo "<script>window.location.href='Goal.php'</script>";
+                echo "<script>window.location.href='/RWD_Assignment/FocusFlow/RegisterLayout/Goal.php'</script>";
             } else {
                 $_SESSION['message'] = "Error: Missing goal_id!";
             }

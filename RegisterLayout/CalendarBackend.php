@@ -47,27 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $_conn->prepare($sql);
                 $stmt->bind_param("si", $newStatus, $taskID);
 
-                if ($stmt->execute()) {
-                    echo "success";
-                } else {
-                    echo "error";
-                }
-
+                echo $stmt->execute() ? "success" : "error";
                 $stmt->close();
             } else {
+                // Update overdue tasks, checking both date and time
+                $currentDateTime = date('Y-m-d H:i:s');
 
-                // Update overdue tasks
-                $currentDate = date('Y-m-d');
-                $sql = "UPDATE tasks SET status = 'Timeout' WHERE end_date < ? AND (status != 'Timeout' AND status != 'Complete')";
+                $sql = "UPDATE tasks 
+                            SET status = 'Timeout' 
+                            WHERE CONCAT(end_date, ' ', end_time) < ? 
+                            AND (status != 'Timeout' AND status != 'Complete')";
+
                 $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("s", $currentDate);
+                $stmt->bind_param("s", $currentDateTime);
 
-                if ($stmt->execute()) {
-                    echo "success";
-                } else {
-                    echo "error";
-                }
-
+                echo $stmt->execute() ? "success" : "error";
                 $stmt->close();
             }
             $_conn->close();

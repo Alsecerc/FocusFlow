@@ -14,8 +14,18 @@
 <body>
     <?php  include "../ModSidebar.php"; ?>
 
-    <main>
+    <main class="DASH__MAIN">
+    <div class="WIDGET__CONTAINER three">
+        <div class="WIDGET tm_one">
 
+        </div>
+        <div class="WIDGET tm_two">
+
+        </div>
+        <div class="WIDGET tm_three">
+
+        </div>
+    </div>
 
     </main>
 

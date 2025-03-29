@@ -1,3 +1,20 @@
+console.log("TEST 1: Checking if start time is later than end time");
+
+// Simulate invalid date values
+document.getElementById("start_time").value = "2025-04-05T15:00";
+document.getElementById("end_time").value = "2025-04-04T10:00";
+
+// Manually trigger the validation logic
+let startTime = document.getElementById("start_time").value;
+let endTime = document.getElementById("end_time").value;
+
+if (startTime >= endTime) {
+    console.error("Start time is later than end time. Validation failed.");
+} else {
+    console.log("Start time is before end time.");
+}
+
+
 function togglePopup() {
     let popup = document.querySelector(".GOAL__INPUT");
     let button = document.querySelector(".GOAL__SET");
@@ -11,7 +28,6 @@ function togglePopup() {
         button.innerHTML = "Close";
     }
 }
-
 
 // set min date for starting and ending date
 document.addEventListener("DOMContentLoaded", function () {
@@ -30,8 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     setMinDateTime(); // Set initial min datetime
-
-
 
 
 
@@ -140,11 +154,22 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Error updating tasks:", error));
     }
 
-
     updateOverdueTasks();
 
-    // run every 5 mins
-    // run every 5 mins
     setInterval(updateOverdueTasks, 300000);
-
 });
+
+setInterval(() => {
+    fetch("GoalBackend.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Correct content type
+        body: "action=Reminder" 
+    })
+    .then(response => response.text()) 
+    .then(text => {
+        console.log("Raw response:", text); 
+        return JSON.parse(text); 
+    })
+    .then(data => console.log("Reminder check:", data))
+    .catch(error => console.error("Error parsing JSON:", error));
+}, 1000000);

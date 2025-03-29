@@ -353,5 +353,13 @@ function logLogin($conn, $user_id, $success = true)
 // Logging a user logout
 function logLogout($conn, $user_id, $success = true)
 {
+    if ($success) {
+        $updateQuery = "UPDATE users SET last_login = NOW() WHERE id = ?";
+        $stmt = $conn->prepare($updateQuery);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $stmt->close();
+    }
+
     return logUserActivity($conn, $user_id, 'Logout', $success ? 'Success' : 'Fail');
 }

@@ -80,7 +80,7 @@ requireAuthentication($_conn);
                         ?>
 
 
-                        <form action="../FocusFlow/RegisterLayout/Account/AccountUpdate.php" method="POST" class="PROFILE__DETAILS" onsubmit="return verifyPassword()">
+                        <form action="/RWD_assignment/FocusFlow/RegisterLayout/Account/AccountUpdate.php" method="POST" class="PROFILE__DETAILS" onsubmit="return verifyPassword()">
 
                             <div>
                                 <p>Username :</p>

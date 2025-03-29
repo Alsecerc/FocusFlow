@@ -8,9 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         case "AddMember":
             $team_name = $_POST['team_name'];
             $memberName = $_POST['member_name'];
-            $leader_id = $_POST['leader_id'];
 
-            // Query to find the member ID based on the provided name
+            // Get member_id based on member name
             $sql = "SELECT id FROM users WHERE name = ?";
             $stmt = $_conn->prepare($sql);
             $stmt->bind_param("s", $memberName);
@@ -22,35 +21,47 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             } else {
                 die("Error: Member not found!");
             }
-
             $stmt->close();
+
+            $leaderSql = "SELECT leader_id FROM team WHERE team_name = ? LIMIT 1";
+            $leaderStmt = $_conn->prepare($leaderSql);
+            $leaderStmt->bind_param("s", $team_name);
+            $leaderStmt->execute();
+            $leaderResult = $leaderStmt->get_result();
+
+            if ($leaderRow = $leaderResult->fetch_assoc()) {
+                $leader_id = $leaderRow['leader_id'];
+                error_log("Leader ID found: " . $leader_id); // Debugging output
+            } else {
+                die("Error: Team not found or leader_id is missing!");
+            }
+            $leaderStmt->close();
 
             // Check if the member already exists in the team
             $checkSql = "SELECT id FROM team WHERE team_name = ? AND (member_id = ? OR leader_id = ?)";
             $checkStmt = $_conn->prepare($checkSql);
             $checkStmt->bind_param("sii", $team_name, $member_id, $member_id);
             $checkStmt->execute();
-            $checkStmt->bind_result($existing_id);
             $exists = $checkStmt->fetch(); // Fetch result to check if row exists
             $checkStmt->close();
 
             if ($exists) {
                 echo "Member already exists in the team!";
-                $_conn->close();
             } else {
                 // Insert new member if they do not exist
-                $sql = "INSERT INTO team (team_name, leader_id, member_id) VALUES (?, ?, ?)";
-                $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("sii", $team_name, $leader_id, $member_id);
+                $insertSql = "INSERT INTO team (team_name, leader_id, member_id) VALUES (?, ?, ?)";
+                $insertStmt = $_conn->prepare($insertSql);
+                $insertStmt->bind_param("sii", $team_name, $leader_id, $member_id);
 
-                if ($stmt->execute()) {
+                if ($insertStmt->execute()) {
                     echo "Member added successfully!";
                 } else {
                     echo "Error adding member.";
                 }
-                $stmt->close();
-                $_conn->close();
+                $insertStmt->close();
             }
+
+            $_conn->close();
             break;
 
 
@@ -147,37 +158,36 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $fileName = basename($file['name']);
             $fileType = $file['type'];
             $fileSize = $file['size'];
-            $targetDir = "uploads/"; // Folder to store files
-            $targetFilePath = $targetDir . $fileName;
+            $fileTmp = $file['tmp_name'];
             $teamName = isset($_POST['team_name']) ? $_POST['team_name'] : '';
 
-            // Ensure the folder exists
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0777, true);
+            // Set max file size (40MB)
+            $maxFileSize = 40 * 1024 * 1024;
+            if ($fileSize > $maxFileSize) {
+                echo "<script>alert('File size exceeds 40MB!'); window.history.back();</script>";
+                exit();
             }
+
+            // Read file content
+            $fileData = file_get_contents($fileTmp);
 
             $userID = $_COOKIE['UID'];
 
-            // Move file to the folder
-            if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-                // Insert file details into the database
-                $sql = "INSERT INTO files (user_id, team_name, file_name, file_type, file_size, file_path, uploaded_at) 
+            // Insert file details into the database
+            $sql = "INSERT INTO files (user_id, team_name, file_name, file_type, file_size, file_data, uploaded_at) 
                         VALUES (?, ?, ?, ?, ?, ?, NOW())";
-                $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("isssis", $userID, $teamName, $fileName, $fileType, $fileSize, $targetFilePath);
-                if ($stmt->execute()) {
-                    echo "<script>
-                                    alert('File uploaded successfully!');
-                                    window.parent.closePopup(); // Closes popup after success
-                                  </script>";
-                } else {
-                    echo "Database error: " . $stmt->error;
-                }
+            $stmt = $_conn->prepare($sql);
+            $stmt->bind_param("isssis", $userID, $teamName, $fileName, $fileType, $fileSize, $fileData);
+
+            if ($stmt->execute()) {
+                echo "<script>
+                            alert('File uploaded successfully!');
+                            window.parent.closePopup();
+                          </script>";
             } else {
-                echo "Failed to upload file.";
+                echo "Database error: " . $stmt->error;
             }
             break;
-
         case "AddTask":
             // Ensure UID cookie and team name exist
             if (!isset($_COOKIE['UID']) || !isset($_GET['team'])) {

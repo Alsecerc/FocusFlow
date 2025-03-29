@@ -17,7 +17,7 @@ function toggleDropdown(button) {
 }
 
 function updateUserTaskStatus(taskID, newStatus) {
-    fetch('/RWD_assignment/FocusFlow/RegisterLayout/Calendar/CalendarUpdateTask.php', {
+    fetch('/RWD_assignment/FocusFlow/RegisterLayout/CalendarBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `action=Update&task_id=${taskID}&status=${newStatus}`
@@ -34,7 +34,7 @@ function updateUserTaskStatus(taskID, newStatus) {
 
 // change status if task is later then current date
 function checkOverdueTasks() {
-    fetch('../RegisterLayout/Calendar/CalendarBackend.php', {
+    fetch('/RWD_assignment/FocusFlow/RegisterLayout/CalendarBackend.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -475,7 +475,7 @@ close
 
 function sendData(taskId) {
     console.log(taskId)
-    fetch("/RWD_assignment/FocusFlow/RegisterLayout/Calendar/CalendarDeleteTask.php", {
+    fetch("/RWD_assignment/FocusFlow/RegisterLayout/CalendarBackend.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -676,29 +676,41 @@ function InvalidInput(INPUT, PLACEHOLDER) {
 
 
 // // Pop up category select
-// fetch("../RegisterLayout/Calendar/CalendarFetchCat.php") // Fetch categories from PHP
-//     .then(response => response.json())
-//     .then(data => {
-//         if (!data.success) {
-//             console.error("Error:", data.message);
-//             return;
-//         }
+fetch("/RWD_assignment/FocusFlow/RegisterLayout/CalendarBackend.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ action: "Category" })
+})
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            console.error("Error:", data.message);
+            return;
+        }
 
-//         let dropdown = document.getElementById("task_group");
-//         dropdown.innerHTML = ""; // Clear existing options
+        let dropdown = document.getElementById("task_group");
+        dropdown.innerHTML = ""; // Clear existing options
 
-//         if (data.categories.length > 0) {
-//             data.categories.forEach(category => {
-//                 let option = document.createElement("option");
-//                 option.value = category;
-//                 option.textContent = category;
-//                 dropdown.appendChild(option);
-//             });
-//         } else {
-//             console.warn("No categories found.");
-//         }
-//     })
-//     .catch(error => console.error("Fetch error:", error));
+        let defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Select or Add Category";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        dropdown.appendChild(defaultOption);
+
+        if (data.categories.length > 0) {
+            data.categories.forEach(category => {
+                let option = document.createElement("option");
+                option.value = category;
+                option.textContent = category;
+                dropdown.appendChild(option);
+            });
+        } else {
+            console.warn("No categories found.");
+        }
+    })
+    .catch(error => console.error("Fetch error:", error));
+
 
 
 let dropdown = document.getElementById("task_group");
@@ -789,6 +801,7 @@ document.getElementById("submitButton").addEventListener("click", function () {
 
     if (taskTitle && taskDesc && taskGroup && startDate && startTime && endTime) {
         let formData = new FormData();
+        formData.append("action", "Add");
         formData.append("task_title", taskTitle);
         formData.append("task_desc", taskDesc);
         formData.append("task_group", taskGroup);
@@ -796,7 +809,7 @@ document.getElementById("submitButton").addEventListener("click", function () {
         formData.append("start_time", startTime);
         formData.append("end_time", endTime);
 
-        fetch("/RWD_assignment/FocusFlow/RegisterLayout/Calendar/add_task.php", {
+        fetch("/RWD_assignment/FocusFlow/RegisterLayout/CalendarBackend.php", {
             method: "POST",
             body: formData
         })
