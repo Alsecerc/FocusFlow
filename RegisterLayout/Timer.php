@@ -62,6 +62,17 @@ requireAuthentication($_conn);
                     </div>
                 </main>
 
+                <div class="pomodoro-settings">
+                    <div class="settings-item">
+                        <label for="long-break-interval">Pomodoro sessions before long break:</label>
+                        <div class="settings-controls">
+                            <button id="interval-minus" class="adjust-btn">−</button>
+                            <span id="long-break-interval-display">4</span>
+                            <button id="interval-plus" class="adjust-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="buttons">
                     <button id="start">START</button>
                     <button id="stop">STOP</button>
@@ -71,7 +82,7 @@ requireAuthentication($_conn);
     </div>
 
     <script src="Registered.js" defer></script>
-    <script src="Timer/Timer.js" defer></script>
+    <script src="Timer/Timer.js" type="module" defer></script>
 </body>
 
 </html>

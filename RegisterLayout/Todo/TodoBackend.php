@@ -398,6 +398,40 @@
                             $response = ["status" => "error", "error" => "Database error: " . $e->getMessage()];
                         }
                         break;
+
+                    case "update_task_description":
+                        if (!isset($data['task_id']) || !isset($data['description'])) {
+                            $response = ["status" => "error", "error" => "Missing task_id or description parameter"];
+                            break;
+                        }
+                        
+                        $taskId = (int)$data['task_id'];
+                        $description = htmlspecialchars($data['description'], ENT_QUOTES, 'UTF-8');
+                        
+                        // Update the task description
+                        $sql = "UPDATE tasks SET task_desc = ? WHERE id = ? AND user_id = ?";
+                        $stmt = $_conn->prepare($sql);
+                        
+                        if (!$stmt) {
+                            $response = ["status" => "error", "error" => "Database error: " . $_conn->error];
+                            break;
+                        }
+                        
+                        $stmt->bind_param("sii", $description, $taskId, $userId);
+                        
+                        if ($stmt->execute()) {
+                            $response = [
+                                "status" => "success",
+                                "data" => [
+                                    "task_id" => $taskId,
+                                    "description" => $description
+                                ]
+                            ];
+                        } else {
+                            $response = ["status" => "error", "error" => "Failed to update description: " . $stmt->error];
+                        }
+                        $stmt->close();
+                        break;
                         
                     default:
                         $response = ["status" => "error", "error" => "Invalid request type: " . $data['type']];

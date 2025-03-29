@@ -1,3 +1,4 @@
+import RemindLibrary from "../RemindLibrary.js";
 // Global variables to track drag and drop functionality
 let dragging = false;
 let dragTarget = null;
@@ -18,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initialize the application
     initTodoApp();
+
+    // Initialize horizontal scrolling
+    initHorizontalScrolling();
 });
 
 // Function to initialize the Todo app
@@ -52,7 +56,7 @@ function setupEventListeners() {
             if (groupCount > 0) {
                 showTaskForm();
             } else {
-                alert('Please create at least one group first');
+                RemindLibrary.showErrorToast('Please create at least one group first');
             }
         });
     }
@@ -113,7 +117,7 @@ function hideGroupForm() {
 function submitGroupForm() {
     const groupNameInput = document.getElementById('groupName');
     if (!groupNameInput || !groupNameInput.value.trim()) {
-        alert('Please enter a group name');
+        RemindLibrary.showErrorToast('Please enter a group name');
         return;
     }
 
@@ -121,7 +125,7 @@ function submitGroupForm() {
 
     // Check if the group name already exists
     if (document.getElementById(groupName)) {
-        alert('A group with this name already exists');
+        RemindLibrary.showErrorToast('A group with this name already exists');
         return;
     }
 
@@ -141,16 +145,16 @@ function submitGroupForm() {
             if (data.status === 'success') {
                 // Create group in the UI
                 createNewGroup(groupName);
-
+                RemindLibrary.showSuccessToast(`Group "${groupName}" created successfully`);
                 // Hide the form
                 hideGroupForm();
             } else {
-                alert('Error creating group: ' + (data.error || 'Unknown error'));
+                RemindLibrary.showErrorToast('Error creating group: ' + (data.error || 'Unknown error'));
             }
         })
         .catch(error => {
             console.error('Error creating group:', error);
-            alert('Failed to create group. Please try again.');
+            RemindLibrary.showErrorToast('Failed to create group. Please try again.');
         });
 }
 
@@ -212,6 +216,12 @@ function createNewGroup(groupName) {
     // Add the card to the container
     const container = document.querySelector('.TODO__CONTAINER');
     if (container) {
+        // Remove any "no-groups" message if it exists
+        const noGroupsMessage = container.querySelector('.no-groups');
+        if (noGroupsMessage) {
+            noGroupsMessage.remove();
+        }
+        
         container.appendChild(cardDiv);
     }
 
@@ -219,7 +229,7 @@ function createNewGroup(groupName) {
 }
 
 // Function to delete a group
-function deleteGroup(groupName) {
+async function deleteGroup(groupName) {
     // Get group element
     const groupCard = document.getElementById(groupName);
     if (!groupCard) {
@@ -235,8 +245,9 @@ function deleteGroup(groupName) {
         confirmMessage += ` This will also delete ${tasks.length} task(s) in this group.`;
     }
 
+    let Confirmation = await RemindLibrary.customConfirm(confirmMessage)
     // Ask for confirmation
-    if (!confirm(confirmMessage)) {
+    if (!Confirmation) {
         return;
     }
 
@@ -265,20 +276,27 @@ function deleteGroup(groupName) {
                 if (remainingGroups.length === 0) {
                     const container = document.querySelector('.TODO__CONTAINER');
                     if (container) {
-                        container.innerHTML = '<div class="no-groups">No groups found. Click the "Group" button to create one.</div>';
+                        // Create a new element rather than using innerHTML to ensure proper styling
+                        container.innerHTML = '';
+                        const noGroupsDiv = document.createElement('div');
+                        noGroupsDiv.className = 'no-groups';
+                        noGroupsDiv.textContent = 'No groups found. Click the "Group" button to create one.';
+                        container.appendChild(noGroupsDiv);
                     }
                 }
+                // Show success message
+                RemindLibrary.showSuccessToast(`Group "${groupName}" deleted successfully`);
             } else {
                 // Restore opacity
                 groupCard.style.opacity = '1';
-                alert('Error deleting group: ' + (data.error || 'Unknown error'));
+                RemindLibrary.showErrorToast('Error deleting group: ' + (data.error || 'Unknown error'));
             }
         })
         .catch(error => {
             // Restore opacity
             groupCard.style.opacity = '1';
             console.error('Error:', error);
-            alert('Failed to delete group. Please try again.');
+            RemindLibrary.showErrorToast('Failed to delete group. Please try again.');
         });
 }
 
@@ -437,13 +455,13 @@ function submitTaskForm() {
 
     // Validate form data
     if (!group || !title.trim() || !content.trim()) {
-        alert('Please fill in all required fields');
+        RemindLibrary.showErrorToast('Please fill in all required fields');
         return;
     }
 
     // Check if at least one time unit is set
     if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
-        alert('Please set a deadline for the task');
+        RemindLibrary.showErrorToast('Please set a deadline for the task');
         return;
     }
 
@@ -471,21 +489,21 @@ function submitTaskForm() {
             if (data.status === 'success') {
                 // Create task in the UI
                 createTask(data.data);
-
+                RemindLibrary.showSuccessToast(`Task "${title}" created successfully`);
                 // Hide the form
                 hideTaskForm();
             } else {
-                alert('Error creating task: ' + (data.error || 'Unknown error'));
+                RemindLibrary.showErrorToast('Error creating task: ' + (data.error || 'Unknown error'));
             }
         })
         .catch(error => {
             console.error('Error creating task:', error);
-            alert('Failed to create task. Please try again.');
+            RemindLibrary.showErrorToast('Failed to create task. Please try again.');
         });
 }
 
 // Function to create a task in the UI
-function createTask(taskData) {
+async function createTask(taskData) {
     // Find the group container
     const groupCard = document.getElementById(taskData.category);
     if (!groupCard) {
@@ -589,8 +607,10 @@ function createTask(taskData) {
     deleteButton.className = 'task-delete';
     deleteButton.innerHTML = "<span class='material-icons'> delete </span>";
     deleteButton.title = 'Delete Task';
-    deleteButton.addEventListener('click', function () {
-        if (confirm(`Are you sure you want to delete "${taskData.title}"?`)) {
+    deleteButton.addEventListener('click', async function () {
+
+        let Confirmation = await RemindLibrary.customConfirm(`Are you sure you want to delete "${taskData.title}"?`)
+        if (Confirmation) {
             deleteTask(task);
         }
     });
@@ -703,25 +723,55 @@ function displayTaskDetails(taskData) {
         `;
     }
 
-    // Add description in a styled box with text wrapping
+    // Add description section with edit functionality
     taskContentHTML += `
-        <p style="margin:10px 0;"><strong>Description:</strong></p>
-        <div class="task-description-container" style="background-color:#f9f9f9;
-                  border:1px solid #eee;
-                  border-radius:4px;
-                  padding:12px;
-                  margin:5px 0 15px;
-                  line-height:1.5;
-                  max-height:200px;
-                  overflow-y:auto;">
-            <p class="task-description-text" style="margin:0;
-                     white-space:normal;
-                     word-wrap:break-word;
-                     overflow-wrap:break-word;
-                     overflow:visible;
-                     text-align:left;">
-                ${taskData.description || 'No description provided'}
-            </p>
+        <div style="margin:15px 0;" id="description-container">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <p style="margin:0;"><strong>Description</strong></p>
+                <button id="edit-description-btn" class="edit-btn" style="background:#f0f0f0;border:1px solid #ddd;
+                        border-radius:4px;padding:5px 10px;cursor:pointer;font-size:0.9rem;color:#333;">
+                    Edit
+                </button>
+            </div>
+            
+            <!-- View mode -->
+            <div id="view-description" class="task-description-container" style="background-color:#f5f5f5;
+                      border:1px solid #ddd;
+                      border-radius:4px;
+                      padding:12px;
+                      margin:5px 0 15px;
+                      line-height:1.5;
+                      max-height:200px;
+                      overflow-y:auto;
+                      user-select:text;">
+                <p class="task-description-text" style="margin:0;
+                         white-space:normal;
+                         word-wrap:break-word;
+                         overflow-wrap:break-word;
+                         overflow:visible;
+                         text-align:left;
+                         color:#333;">
+                    ${taskData.description || 'No description provided'}
+                </p>
+            </div>
+            
+            <!-- Edit mode (hidden by default) -->
+            <div id="edit-description" style="display:none;">
+                <textarea id="description-editor" style="width:100%;min-height:150px;padding:10px;
+                          border:1px solid #4CAF50;border-radius:4px;font-family:inherit;
+                          font-size:0.95rem;resize:vertical;margin-bottom:10px;">${taskData.description || ''}</textarea>
+                
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button id="cancel-edit-btn" style="padding:8px 15px;border-radius:4px;
+                            border:1px solid #ddd;background:#f0f0f0;cursor:pointer;">
+                        Cancel
+                    </button>
+                    <button id="save-description-btn" style="padding:8px 15px;border-radius:4px;
+                            border:none;background:#4CAF50;color:white;cursor:pointer;">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
         </div>
     `;
 
@@ -748,6 +798,65 @@ function displayTaskDetails(taskData) {
         });
     }
 
+    // Set up edit description functionality
+    const editBtn = document.getElementById('edit-description-btn');
+    const viewDescription = document.getElementById('view-description');
+    const editDescription = document.getElementById('edit-description');
+    const cancelBtn = document.getElementById('cancel-edit-btn');
+    const saveBtn = document.getElementById('save-description-btn');
+    const descriptionEditor = document.getElementById('description-editor');
+
+    // Edit button click handler
+    editBtn.addEventListener('click', function() {
+        viewDescription.style.display = 'none';
+        editDescription.style.display = 'block';
+        editBtn.style.display = 'none';
+        descriptionEditor.focus();
+    });
+
+    // Cancel button click handler
+    cancelBtn.addEventListener('click', function() {
+        viewDescription.style.display = 'block';
+        editDescription.style.display = 'none';
+        editBtn.style.display = 'block';
+        // Reset textarea to original value
+        descriptionEditor.value = taskData.description || '';
+    });
+
+    // Save button click handler
+    saveBtn.addEventListener('click', function() {
+        const newDescription = descriptionEditor.value.trim();
+        
+        // Update the task description in the database
+        updateTaskDescription(taskData.id, newDescription)
+            .then(success => {
+                if (success) {
+                    // Update the displayed description
+                    taskData.description = newDescription;
+                    document.querySelector('.task-description-text').textContent = newDescription;
+                    
+                    // Update the task card in the main view
+                    const taskElements = document.querySelectorAll(`.TODO__TASK[data-task-id="${taskData.id}"]`);
+                    taskElements.forEach(taskEl => {
+                        const descSpan = taskEl.querySelector('.TODO__TASK__CONTENT span');
+                        if (descSpan) {
+                            descSpan.textContent = newDescription;
+                            // Reapply text overflow handling
+                            textOverflow(descSpan, true);
+                        }
+                    });
+                    
+                    // Switch back to view mode
+                    viewDescription.style.display = 'block';
+                    editDescription.style.display = 'none';
+                    editBtn.style.display = 'block';
+                    
+                    // Show success message
+                    RemindLibrary.showSuccessToast('Description updated successfully');
+                }
+            });
+    });
+
     // Also close when clicking on the overlay
     overlay.addEventListener('click', function (e) {
         if (e.target === overlay) {
@@ -759,13 +868,46 @@ function displayTaskDetails(taskData) {
     console.log('Task details modal created and displayed');
 }
 
+// Function to update a task's description
+function updateTaskDescription(taskId, newDescription) {
+    return fetch('/RWD_assignment/FocusFlow/RegisterLayout/Todo/TodoBackend.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            type: 'update_task_description',
+            task_id: taskId,
+            description: newDescription
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Update the task description in the UI
+            RemindLibrary.showSuccessToast('Description updated successfully');
+            return true;
+        } else {
+            RemindLibrary.showErrorToast('Error updating description: ' + (data.error || 'Unknown error'));
+            return false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        RemindLibrary.showErrorToast('Failed to update description. Please try again.');
+        return false;
+    });
+}
+
 // Function to toggle task status
 function toggleTaskStatus(button, task, taskData) {
     // Check if this is a task, not a category
     if (!taskData.id) {
-        alert("Cannot update status for categories");
+        RemindLibrary.showErrorToast("Cannot update status for categories");
         return;
     }
+
+    RemindLibrary.showSuccessToast('Updating task status...');
 
     // Get current status and determine new status
     let currentStatus = (button.dataset.status || 'incomplete').toLowerCase();
@@ -812,7 +954,7 @@ function toggleTaskStatus(button, task, taskData) {
                 // Update UI
                 updateTaskStatusUI(button, newStatus);
             } else {
-                alert('Error updating status: ' + (data.error || 'Unknown error'));
+                RemindLibrary.showErrorToast('Error updating status: ' + (data.error || 'Unknown error'));
                 // Reset button
                 button.innerHTML = currentStatus === 'complete' ? "<span class='material-icons TODO_STATUS_ICON'>check_circle</span>" :
                     (currentStatus === 'timeout' ? "<span class='material-icons TODO_STATUS_ICON'>timer</span>" : "<span class='material-icons TODO_STATUS_ICON'>pending</span>");
@@ -821,14 +963,13 @@ function toggleTaskStatus(button, task, taskData) {
         .catch(error => {
             button.disabled = false;
             console.error('Error:', error);
-            alert('Failed to update status. Please try again.');
+            RemindLibrary.showErrorToast('Failed to update status. Please try again.');
             // Reset button
             button.innerHTML = currentStatus === 'complete' ? "<span class='material-icons TODO_STATUS_ICON'>check_circle</span>" :
                 (currentStatus === 'timeout' ? "<span class='material-icons TODO_STATUS_ICON'>timer</span>" : "<span class='material-icons TODO_STATUS_ICON'>pending</span>");
         });
 }
 
-// Add this function that's missing from your code
 function updateTaskStatusUI(button, newStatus) {
     const taskElement = button.closest('.TODO__TASK');
     if (!taskElement) return;
@@ -869,7 +1010,7 @@ function updateTaskStatusUI(button, newStatus) {
             taskElement.style.backgroundColor = '#fff3cd'; // Yellow background
             break;
     }
-
+    RemindLibrary.showSuccessToast('Task status updated successfully');
     console.log(`Task status updated to: ${newStatus}`);
 }
 
@@ -1036,72 +1177,112 @@ function loadGroupAndTaskByDefault() {
 function initDragAndDrop() {
     document.addEventListener('dragstart', (e) => {
         if (!e.target.classList.contains('TODO__TASK')) return;
-
-        dragging = true;
-        dragTarget = e.target;
-
-        // Add dragging class
-        e.target.classList.add('is-dragging');
-
-        // Store original parent
-        originalDragParent = e.target.closest('.TODO__CARD');
+        
+        console.log('Drag started:', e.target.dataset.title);
+        
+        // Set required dataTransfer for Firefox compatibility
+        e.dataTransfer.setData('text/plain', e.target.dataset.taskId || 'task');
+        e.dataTransfer.effectAllowed = 'move';
+        
+        // Add a small delay to improve drag visualization
+        setTimeout(() => {
+            dragging = true;
+            dragTarget = e.target;
+            // Store original parent
+            originalDragParent = e.target.closest('.TODO__CARD');
+            // Add dragging class
+            e.target.classList.add('is-dragging');
+        }, 0);
     });
 
     document.addEventListener('dragover', (e) => {
         e.preventDefault();
         if (!dragging) return;
 
-        // Find nearest card
+        // Find nearest card - check both the target and its ancestors
         const card = e.target.closest('.TODO__CARD');
         if (card) {
+            e.dataTransfer.dropEffect = 'move';
             card.classList.add('drag-highlight');
         }
     });
 
     document.addEventListener('dragleave', (e) => {
-        // Remove highlights
-        document.querySelectorAll('.drag-highlight').forEach(card => {
+        if (!dragging) return;
+        
+        // Only remove highlight if we're leaving this specific card
+        const card = e.target.closest('.TODO__CARD');
+        if (card && !card.contains(e.relatedTarget)) {
             card.classList.remove('drag-highlight');
-        });
+        }
     });
 
     document.addEventListener('drop', (e) => {
         e.preventDefault();
+        console.log('Drop event triggered');
+        
+        if (!dragging || !dragTarget) {
+            console.log('No active drag operation');
+            return;
+        }
+        
         handleDrop(e);
-
-        // Remove highlights
+        
+        // Remove all highlights
         document.querySelectorAll('.drag-highlight').forEach(card => {
             card.classList.remove('drag-highlight');
         });
-
+        
         dragging = false;
     });
 
-    document.addEventListener('dragend', () => {
+    document.addEventListener('dragend', (e) => {
+        console.log('Drag ended');
+        
         if (dragTarget) {
             dragTarget.classList.remove('is-dragging');
         }
 
-        // Remove highlights
+        // Remove all highlights
         document.querySelectorAll('.drag-highlight').forEach(card => {
             card.classList.remove('drag-highlight');
         });
 
         dragging = false;
-        dragTarget = null;
+        // Keep dragTarget reference until after the drop event
+        setTimeout(() => {
+            dragTarget = null;
+            originalDragParent = null;
+        }, 100);
     });
 }
 
 // Handle task dropping
 function handleDrop(e) {
-    e.preventDefault();
-
+    console.log('Processing drop');
+    
     // Get elements
     const draggedTask = document.querySelector('.is-dragging');
     const targetCard = e.target.closest('.TODO__CARD');
 
-    if (!draggedTask || !targetCard || !originalDragParent) return;
+    if (!draggedTask) {
+        console.error('No dragged task found with .is-dragging class');
+        return;
+    }
+    
+    if (!targetCard) {
+        console.error('No target card found');
+        return;
+    }
+    
+    if (!originalDragParent) {
+        console.error('Original parent not found');
+        return;
+    }
 
+    console.log('Found dragged task:', draggedTask.dataset.title);
+    console.log('Target category:', targetCard.id);
+    
     // Get categories
     const originalCategory = originalDragParent.id;
     const targetCategory = targetCard.id;
@@ -1113,12 +1294,15 @@ function handleDrop(e) {
     }
 
     if (originalCategory === targetCategory) {
+        console.log('Repositioning within same category');
         // Just reposition within same category
         insertTaskAtDropPosition(e, draggedTask, targetCard);
         draggedTask.classList.remove('is-dragging');
         return;
     }
 
+    console.log('Moving between categories:', originalCategory, '->', targetCategory);
+    
     // Visual feedback
     draggedTask.classList.add('task-moving');
 
@@ -1127,6 +1311,10 @@ function handleDrop(e) {
 
     // Get task ID
     const taskId = draggedTask.dataset.taskId;
+    if (!taskId) {
+        console.error('Task ID not found in dragged task');
+        return;
+    }
 
     // Update in database
     fetch('/RWD_assignment/FocusFlow/RegisterLayout/Todo/TodoBackend.php', {
@@ -1146,10 +1334,12 @@ function handleDrop(e) {
             draggedTask.classList.remove('task-moving');
 
             if (data.status === 'success') {
+                console.log('Task moved successfully in database');
                 // Update data attributes
                 const taskContent = draggedTask.querySelector('.TODO__TASK__CONTENT');
                 if (taskContent) {
                     taskContent.dataset.category = targetCategory;
+                    RemindLibrary.showSuccessToast('Task moved successfully');
                 }
 
                 // Handle empty categories
@@ -1158,15 +1348,17 @@ function handleDrop(e) {
                 }
             } else {
                 // Move back on error
-                alert('Failed to move task: ' + (data.error || 'Unknown error'));
+                console.error('Failed to move task:', data.error);
+                RemindLibrary.showErrorToast('Failed to move task: ' + (data.error || 'Unknown error'));
                 originalDragParent.querySelector('.TODO__BODY').appendChild(draggedTask);
             }
         })
         .catch(error => {
             draggedTask.classList.remove('task-moving');
             // Move back on error
+            console.error('Error:', error);
+            RemindLibrary.showErrorToast('Error: ' + error.message);
             originalDragParent.querySelector('.TODO__BODY').appendChild(draggedTask);
-            alert('Error: ' + error.message);
         });
 }
 
@@ -1334,7 +1526,7 @@ function deleteTask(taskElement) {
     // Get task ID
     const taskId = taskElement.dataset.taskId;
     if (!taskId) {
-        alert('Cannot delete task: Missing task ID');
+        RemindLibrary.showErrorToast('Cannot delete task: Missing task ID');
         return;
     }
 
@@ -1365,12 +1557,47 @@ function deleteTask(taskElement) {
                         addEmptyPlaceholder(categoryCard);
                     }
                 }
+                RemindLibrary.showSuccessToast('Task deleted successfully');
             } else {
-                alert('Error deleting task: ' + (data.error || 'Unknown error'));
+                RemindLibrary.showErrorToast('Error deleting task: ' + (data.error || 'Unknown error'));
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Failed to delete task. Please try again.');
+            RemindLibrary.showErrorToast('Failed to delete task. Please try again.');
         });
+}
+
+// Function to handle horizontal scrolling with indicators
+function initHorizontalScrolling() {
+    const container = document.querySelector('.TODO__CONTAINER');
+    if (!container) return;
+    
+    // Check if scrolling is needed and update indicator
+    function updateScrollIndicator() {
+        if (container.scrollWidth <= container.clientWidth) {
+            // No scrolling needed, hide indicator
+            container.classList.add('scrolled-end');
+        } else if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 20) {
+            // Scrolled to the end (with small tolerance)
+            container.classList.add('scrolled-end');
+        } else {
+            // More content to scroll
+            container.classList.remove('scrolled-end');
+        }
+    }
+    
+    // Update on various events
+    container.addEventListener('scroll', updateScrollIndicator);
+    window.addEventListener('resize', updateScrollIndicator);
+    
+    // Also check after content loads or changes
+    const observer = new MutationObserver(updateScrollIndicator);
+    observer.observe(container, { childList: true, subtree: true });
+    
+    // Initial check
+    updateScrollIndicator();
+    
+    // Re-check after a delay to account for dynamic content
+    setTimeout(updateScrollIndicator, 1000);
 }

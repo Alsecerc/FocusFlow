@@ -9,6 +9,8 @@
     border-radius: 10px;
     overflow: hidden; /* Prevent container from scrolling */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1; /* Base z-index for the communication container */
 }
 
 .communication-header {
@@ -22,6 +24,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    z-index: 5; /* Higher z-index to ensure buttons remain clickable */
 }
 
 .create-group-btn,
@@ -37,6 +41,8 @@
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s ease;
+    position: relative;
+    z-index: 6; /* Even higher z-index to ensure these specific buttons are always clickable */
 }
 
 .create-group-btn:hover,
@@ -218,9 +224,24 @@
     color: #22c55e;
 }
 
+/* Adjust recipient status for group member count */
+.recipient-info p.member-count {
+    color: #5e72e4;
+    display: flex;
+    align-items: center;
+}
+
+.recipient-info p.member-count::before {
+    content: 'people';
+    font-family: 'Material Icons';
+    font-size: 14px;
+    margin-right: 5px;
+}
+
 .message-actions {
     display: flex;
     gap: 10px;
+    position: relative; /* Create positioning context */
 }
 
 .action-button {
@@ -251,23 +272,19 @@
     padding: 15px 20px;
     overflow-y: auto; /* Enable vertical scrolling only for message content */
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    flex-direction: column; /* CHANGED: Display messages in normal order (top to bottom) */
+    gap: 8px; /* Reduced from 15px for more consistent spacing */
     background-color: #f5f7fb;
     height: 0; /* Force content to respect flex parent constraints */
     min-height: 0; /* Necessary for Firefox to respect the flex container */
-}
-
-/* Add auto-scrolling for new messages */
-.message-content .message:last-child {
-    margin-top: auto;
+    /* Remove justify-content: flex-start; as it's the default value */
 }
 
 .message {
     display: flex;
     max-width: 70%;
     align-items: flex-start; /* Align items at the top */
-    margin-bottom: 15px;
+    margin-bottom: 8px; /* Changed from 15px to match gap value */
 }
 
 .message.received {
@@ -386,6 +403,13 @@
     outline: none;
 }
 
+.message-input input:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+    font-style: italic;
+}
+
 .attachment-button, .emoji-button, .send-button {
     background: transparent;
     border: none;
@@ -403,24 +427,43 @@
     background-color: #f0f2f5;
 }
 
+/* Improved Send Button Styling */
 .send-button {
     background-color: #5e72e4;
     color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 0;
+    margin-left: 5px;
 }
 
 .send-button:hover {
     background-color: #4c5dcb;
 }
 
-.attachment-button .material-icons,
-.emoji-button .material-icons {
-    color: #667085;
-    font-size: 20px;
+.send-button.disabled {
+    background-color: #cbd5e1;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.send-button.disabled:hover {
+    background-color: #cbd5e1;
 }
 
 .send-button .material-icons {
     color: white;
     font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Group Form Modal Styles */
@@ -435,7 +478,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000; /* Controlled z-index for form overlays */
 }
 
 .group-form,
@@ -515,7 +558,7 @@
     background-color: #f0f4ff;
     border-radius: 8px;
     padding: 12px 15px;
-    margin-bottom: 15px;
+    margin: 0 15px 15px 15px;
     border-left: 4px solid #5e72e4;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     animation: slideDown 0.3s ease-in-out;
@@ -523,7 +566,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+    width: calc(100% - 30px); /* Account for margins */
+    flex-shrink: 0; /* Prevent shrinking */
+    z-index: 5; /* Ensure it stays above content */
 }
 
 .friend-suggestion-content {
@@ -640,6 +685,60 @@
     margin-bottom: 8px;
 }
 
+/* You-are-blocked status message */
+.blocked-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6b7280;
+    text-align: center;
+    padding: 20px;
+}
+
+.blocked-empty-state span {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #4b5563;
+}
+
+/* Special styling for "you are blocked" banner */
+.blocked-banner {
+    background-color: #fee2e2;
+    border-left: 4px solid #dc2626;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #b91c1c;
+}
+
+.blocked-banner .material-icons {
+    color: #dc2626;
+}
+
+/* Add a subtle background tint to show the conversation is in read-only mode */
+.messages-panel.blocked .message-content {
+    background-color: rgba(243, 244, 246, 0.5);
+}
+
+/* Make the disabled input more obvious */
+.messages-panel.blocked .message-input input {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    border: 1px solid #e5e7eb;
+    cursor: not-allowed;
+}
+
+.messages-panel.blocked .message-input .send-button {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .communication-content {
@@ -667,3 +766,721 @@
         align-self: flex-end;
     }
 }
+
+/* Options dropdown styling */
+.options-dropdown {
+    position: absolute;
+    top: 36px; /* Position below the button with a fixed value */
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 180px;
+    z-index: 1000; /* Higher z-index to ensure it appears on top */
+    overflow: hidden;
+    margin-top: 5px;
+    transform-origin: top right;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f7fb;
+}
+
+.dropdown-item .material-icons {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #667085;
+}
+
+.more-options-button {
+    position: relative;
+}
+
+/* Animation for the dropdown */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+/* Profile View Styles */
+.profile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.profile-container {
+    position: relative;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    width: 500px !important; /* Override default width */
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 0;
+    animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.profile-header {
+    background-color: #f5f7fb;
+    padding: 25px 20px;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: 1px solid #e0e4e9;
+}
+
+.profile-avatar {
+    margin-right: 15px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #e0e4e9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar .material-icons {
+    font-size: 44px;
+    color: #5e72e4;
+}
+
+.profile-user-info h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+.user-status {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.user-status.online::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    margin-right: 5px;
+}
+
+.profile-details {
+    padding: 20px;
+}
+
+.profile-detail-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.profile-detail-row:last-child {
+    border-bottom: none;
+}
+
+.profile-detail-row .material-icons {
+    color: #5e72e4;
+    margin-right: 15px;
+    font-size: 20px;
+}
+
+.detail-label {
+    width: 80px;
+    font-weight: 500;
+    color: #667085;
+    font-size: 0.85rem;
+}
+
+.detail-value {
+    flex: 1;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px 20px;
+    gap: 10px;
+}
+
+.profile-action-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.profile-action-btn .material-icons {
+    font-size: 18px;
+}
+
+.message-btn {
+    background-color: #5e72e4;
+    color: white;
+}
+
+.message-btn:hover {
+    background-color: #4c5dcb;
+}
+
+.block-btn {
+    background-color: #f0f2f5;
+    color: #667085;
+}
+
+.block-btn:hover {
+    background-color: #e5e7eb;
+    color: #f43f5e;
+}
+
+/* Member list styling */
+.members-list {
+    padding: 25px !important;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.loading-message, .error-message {
+    text-align: center;
+    color: #667085;
+    padding: 20px 0;
+}
+
+.error-message {
+    color: #ef4444;
+}
+
+.member-role {
+    font-size: 0.8rem;
+    color: #5e72e4;
+    margin-left: auto;
+    padding: 3px 8px;
+    background-color: #edf2ff;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Admin management styles */
+.admin-options-list {
+    padding: 20px;
+}
+
+.admin-option-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8fafc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.admin-option-item:hover {
+    background-color: #edf2ff;
+}
+
+.admin-option-item.danger {
+    border-left: 3px solid #ef4444;
+}
+
+.admin-option-item.danger:hover {
+    background-color: #fef2f2;
+}
+
+.admin-option-item .material-icons {
+    font-size: 24px;
+    color: #5e72e4;
+    margin-right: 15px;
+}
+
+.admin-option-item.danger .material-icons {
+    color: #ef4444;
+}
+
+.option-content {
+    flex: 1;
+}
+
+.option-content h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.option-content p {
+    margin: 5px 0 0 0;
+    font-size: 0.85rem;
+    color: #667085;
+}
+
+/* Member management */
+.member-actions {
+    display: flex !important;
+    gap: 10px !important;
+    margin-left: 15px !important;
+    flex-wrap: nowrap !important;
+}
+
+.member-action-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 12px !important;
+    min-width: 80px !important;
+    border-radius: 4px !important;
+    margin: 0 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    border: none !important;
+}
+
+.member-action-btn .material-icons {
+    font-size: 16px !important;
+    margin-right: 4px !important;
+}
+
+.member-action-btn.toggle-mute {
+    background-color: #f0f9ff !important;
+    color: #0284c7 !important;
+    border: 1px solid #e0f2fe !important;
+}
+
+.member-action-btn.kick-member,
+.member-action-btn.remove-member {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca !important;
+}
+
+.member-action-btn.ban-member {
+    background-color: #fff7ed !important;
+    color: #c2410c !important;
+    border: 1px solid #fed7aa !important;
+}
+
+/* Improve button hover states */
+.member-action-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.member-item {
+    padding: 15px 0 !important;
+    margin-bottom: 10px !important;
+}
+
+.member-actions {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.member-action-btn {
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.member-action-btn:hover {
+    background-color: #f0f2f5;
+}
+
+.member-action-btn .material-icons {
+    font-size: 16px;
+    color: #667085;
+}
+
+.member-action-btn.remove-member:hover .material-icons {
+    color: #ef4444;
+}
+
+.invite-members-row {
+    padding: 15px 0 0 0;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid #f0f2f5;
+    margin-top: 15px;
+}
+
+.invite-members-btn {
+    background-color: #5e72e4;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.invite-members-btn:hover {
+    background-color: #4c5dcb;
+}
+
+.invite-members-btn .material-icons {
+    font-size: 18px;
+}
+
+/* Email suggestions in add members form */
+#member-suggestions {
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #e0e4e9;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+#member-suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#member-suggestions li:hover {
+    background-color: #f5f7fb;
+}
+
+/* Member list item styling with status and actions */
+.member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.member-item:last-child {
+    border-bottom: none;
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.member-name {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.member-status {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+.member-status.active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.member-status.muted {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.member-status.banned {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.member-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.member-action-btn {
+    background: transparent;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.member-action-btn:hover {
+    background-color: #f0f2f5;
+}
+
+.member-action-btn .material-icons {
+    font-size: 18px;
+    color: #667085;
+}
+
+.member-action-btn.remove-member:hover .material-icons {
+    color: #ef4444;
+}
+
+.member-action-btn.toggle-mute:hover .material-icons {
+    color: #f59e0b;
+}
+
+.member-action-btn.ban-member:hover .material-icons {
+    color: #b91c1c;
+}
+
+/* Group muted indicators */
+.group-muted-indicator {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 4px;
+    margin: 0 16px 16px;
+    font-size: 0.9rem;
+    border-left: 4px solid #ef4444;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.group-muted-indicator.admin {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+}
+
+.group-muted-indicator .material-icons {
+    color: #ef4444;
+    font-size: 20px;
+}
+
+.group-muted-indicator.admin .material-icons {
+    color: #3b82f6;
+}
+
+/* Muted icon in contacts list */
+.group-muted-icon {
+    position: absolute;
+    top: 8px;
+    right: 40px;
+    color: #ef4444;
+    font-size: 16px !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Group muted indicators */
+.group-muted-indicator {
+    background-color: #fef2f2;
+    color: #ef4444;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #fee2e2;
+}
+
+.group-muted-indicator .material-icons {
+    font-size: 18px;
+}
+
+.group-muted-icon {
+    font-size: 14px;
+    color: #ef4444;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* Group member count badge */
+.group-member-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #edf2ff;
+    color: #5e72e4;
+    border-radius: 12px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.group-member-count::before {
+    content: 'people';
+    font-family: 'Material Icons';
+    font-size: 10px;
+    margin-right: 3px;
+}
+
+.send-button.disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.send-button.disabled:hover {
+    background-color: #cbd5e1;
+}
+
+/* Style for disabled input */
+.message-input input:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Error Message Styling */
+.error-message,
+.error-message-DM,
+.group-name-error,
+.email-error,
+.form-error-message {
+    color: #e53e3e;
+    background-color: #fff5f5;
+    border-left: 4px solid #fc8181;
+    margin: 8px 0;
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+    transition: all 0.2s ease;
+}
+
+.error-message.hidden,
+.error-message-DM.hidden,
+.group-name-error.hidden,
+.email-error.hidden,
+.form-error-message.hidden {
+    display: none;
+}
+
+/* Error icons for forms */
+.error-message::before,
+.error-message-DM::before,
+.group-name-error::before,
+.email-error::before,
+.form-error-message::before {
+    content: '⚠️';
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* Loading and error messages in chat area */
+.loading-messages,
+.error-message {
+    text-align: center;
+    padding: 20px;
+    color: #4a5568;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 80%;
+}
+
+.error-message {
+    color: #e53e3e;
+    background-color: #fff5f5;
+    border: 1px solid #fed7d7;
+}
+
+/* Error message in message panels */
+.messages-panel .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px;
+    margin: 30px auto;
+    max-width: 80%;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    line-height: 1.5;
+}
+
+/* Add Material Design icon to error messages in chat */
+.messages-panel .error-message::before {
+    content: 'error';
+    font-family: 'Material Icons';
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #e53e3e;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+

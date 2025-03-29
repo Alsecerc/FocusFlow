@@ -170,6 +170,29 @@ switch ($data["case"]) {
         GetContactListForDM();
         break;
 
+    case "getMessageInfoForGroup":
+        getMessageInfoForGroup($data['GroupID']);
+        break;
+
+    case "CheckIfUserIsBlock":
+        $ContactID = $data['ContactID'];
+        $CheckIfUserIsBlock = CheckIfUserIsBlock($ContactID);
+        if($CheckIfUserIsBlock){
+            echo json_encode([
+                'status' => 'success',
+                'message' => $CheckIfUserIsBlock
+            ]);
+        }else{
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'User is not blocked'
+            ]);
+        }
+        break;
+
+    case 'returnAllMessage':
+        returnAllMessage();
+        break;
     default:
         echo json_encode([
             'status' => 'error',
@@ -178,7 +201,214 @@ switch ($data["case"]) {
         break;
 }
 
+// function returnAllMessage (){
+//     global $user_id;
+    
+//     // Get the user's contact list ID(s)
+//     $GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE UserID = ?", "i", $user_id, "No data found", "array", "SELECT", true);
+    
+//     // If the query returned an array, extract the first ContactID
+//     if(is_array($GetUserContactListID) && !empty($GetUserContactListID)){
+//         $ContactListID = $GetUserContactListID[0]['ContactID'];
+//     } else {
+//         return false; // No ContactListID found
+//     }
+    
+//     // Get FriendID from the contact table using the extracted ContactListID
+//     $GetFriendIDFromContact = Query("SELECT FriendID FROM contact WHERE ContactListID = ?", "i", $ContactListID, "No data found", "single", "SELECT", null);
+    
+//     // Ensure that we got a valid FriendID
+//     if(!$GetFriendIDFromContact) {
+//         return false; // No FriendID found
+//     }
+    
+//     // Get chat log from direct messages for the friend
+//     $GetUserChatLog = Query("SELECT * FROM directmessage WHERE FriendID = ? ORDER BY DirectMessageID DESC", "i", $GetFriendIDFromContact, "No Data Found", "array", "SELECT");
+//     $finalData = [];
 
+//     foreach ($GetUserChatLog as $value) {
+//         // Try to get friend details from 'friends' table (first attempt)
+//         $Friend_ID = Query("SELECT * FROM friends WHERE id = ? AND user_id = ?", "ii", [$value['FriendID'], $user_id], "Friend ID not found", "single", "SELECT", null);
+        
+//         // If not found, try alternative query using friend_id instead
+//         if (!$Friend_ID) {
+//             $Friend_ID = Query("SELECT * FROM friends WHERE id = ? AND friend_id = ?", "ii", [$value['FriendID'], $user_id], "Friend ID not found", "single", "SELECT", true);
+//         }
+        
+//         $finalData[] = [
+//             'content' => $value['MessageText'],
+//             'time' => $value['CreatedTime'],
+//         ];
+//     }
+
+//     // Get list of messages from group chat
+//     $GetAllGroupInfoID = Query("SELECT * FROM groupusers WHERE UserID = ?", "i", $user_id, "No Group found?", "array", "SELECT");
+    
+//     echo json_encode([
+//        'status' => 'success',
+//         'message' => $GetAllGroupInfoID
+//     ]);exit; 
+//     foreach ($GetAllGroupInfoID as $group) {
+
+//         echo json_encode([
+//             'status' => 'success',
+//             'message' => $group
+//         ]);exit;
+//         $GetGroupChatLog = Query("SELECT * FROM groupchat WHERE GroupID = ? ORDER BY GroupChatID DESC", "i", $group, "No Data Found", "array", "SELECT");
+        
+//         foreach ($GetGroupChatLog as $value) {
+//             $finalData[] = [
+//                 'content' => $value['GroupMessage'],
+//                 'time' => $value['CreatedTime'],
+//             ];
+//         }
+//     }
+
+//     if(empty($finalData)){
+//         return false; // No data found
+//     } else {
+//         echo json_encode([
+//             'status' => 'success',
+//             'message' => $finalData
+//         ]);
+//         exit;
+//     }
+// }
+
+function returnAllMessage($case, $data) {
+    switch ($case) {
+        case "returnAllMessage":
+            // Check for GroupID in the data
+            if (isset($data->GroupID)) {
+                $GroupID = $data->GroupID;
+                
+                // First, check if the group exists before trying to get its info
+                $groupExists = Query(
+                    "SELECT COUNT(*) as count FROM group_info WHERE GroupID = ?", 
+                    "i", 
+                    $GroupID,
+                    "Error checking group existence", 
+                    "single", 
+                    "SELECT",
+                    null
+                );
+                
+                // Log group existence check
+                error_log("Group existence check for ID $GroupID: " . json_encode($groupExists));
+                
+                if ($groupExists && $groupExists['count'] > 0) {
+                    // Group exists, proceed with getting group info
+                    $GetAllGroupInfoID = Query(
+                        "SELECT * FROM group_info WHERE GroupID = ?", 
+                        "i", 
+                        $GroupID, 
+                        null, // Change from "No data found" to null to avoid early termination
+                        "single", 
+                        "SELECT",
+                        null
+                    );
+                    
+                    // Log the retrieved group info
+                    error_log("Group info for ID $GroupID: " . json_encode($GetAllGroupInfoID));
+                    
+                    if ($GetAllGroupInfoID) {
+                        // If data found, proceed with message retrieval
+                        $messages = Query(
+                            "SELECT * FROM messages WHERE GroupID = ? ORDER BY sent_at ASC", 
+                            "i", 
+                            $GroupID, 
+                            "No messages found", 
+                            "array", 
+                            "SELECT",
+                            null
+                        );
+                        
+                        return [
+                            "status" => "success",
+                            "group_info" => $GetAllGroupInfoID,
+                            "messages" => $messages
+                        ];
+                    } else {
+                        // Group exists but no group info found - this is unusual
+                        error_log("Group exists but no info found for ID: $GroupID");
+                        return [
+                            "status" => "error",
+                            "message" => "Group exists but no info found"
+                        ];
+                    }
+                } else {
+                    // Group doesn't exist
+                    error_log("Group does not exist with ID: $GroupID");
+                    return [
+                        "status" => "error",
+                        "message" => "Group does not exist"
+                    ];
+                }
+            } else {
+                // GroupID not provided in request
+                return [
+                    "status" => "error",
+                    "message" => "GroupID is required"
+                ];
+            }
+            break;
+            
+        // Other cases can be handled here
+    }
+}
+
+
+function CheckIfUserIsBlock($ContactID){
+    global $user_id;
+
+    // Get FriendID based on ContactID
+    $GetFriendID = Query("SELECT FriendID FROM contact WHERE id = ?", "i", $ContactID, "Friend ID not found", "single", "SELECT", null);
+
+    if ($GetFriendID === false) {
+        return false; // If no FriendID is found, assume no block
+    }
+
+    // Get the user ID of the friend
+    $GetOtherUserID = Query("SELECT user_id FROM friends WHERE id = ? AND friend_id = ?", "ii", [$GetFriendID, $user_id], "Friend ID not found", "single", "SELECT", null);
+
+    if ($GetOtherUserID === false) {
+        $GetOtherUserID = Query("SELECT friend_id FROM friends WHERE id = ? AND user_id = ?", "ii", [$GetFriendID, $user_id], "Friend ID not found", "single", "SELECT", null);
+    }
+
+    // Check if the current user has blocked the other user
+    $CheckIFUserAlreadyBlocked = Query("SELECT 1 FROM userblocks WHERE blocker_id = ? AND blocked_id = ?", "ii", [$user_id, $GetOtherUserID], "User not found", "bool", "SELECT", null);
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => $CheckIFUserAlreadyBlocked
+        
+    ]);
+    exit;
+    return $CheckIFUserAlreadyBlocked ? true : false;
+}
+
+function getMessageInfoForGroup($groupId){
+    global $_conn;
+
+    $message = Query("SELECT * FROM groupchat WHERE GroupID = ?", "i", $groupId, "No Data Found", "array", "SELECT");
+
+    $messages = [];
+    foreach ($message as $row) {
+        $messages[] = [
+            'id' => $row['GroupID'],
+            'username' => UsernameFromID($row['user_id']),
+            'message' => $row['GroupMessage'],
+            'messageType' => $row['GroupMessageType'],
+            'timestamp' => $row['CreatedTime']
+        ];
+    }
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => $messages
+    ]);
+    exit;
+}
 
 function AddUserNewToContactList($Email){
     global $user_id, $_conn;

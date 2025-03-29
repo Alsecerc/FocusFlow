@@ -1,55 +1,82 @@
 <?php
 session_start();
-error_reporting(E_ALL); // Enable full error reporting for debugging
+error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include 'conn.php';
-include 'AccountVerify.php'; // Include the verification system
+include 'AccountVerify.php';
 
-// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($_conn, $_POST['username'] ?? "");
     $password = mysqli_real_escape_string($_conn, $_POST['password'] ?? "");
 
-    // First check if the username exists
-    $sqlName = "SELECT * FROM users WHERE name = ?";
-    $stmt = mysqli_prepare($_conn, $sqlName);
+    $sql = "SELECT * FROM users WHERE name = ? LIMIT 1";
+    $stmt = mysqli_prepare($_conn, $sql);
     mysqli_stmt_bind_param($stmt, "s", $username);
     mysqli_stmt_execute($stmt);
-    $resultName = mysqli_stmt_get_result($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    if (mysqli_num_rows($resultName) >= 1) {
-        // Username exists, fetch the user data
-        $user = mysqli_fetch_assoc($resultName);
-        $storedPassword = $user['password'];
+    if ($user = mysqli_fetch_assoc($result)) {
+        // Debug output
+        error_log("User found: " . print_r($user, true));
 
-        // Check if password matches
-        if (verifyPassword($password, $storedPassword)) {
-            // Store user data in session variables
+        if (password_verify($password, $user['password'])) {
+            // Set ALL required session variables
+            $_SESSION['authenticated'] = true;
             $_SESSION['userID'] = $user['id'];
             $_SESSION['userName'] = $user['name'];
-            $_SESSION['userEmail'] = $user['email'];
-            $_SESSION['usertype'] = $user['usertype'];
+            $_SESSION['usertype'] = (int)$user['usertype'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['UID'] = $user['id']; // Add this line
 
-
-            $authResult = createAuthSession($user['id'], $_conn);
-
-            if ($authResult) {
-                logLogin($_conn, $user['id'], true);
-                echo "<script>alert('Welcome back, {$user['name']}!'); window.location.href='Homepage.php';</script>";
+            if (!createAuthSession($user['id'], $_conn)) {
+                error_log("Failed to create authentication session.");
+                $_SESSION['error'] = "Authentication error.";
+                header("Location: Login.php");
                 exit();
-            } else {
-                logLogin($_conn, $user['id'], false);
-                die("<script>alert('Failed to create authentication session. Please try again.');window.location.href='Login.php';</script>");
             }
+
+            // Check suspension
+            if ($user['UserStatus'] === 'Suspended') {
+                $suspension_end = strtotime($user['suspension_end']);
+                if ($suspension_end > time()) {
+                    $_SESSION['suspended'] = true;
+                    $_SESSION['suspension_end'] = $suspension_end;
+                    header("Location: /RWD_assignment/FocusFlow/AdminPage/AdminDashboard/suspensionpage.php");
+                    exit();
+                }
+            }
+
+            // Debug output
+            error_log("User type: " . $_SESSION['usertype']);
+
+            // Redirect based on user type
+            switch ($_SESSION['usertype']) {
+                case 1: // Admin
+                    header("Location: /RWD_assignment/FocusFlow/AdminPage/AdminDashboard/AdminDashboard.php");
+                    break;
+                case 2: // Moderator
+                    header("Location: /RWD_assignment/FocusFlow/ModeratorPage/ModeratorDashboard.php");
+                    break;
+                case 0: // Regular user
+                    header("Location: Homepage.php");
+                    break;
+                default:
+                    error_log("Invalid user type: " . $_SESSION['usertype']);
+                    $_SESSION['error'] = "Invalid user type";
+                    header("Location: Login.php");
+                    break;
+            }
+            exit();
         } else {
-            logLogin($_conn, $user['id'], false);
-            die("<script>alert('Password is incorrect');window.location.href='Login.php';</script>");
+            error_log("Password verification failed for user: " . $username);
         }
     } else {
-        logLogin($_conn, null, false);
-        die("<script>alert('Username not found');window.location.href='Login.php';</script>");
+        error_log("User not found: " . $username);
     }
+    
+    $_SESSION['error'] = "Invalid username or password";
+    header("Location: Login.php");
+    exit();
 }
-
-
+?>

@@ -158,6 +158,137 @@ $colors = [
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
     <link rel="stylesheet" href="Responsive.css">
+    <style>
+        /* Improved chart container styles to prevent overflow */
+        .chart-container {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        #taskCategories {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        
+        .pie-chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            flex: 0 0 auto;
+        }
+        
+        .pie-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            max-width: 100%;
+        }
+        
+        .chart-legend {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            overflow: auto;
+            max-height: 300px;
+        }
+        
+        /* Legend styling */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .legend-item span {
+            font-size: 14px;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Updated responsive media queries */
+        @media screen and (max-width: 1200px) {
+            .pie-container {
+                width: 180px;
+                height: 180px;
+            }
+        }
+        
+        @media screen and (max-width: 992px) {
+            .pie-container {
+                width: 160px;
+                height: 160px;
+            }
+            
+            #taskCategories {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .chart-container {
+                padding: 10px;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .pie-container {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .chart-legend {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .chart-container {
+                padding: 10px;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+        }
+        
+        @media screen and (max-width: 576px) {
+            .pie-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .chart-container {
+                padding: 8px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .legend-item span {
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -285,14 +416,15 @@ $colors = [
 
                 // Create the pie chart using conic-gradient
                 const pieContainer = document.createElement('div');
-                pieContainer.style.width = '200px';
-                pieContainer.style.height = '200px';
-                pieContainer.style.borderRadius = '50%';
+                pieContainer.className = 'pie-container';
                 pieContainer.style.margin = '0 auto';
 
                 // Build the conic-gradient
                 let gradientString = 'conic-gradient(';
                 let currentAngle = 0;
+
+                // Create an array to hold legend items so we can reverse them later
+                let legendItems = [];
 
                 // Add each category to the gradient
                 data.forEach((category, index) => {
@@ -320,18 +452,52 @@ $colors = [
                     colorBox.style.backgroundColor = category.color;
 
                     const label = document.createElement('span');
-                    label.textContent = `${category.name}: ${category.value}% (${category.count})`;
+                    
+                    // Truncate long category names on small screens
+                    const isMobile = window.innerWidth <= 576;
+                    let displayName = category.name;
+                    if (isMobile && displayName.length > 10) {
+                        displayName = displayName.substring(0, 10) + '...';
+                    }
+                    
+                    label.textContent = `${displayName}: ${category.value}%`;
+                    label.title = `${category.name}: ${category.value}% (${category.count})`; // Full details on hover
 
                     legendItem.appendChild(colorBox);
                     legendItem.appendChild(label);
-                    chartLegend.appendChild(legendItem);
+                    
+                    // Store the legend item instead of adding directly to DOM
+                    legendItems.push(legendItem);
                 });
 
                 gradientString += ')';
-                console.log("Gradient string:", gradientString);
                 pieContainer.style.background = gradientString;
-
                 pieChart.appendChild(pieContainer);
+                
+                // Add legend items in reverse order (upside down)
+                legendItems.reverse().forEach(item => {
+                    chartLegend.appendChild(item);
+                });
+                
+                // Adjust pie chart when window resizes
+                window.addEventListener('resize', function() {
+                    const chartContainer = document.querySelector('.chart-container');
+                    const pieChart = document.getElementById('pieChart');
+                    
+                    if (window.innerWidth <= 576) {
+                        chartContainer.style.overflow = 'hidden';
+                        pieChart.style.maxWidth = '100%';
+                    }
+                });
+                
+                // Initial check
+                if (window.innerWidth <= 576) {
+                    const chartContainer = document.querySelector('.chart-container');
+                    const pieChart = document.getElementById('pieChart');
+                    
+                    chartContainer.style.overflow = 'hidden';
+                    pieChart.style.maxWidth = '100%';
+                }
             }
         });
     </script>

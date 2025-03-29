@@ -21,10 +21,11 @@ requireAuthentication($_conn);
     <link rel="icon" href="img\SMALL_CLOCK_ICON.ico">
     <link rel="stylesheet" href="Registered.css">
     <link rel="stylesheet" href="Responsive.css">
-    <link rel="stylesheet" href="../css/task-status.css">
-    <link rel="stylesheet" href="../css/drag-helpers.css">
-    <link rel="stylesheet" href="../css/todo-forms.css">
-    <link rel="stylesheet" href="status-fix.css">
+    <link rel="stylesheet" href="css/task-status.css">
+    <link rel="stylesheet" href="css/drag-helpers.css">
+    <link rel="stylesheet" href="css/todo-forms.css">
+    <link rel="stylesheet" href="css/status-fix.css">
+    <link rel="stylesheet" href="css/todo-responsive.css">
 </head>
 
 <body>
@@ -74,7 +75,7 @@ requireAuthentication($_conn);
 
     <div class="Hiddenlayer" style="display: none;"></div>
     <script src="Registered.js" defer></script>
-    <script src="Todo/Todo.js" defer></script>
+    <script src="Todo/Todo.js" type="module" defer></script>
     <script src="button-fix.js" defer></script>
     <script src="drag-fix.js" defer></script>
 </body>

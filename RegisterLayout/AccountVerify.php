@@ -179,6 +179,26 @@ function verifyLegacyToken($conn, $userId, $token)
     return false;
 }
 
+function checkSuspension($_conn, $userID) {
+    $sql = "SELECT UserStatus, suspension_end FROM users WHERE id = ?";
+    $stmt = $_conn->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+
+    if ($user['UserStatus'] === 'Suspended') {
+        $suspension_end = strtotime($user['suspension_end']);
+        if ($suspension_end > time()) {
+            $_SESSION['suspended'] = true;
+            $_SESSION['suspension_end'] = $suspension_end;
+            header("Location: /RWD_assignment/FocusFlow/AdminPage/AdminDashboard/suspensionpage.php");
+            exit();
+        }
+    }
+    return false;
+}
+
 /**
  * Check if user is authenticated, redirect if not
  * 
@@ -197,6 +217,9 @@ function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.
         exit();
     }
 }
+    if (isset($_SESSION['userID'])) {
+        checkSuspension($_conn, $_SESSION['userID']);
+    }
 
 /**
  * Log out the current user

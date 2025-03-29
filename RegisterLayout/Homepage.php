@@ -1,12 +1,21 @@
 <?php
-
 session_start();
 include "conn.php";
+include "GeneralFunction.php";
 
-include "Accountverify.php";
-requireAuthentication($_conn);
+// Authentication check
+if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
+    header("Location: Login.php");
+    exit();
+}
 
-$userID = $_COOKIE['UID'];
+// Set current user data
+$userID = $_SESSION['userID'];
+$userName = $_SESSION['userName'];
+
+
+
+$userID = $_SESSION['UID'];
 
 // Fetch total tasks completed
 $sql = "SELECT COUNT(*) as total_completed FROM tasks WHERE user_id = ? AND status = 'Complete'";
@@ -70,15 +79,12 @@ $stmt->execute();
 $taskResults = $stmt->get_result();
 
 // Get messages sent per day this week
-$sql = "SELECT DATE(sent_at) as day, COUNT(*) as count 
-        FROM message
-        WHERE sender_id = ? 
-        AND DATE(sent_at) BETWEEN ? AND ?
-        GROUP BY DATE(sent_at)";
-$stmt = $_conn->prepare($sql);
-$stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
-$stmt->execute();
-$messageResults = $stmt->get_result();
+
+$GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE user_id = ?", "i", $userID, "No data found", "array", "SELECT", null);
+
+$GetFriendIDFromContact = Query("SELECT FriendID FROM contact WHERE ContactListID = ?", "i", $GetUserContactListID, "No data found", "single", "SELECT", null);
+
+
 
 // Get team tasks completed per day this week
 $sql = "SELECT DATE(assigned_at) as day, COUNT(*) as count 
@@ -105,10 +111,10 @@ while ($row = $taskResults->fetch_assoc()) {
 }
 
 // Fill messages data
-while ($row = $messageResults->fetch_assoc()) {
-    $dayOfWeek = date('w', strtotime($row['day']));
-    $messagesPerDay[$dayOfWeek] = $row['count'];
-}
+// while ($row = $messageResults->fetch_assoc()) {
+//     $dayOfWeek = date('w', strtotime($row['day']));
+//     $messagesPerDay[$dayOfWeek] = $row['count'];
+// }
 
 // Fill team tasks data
 while ($row = $teamTaskResults->fetch_assoc()) {
@@ -542,6 +548,108 @@ while ($row = $result->fetch_assoc()) {
 
         #viewCalendarButton:hover {
             background-color: #3b4a5a;
+        }
+
+        /* Add responsive styles */
+        @media screen and (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+            
+            .sidebar {
+                grid-row: 1;
+            }
+            
+            .main-content {
+                grid-row: 2;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            
+            .chart-container {
+                overflow-x: auto;
+            }
+            
+            .group-tasks-title {
+                font-size: 1rem;
+            }
+            
+            .task-card {
+                padding: 0.8rem;
+            }
+            
+            .metric-card__value {
+                font-size: 1.5rem;
+            }
+            .calendar-container,
+            .chat-messages {
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wrapper header {
+                padding: 0 0.5rem;
+            }
+
+            .dashboard {
+                padding: 0.5rem;
+                gap: 1rem;
+            }
+            
+            .task-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .task-meta {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+            }
+            
+            .metric-card {
+                padding: 1rem;
+            }
+            
+            .calendar-container {
+                font-size: 0.9rem;
+            }
+            
+            .days li, .weeks li {
+                padding: 3px;
+                font-size: 0.9em;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 30% auto;
+            }
+
+            header .icons span {
+                height: 32px;
+                width: 32px;
+                line-height: 32px;
+                font-size: 1.3rem;
+            }
+            /* Optionally, reduce padding/margin for chat/message areas */
+            .messages-panel {
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>

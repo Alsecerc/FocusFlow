@@ -3,6 +3,14 @@ include "conn.php";
 include "AccountVerify.php";
 requireAuthentication($_conn);
 
+// Add 'unsafe-inline' to the style-src directive to allow inline styles
+header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';");
+
+// For older browsers that use X-Content-Security-Policy 
+header("X-Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';");
+
+// For reporting CSP violations (optional, but useful for debugging)
+// header("Content-Security-Policy-Report-Only: default-src 'self'; report-uri /csp-violation-report.php");
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +27,8 @@ requireAuthentication($_conn);
     <link rel="stylesheet" href="Registered.css">
     <link rel="stylesheet" href="Responsive.css">
     <link rel="stylesheet" href="Communication/Communication.css">
+    <!-- Fix path to FormValidation.js -->
+    <script type="module" src="Communication/FormValidation.js"></script>
 </head>
 
 <body>
@@ -79,7 +89,7 @@ requireAuthentication($_conn);
     </main>
 
 <script src="Registered.js" defer></script>
-<script src="Communication/Message.js" defer></script>
+<script src="Communication/Message.js" type="module" defer></script>
 </body>
 
 </html>

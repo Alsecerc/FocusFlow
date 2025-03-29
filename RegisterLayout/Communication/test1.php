@@ -53,7 +53,7 @@ document.getElementById("test").addEventListener("click", function() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            case: "GetContactListForDM",  // Changed from "action" to "case" to match server expectation
+            case: "returnAllMessage",  // Changed from "action" to "case" to match server expectation
             name: "sigma",
             description: "testing",
             members: ["poopie@gmail.com", 'janesmith@example.com', 'michaelbrown@example.com', 'test@gmail.com'],
@@ -63,7 +63,8 @@ document.getElementById("test").addEventListener("click", function() {
             message: "Hello, this is a test message.",
             MessageType: "TEXT",
             status: "None",
-            ContactID: 1
+            ContactID: 5,
+            GroupID: 8
         })
     })
     .then(data => {
