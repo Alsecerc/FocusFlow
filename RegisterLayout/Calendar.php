@@ -37,7 +37,8 @@ requireAuthentication($_conn);
                 <div class="OVERLAY"></div>
                 <div class="POP_UP__CONTENT">
                     <h2>Create Task</h2>
-                    <form action="/RWD_assignment/FocusFlow/RegisterLayout/CalendarAddTask.php" method="POST" id="popUpForm">
+                    <form action="/RWD_assignment/FocusFlow/RegisterLayout/CalendarBackend.php" method="POST" id="popUpForm">
+                        <input type="hidden" name="action" value="Add">
 
                         <label class="INPUT__BOX" style="display: flex;">
                             <span class="INPUT__PLACEHOLDER AUTOFOCUS">Task Category : </span>

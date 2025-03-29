@@ -1,29 +1,3 @@
-// Function to fetch and display messages
-// function fetchMessages() {
-//     fetch("CommunityBackend.php") // Replace with your PHP endpoint
-//         .then(response => response.json()) // Convert response to JSON
-//         .then(data => {
-
-//             console.log("Fetched messages:", data); // Debugging
-
-//             let chatBox = document.getElementById("chatBox"); // Get the chat container
-//             chatBox.innerHTML = ""; // Clear previous messages
-
-//             // Loop through each message and create an HTML element
-//             data.forEach((msg, index) => {
-//                 let messageElement = document.createElement("div");
-//                 messageElement.classList.add("message"); // Add CSS class
-//                 messageElement.innerHTML = `<strong>${index + 1}:</strong> ${msg.message} <span class="timestamp">${msg.timestamp}</span>`;
-//                 chatBox.appendChild(messageElement); // Append message to chat box
-//             });
-//         })
-//         .catch(error => console.error("Error fetching messages:", error));
-// }
-
-// // Call the function to load messages on page load
-// fetchMessages();
-
-
 // Community Pop up
 function openPopup() {
     const teamID = new URLSearchParams(window.location.search).get("team_id");
@@ -89,7 +63,7 @@ function addMember() {
         fetch("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Community/CommunityBackend.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}&leader_id=1`
+            body: `action=AddMember&team_name=${encodeURIComponent(teamName)}&member_name=${memberName}`
         })
             .then(response => response.text())
             .then(data => {

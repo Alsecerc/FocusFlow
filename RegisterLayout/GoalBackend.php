@@ -23,63 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $_conn->close();
             break;
 
-        case "Reminder":
-            function notificationExists($_conn, $user_id, $message)
-            {
-                $sql = "SELECT id FROM notifications WHERE user_id = ? AND notification_message = ?";
-                $stmt = $_conn->prepare($sql);
-                $stmt->bind_param("is", $user_id, $message);
-                $stmt->execute();
-                $stmt->store_result();
-                $exists = $stmt->num_rows > 0; // Check if any rows exist
-                $stmt->close();
-                return $exists;
-            }
-
-            // Function to store notification only if it does not exist
-            function storeNotification($_conn, $user_id, $message)
-            {
-                if (!notificationExists($_conn, $user_id, $message)) {
-                    $sql = "INSERT INTO notifications (type, user_id, notification_message) VALUES (?, ?, ?)";
-                    $stmt = $_conn->prepare($sql);
-                    $type = "system"; // Ensure correct data type for bind_param
-                    $stmt->bind_param("sis", $type, $user_id, $message);
-                    $stmt->execute();
-                    $stmt->close();
-                }
-            }
-
-            date_default_timezone_set("Asia/Kuala_Lumpur");
-            $current_time = date("Y-m-d H:i:s");
-            $one_hour_later = date("Y-m-d H:i:s", strtotime("+1 hour"));
-
-            // Fetch goals with reminders within the next hour
-            $sql = "SELECT g.*, u.email FROM goals g 
-        JOIN users u ON g.user_id = u.id 
-        WHERE g.reminder_time BETWEEN ? AND ?";
-            $stmt = $_conn->prepare($sql);
-            $stmt->bind_param("ss", $current_time, $one_hour_later);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            while ($row = $result->fetch_assoc()) {
-                $user_email = $row['email'];
-                $user_id = $row['user_id'];
-                $goal_title = $row['goal_title'];
-
-                // Notification message
-                $message = "Reminder: Your goal '$goal_title' is due!";
-
-                // Store in notifications table only if it does not exist
-                storeNotification($_conn, $user_id, $message);
-            }
-
-
-            echo json_encode("IM still running");
-
-            $stmt->close();
-            $_conn->close();
-            break;
 
         case "Add":
             if (!isset($_COOKIE['UID'])) {
@@ -103,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             if ($stmt->execute()) {
                 echo "<script>
-                    alert('Goal added successfully!');
-                    window.location.href='Goal.php'; // Closes popup after success
-                  </script>";
+                alert('Goal added successfully!');
+                window.location.href='Goal.php'; // Closes popup after success
+                </script>";
             } else {
                 echo "Error: " . $_conn->error;
             }
@@ -145,10 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 $_SESSION['message'] = "Error: Missing goal_id!";
             }
             break;
-
+            
         case "Reminder":
-
-            // Function to check if notification already exists
             function notificationExists($_conn, $user_id, $message)
             {
                 $sql = "SELECT id FROM notifications WHERE user_id = ? AND notification_message = ?";
@@ -161,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 return $exists;
             }
 
-            // Function to store notification only if it does not exist
             function storeNotification($_conn, $user_id, $message)
             {
                 if (!notificationExists($_conn, $user_id, $message)) {
@@ -175,35 +115,61 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             }
 
             date_default_timezone_set("Asia/Kuala_Lumpur");
-            $current_time = date("Y-m-d H:i:s");
-            $one_hour_later = date("Y-m-d H:i:s", strtotime("+1 hour"));
+
+            $current_time = date("Y-m-d H:i:00"); // Current time (rounded to the nearest minute)
+            $one_hour_later = date("Y-m-d H:i:00", strtotime("+1 hour"));
+
+            // TODO: Debug
+            error_log("Checking reminders between $current_time and $one_hour_later");
 
             // Fetch goals with reminders within the next hour
-            $sql = "SELECT g.*, u.email FROM goals g 
-        JOIN users u ON g.user_id = u.id 
-        WHERE g.reminder_time BETWEEN ? AND ?";
+            $sql = "SELECT g.goal_id, g.goal_title, g.reminder_time, g.user_id, u.email 
+                        FROM goals g 
+                        JOIN users u ON g.user_id = u.id 
+                        WHERE g.reminder_time BETWEEN ? AND ?";
             $stmt = $_conn->prepare($sql);
             $stmt->bind_param("ss", $current_time, $one_hour_later);
             $stmt->execute();
             $result = $stmt->get_result();
 
+            $reminders = [];
             while ($row = $result->fetch_assoc()) {
-                $user_email = $row['email'];
+                // TODO: Debug
+                error_log("Fetched Goal: " . json_encode($row));
+
                 $user_id = $row['user_id'];
                 $goal_title = $row['goal_title'];
+                $reminder_time = $row['reminder_time'];
 
-                // Notification message
-                $message = "Reminder: Your goal '$goal_title' is due!";
+                $message = "Reminder: Your goal '$goal_title' is due at $reminder_time!";
 
                 // Store in notifications table only if it does not exist
-                storeNotification($_conn, $user_id, $message);
+                if (!notificationExists($_conn, $user_id, $message)) {
+                    storeNotification($_conn, $user_id, $message);
+                    $reminders[] = [
+                        "user_id" => $user_id,
+                        "goal_title" => $goal_title,
+                        "reminder_time" => $reminder_time,
+                        "message" => $message
+                    ];
+                }
             }
-
-
-            echo json_encode("IM still running");
 
             $stmt->close();
             $_conn->close();
+
+            // TODO: Debug
+            if (empty($reminders)) {
+                error_log("No reminders matched the condition.");
+            } else {
+                error_log("Reminders stored: " . json_encode($reminders));
+            }
+
+            echo json_encode(["status" => "success", "message" => "Reminders processed"]);
             break;
+
+
+        default:
+            echo json_encode(["error" => "Invalid action"]);
     }
 }
