@@ -24,7 +24,6 @@ requireAuthentication($_conn);
     <link rel="stylesheet" href="css/task-status.css">
     <link rel="stylesheet" href="css/drag-helpers.css">
     <link rel="stylesheet" href="css/todo-forms.css">
-    <link rel="stylesheet" href="css/status-fix.css">
     <link rel="stylesheet" href="css/todo-responsive.css">
 </head>
 
