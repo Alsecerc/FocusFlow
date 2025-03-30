@@ -166,10 +166,165 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_mod'])) {
             text-decoration: none;
             cursor: pointer;
         }
+        
+        /* Responsive styles */
+        .main-content {
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        /* Menu button for mobile */
+        .HEADER__MENU_BUTTON {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1001;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px;
+            cursor: pointer;
+        }
+        
+        @media screen and (max-width: 1024px) {
+            .main-content {
+                margin-left: 200px;
+            }
+            
+            .stats-card {
+                padding: 15px;
+            }
+            
+            .mods-table th, .mods-table td {
+                padding: 10px;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .HEADER__MENU_BUTTON {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                position: fixed;
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 10% auto;
+            }
+            
+            /* Improve table container for horizontal scrolling */
+            .table-container {
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+            }
+            
+            /* Make sure the inner table takes the full width */
+            .table-container .mods-table {
+                min-width: 650px; /* Ensure minimum width to prevent squishing */
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .staff-container {
+                padding: 10px;
+            }
+            
+            .stats-card {
+                padding: 12px;
+            }
+            
+            /* Enhanced table styling for small screens */
+            .table-container {
+                margin: 0 -10px; /* Negative margin to allow full-width scrolling */
+                padding: 0 10px;
+                width: calc(100% + 20px);
+            }
+            
+            .mods-table th, .mods-table td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+            
+            /* Add visual indicator for scrollable table */
+            .table-scroll-hint {
+                display: block;
+                text-align: center;
+                font-size: 0.8em;
+                color: #666;
+                margin-bottom: 8px;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                padding: 15px;
+            }
+            
+            /* Hide sidebar by default on small screens */
+            .sidebar {
+                display: none;
+                width: 80%;
+            }
+            
+            .sidebar.active {
+                display: block;
+            }
+        }
+        
+        /* Add styles for very small screens */
+        @media screen and (max-width: 320px) {
+            .stats-card {
+                padding: 8px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .table-container .mods-table {
+                min-width: 500px; /* Smaller minimum width */
+            }
+            
+            .modal-content {
+                width: 100%;
+                margin: 2% auto;
+                padding: 10px;
+            }
+            
+            .form-group label {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
     <?php include "AdminSidebar.php"; ?>
+    
+    <button class="HEADER__MENU_BUTTON" id="menuToggle">
+        <i class="material-icons">menu</i>
+    </button>
 
     <div class="main-content">
         <div class="staff-container">
@@ -180,55 +335,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_mod'])) {
                 <div class="active-mods" id="activeMods"><?php echo $activeMods; ?></div>
             </div>
 
-            <table class="mods-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Last Active</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while($mod = $result->fetch_assoc()): ?>
-                    <tr id="mod-row-<?php echo $mod['id']; ?>">
-                        <td><?php echo htmlspecialchars($mod['name']); ?></td>
-                        <td><?php echo htmlspecialchars($mod['email']); ?></td>
-                        <td class="<?php echo $mod['UserStatus'] === 'Active' ? 'status-active' : 'status-inactive'; ?>">
-                            <?php echo $mod['UserStatus']; ?>
-                        </td>
-                        <td><?php echo date('Y-m-d H:i:s', strtotime($mod['last_login'])); ?></td>
-                        <td>
-                            <button class="btn btn-edit" onclick="showEditModal(<?php 
-                                echo $mod['id']; ?>, 
-                                '<?php echo htmlspecialchars($mod['name'], ENT_QUOTES); ?>', 
-                                '<?php echo htmlspecialchars($mod['email'], ENT_QUOTES); ?>'
-                            )">
-                                Edit
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="5">
-                            <form class="edit-form" id="edit-form-<?php echo $mod['id']; ?>" method="POST">
-                                <input type="hidden" name="update_mod" value="1">
-                                <input type="hidden" name="mod_id" value="<?php echo $mod['id']; ?>">
-                                <div class="form-group">
-                                    <label>Name:</label>
-                                    <input type="text" name="name" value="<?php echo htmlspecialchars($mod['name']); ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email:</label>
-                                    <input type="email" name="email" value="<?php echo htmlspecialchars($mod['email']); ?>" required>
-                                </div>
-                                <button type="submit" class="btn btn-save">Save Changes</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+            <!-- Add table container and scroll hint -->
+            <div class="table-container">
+                <span class="table-scroll-hint">Scroll horizontally to view more <i class="material-icons" style="font-size: 0.9em; vertical-align: middle;">swipe</i></span>
+                <table class="mods-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Last Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while($mod = $result->fetch_assoc()): ?>
+                        <tr id="mod-row-<?php echo $mod['id']; ?>">
+                            <td><?php echo htmlspecialchars($mod['name']); ?></td>
+                            <td><?php echo htmlspecialchars($mod['email']); ?></td>
+                            <td class="<?php echo $mod['UserStatus'] === 'Active' ? 'status-active' : 'status-inactive'; ?>">
+                                <?php echo $mod['UserStatus']; ?>
+                            </td>
+                            <td><?php echo date('Y-m-d H:i:s', strtotime($mod['last_login'])); ?></td>
+                            <td>
+                                <button class="btn btn-edit" onclick="showEditModal(<?php 
+                                    echo $mod['id']; ?>, 
+                                    '<?php echo htmlspecialchars($mod['name'], ENT_QUOTES); ?>', 
+                                    '<?php echo htmlspecialchars($mod['email'], ENT_QUOTES); ?>'
+                                )">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                <form class="edit-form" id="edit-form-<?php echo $mod['id']; ?>" method="POST">
+                                    <input type="hidden" name="update_mod" value="1">
+                                    <input type="hidden" name="mod_id" value="<?php echo $mod['id']; ?>">
+                                    <div class="form-group">
+                                        <label>Name:</label>
+                                        <input type="text" name="name" value="<?php echo htmlspecialchars($mod['name']); ?>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email:</label>
+                                        <input type="email" name="email" value="<?php echo htmlspecialchars($mod['email']); ?>" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-save">Save Changes</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Add this modal HTML -->
             <div id="editModal" class="modal">
@@ -285,6 +444,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_mod'])) {
                 document.getElementById('activeMods').textContent = data.active_count;
             });
     }, 30000);
+
+    // Add function to check if table needs scroll hint
+    function checkTableOverflow() {
+        const tableContainer = document.querySelector('.table-container');
+        const table = document.querySelector('.mods-table');
+        const scrollHint = document.querySelector('.table-scroll-hint');
+        
+        if (tableContainer && table && scrollHint) {
+            if (table.offsetWidth > tableContainer.offsetWidth) {
+                scrollHint.style.display = 'block';
+            } else {
+                scrollHint.style.display = 'none';
+            }
+        }
+    }
+    
+    // Check on load and resize
+    window.addEventListener('load', checkTableOverflow);
+    window.addEventListener('resize', checkTableOverflow);
+
+    // Add mobile menu toggle functionality
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('active');
+        
+        // Close sidebar when clicking outside
+        if(sidebar.classList.contains('active')) {
+            document.addEventListener('click', function closeMenu(e) {
+                if(!e.target.closest('.sidebar') && !e.target.closest('#menuToggle')) {
+                    sidebar.classList.remove('active');
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        const sidebar = document.querySelector('.sidebar');
+        if(window.innerWidth > 768) {
+            sidebar.classList.remove('active');
+        }
+    });
     </script>
     <script src="Admin.js"></script>
 </body>

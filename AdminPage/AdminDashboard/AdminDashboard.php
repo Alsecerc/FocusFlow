@@ -259,11 +259,11 @@ requireAdminAuth();
             /* Adjust sidebar (if visible) or hide it */
             .sidebar {
                 display: none;
+                width: 80%;
             }
             
             .sidebar.active {
                 display: block;
-                width: 80%;
             }
             
             /* Adjust header icons and text sizes for better mobile readability */
@@ -296,17 +296,24 @@ requireAdminAuth();
             }
         }
         
-        /* Add styles for the menu button */
+        /* Menu button styles */
         .HEADER__MENU_BUTTON {
             display: none;
-            background: none;
+            background: #2c3e50;
+            color: white;
             border: none;
+            border-radius: 4px;
+            padding: 8px;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1001;
             cursor: pointer;
         }
         
-        @media screen and (min-width: 769px) {
+        @media screen and (max-width: 768px) {
             .HEADER__MENU_BUTTON {
-                display: none;
+                display: block;
             }
         }
     </style>
@@ -314,6 +321,10 @@ requireAdminAuth();
 
 <body>
     <?php include "AdminSidebar.php"; ?>
+    
+    <button class="HEADER__MENU_BUTTON" id="menuToggle">
+        <i class="material-icons">menu</i>
+    </button>
     
     <div class="DASH__MAIN">
         <div class="dashboard-top">
@@ -427,13 +438,7 @@ requireAdminAuth();
     </script>
     <script src="Admin.js"></script>
     <script>
-    // Add mobile menu button to DOM
-    document.body.insertAdjacentHTML('afterbegin', `
-        <button class="HEADER__MENU_BUTTON" onclick="toggleSidebar()">
-            <i class="material-icons">menu</i>
-        </button>
-    `);
-
+    // Remove duplicate menu button creation - only use the one in the HTML
     function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar');
         sidebar.classList.toggle('active');
@@ -449,10 +454,26 @@ requireAdminAuth();
         }
     }
 
+    // Update mobile menu toggle functionality
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('active');
+        
+        // Close sidebar when clicking outside
+        if(sidebar.classList.contains('active')) {
+            document.addEventListener('click', function closeMenu(e) {
+                if(!e.target.closest('.sidebar') && !e.target.closest('#menuToggle')) {
+                    sidebar.classList.remove('active');
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }
+    });
+
     // Handle window resize
     window.addEventListener('resize', () => {
         const sidebar = document.querySelector('.sidebar');
-        if(window.innerWidth > 760) {
+        if(window.innerWidth > 768) {
             sidebar.classList.remove('active');
         }
     });
