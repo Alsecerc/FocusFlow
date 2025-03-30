@@ -148,7 +148,7 @@ function showSuccessToast(message, duration = 3000) {
     // Remove after duration
     setTimeout(() => {
         toast.style.animation = 'fadeOut 0.3s ease-out forwards';
-        setTimeout(() => toast.remove(), 300);
+        setTimeout(() => toast.remove(), 300)
     }, duration);
 }
 
