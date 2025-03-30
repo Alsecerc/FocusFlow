@@ -78,6 +78,7 @@ $stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
 $stmt->execute();
 $taskResults = $stmt->get_result();
 
+
 // Get team tasks completed per day this week
 $sql = "SELECT DATE(assigned_at) as day, COUNT(*) as count 
         FROM group_tasks 
@@ -98,6 +99,7 @@ $teamTasksPerDay = array_fill(0, 7, 0);
 
 // Fill tasks data
 while ($row = $taskResults->fetch_assoc()) {
+    $dayOfWeek = date('w', strtotime($row['day']));
     $tasksPerDay[$dayOfWeek] = $row['count'];
 }
 
@@ -188,19 +190,11 @@ try {
     $messagesPerDay = [0, 0, 0, 0, 0, 0, 0]; // Return an array of zeros in case of an error
 }
 
-// Fill messages data
-// while ($row = $messageResults->fetch_assoc()) {
-//     $dayOfWeek = date('w', strtotime($row['day']));
-//     $messagesPerDay[$dayOfWeek] = $row['count'];
-// }
-
 // Fill team tasks data
 while ($row = $teamTaskResults->fetch_assoc()) {
     $dayOfWeek = date('w', strtotime($row['day']));
     $teamTasksPerDay[$dayOfWeek] = $row['count'];
 }
-
-echo "<script>console.log(" . json_encode($teamTasksPerDay) . ");</script>";
 
 // Fetch tasks with due dates for the current month
 $sql = "SELECT DATE(end_date) as due_date, status FROM tasks WHERE user_id = ? AND MONTH(end_date) = ? AND YEAR(end_date) = ?";
@@ -630,105 +624,197 @@ while ($row = $result->fetch_assoc()) {
             background-color: #3b4a5a;
         }
 
-        /* Add responsive styles */
+        /* Responsive Styles */
         @media screen and (max-width: 1200px) {
             .dashboard {
+                padding: 1.5rem 2rem;
+                gap: 1.5rem;
+            }
+        }
+
+        @media screen and (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr 250px;
+                padding: 1rem 1.5rem;
+                gap: 1rem;
+            }
+            
+            .metrics-grid {
+                gap: 0.75rem;
+            }
+            
+            .metric-card {
+                padding: 1.2rem;
+            }
+            
+            .metric-card__value {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .dashboard {
                 grid-template-columns: 1fr;
-                padding: 1.5rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                margin-bottom: 1.5rem;
             }
             
             .sidebar {
-                grid-row: 1;
+                width: 100%;
+                margin-top: 1.5rem;
             }
             
-            .main-content {
-                grid-row: 2;
-            }
-        }
-        
-        @media screen and (max-width: 768px) {
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .dashboard {
-                padding: 1rem;
-                gap: 1.5rem;
-            }
-            
-            .chart-container {
-                overflow-x: auto;
-            }
-            
-            .group-tasks-title {
-                font-size: 1rem;
+            .calendar-container {
+                max-width: 450px;
+                margin: 0 auto;
             }
             
             .task-card {
                 padding: 0.8rem;
             }
             
-            .metric-card__value {
-                font-size: 1.5rem;
+            /* Improved calendar responsiveness */
+            .wrapper {
+                max-width: 450px;
+                margin: 0 auto;
             }
-            .calendar-container,
-            .chat-messages {
-                font-size: 0.95rem;
+            
+            .calendar .weeks li, 
+            .calendar .days li {
+                font-size: 0.9rem;
+                padding: 4px;
+            }
+            
+            /* Improved modal responsiveness */
+            .modal-content {
+                margin: 10% auto;
+                width: 90%;
+                padding: 15px;
             }
         }
-        
-        @media screen and (max-width: 480px) {
+
+        @media screen and (max-width: 576px) {
+            .dashboard {
+                padding: 1rem;
+            }
+            
             .metrics-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .wrapper header {
-                padding: 0 0.5rem;
-            }
-
-            .dashboard {
-                padding: 0.5rem;
-                gap: 1rem;
-            }
-            
-            .task-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .task-meta {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 0.5rem;
+                gap: 0.75rem;
             }
             
             .metric-card {
                 padding: 1rem;
             }
             
-            .calendar-container {
+            .metric-card__value {
+                font-size: 1.5rem;
+            }
+            
+            .metric-card__label {
+                font-size: 0.8rem;
+            }
+            
+            .chart-container {
+                margin-bottom: 1.5rem;
+                padding: 0.8rem;
+            }
+            
+            .group-tasks-container {
+                padding: 0.75rem;
+            }
+            
+            .task-meta {
+                gap: 0.5rem;
+            }
+            
+            .task-card__heading {
                 font-size: 0.9rem;
             }
             
-            .days li, .weeks li {
+            .task-card__subheading {
+                font-size: 0.75rem;
+            }
+            
+            .task-card__avatar {
+                width: 24px;
+                height: 24px;
+                font-size: 0.75rem;
+            }
+            
+            .calendar .weeks li, 
+            .calendar .days li {
+                font-size: 0.75rem;
                 padding: 3px;
-                font-size: 0.9em;
+            }
+            
+            .calendar-header .current-date {
+                font-size: 1rem;
+            }
+            
+            .group-tasks-title {
+                font-size: 1rem;
             }
             
             .modal-content {
-                width: 90%;
-                margin: 30% auto;
+                margin: 5% auto;
+                padding: 10px;
             }
-
-            header .icons span {
-                height: 32px;
-                width: 32px;
-                line-height: 32px;
+            
+            #viewCalendarButton {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Additional styles for very small screens */
+        @media screen and (max-width: 400px) {
+            .metric-card__value {
                 font-size: 1.3rem;
             }
-            /* Optionally, reduce padding/margin for chat/message areas */
-            .messages-panel {
-                padding: 0.5rem;
+            
+            .metric-card {
+                padding: 0.8rem;
+            }
+            
+            .week-badge {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .task-card {
+                padding: 0.7rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .task-meta {
+                width: 100%;
+                margin-top: 0.5rem;
+                justify-content: space-between;
+            }
+            
+            .calendar .weeks,
+            .calendar .days {
+                gap: 2px;
+            }
+            
+            .wrapper header {
+                padding: 0 0.5rem;
+            }
+            
+            header .icons span {
+                height: 30px;
+                width: 30px;
+                line-height: 30px;
+                font-size: 1.5rem;
+            }
+            
+            .calendar-header .current-date {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -994,7 +1080,6 @@ while ($row = $result->fetch_assoc()) {
 
                     closeModal.onclick = () => {
                         taskModal.style.display = "none";
-                        console.log("closeModal");
                     }
 
                     window.onclick = (event) => {
@@ -1020,6 +1105,26 @@ while ($row = $result->fetch_assoc()) {
                             }
                             renderCalendar();
                         });
+                    });
+
+                    // Add to pages where users are active
+                    function updateUserActivity() {
+                        fetch('/RWD_assignment/FocusFlow/AdminPage/AdminDashboard/get_user_statuses.php')
+                            .then(response => response.json())
+                            .catch(error => console.error('Error updating activity:', error));
+                    }
+
+                    // Update every minute
+                    setInterval(updateUserActivity, 60000);
+
+                    // Initial update
+                    updateUserActivity();
+
+                    // Update on page visibility change
+                    document.addEventListener('visibilitychange', function() {
+                        if (!document.hidden) {
+                            updateUserActivity();
+                        }
                     });
                 </script>
     </main>

@@ -66,12 +66,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
             stopBtn.disabled = true;
         }
 
-        function restartInterval() {
-            if (intervalId) clearInterval(intervalId);
-            intervalId = setInterval(TimeUpdate, 1000);
-            stopBtn.disabled = false;
-        }
-
         function TimeUpdate() {
             if (isFirstUpdate) {
                 isFirstUpdate = false;
