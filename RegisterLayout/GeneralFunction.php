@@ -21,14 +21,16 @@ function Query($sql, $type, $params, $errorMessage = "No data found", $returnTyp
         throw new Exception("Database error: " . $_conn->error);
     }
     
-    // Handle both array and individual parameters
-    if (is_array($params) && count($params) > 1) {
-        // This is a single array of parameters - extract values
-        $bindParams = array_values($params);
-        $stmt->bind_param($type, ...$bindParams);
-    } else {
-        // This is either a single value or already the right format
-        $stmt->bind_param($type, $params);
+    // Only bind parameters if the type is not empty and params are provided
+    if ($type !== "" && $type !== null && $params !== null) {
+        if (is_array($params) && count($params) > 1) {
+            // This is a single array of parameters - extract values
+            $bindParams = array_values($params);
+            $stmt->bind_param($type, ...$bindParams);
+        } else if ($params !== null) {
+            // This is either a single value or already the right format
+            $stmt->bind_param($type, $params);
+        }
     }
 
     $stmt->execute();

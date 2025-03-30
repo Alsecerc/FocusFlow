@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     header("Location: /RWD_assignment/FocusFlow/AdminPage/AdminDashboard/AdminDashboard.php");
                     break;
                 case 2: // Moderator
-                    header("Location: /RWD_assignment/FocusFlow/ModeratorPage/ModeratorDashboard.php");
+                    header("Location: /RWD_assignment/FocusFlow/ModeratorPage/Dashboard/ModDashboard.php");
                     break;
                 case 0: // Regular user
                     header("Location: Homepage.php");

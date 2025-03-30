@@ -42,28 +42,28 @@ if (isset($_COOKIE['UID'])) {
                     <h3 class="slide-title">Focus on your task</h3>
                     <h2 class="slide-subtitle">Track your productivity seamlessly</h2>
                     <div class="image-placeholder">
-                        <img src="\RWD_Assignment\FocusFlow\RegisterLayout\img\track.png" alt="Productivity">
+                        <img src="img/undraw_dev-productivity_5wps.svg" alt="Productivity">
                     </div>
                 </div>
                 <div class="carousel-slide">
                     <h3 class="slide-title">Manage your time</h3>
                     <h2 class="slide-subtitle">Set goals and achieve them</h2>
                     <div class="image-placeholder">
-                        <img src="\RWD_Assignment\FocusFlow\RegisterLayout\img\goals.png" alt="Time Management">
+                        <img src="img/undraw_time-management_fedt.svg" alt="Time Management">
                     </div>
                 </div>
                 <div class="carousel-slide">
                     <h3 class="slide-title">Stay organized</h3>
                     <h2 class="slide-subtitle">Keep your workflow structured</h2>
                     <div class="image-placeholder">
-                        <img src="\RWD_Assignment\FocusFlow\RegisterLayout\img\strcuture.png" alt="Organization">
+                        <img src="img/undraw_spreadsheet_g2tr.svg" alt="Organization">
                     </div>
                 </div>
                 <div class="carousel-slide">
                     <h3 class="slide-title">Track Progress</h3>
                     <h2 class="slide-subtitle">Monitor your improvements</h2>
                     <div class="image-placeholder">
-                        <img src="\RWD_Assignment\FocusFlow\RegisterLayout\img\improve.png" alt="Progress">
+                        <img src="img/undraw_progress-data_gvcq.svg" alt="Progress">
                     </div>
                 </div>
             </div>
