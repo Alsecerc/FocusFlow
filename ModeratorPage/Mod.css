@@ -635,16 +635,16 @@ canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    
+
     width: 400px;
     max-width: 90%;
     padding: var(--PADDING-NORMAL);
     border-radius: 10px;
     border: var(--BORDER-DARK);
-    
+
     background-color: var(--COLOR-LIGHT1);
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-    
+
     display: none;
     opacity: 0;
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -932,29 +932,61 @@ canvas {
     background-color: var(--COLOR-ACCENT3);
 }
 
-.dropdown {
-    position: absolute;
-    background: var(--COLOR-LIGHT1);
-    border: 1px solid #ccc;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 100;
+.popup-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--BORDER-RD-CONTACT);
 }
 
-.dropdown ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.popup-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px;
 }
 
-.dropdown ul li {
-    padding: 8px 12px;
+
+#receiverList li {
     cursor: pointer;
+    margin: var(--MARGIN) 0;
 }
 
-.dropdown ul li:hover {
-    background: #f0f0f0;
+
+#receiverList li:active,
+#receiverList li:hover {
+    transition: all 0.5s ease;
+
+    border-radius: var(--BORDER-RD-CONTACT);
+    background-color: var(--COLOR-DARK2);
+    color: var(--COLOR-LIGHT1);
 }
 
+.delete-btn {
+    background: var(--COLOR-RED-LIGHT);
+    color: var(--COLOR-DARK3);
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+.CONVO {
+    display: flex;
+    justify-content: space-between;
+}
 
 /* team management */
 
@@ -974,7 +1006,129 @@ canvas {
 
 .WIDGET.tm_three {
     grid-area: 1 / 1 / 2 / 4;
+    background-color: var(--COLOR-ACCENT2);
+    color: var(--COLOR-LIGHT1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
+
+#searchTeam {
+    width: 100%;
+    min-height: 50px;
+}
+
+#teamTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#teamTable thead {
+    background-color: var(--COLOR-ACCENT1);
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#teamTable thead th {
+    padding: 12px;
+    text-align: left;
+    font-size: 16px;
+    border-bottom: 2px solid var(--COLOR-ACCENT2);
+}
+
+#teamTable tbody tr {
+    transition: background 0.3s ease;
+}
+
+#teamTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#teamTable tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+#teamTable tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#teamTable tbody td button {
+    background: var(--COLOR-GREEN);
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+#teamTable tbody td button:hover {
+    background: var(--COLOR-GREEN-LIGHT);
+}
+
+
+/* first container */
+/* Ensure the widget takes up full screen */
+.WIDGET.tm_one {
+    width: 100%;
+    height: 100vh;
+    /* Full height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Group tasks & members container */
+.group-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Task & Member Sections */
+#taskContainer,
+#memberContainer {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#taskList li,
+#memberList li {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: var(--PADDING-NORMAL);
+    border-left: var(--BORDER-DARK);
+}
+
+#taskList li span,
+#memberList li span {
+    flex-grow: 1;
+    /* Takes up remaining space */
+    text-align: left;
+}
+
+
+
 
 /* File Management Page */
 .WIDGET__CONTAINER.four {
@@ -1001,7 +1155,6 @@ canvas {
     display: flex;
     flex-direction: column;
 }
-
 
 /* INPUT CSS */
 #searchInput {

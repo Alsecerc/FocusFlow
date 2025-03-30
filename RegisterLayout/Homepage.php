@@ -80,7 +80,7 @@ $taskResults = $stmt->get_result();
 
 // Get messages sent per day this week
 
-$GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE user_id = ?", "i", $userID, "No data found", "array", "SELECT", null);
+$GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE UserID = ?", "i", $userID, "No data found", "array", "SELECT", null);
 
 $GetFriendIDFromContact = Query("SELECT FriendID FROM contact WHERE ContactListID = ?", "i", $GetUserContactListID, "No data found", "single", "SELECT", null);
 

@@ -302,7 +302,7 @@ label {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(120, 120, 120, 0.7);
     border: none;
     width: 40px;
     height: 40px;
@@ -311,10 +311,15 @@ label {
     cursor: pointer;
     z-index: 10;
     transition: background-color 0.3s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .carousel-nav:hover {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(19, 19, 19, 0.9);
+    color: whitesmoke;
 }
 
 .carousel-nav.prev {
