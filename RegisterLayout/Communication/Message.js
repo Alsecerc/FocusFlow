@@ -665,17 +665,6 @@ function renderGroups(GroupData) {
 	
 }
 
-function currentDateTime() {
-	const date = new Date();
-	const options = {
-		timeZone: 'Asia/Kuala_Lumpur', // Specify desired timezone
-		hour: 'numeric',
-		minute: 'numeric',
-		hour12: false
-	};
-	return (date.toLocaleString('en-US', options));
-}
-
 function DisplayHourMin(lastTime) {
     // Early return for null, undefined or empty values
     if (!lastTime) {
@@ -2449,56 +2438,6 @@ function CreateDMContactListForUser(){
 		// Handle the error appropriately
 	});
 }
-
-// function renderDMContactList(){
-//     fetchDataOrsendData("/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetContactListForDM", {
-//         method: 'GET',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         }
-//     })
-//     .then(data => {
-//         console.log('DM page success get data:', data);
-//         if (data.status === 'success') {
-//             // Check if data is an object and has properties
-//             if (data && typeof data === 'object') {
-//                 // Clear existing contacts
-//                 const contactsList = document.querySelector('.contacts-panel.DirectMessages .contacts-list');
-//                 contactsList.innerHTML = '';
-                
-//                 // Sort contacts by timestamp (most recent first)
-//                 const contacts = Object.values(data.message);
-//                 contacts.sort((a, b) => {
-//                     const timeA = new Date(a.created_at || 0);
-//                     const timeB = new Date(b.created_at || 0);
-//                     return timeB - timeA; // Descending order
-//                 });
-                
-//                 // Loop through the sorted contacts and render each one
-//                 contacts.forEach(DM => {
-//                     const NewDMContactlist = {
-//                         ContactID: DM.ID,
-//                         name: DM.friendName,
-//                         message: DM.MessageText,
-//                         time: DM.created_at
-//                     }
-//                     renderDirectMessageContact(NewDMContactlist);
-//                 });
-//             } else {
-//                 console.log('No groups found or invalid data format');
-//             }
-//         } else if(data.status === 'warning'){
-//             console.log('Warning:', data.message);
-//         } else {
-//             console.log('No groups found or invalid data format');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Default Page Error:', error);
-//         // Handle the error appropriately
-//     });
-// }
 
 function AddContact(recipientEmail, overlay){
 	
