@@ -69,7 +69,37 @@ document.getElementById("test").addEventListener("click", function() {
     })
     .then(data => {
         if (data) {
-            resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            console.log(data); // Log the entire response to the console for debugging
+            
+            // Get the counts array
+            const counts = data.data || [0, 0, 0, 0, 0, 0, 0];
+            
+            // Create labels for the days (from oldest to newest)
+            const dayLabels = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                dayLabels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+            }
+            
+            // Create HTML for the weekly message counts
+            let weeklyHtml = '<h3>Message Counts by Day</h3><table style="width:100%; border-collapse:collapse; margin-bottom:20px;">';
+            weeklyHtml += '<tr style="background-color:#333;"><th style="padding:8px;text-align:left;">Day</th><th style="padding:8px;text-align:right;">Count</th></tr>';
+            
+            dayLabels.forEach((day, index) => {
+                const rowStyle = index % 2 === 0 ? 'background-color:#222;' : 'background-color:#2a2a2a;';
+                weeklyHtml += `<tr style="${rowStyle}">
+                    <td style="padding:8px;">${day}</td>
+                    <td style="padding:8px;text-align:right;">${counts[index]}</td>
+                </tr>`;
+            });
+            
+            weeklyHtml += '</table>';
+            
+            // Also add a representation of the array itself
+            weeklyHtml += `<div style="margin-top:15px;">Raw data: [${counts.join(', ')}]</div>`;
+            
+            resultDiv.innerHTML = weeklyHtml;
         }
     })
     .catch(error => {

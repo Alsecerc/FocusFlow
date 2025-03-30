@@ -78,14 +78,6 @@ $stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
 $stmt->execute();
 $taskResults = $stmt->get_result();
 
-// Get messages sent per day this week
-
-// $GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE user_id = ?", "i", $userID, "No data found", "array", "SELECT", null);
-
-// $GetFriendIDFromContact = Query("SELECT FriendID FROM contact WHERE ContactListID = ?", "i", $GetUserContactListID, "No data found", "single", "SELECT", null);
-
-
-
 // Get team tasks completed per day this week
 $sql = "SELECT DATE(assigned_at) as day, COUNT(*) as count 
         FROM group_tasks 
@@ -106,8 +98,94 @@ $teamTasksPerDay = array_fill(0, 7, 0);
 
 // Fill tasks data
 while ($row = $taskResults->fetch_assoc()) {
-    $dayOfWeek = date('w', strtotime($row['day']));
     $tasksPerDay[$dayOfWeek] = $row['count'];
+}
+
+try {
+    // Create a simple array to store message counts for the last 7 days
+    $weeklyCounts = array_fill(0, 7, 0); // Initialize with zeros for 7 days
+    
+    // Get dates for the last 7 days (from oldest to newest)
+    $dates = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $dates[] = date('Y-m-d', strtotime("-$i days"));
+    }
+    
+    // Query for direct message counts by day (last 7 days)
+    $directMessageQuery = "
+        SELECT 
+            DATE(CreatedTime) as message_date,
+            COUNT(*) as message_count
+        FROM directmessage 
+        WHERE (SenderID = ? OR ReceiverID = ?) 
+        AND CreatedTime >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(CreatedTime)
+    ";
+    
+    $directMessageCounts = Query($directMessageQuery, "ii", [$userID, $userID], "No direct messages found", "array", "SELECT", null);
+    
+    // Add direct message counts to the weekly counts array
+    if (is_array($directMessageCounts) && !empty($directMessageCounts)) {
+        foreach ($directMessageCounts as $dayCount) {
+            $messageDate = $dayCount['message_date'];
+            $dateIndex = array_search($messageDate, $dates);
+            if ($dateIndex !== false) {
+                $weeklyCounts[$dateIndex] += (int)$dayCount['message_count'];
+            }
+        }
+    }
+    
+    // Get all user's groups
+    $groupsQuery = "SELECT GroupInfoID FROM groupusers WHERE UserID = ?";
+    $userGroups = Query($groupsQuery, "i", $userID, "No groups found", "array", "SELECT", null);
+    
+    // Process group messages if any groups exist
+    if (is_array($userGroups) && !empty($userGroups)) {
+        $groupIds = [];
+        
+        // Extract all group IDs
+        foreach ($userGroups as $group) {
+            if (isset($group['GroupInfoID'])) {
+                $groupIds[] = $group['GroupInfoID'];
+            }
+        }
+        
+        // If we have any group IDs, query group message counts
+        if (!empty($groupIds)) {
+            // Build query directly with the group IDs instead of using IN with placeholders
+            $groupIdList = implode(',', array_map('intval', $groupIds)); // Ensure IDs are integers for security
+            
+            $groupMessageQuery = "
+                SELECT 
+                    DATE(CreatedTime) as message_date,
+                    COUNT(*) as message_count
+                FROM groupchat 
+                WHERE GroupID IN ($groupIdList)
+                AND CreatedTime >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                GROUP BY DATE(CreatedTime)
+            ";
+            if (!empty($groupIdList)) {
+                // Use empty string for type parameter instead of null, and pass empty array instead of null for params
+                $groupMessageCounts = Query($groupMessageQuery, "", [], "No group messages found", "array", "SELECT", null);
+            
+                // Add group message counts to the weekly counts array
+                if (is_array($groupMessageCounts) && !empty($groupMessageCounts)) {
+                    foreach ($groupMessageCounts as $dayCount) {
+                        $messageDate = $dayCount['message_date'];
+                        $dateIndex = array_search($messageDate, $dates);
+                        if ($dateIndex !== false) {
+                            $weeklyCounts[$dateIndex] += (int)$dayCount['message_count'];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Return the simplified array of just the counts
+    $messagesPerDay = $weeklyCounts;
+} catch (Exception $e) {
+    $messagesPerDay = [0, 0, 0, 0, 0, 0, 0]; // Return an array of zeros in case of an error
 }
 
 // Fill messages data
@@ -121,6 +199,8 @@ while ($row = $teamTaskResults->fetch_assoc()) {
     $dayOfWeek = date('w', strtotime($row['day']));
     $teamTasksPerDay[$dayOfWeek] = $row['count'];
 }
+
+echo "<script>console.log(" . json_encode($teamTasksPerDay) . ");</script>";
 
 // Fetch tasks with due dates for the current month
 $sql = "SELECT DATE(end_date) as due_date, status FROM tasks WHERE user_id = ? AND MONTH(end_date) = ? AND YEAR(end_date) = ?";
@@ -914,6 +994,7 @@ while ($row = $result->fetch_assoc()) {
 
                     closeModal.onclick = () => {
                         taskModal.style.display = "none";
+                        console.log("closeModal");
                     }
 
                     window.onclick = (event) => {

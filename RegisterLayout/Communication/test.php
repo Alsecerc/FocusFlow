@@ -191,7 +191,7 @@ switch ($data["case"]) {
         break;
 
     case 'returnAllMessage':
-        returnAllMessage();
+        returnAllMessage(1);
         break;
     default:
         echo json_encode([
@@ -201,162 +201,103 @@ switch ($data["case"]) {
         break;
 }
 
-// function returnAllMessage (){
-//     global $user_id;
-    
-//     // Get the user's contact list ID(s)
-//     $GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE UserID = ?", "i", $user_id, "No data found", "array", "SELECT", true);
-    
-//     // If the query returned an array, extract the first ContactID
-//     if(is_array($GetUserContactListID) && !empty($GetUserContactListID)){
-//         $ContactListID = $GetUserContactListID[0]['ContactID'];
-//     } else {
-//         return false; // No ContactListID found
-//     }
-    
-//     // Get FriendID from the contact table using the extracted ContactListID
-//     $GetFriendIDFromContact = Query("SELECT FriendID FROM contact WHERE ContactListID = ?", "i", $ContactListID, "No data found", "single", "SELECT", null);
-    
-//     // Ensure that we got a valid FriendID
-//     if(!$GetFriendIDFromContact) {
-//         return false; // No FriendID found
-//     }
-    
-//     // Get chat log from direct messages for the friend
-//     $GetUserChatLog = Query("SELECT * FROM directmessage WHERE FriendID = ? ORDER BY DirectMessageID DESC", "i", $GetFriendIDFromContact, "No Data Found", "array", "SELECT");
-//     $finalData = [];
-
-//     foreach ($GetUserChatLog as $value) {
-//         // Try to get friend details from 'friends' table (first attempt)
-//         $Friend_ID = Query("SELECT * FROM friends WHERE id = ? AND user_id = ?", "ii", [$value['FriendID'], $user_id], "Friend ID not found", "single", "SELECT", null);
+function returnAllMessage($UserID) {    
+    try {
+        // Create a simple array to store message counts for the last 7 days
+        $weeklyCounts = array_fill(0, 7, 0); // Initialize with zeros for 7 days
         
-//         // If not found, try alternative query using friend_id instead
-//         if (!$Friend_ID) {
-//             $Friend_ID = Query("SELECT * FROM friends WHERE id = ? AND friend_id = ?", "ii", [$value['FriendID'], $user_id], "Friend ID not found", "single", "SELECT", true);
-//         }
+        // Get dates for the last 7 days (from oldest to newest)
+        $dates = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dates[] = date('Y-m-d', strtotime("-$i days"));
+        }
         
-//         $finalData[] = [
-//             'content' => $value['MessageText'],
-//             'time' => $value['CreatedTime'],
-//         ];
-//     }
-
-//     // Get list of messages from group chat
-//     $GetAllGroupInfoID = Query("SELECT * FROM groupusers WHERE UserID = ?", "i", $user_id, "No Group found?", "array", "SELECT");
-    
-//     echo json_encode([
-//        'status' => 'success',
-//         'message' => $GetAllGroupInfoID
-//     ]);exit; 
-//     foreach ($GetAllGroupInfoID as $group) {
-
-//         echo json_encode([
-//             'status' => 'success',
-//             'message' => $group
-//         ]);exit;
-//         $GetGroupChatLog = Query("SELECT * FROM groupchat WHERE GroupID = ? ORDER BY GroupChatID DESC", "i", $group, "No Data Found", "array", "SELECT");
+        // Query for direct message counts by day (last 7 days)
+        $directMessageQuery = "
+            SELECT 
+                DATE(CreatedTime) as message_date,
+                COUNT(*) as message_count
+            FROM directmessage 
+            WHERE (SenderID = ? OR ReceiverID = ?) 
+            AND CreatedTime >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY DATE(CreatedTime)
+        ";
         
-//         foreach ($GetGroupChatLog as $value) {
-//             $finalData[] = [
-//                 'content' => $value['GroupMessage'],
-//                 'time' => $value['CreatedTime'],
-//             ];
-//         }
-//     }
-
-//     if(empty($finalData)){
-//         return false; // No data found
-//     } else {
-//         echo json_encode([
-//             'status' => 'success',
-//             'message' => $finalData
-//         ]);
-//         exit;
-//     }
-// }
-
-function returnAllMessage($case, $data) {
-    switch ($case) {
-        case "returnAllMessage":
-            // Check for GroupID in the data
-            if (isset($data->GroupID)) {
-                $GroupID = $data->GroupID;
-                
-                // First, check if the group exists before trying to get its info
-                $groupExists = Query(
-                    "SELECT COUNT(*) as count FROM group_info WHERE GroupID = ?", 
-                    "i", 
-                    $GroupID,
-                    "Error checking group existence", 
-                    "single", 
-                    "SELECT",
-                    null
-                );
-                
-                // Log group existence check
-                error_log("Group existence check for ID $GroupID: " . json_encode($groupExists));
-                
-                if ($groupExists && $groupExists['count'] > 0) {
-                    // Group exists, proceed with getting group info
-                    $GetAllGroupInfoID = Query(
-                        "SELECT * FROM group_info WHERE GroupID = ?", 
-                        "i", 
-                        $GroupID, 
-                        null, // Change from "No data found" to null to avoid early termination
-                        "single", 
-                        "SELECT",
-                        null
-                    );
-                    
-                    // Log the retrieved group info
-                    error_log("Group info for ID $GroupID: " . json_encode($GetAllGroupInfoID));
-                    
-                    if ($GetAllGroupInfoID) {
-                        // If data found, proceed with message retrieval
-                        $messages = Query(
-                            "SELECT * FROM messages WHERE GroupID = ? ORDER BY sent_at ASC", 
-                            "i", 
-                            $GroupID, 
-                            "No messages found", 
-                            "array", 
-                            "SELECT",
-                            null
-                        );
-                        
-                        return [
-                            "status" => "success",
-                            "group_info" => $GetAllGroupInfoID,
-                            "messages" => $messages
-                        ];
-                    } else {
-                        // Group exists but no group info found - this is unusual
-                        error_log("Group exists but no info found for ID: $GroupID");
-                        return [
-                            "status" => "error",
-                            "message" => "Group exists but no info found"
-                        ];
-                    }
-                } else {
-                    // Group doesn't exist
-                    error_log("Group does not exist with ID: $GroupID");
-                    return [
-                        "status" => "error",
-                        "message" => "Group does not exist"
-                    ];
+        $directMessageCounts = Query($directMessageQuery, "ii", [$UserID, $UserID], "No direct messages found", "array", "SELECT", null);
+        
+        // Add direct message counts to the weekly counts array
+        if (is_array($directMessageCounts) && !empty($directMessageCounts)) {
+            foreach ($directMessageCounts as $dayCount) {
+                $messageDate = $dayCount['message_date'];
+                $dateIndex = array_search($messageDate, $dates);
+                if ($dateIndex !== false) {
+                    $weeklyCounts[$dateIndex] += (int)$dayCount['message_count'];
                 }
-            } else {
-                // GroupID not provided in request
-                return [
-                    "status" => "error",
-                    "message" => "GroupID is required"
-                ];
             }
-            break;
+        }
+        
+        // Get all user's groups
+        $groupsQuery = "SELECT GroupInfoID FROM groupusers WHERE UserID = ?";
+        $userGroups = Query($groupsQuery, "i", $UserID, "No groups found", "array", "SELECT", null);
+        
+        // Process group messages if any groups exist
+        if (is_array($userGroups) && !empty($userGroups)) {
+            $groupIds = [];
             
-        // Other cases can be handled here
+            // Extract all group IDs
+            foreach ($userGroups as $group) {
+                if (isset($group['GroupInfoID'])) {
+                    $groupIds[] = $group['GroupInfoID'];
+                }
+            }
+            
+            // If we have any group IDs, query group message counts
+            if (!empty($groupIds)) {
+                // Build query directly with the group IDs instead of using IN with placeholders
+                $groupIdList = implode(',', array_map('intval', $groupIds)); // Ensure IDs are integers for security
+                
+                $groupMessageQuery = "
+                    SELECT 
+                        DATE(CreatedTime) as message_date,
+                        COUNT(*) as message_count
+                    FROM groupchat 
+                    WHERE GroupID IN ($groupIdList)
+                    AND CreatedTime >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                    GROUP BY DATE(CreatedTime)
+                ";
+                
+                // Execute without parameters since we built the query directly
+                $groupMessageCounts = Query($groupMessageQuery, "", null, "No group messages found", "array", "SELECT", null);
+                
+                // Add group message counts to the weekly counts array
+                if (is_array($groupMessageCounts) && !empty($groupMessageCounts)) {
+                    foreach ($groupMessageCounts as $dayCount) {
+                        $messageDate = $dayCount['message_date'];
+                        $dateIndex = array_search($messageDate, $dates);
+                        if ($dateIndex !== false) {
+                            $weeklyCounts[$dateIndex] += (int)$dayCount['message_count'];
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Return the simplified array of just the counts
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Weekly message counts retrieved successfully',
+            'data' => $weeklyCounts
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error retrieving message counts: ' . $e->getMessage(),
+            'data' => [0, 0, 0, 0, 0, 0, 0]
+        ]);
     }
+    
+    exit;
 }
-
 
 function CheckIfUserIsBlock($ContactID){
     global $user_id;
@@ -646,7 +587,6 @@ function GetMessageInfoForDM($FriendID){
 }
 
 function UsernameFromID($userId){
-    global $_conn;
     $row = Query("SELECT name FROM users WHERE id = ?", "i", $userId, "Username not found", "single", "SELECT", true);
     return $row['name'];
 }
@@ -897,13 +837,15 @@ function Query($sql, $type, $params, $errorMessage = "No data found", $returnTyp
     }
     
     // Handle both array and individual parameters
-    if (is_array($params) && count($params) > 1) {
-        // This is a single array of parameters - extract values
-        $bindParams = array_values($params);
-        $stmt->bind_param($type, ...$bindParams);
-    } else {
-        // This is either a single value or already the right format
-        $stmt->bind_param($type, $params);
+    if ($type !== "" && $params !== null) {
+        if (is_array($params) && count($params) > 1) {
+            // This is a single array of parameters - extract values
+            $bindParams = array_values($params);
+            $stmt->bind_param($type, ...$bindParams);
+        } else if ($params !== null) {
+            // This is either a single value or already the right format
+            $stmt->bind_param($type, $params);
+        }
     }
 
     $stmt->execute();
@@ -981,3 +923,4 @@ function Query($sql, $type, $params, $errorMessage = "No data found", $returnTyp
         return true;
     }
 }
+?>
