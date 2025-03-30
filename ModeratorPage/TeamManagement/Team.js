@@ -26,12 +26,10 @@ function fetchTeams() {
 // Search & Filter Function
 function filterTeams() {
     let searchValue = document.getElementById("searchTeam").value.toLowerCase();
-    let filterValue = document.getElementById("teamFilter").value;
 
     document.querySelectorAll("#teamTable tbody tr").forEach(row => {
         let teamName = row.cells[0].textContent.toLowerCase();
-        let status = row.cells[1].textContent.toLowerCase();
-        let show = teamName.includes(searchValue) && (filterValue === "" || status === filterValue);
+        let show = teamName.includes(searchValue);
         row.style.display = show ? "" : "none";
     });
 }

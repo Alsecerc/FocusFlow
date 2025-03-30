@@ -413,7 +413,21 @@ th {
     font-size: 2rem;
 }
 
+.logout-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+    display: inline-block;
+    margin-left: auto;
+}
 
+.logout-btn:hover {
+    background-color: #c82333;
+}
 
 /* Dashboard */
 

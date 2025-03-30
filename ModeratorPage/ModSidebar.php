@@ -19,4 +19,22 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <a href="/RWD_Assignment/FocusFlow/ModeratorPage/UploadedFileManagement/FileManagement.php"
         class="SIDEBAR__ITEM <?= $current_page == 'FileManagement.php' ? 'active' : '' ?>">File Management</a>
+
+    <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    <script>
+        function logoutUser() {
+            fetch("/RWD_Assignment/FocusFlow/ModeratorPage/Modlogout.php", {
+                    method: "POST"
+                })
+                .then(response => response.json()) // Ensure response is parsed as JSON
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "/RWD_Assignment/FocusFlow/Landing_Page/Homepage.php"; // Redirect after successful logout
+                    } else {
+                        alert("Logout failed. Please try again.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    </script>
 </div>

@@ -34,12 +34,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Teams will be loaded dynamically here -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Group Tasks & Members -->
             <div class="WIDGET tm_one">
                 <p style="font-size: 1.3rem;" class="TEAM__HEADER">Group Tasks & Members</p style="font-size: 1.3rem;">
 
