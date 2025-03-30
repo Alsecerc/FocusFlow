@@ -29,7 +29,7 @@ class Carousel {
         });
         this.nextBtn.addEventListener('click', () => {
             this.nextSlide();
-            this.resetAutoplay(); 
+            this.resetAutoplay();
         });
 
         this.startAutoplay();
@@ -75,6 +75,7 @@ class Carousel {
         this.startAutoplay();
     }
 }
+
 class FormValidator {
     constructor() {
         this.currentStep = 0;
@@ -95,53 +96,65 @@ class FormValidator {
 
     setupInputMasks() {
         const timeInput = document.getElementById('preferred_hours');
-        timeInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/[^0-9\-apmAMP\s:]/g, '');
-            const times = value.split('-').map(t => t.trim());
-            if (times.length <= 2) {
-                e.target.value = value;
-            }
-        });
+        if (timeInput) { // Check if the element exists
+            timeInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/[^0-9\-apmAMP\s:]/g, '');
+                const times = value.split('-').map(t => t.trim());
+                if (times.length <= 2) {
+                    e.target.value = value;
+                }
+            });
+        }
     }
+
 
     setupValidation() {
         const ageInput = document.getElementById('age');
-        ageInput.addEventListener('input', () => this.validateAge(ageInput));
+        if (ageInput) {
+            ageInput.addEventListener('input', () => this.validateAge(ageInput));
+        }
 
         const timeInput = document.getElementById('preferred_hours');
-        timeInput.addEventListener('blur', () => this.validateTime(timeInput));
-        this.form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (this.validateAllFields()) {
-                this.form.submit();
-            }
+        if (timeInput) {
+            timeInput.addEventListener('blur', () => this.validateTime(timeInput));
+        }
 
-            let formData = new FormData(this);
-            console.log(formData);
-            fetch('LoginBackend.php',{
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log('Server response:', data);
-                // Optionally, handle the server response here
-            })
-            .catch(error => console.error('Error:', error));
-        });
+        if (this.form) {
+            this.form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (this.validateAllFields()) {
+                    this.form.submit();
+                }
+
+                let formData = new FormData(this.form);
+                console.log(formData);
+                fetch('LoginBackend.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log('Server response:', data);
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        }
     }
+
 
     setupNavigation() {
-        this.nextButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log(this.currentStep);
-                if (this.validateStep(this.currentStep)) {
-                    this.goToNextStep();
-                }
+        if (this.nextButtons.length > 0) {
+            this.nextButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (this.validateStep(this.currentStep)) {
+                        this.goToNextStep();
+                    }
+                });
             });
-        });
+        }
     }
+    
 
     showStep(stepIndex) {
         this.formSteps.forEach((step, index) => {
@@ -150,8 +163,8 @@ class FormValidator {
         this.updateProgress();
     }
 
-    validateUsername(input) {   
-        const username = input.value;     
+    validateUsername(input) {
+        const username = input.value;
         const errorDiv = document.getElementById('usernameError');
         const usernameRegex = /^[a-zA-Z0-9]{6,12}$/.test(username);
 
@@ -199,14 +212,14 @@ class FormValidator {
 
     validateConfirmPassword(passwordInput, confirmPasswordInput) {
         const errorDiv = document.getElementById('passwordconfirmError');
-        
+
         if (confirmPasswordInput.value !== passwordInput.value) {
             errorDiv.textContent = "Passwords do not match";
             errorDiv.style.display = 'block';
             confirmPasswordInput.classList.add('invalid');
             return false;
         }
-        
+
         errorDiv.style.display = 'none';
         confirmPasswordInput.classList.remove('invalid');
         return true;
@@ -234,15 +247,15 @@ class FormValidator {
         const errorDiv = document.getElementById('ageError');
 
         if (isNaN(value) || value < 16 || value > 100) {
-            if (value < 0){
+            if (value < 0) {
                 input.value = 0;
-            }else if (value > 100){
+            } else if (value > 100) {
                 input.value = 100;
             }
             errorDiv.textContent = "Please enter a valid age (16-100)";
             errorDiv.style.display = 'block';
             input.classList.add('invalid');
-            return false;   
+            return false;
         }
 
         errorDiv.style.display = 'none';
@@ -278,16 +291,16 @@ class FormValidator {
     convertTo24Hour(time12h) {
         const [time, modifier] = time12h.toLowerCase().split(/\s*(am|pm)\s*/);
         let [hours, minutes] = time.split(':').map(Number);
-        
+
         if (minutes === undefined) minutes = 0;
-        
+
         if (hours === 12) {
             hours = modifier === 'pm' ? 12 : 0;
         } else if (modifier === 'pm') {
             hours = hours + 12;
         }
-        
-        return hours + minutes/60;
+
+        return hours + minutes / 60;
     }
 
     validateStep(stepIndex) {

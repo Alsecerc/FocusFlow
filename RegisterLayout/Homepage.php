@@ -78,6 +78,13 @@ $stmt->bind_param("iss", $userID, $startOfWeek, $endOfWeek);
 $stmt->execute();
 $taskResults = $stmt->get_result();
 
+// Get messages sent per day this week
+
+$GetUserContactListID = Query("SELECT ContactID FROM contactlist WHERE UserID = ?", "i", $userID, "No data found", "array", "SELECT", null);
+
+// $GetFriendIDFromContact = Query("SELECT FriendID FROM contact WHERE ContactListID = ?", "i", $GetUserContactListID, "No data found", "single", "SELECT", null);
+
+
 
 // Get team tasks completed per day this week
 $sql = "SELECT DATE(assigned_at) as day, COUNT(*) as count 

@@ -1,32 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/conn.php"; ?>
 
-
-
-<!-- 
-1. edit js to suit with backend.php switch case
-
-2. change messages to directmessage
-
-
-
-
-
-
--->
-
-
-
-
-
-
-
-
-
-
-
-
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -66,59 +41,28 @@
                     ?>
                 </div>
 
-                <!-- Receiver Dropdown (Initially Hidden) -->
-                <div id="receiverDropdown" class="dropdown" style="display: none;">
-                    <ul id="receiverList"></ul>
+                <!-- receiver dropdown -->
+                <div id="receiverPopup" class="popup-container">
+                    <div class="popup-content">
+                        <h3>Select a Receiver</h3>
+                        <ul id="receiverList"></ul>
+                        <button onclick="closePopup()">Cancel</button>
+                    </div>
                 </div>
 
 
             </div>
             <div class="WIDGET msg_two">
                 <h3>Conversation</h3>
+                <div class="CONVO">
+                    <p class="CONVO_FROM"></p>
+                    <p class="CONVO_TO"></p>
+
+                </div>
                 <div class="CHAT__CONTAINER">
                     <div id="chatBox"></div>
                 </div>
             </div>
-            <?php
-            $selectedUserId = 1; // Replace with dynamic user selection logic
-            $otherUserId = 2; // Replace with receiver ID
-
-            $sql = "SELECT sender_id, receiver_id, message_text, sent_at 
-        FROM message
-        WHERE (sender_id = $selectedUserId AND receiver_id = $otherUserId) 
-           OR (sender_id = $otherUserId AND receiver_id = $selectedUserId)
-        ORDER BY sent_at ASC";
-
-            $result = $_conn->query($sql);
-            $messages = [];
-
-            while ($row = $result->fetch_assoc()) {
-                $messages[] = $row;
-            }
-            ?>
-
-            <script>
-                const messages = <?php echo json_encode($messages); ?>;
-                const currentUserId = <?php echo $selectedUserId; ?>;
-
-                function displayMessages() {
-                    const chatBox = document.getElementById("chatBox");
-                    chatBox.innerHTML = "";
-
-                    messages.forEach(msg => {
-                        let messageClass = msg.sender_id == currentUserId ? "RIGHT" : "LEFT";
-                        let messageElement = `
-                <div class="MESSAGE ${messageClass}">
-                    <p>${msg.message_text}</p>
-                    <small>${msg.sent_at}</small>
-                </div>
-            `;
-                        chatBox.innerHTML += messageElement;
-                    });
-                }
-
-                document.addEventListener("DOMContentLoaded", displayMessages);
-            </script>
         </div>
     </main>
 

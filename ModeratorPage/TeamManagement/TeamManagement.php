@@ -12,25 +12,56 @@
 </head>
 
 <body>
-    <?php  include "../ModSidebar.php"; ?>
+    <?php include "../ModSidebar.php"; ?>
 
     <main class="DASH__MAIN">
-    <div class="WIDGET__CONTAINER three">
-        <div class="WIDGET tm_one">
+        <div class="WIDGET__CONTAINER three">
 
-        </div>
-        <div class="WIDGET tm_two">
+            <!-- Search & Filter -->
+            <div class="WIDGET tm_three">
+                <h1>Search for Team</h1>
+                <input type="text" id="searchTeam" placeholder="Search team..." onkeyup="filterTeams()">
+            </div>
 
-        </div>
-        <div class="WIDGET tm_three">
+            <!-- Team List Table -->
+            <div class="WIDGET tm_two">
+                <table id="teamTable">
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Teams will be loaded dynamically here -->
+                    </tbody>
+                </table>
+            </div>
 
-        </div>
-    </div>
+            <!-- Group Tasks & Members -->
+            <div class="WIDGET tm_one">
+                <p style="font-size: 1.3rem;" class="TEAM__HEADER">Group Tasks & Members</p style="font-size: 1.3rem;">
+
+                <div class="group-container">
+                    <div id="taskContainer">
+                        <h4>Tasks</h4>
+                        <ul id="taskList"></ul>
+                    </div>
+
+                    <div id="memberContainer">
+                        <h4>Members</h4>
+                        <ul id="memberList"></ul>
+                    </div>
+                </div>
+            </div>
+
 
     </main>
 
     <footer></footer>
 </body>
 <script src="../Mod.js"></script>
+<script src="Team.js"></script>
 
 </html>
