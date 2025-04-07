@@ -205,8 +205,7 @@ function checkSuspension($_conn, $userID) {
  * @param mysqli $conn Database connection
  * @param string $redirect_url URL to redirect to if not authenticated
  */
-function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.php')
-{
+function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.php'){
     if (!verifyUser($conn)) {
         // Clear invalid cookies
         setcookie("UID", "", time() - 3600, '/');
@@ -217,9 +216,10 @@ function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.
         exit();
     }
 }
-    if (isset($_SESSION['userID'])) {
-        checkSuspension($_conn, $_SESSION['userID']);
-    }
+
+if (isset($_SESSION['userID'])) {
+    checkSuspension($_conn, $_SESSION['userID']);
+}
 
 /**
  * Log out the current user

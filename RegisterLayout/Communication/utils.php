@@ -660,21 +660,26 @@ function GetOnlyOneContactListForDM($FriendEmail){
     global $user_id;
     $ContactID = getContactListIdOfUser();
     $FriendID = getuserIdFromEmail($FriendEmail);
-    $GetOneUserInfoFromFriend = Query("SELECT * FROM friends WHERE friend_id = ? AND user_id = ?", "ii", [$FriendID, $user_id], "No Data Found", "single", "SELECT");
+    $GetOneUserInfoFromFriend = Query("SELECT * FROM friends WHERE friend_id = ? AND user_id = ?", "ii", [$FriendID, $user_id], "No Data Found", "single", "SELECT", null);
+
+    if (!$GetOneUserInfoFromFriend) {
+        $GetOneUserInfoFromFriend = Query("SELECT * FROM friends WHERE user_id = ? AND friend_id = ?", "ii", [$FriendID, $user_id], "No Data Found", "single", "SELECT", true);
+    }
+
     $finalData = [];
 
     $friendData = [
         'ID' => $GetOneUserInfoFromFriend['id'],
-        'friend_id' => $GetOneUserInfoFromFriend['friend_id'],
+        'friend_id' => $FriendID,
         'friendName' => "None",
         'created_at' => $GetOneUserInfoFromFriend['created_at'],
         'MessageText' => "Enter Something Here"
     ];
-    $FriendName = Query("SELECT * FROM users WHERE id = ?", "i", $GetOneUserInfoFromFriend['friend_id'], "Username Not found", "single", "SELECT", true);
+    $FriendName = Query("SELECT * FROM users WHERE id = ?", "i", $FriendID, "Username Not found", "single", "SELECT", true);
     if($FriendName){
         $friendData['friendName'] = $FriendName['name'];
     }
-    $param = $GetOneUserInfoFromFriend['friend_id'];
+    $param = $FriendID;
     $GetUserChatLog = Query("SELECT * FROM directmessage WHERE FriendID = ? ORDER BY DirectMessageID DESC LIMIT 1", "i", $param, "No Data Found", "single", "SELECT", null);
     if(!empty($GetUserChatLog)){
         $friendData['MessageText'] = $GetUserChatLog['MessageText'];
