@@ -2,6 +2,8 @@
 
 session_start();
 include "conn.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/RWD_Assignment/FocusFlow/RegisterLayout/verifyUserType.php";
+
 
 include "AccountVerify.php";
 requireAuthentication($_conn);

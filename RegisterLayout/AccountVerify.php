@@ -179,7 +179,8 @@ function verifyLegacyToken($conn, $userId, $token)
     return false;
 }
 
-function checkSuspension($_conn, $userID) {
+function checkSuspension($_conn, $userID)
+{
     $sql = "SELECT UserStatus, suspension_end FROM users WHERE id = ?";
     $stmt = $_conn->prepare($sql);
     $stmt->bind_param("i", $userID);
