@@ -1,6 +1,7 @@
 # FocusFlow
  Web application
 
+# Database name: assignment
 
 # User Account
 Username: John Doe
