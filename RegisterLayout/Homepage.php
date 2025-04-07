@@ -1,21 +1,20 @@
 <?php
 session_start();
+
 include "conn.php";
 include "GeneralFunction.php";
+// require_once $_SERVER['DOCUMENT_ROOT'] . "/RWD_Assignment/FocusFlow/RegisterLayout/verifyUserType.php";
 
-// Authentication check
-if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
+
+if (!isset($_COOKIE['UID']) || !isset($_COOKIE['USERNAME']) || !isset($_COOKIE['USERTYPE'])) {
     header("Location: Login.php");
     exit();
 }
 
 // Set current user data
-$userID = $_SESSION['userID'];
-$userName = $_SESSION['userName'];
+$userID = $_COOKIE['UID'];
+$userName = $_COOKIE['USERNAME'];
 
-
-
-$userID = $_SESSION['UID'];
 
 // Fetch total tasks completed
 $sql = "SELECT COUNT(*) as total_completed FROM tasks WHERE user_id = ? AND status = 'Complete'";

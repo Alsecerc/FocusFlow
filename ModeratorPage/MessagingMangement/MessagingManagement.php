@@ -1,4 +1,5 @@
 <?php include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/conn.php"; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . "/RWD_Assignment/FocusFlow/ModeratorPage/checklogin.php"; ?>
 
 <!DOCTYPE html>
 <html lang="en">

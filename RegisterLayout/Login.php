@@ -2,14 +2,34 @@
 include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/conn.php";
 session_start();
 include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/AccountVerify.php";
-// requireAuthentication($_conn);
 
-if (isset($_COOKIE['UID'])) {
+if (isset($_COOKIE['UID']) && isset($_COOKIE['USERNAME']) && isset($_COOKIE['USERTYPE'])) {
     $username = htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES, 'UTF-8');
-    echo "<script>alert('Welcome back, $username');window.location.href='Homepage.php'</script>";
+    $usertype = $_COOKIE['USERTYPE'];
+
+    // Determine redirect page based on user type
+    switch ($usertype) {
+        case 0:
+            $redirectPage = '/RWD_Assignment/FocusFlow/RegisterLayout/Homepage.php';
+            break;
+        case 1:
+            $redirectPage = '/RWD_Assignment/FocusFlow/AdminPage/AdminDashboard/AdminDashboard.php';
+            break;
+        case 2:
+            $redirectPage = '/RWD_Assignment/FocusFlow/ModeratorPage/Dashboard/ModDashboard.php';
+            break;
+    }
+
+    error_log("User logged in. Redirecting to: $redirectPage");
+    
+    echo "
+    <script>
+        alert('Welcome back, $username');
+        window.location.href = '$redirectPage';
+    </script>
+    ";
+    exit(); 
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +52,7 @@ if (isset($_COOKIE['UID'])) {
         <div class="left-section">
             <div class="carousel-container">
                 <button class="carousel-nav prev"> <span class="material-icons">
-                arrow_back_ios
+                        arrow_back_ios
                     </span></button>
                 <button class="carousel-nav next">
                     <span class="material-icons">

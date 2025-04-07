@@ -2,6 +2,7 @@
 include "conn.php";
 session_start();
 include "AccountVerify.php";
+
 requireAuthentication($_conn);
 
 ?>

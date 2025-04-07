@@ -179,7 +179,8 @@ function verifyLegacyToken($conn, $userId, $token)
     return false;
 }
 
-function checkSuspension($_conn, $userID) {
+function checkSuspension($_conn, $userID)
+{
     $sql = "SELECT UserStatus, suspension_end FROM users WHERE id = ?";
     $stmt = $_conn->prepare($sql);
     $stmt->bind_param("i", $userID);
@@ -207,6 +208,7 @@ function checkSuspension($_conn, $userID) {
  */
 function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.php')
 {
+
     if (!verifyUser($conn)) {
         // Clear invalid cookies
         setcookie("UID", "", time() - 3600, '/');
@@ -217,9 +219,10 @@ function requireAuthentication($conn, $redirect_url = '../Landing_Page/Homepage.
         exit();
     }
 }
-    if (isset($_SESSION['userID'])) {
-        checkSuspension($_conn, $_SESSION['userID']);
-    }
+
+if (isset($_SESSION['userID'])) {
+    checkSuspension($_conn, $_SESSION['userID']);
+}
 
 /**
  * Log out the current user
