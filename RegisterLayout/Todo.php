@@ -1,7 +1,6 @@
 <!-- change to .php -->
 <?php
 include "conn.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/RWD_Assignment/FocusFlow/RegisterLayout/verifyUserType.php";
 
 session_start();
 

@@ -39,13 +39,6 @@ function UnblockUser($ContactID){
     // Remove the block record - fix the parameter reference
     $UnblockUser = Query("DELETE FROM userblocks WHERE blocker_id = ? AND blocked_id = ?", "ii", [$user_id, $FriendID], "Failed to unblock user", "none", "DELETE");
     
-    if($UnblockUser){
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'User unblocked successfully'
-        ]);
-        exit;
-    }
     // Update the friendship status - fix the parameter reference
     $ChangeStatus = Query("UPDATE friends SET Status = 'None' WHERE id = ?", "i", [$GetFriendID['FriendID']], "Failed to change status", "none", "UPDATE");
 
@@ -53,6 +46,11 @@ function UnblockUser($ContactID){
         echo json_encode([
             'status' => 'failed',
             'message' => 'Failed to unblock user'
+        ]);
+    }else{
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'User unblocked successfully'
         ]);
     }
     exit;
@@ -118,17 +116,32 @@ function BlockUser($ContactID){
 
     $GetUserFriendID = Query("SELECT FriendID FROM contact WHERE id = ?", "i", $ContactID, "Friend ID not found", "single", "SELECT", null);
 
-    $UserFriendID = Query("SELECT * FROM friends WHERE id = ?", "i", $GetUserFriendID, "Friend ID not found", "single", "SELECT", null);
+    $UserFriendID = Query(
+    "SELECT 
+        CASE 
+          WHEN user_id = ? THEN friend_id          -- if I'm the user, get the friend
+          WHEN friend_id = ? THEN user_id          -- if I'm the friend, get the user
+          ELSE NULL
+        END AS other_user
+      FROM friends 
+      WHERE id = ?", 
+    "iii", 
+    [$user_id, $user_id, $GetUserFriendID['FriendID']],
+    "Friend ID not found", 
+    "single", 
+    "SELECT", 
+    null
+    );
 
-    if ($UserFriendID) {
-        if((int)$UserFriendID['user_id'] === (int)$user_id) {
-            $ContactID = $UserFriendID['friend_id'];
-        } else {
-            $ContactID = $UserFriendID['user_id'];
-        }
-    }
 
-    $BlockUser = Query("INSERT INTO userblocks (blocker_id, blocked_id) VALUES (?, ?)", "ii", [$user_id, $UserFriendID], "Failed to block user", "none", "INSERT");
+    $BlockUser = Query(
+        "INSERT INTO userblocks (blocker_id, blocked_id) VALUES (?, ?)", 
+        "ii", 
+        [$user_id, $UserFriendID['other_user']], 
+        "Failed to block user", 
+        "none", 
+        "INSERT"
+    );
 
     $CheckIFUserAlreadyBlocked = Query("SELECT * FROM friends WHERE id = ? AND status = 'Blocked'", "i", $ContactID, "User not found", "bool", "SELECT", null);
     if($CheckIFUserAlreadyBlocked){

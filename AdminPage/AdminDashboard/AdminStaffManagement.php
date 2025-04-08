@@ -6,7 +6,7 @@ $sql = "SELECT id, name, email, UserStatus, last_login FROM users WHERE usertype
 $result = $_conn->query($sql);
 
 // Count active moderators
-$activeModsQuery = "SELECT COUNT(*) as active_count FROM users WHERE (usertype = 1 OR usertype = 2) AND UserStatus = 'Active'";
+$activeModsQuery = "SELECT COUNT(*) as active_count FROM users WHERE (usertype = 1 OR usertype = 2)";
 $activeModsResult = $_conn->query($activeModsQuery);
 $activeMods = $activeModsResult->fetch_assoc()['active_count'];
 
