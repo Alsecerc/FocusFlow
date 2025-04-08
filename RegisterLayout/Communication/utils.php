@@ -77,23 +77,41 @@ function CheckIfUserIsBlock($ContactID){
     // Get FriendID based on ContactID
     $GetFriendID = Query("SELECT FriendID FROM contact WHERE id = ?", "i", $ContactID, "Friend ID not found", "single", "SELECT", null);
 
-    if ($GetFriendID === false) {
-        return false; // If no FriendID is found, assume no block
-    }
+    // if ($GetFriendID === false) {
+    //     return false; // If no FriendID is found, assume no block
+    // }
 
     // Get the user ID of the friend
-    $GetOtherUserID = Query("SELECT user_id FROM friends WHERE id = ? AND friend_id = ?", "ii", [$GetFriendID, $user_id], "Friend ID not found", "single", "SELECT", null);
-
-    if ($GetOtherUserID === false) {
-        $GetOtherUserID = Query("SELECT friend_id FROM friends WHERE id = ? AND user_id = ?", "ii", [$GetFriendID, $user_id], "Friend ID not found", "single", "SELECT", null);
-    }
+    $GetOtherUserID = Query(    
+        "SELECT 
+        CASE 
+            WHEN user_id = ? THEN friend_id
+            WHEN friend_id = ? THEN user_id
+            ELSE NULL
+        END AS other_user
+     FROM friends 
+     WHERE id = ?",
+    "iii",
+    [$user_id, $user_id, $GetFriendID['FriendID']],
+    "Friend not found",
+    "single",
+    "SELECT",
+    null
+    );
 
     // Check if the current user has blocked the other user
-    $CheckIFUserAlreadyBlocked = Query("SELECT 1 FROM userblocks WHERE blocker_id = ? AND blocked_id = ?", "ii", [$user_id, $GetOtherUserID], "User not found", "bool", "SELECT", null);
+    $CheckIFUserAlreadyBlocked = Query(
+    "SELECT * FROM userblocks 
+    WHERE blocker_id = ? AND blocked_id = ?", 
+    "ii", 
+    [$user_id, $GetOtherUserID['other_user']], 
+    "User not found", "bool", 
+    "SELECT", 
+    null);
 
-    return $CheckIFUserAlreadyBlocked ? true : false;
+    // Return a boolean result instead of a response object
+    return $CheckIFUserAlreadyBlocked;
 }
-
 
 function BlockUser($ContactID){
     global $user_id;
