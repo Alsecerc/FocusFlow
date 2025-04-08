@@ -40,4 +40,3 @@ if ($password === $confirmPassword) {
 } else {
     die("<script>alert('Confirm Password is not identical as password.');window.location.href='Signup.php';</script>");
 }
-// Close the database connection
