@@ -3,7 +3,7 @@ session_start();
 
 include "conn.php";
 include "GeneralFunction.php";
-// require_once $_SERVER['DOCUMENT_ROOT'] . "/RWD_Assignment/FocusFlow/RegisterLayout/verifyUserType.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/RWD_Assignment/FocusFlow/RegisterLayout/checklogin.php";
 
 
 if (!isset($_COOKIE['UID']) || !isset($_COOKIE['USERNAME']) || !isset($_COOKIE['USERTYPE'])) {
