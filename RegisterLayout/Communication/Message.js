@@ -291,7 +291,6 @@ function ContinousUpdatePage(){
 		}
 	})
 	.then(data => {
-		console.log('Update contact Group list every second:', data);
 		if (data.status === 'success') {
 			const NewData = data.message;
 			console.log('New Data:', NewData);
@@ -321,10 +320,8 @@ function ContinousUpdatePage(){
 		}
 	})
 	.then(data => {
-		console.log('Update contact DM list every second:', data);
 		if (data.status === 'success') {
 			const NewData = data.message;
-			console.log('New Data:', NewData);
 			// Updated property names to match API response
 			NewData.forEach(contact => {
 				EditDMContactList({
@@ -845,6 +842,7 @@ function getTimestamp(dateString) {
 }
 //name, message, messageType, membersRole, time, id, role, description, status
 async function renderMessagePage(MessagePageData){
+	console.log('Render Message Page:', MessagePageData);
 	const AllContact = document.querySelectorAll('.contact-item');
 	let ContactID = null;
 	let isGroupChat = false;
@@ -859,9 +857,9 @@ async function renderMessagePage(MessagePageData){
 	});
 
 	let isUseraBlocker = await isUserBlocker(ContactID);
-	console.log('isUseraBlocker:', isUseraBlocker);
+	// console.log('isUseraBlocker:', isUseraBlocker);
 
-	console.log(MessagePageData)
+	// console.log(MessagePageData)
 	let messagepanel = document.querySelector('.messages-panel');
 	// Clear existing content
 	messagepanel.innerHTML = '';
@@ -1070,7 +1068,6 @@ async function renderMessagePage(MessagePageData){
 	messages = MessagePageData.messages;
 
 	// Create messages with sender profiles
-	console.log(messages)
 	let previousTime = null; // Move this outside the loop
 
 	// Convert time to milliseconds and sort messages in descending order (newest first)
@@ -1084,7 +1081,7 @@ async function renderMessagePage(MessagePageData){
 		let NewTime = convertToMilliseconds(msg.time);
 	
 		if (previousTime === null || NewTime > previousTime) {
-			console.log('New Time:', NewTime, 'Previous Time:', previousTime);
+			// console.log('New Time:', NewTime, 'Previous Time:', previousTime);
 			previousTime = NewTime;
 		}
 	
@@ -1099,7 +1096,8 @@ async function renderMessagePage(MessagePageData){
 	});
 	
 	// Now, sortedMessages contains the messages in ascending order based on time
-	console.log('Sorted Messages:', sortedMessages);
+
+	// console.log('Sorted Messages:', sortedMessages);
 	
 	// You can now append them to the chat in the correct order
 	sortedMessages.forEach(msg => appendMessageToChat(msg));
@@ -1302,7 +1300,7 @@ function unblockUser(name, ContactID) {
 }
 
 async function isUserBlocker(ContactID){
-	console.log('Checking if user is a blocker for contact ID:', ContactID);
+	// console.log('Checking if user is a blocker for contact ID:', ContactID);
 	const response = await fetchDataOrsendData(
 		`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=CheckUserBlock&Contact_ID=${ContactID}`,
 		{
@@ -1517,7 +1515,7 @@ function addEventListenerToMessage() {
                         console.error('Error fetching DM message info:', data.message);
                     } else if (data.status === 'warning') {
                         console.warn('Warning:', data.message);
-                        console.log('No chat log found - rendering empty message page');
+                        // console.log('No chat log found - rendering empty message page');
                         renderMessagePage({
                             name: name,
                             messages: [],
@@ -1526,10 +1524,10 @@ function addEventListenerToMessage() {
                     } else if (data.status === 'success') {
                         if (data && data.data) {
                             const messageData = data.data;
-                            console.log('Message Data Type:', messageData);
+                            // console.log('Message Data Type:', messageData);
                             
                             // Handle empty chat
-                            console.log('No chat log found - rendering empty message page');
+                            // console.log('No chat log found - rendering empty message page');
                             renderMessagePage({
                                 name: name,
                                 messages: [],
@@ -1538,7 +1536,7 @@ function addEventListenerToMessage() {
                         } else {
                             const ContactName = contactItem.querySelector('h4').textContent;
                             const messageData = data.message;
-                            console.log('Message Data Type:', messageData);
+                            // console.log('Message Data Type:', messageData);
                             renderMessagePage({
                                 name: ContactName,
                                 messages: data.message,
@@ -1871,7 +1869,7 @@ function scrollToBottom(force = false) {
     
     if (isNearBottom || force) {
         messageContent.scrollTop = messageContent.scrollHeight;
-        console.log('Scrolled to bottom, height:', messageContent.scrollHeight);
+        // console.log('Scrolled to bottom, height:', messageContent.scrollHeight);
     }
 }
 
@@ -2538,17 +2536,17 @@ function sendAddContact(recipientEmail, overlay){
 				console.log('User Does not exist in the contact list');
 				suggestions.innerHTML = '';
 			}else{
-				GetDMContactList(recipientEmail);
-				
-				// Add a short delay to allow the contact to be added to the DOM
-				setTimeout(function() {
-					// Find and click the newly added contact
-					const allContacts = document.querySelectorAll('.contacts-panel.DirectMessages .contact-item');
-					const newContact = allContacts[allContacts.length - 1]; // Get the last added contact
-					if (newContact) {
-						newContact.click(); // Trigger click on the new contact
-					}
-				}, 300);
+				// GetDMContactList(recipientEmail);
+
+				renderDMContactList();
+
+				// // Add a short delay to allow the contact to be added to the DOM
+				// setTimeout(function() {
+				// 	// Find and click the newly added contact
+				// 	const allContacts = document.querySelectorAll('.contacts-panel.DirectMessages .contact-item');
+				// 	const newContact = allContacts[allContacts.length - 1]; // Get the last added contact
+
+				// }, 300);
 			}
 			// Success case - no special handling needed
 			console.log('Success:', data);
@@ -2569,45 +2567,47 @@ function sendAddContact(recipientEmail, overlay){
 	})
 }
 
-function GetDMContactList(recipientEmail){
-	console.log('Get DM Contact List:', recipientEmail.value.trim());
-	fetchDataOrsendData(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetOnlyOneContactListForDM&Email=${recipientEmail.value.trim()}`, {
-		method: 'GET',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		}
-	})
-	.then(data => {
-		console.log(data.message[0].ID);
-		if (data.status === 'success') {
-			// Check if data is an object and has properties
-			if (data && typeof data === 'object') {
-				// Loop through the group objects and render each one
-				console.log(Object.values(data).ID);
-				console.log(data.message.ID);
-					//ContactID, name, message, time
-				const NewDMContactlist = {
-					FriendID: data.message[0].ID,
-					name: data.message[0].friendName,
-					message: data.message[0].MessageText,
-					time: DisplayHourMin(data.message[0].created_at)
-				}
-				appendContactToContactList(NewDMContactlist);
-			} else {
-				console.log('No groups found or invalid data format');
-			}
-		}else if(data.status === 'warning'){
-			console.log('Warning:', data.message);
-		}else{
-			console.log('No groups found or invalid data format');
-		}
-	})
-	.catch(error => {
-		console.error('Default Page Error:', error);
-		// Handle the error appropriately
-	});
-}
+// function GetDMContactList(recipientEmail){
+// 	console.log('Get DM Contact List:', recipientEmail.value.trim());
+// 	fetchDataOrsendData(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetOnlyOneContactListForDM&Email=${recipientEmail.value.trim()}`, {
+// 		method: 'GET',
+// 		headers: {
+// 			'Accept': 'application/json',
+// 			'Content-Type': 'application/json'
+// 		}
+// 	})
+// 	.then(data => {
+// 		console.log(data);
+// 		if (data.status === 'success') {
+// 			// Check if data is an object and has properties
+// 			if (data && typeof data === 'object') {
+// 				// Loop through the group objects and render each one
+// 				// console.log(Object.values(data).ID);
+// 				console.log(data.message[0].ID);
+// 				console.log(data.message[0].MessageText);
+// 				RemindLibrary.showSuccessToast(data.message[0].ID);
+// 				//ContactID, name, message, time
+// 				const NewDMContactlist = {
+// 					FriendID: data.message[0].ID,
+// 					name: data.message[0].friendName,
+// 					message: data.message[0].MessageText,
+// 					time: DisplayHourMin(data.message[0].created_at)
+// 				}
+// 				appendContactToContactList(NewDMContactlist);
+// 			} else {
+// 				console.log('No groups found or invalid data format');
+// 			}
+// 		}else if(data.status === 'warning'){
+// 			console.log('Warning:', data.message);
+// 		}else{
+// 			console.log('No groups found or invalid data format');
+// 		}
+// 	})
+// 	.catch(error => {
+// 		console.error('Default Page Error:', error);
+// 		// Handle the error appropriately
+// 	});
+// }
 
 /** 
  * Fetches the contact list from the server and renders it in the UI.
@@ -2648,6 +2648,7 @@ function GetDMContactList(recipientEmail){
 */
 
 function appendContactToContactList(contactData) {
+	console.log('Appending contact to contact list:', contactData);
 	const contactsList = document.querySelector('.contacts-panel.DirectMessages .contacts-list');
 	// Create new contact item
 	const contactItem = document.createElement('div');
@@ -2688,23 +2689,23 @@ function appendContactToContactList(contactData) {
 	// Add direct click handler to the new contact
 	contactItem.addEventListener('click', function() {
 		// Clear any active class from other contacts
-		document.querySelectorAll('.contacts-panel.DirectMessages .contact-item').forEach(item => {
-			item.classList.remove('active');
-		});
+		// document.querySelectorAll('.contacts-panel.DirectMessages .contact-item').forEach(item => {
+		// 	item.classList.remove('active');
+		// });
 		
-		// Add active class to this contact
-		this.classList.add('active');
+		// // Add active class to this contact
+		// this.classList.add('active');
 		
 		// Show loading indicator
 		const messagepanel = document.querySelector('.messages-panel');
 		messagepanel.innerHTML = '<div class="loading-messages">Loading messages...</div>';
 		
 		// Render empty conversation for brand new contacts
-		renderMessagePage({
-			name: contactData.name,
-			messages: [],
-			status: 'Online'
-		});
+		// renderMessagePage({
+		// 	name: contactData.name,
+		// 	messages: [],
+		// 	status: 'Online'
+		// });
 	});
 }
 
