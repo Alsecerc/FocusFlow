@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../Mod.css">
+    <link rel="stylesheet" href="../ModResponsive.css">
     <link rel="shortcut icon" href="../img/icons8-staff-32.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -26,7 +27,7 @@
 
                 <div class="flex-col" style="flex-grow:1;justify-content: center;">
                     <?php include "ModDashboardBackend.php" ?>
-                    <div class="WIDGET__OVERALL" style="display: flex; justify-content:space-around; flex-direction:column; flex-grow:1;">
+                    <div class="WIDGET__OVERALL" style="display: flex; justify-content:space-around; flex-direction:column; flex-grow:1; gap:1rem;">
                         <div class="WIDGET__STATS">
                             <p>Total Users: <?php echo $total_users; ?></p>
                             <p>Total Teams: <?php echo $total_teams; ?></p>

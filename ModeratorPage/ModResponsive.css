@@ -1,0 +1,139 @@
+@media (max-width: 468px) {
+    .WIDGET__CONTAINER.one {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .WIDGET {
+        grid-area: unset !important;
+        width: 100%;
+    }
+
+    .WIDGET__STATS,
+    .WIDGET__PROGRESS,
+    .WIDGET__OVERALL,
+    .WIDGET__USERM,
+    .recent-table-container,
+    .DASH__RECENT__UPLOAD {
+        flex-direction: column !important;
+        width: 100%;
+    }
+
+    .WIDGET__STATS p,
+    .WIDGET__PROGRESS p {
+        text-align: center;
+    }
+
+    .flex-row {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .chart-container {
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    .recent-table-container {
+        overflow-x: auto;
+    }
+
+    .recent-table {
+        min-width: 100%;
+    }
+
+    .WIDGET__TITLE {
+        font-size: 1.2rem;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .WIDGET:not(:last-child) {
+        margin-bottom: 1.5rem;
+    }
+
+    .HEADER {
+        justify-content: start;
+        gap: 0.3rem;
+    }
+
+    .SIDEBAR__TEXT {
+        display: none;
+    }
+
+    .SIDEBAR__ITEM {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .SIDEBAR__ITEM .material-icons {
+        font-size: 24px;
+    }
+
+    .DASH__MAIN {
+        padding: 1rem;
+        width: 100vw;
+        margin: 0;
+    }
+
+    .WIDGET__STATS {
+        flex-direction: column;
+    }
+
+    .WIDGET__PROGRESS,
+    .WIDGET__PROGRESS div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .WIDGET.five {
+        flex-direction: column;
+    } 
+}
+
+@media (min-width: 468px) and (max-width: 1024px) {
+    .WIDGET__CONTAINER.one {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .WIDGET {
+        grid-area: unset !important;
+    }
+
+    .SIDEBAR__TEXT {
+        display: none;
+    }
+
+    .SIDEBAR__ITEM {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .SIDEBAR__ITEM .material-icons {
+        font-size: 24px;
+    }
+
+    .DASH__MAIN {
+        padding: 1rem;
+    }
+
+    .WIDGET__STATS {
+        flex-direction: column;
+    }
+
+    .WIDGET__PROGRESS,
+    .WIDGET__PROGRESS div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .WIDGET.five {
+        flex-direction: column;
+    } 
+}
+
+@media (min-width: 1025px) {}

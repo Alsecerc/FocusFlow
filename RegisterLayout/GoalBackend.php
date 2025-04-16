@@ -134,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             $reminders = [];
             while ($row = $result->fetch_assoc()) {
-                // TODO: Debug
                 error_log("Fetched Goal: " . json_encode($row));
 
                 $user_id = $row['user_id'];

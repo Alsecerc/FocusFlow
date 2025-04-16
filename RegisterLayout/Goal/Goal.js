@@ -172,4 +172,4 @@ setInterval(() => {
     })
     .then(data => console.log("Reminder check:", data))
     .catch(error => console.error("Error parsing JSON:", error));
-}, 1000000);
+}, 10000);

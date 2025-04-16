@@ -291,9 +291,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 $teamID = $row['id'];
 
                 // Delete team from database
-                $deleteSql = "DELETE FROM team WHERE id = ?";
+                $deleteSql = "DELETE FROM team WHERE team_name = ?";
                 $deleteStmt = $_conn->prepare($deleteSql);
-                $deleteStmt->bind_param("i", $teamID);
+                $deleteStmt->bind_param("s", $teamName);
 
                 if ($deleteStmt->execute()) {
                     echo "Team deleted successfully!";

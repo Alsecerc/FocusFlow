@@ -40,7 +40,6 @@ function checkMemberExists(memberName, callback) {
     })
         .then(response => response.json())
         .then(data => callback(data.exists))
-        .then(data => callback(data.exists))
         .catch(error => console.error("Error:", error));
 }
 

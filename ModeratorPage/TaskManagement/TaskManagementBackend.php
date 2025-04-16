@@ -99,11 +99,6 @@ if (isset($_POST['action'])) {
                 exit;
             }
 
-            // Ensure due date is in the future
-            if (strtotime($due_date) < strtotime(date("Y-m-d 00:00:00"))) {
-                echo json_encode(["success" => false, "message" => "Due date must be today or in the future"]);
-                exit;
-            }
 
 
             if ($is_team_task == "true") {

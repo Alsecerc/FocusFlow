@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 if (!isset($_COOKIE['UID'])) {
     $cookiesToClear = ['AUTH_TOKEN', 'EMAIL', 'PHPSESSID', 'UID', 'USERNAME', 'USERTYPE'];

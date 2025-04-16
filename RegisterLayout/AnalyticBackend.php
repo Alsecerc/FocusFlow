@@ -3,7 +3,10 @@ include "conn.php";
 
 $user_id = $_COOKIE['UID'];
 
-error_reporting(0);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -53,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $end_time = $_POST['end_time'] ?? NULL;
 
             if (!empty($task_title)) {
-                $suggestQuery = $_conn->prepare("SELECT task_title, description, category FROM tasks WHERE task_title = ?");
+                $suggestQuery = $_conn->prepare("SELECT task_title, task_desc, category FROM tasks WHERE task_title = ?");
                 $suggestQuery->bind_param("s", $task_title);
                 $suggestQuery->execute();
                 $result = $suggestQuery->get_result();
@@ -61,14 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($suggestedTask) {
                     $task_title = $suggestedTask['task_title']; 
-                    $description = $suggestedTask['description'];
+                    $description = $suggestedTask['task_desc'];
                     $category = $suggestedTask['category'];  
                 } else {
                     $description = "No description available"; 
                 }
 
                 // ✅ Insert new task with retrieved details
-                $insertQuery = $_conn->prepare("INSERT INTO tasks (user_id, task_title, description, category, start_date, start_time, end_date, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $insertQuery = $_conn->prepare("INSERT INTO tasks (user_id, task_title, task_desc, category, start_date, start_time, end_date, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $insertQuery->execute([$user_id, $task_title, $description, $category, $start_date, $start_time, $end_date, $end_time]);
 
                 echo json_encode(["success" => true]);
