@@ -2,10 +2,10 @@
 session_start();
 include "../../RegisterLayout/conn.php";
 
-if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true || $_SESSION['usertype'] !== 1) {
-    header("Location: ../../RegisterLayout/Login.php");
-    exit();
-}
+// if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true || $_SESSION['usertype'] !== 1) {
+//     header("Location: ../../RegisterLayout/Login.php");
+//     exit();
+// }
 
 // Fetch all survey responses with user information
 $sql = "SELECT sr.*, u.name as user_name 

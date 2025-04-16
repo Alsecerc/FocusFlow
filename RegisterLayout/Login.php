@@ -3,9 +3,17 @@ include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/co
 session_start();
 include $_SERVER['DOCUMENT_ROOT'] . "/RWD_assignment/FocusFlow/RegisterLayout/AccountVerify.php";
 
-if (isset($_COOKIE['UID']) && isset($_COOKIE['USERNAME']) && isset($_COOKIE['USERTYPE'])) {
+// Add check to prevent redirect loop - only redirect if not already on admin dashboard
+if (isset($_COOKIE['UID']) && isset($_COOKIE['USERNAME']) && isset($_COOKIE['USERTYPE']) && 
+    strpos($_SERVER['PHP_SELF'], 'AdminDashboard.php') === false) {
+    
     $username = htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES, 'UTF-8');
     $usertype = $_COOKIE['USERTYPE'];
+    
+    // Store these values in the session to ensure auth checks work properly
+    $_SESSION['userID'] = $_COOKIE['UID'];
+    $_SESSION['usertype'] = $usertype;
+    $_SESSION['username'] = $username;
 
     // Determine redirect page based on user type
     switch ($usertype) {

@@ -293,7 +293,6 @@ function ContinousUpdatePage(){
 	.then(data => {
 		if (data.status === 'success') {
 			const NewData = data.message;
-			console.log('New Data:', NewData);
 			NewData.forEach(contact => {
 				let lastIndex = contact.GroupName.lastIndexOf("_");
 				let groupName = contact.GroupName.substring(0, lastIndex);
@@ -844,18 +843,24 @@ function getTimestamp(dateString) {
 async function renderMessagePage(MessagePageData){
 	console.log('Render Message Page:', MessagePageData);
 	const AllContact = document.querySelectorAll('.contact-item');
+    
 	let ContactID = null;
 	let isGroupChat = false;
 
 	//Check if user is a blocker
 	AllContact.forEach(function(contact) {  // Directly use forEach on NodeList
 		if (contact.classList.contains('active')) {
+            console.log('Active contact found:', contact.id);
 			ContactID = contact.id; // Update ContactID if active class is found
 			// Check if this is a group chat by checking which panel it belongs to
 			isGroupChat = !!contact.closest('.contacts-panel.group');
 		}
 	});
 
+    if (!ContactID) {
+        console.warn("No active contact found. Cannot render message page.");
+        return;
+    }
 	let isUseraBlocker = await isUserBlocker(ContactID);
 	// console.log('isUseraBlocker:', isUseraBlocker);
 
@@ -993,6 +998,8 @@ async function renderMessagePage(MessagePageData){
 			console.error('User status error:', error);
 		});
 	}
+
+    console.log('Contact ID:', ContactID);
 
 	// Add menu options based on whether this is a group or direct message
 	const menuOptions = isGroupChat ? 
@@ -1266,6 +1273,34 @@ function unblockUser(name, ContactID) {
 			
 			// Reload the conversation to refresh UI completely
 			const activeContact = document.querySelector('.contact-item.active');
+
+            const optionsDropdown = messagepanel.querySelector('.options-dropdown');
+            if (optionsDropdown) {
+                // Instead of cloning, directly update the existing option
+                const blockOption = optionsDropdown.querySelector('.dropdown-item:first-child');
+                if (blockOption) {
+                    // Update the icon and text directly
+                    const icon = blockOption.querySelector('.material-icons');
+                    const text = blockOption.querySelector('span:last-child');
+                    
+                    if (icon) icon.textContent = 'block';
+                    if (text) text.textContent = 'Block';
+                    
+                    // Remove all existing listeners (key fix)
+                    blockOption.replaceWith(blockOption.cloneNode(true));
+                    
+                    // Re-select the new cloned element
+                    const newBlockOption = optionsDropdown.querySelector('.dropdown-item:first-child');
+                    
+                    // Add new click listener with proper closure for parameters
+                    newBlockOption.addEventListener('click', function() {
+                        console.log('Block user clicked:', name, ContactID);
+                        blockUser(name, ContactID);
+                        optionsDropdown.classList.add('hidden');
+                    });
+                }
+            }
+
 			if (activeContact) {
 				// Trigger a re-render of the conversation
 				fetchDataOrsendData(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetMessageInfoForDM&Contact_ID=${ContactID}`, {
@@ -2217,6 +2252,7 @@ function DirectMessageForm(prefilledEmail = '') {
 }
 
 // Helper function to render a new direct message contact in the UI need to have ContactID, name, message, time
+
 function renderDirectMessageContact(contactData) {
 	const contactsList = document.querySelector('.contacts-panel.DirectMessages .contacts-list');
 	// Create new contact item
@@ -2269,13 +2305,39 @@ function renderDirectMessageContact(contactData) {
 		// Show loading indicator
 		const messagepanel = document.querySelector('.messages-panel');
 		messagepanel.innerHTML = '<div class="loading-messages">Loading messages...</div>';
-		
-		// Render empty conversation for brand new contacts
-		renderMessagePage({
-			name: contactData.name,
-			messages: [],
-			status: 'Online'
-		});
+		// debug
+        fetchDataOrsendData(`/RWD_assignment/FocusFlow/RegisterLayout/Communication/Message.php?Type=GetMessageInfoForDM&Contact_ID=${contactData.ContactID}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                renderMessagePage({
+                    name: contactData.name,
+                    messages: data.message || [],
+                    status: 'Online'
+                });
+            } else {
+                // Handle empty chat case
+                renderMessagePage({
+                    name: contactData.name,
+                    messages: [],
+                    status: 'Online'
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Error loading messages:', err);
+            // Still render empty page on error
+            renderMessagePage({
+                name: contactData.name,
+                messages: [],
+                status: 'Online'
+            });
+        });
 	});
 }
 
